@@ -113,189 +113,191 @@ export default function useMessageStore() {
     return message.current.knowledge_graph.nodes[idToIndMaps.kgNodeMap.get(nodeId)];
   }
 
+  function getQgNodeInd(qgId) {
+    return idToIndMaps.qgNodeMap.get(qgId);
+  }
+
   function annotatedPrunedKnowledgeGraph(pruneNum) {
-    if (message.current.query_graph) {
-      // KG nodes don't always have type
-      // If they don't we need to figure out which qNodes they most like correspond to
-      // Then check labels and use the corresponding type
+    if (!message.current.query_graph) return {};
+    // KG nodes don't always have type
+    // If they don't we need to figure out which qNodes they most like correspond to
+    // Then check labels and use the corresponding type
 
-      const { results, knowledge_graph: kg, query_graph: qg } = message.current;
-      const Nj = Math.round(pruneNum / getNumQgNodes());
+    const { results, knowledge_graph: kg, query_graph: qg } = message.current;
+    const Nj = Math.round(pruneNum / getNumQgNodes());
 
-      // Create a map between qGraph index to node id (for scoreVector)
-      const qgNodeIndToIdMap = {};
-      qg.nodes.forEach((node, i) => {
-        qgNodeIndToIdMap[i] = node.id;
-      });
+    // Create a map between qGraph index to node id (for scoreVector)
+    const qgNodeIndToIdMap = {};
+    qg.nodes.forEach((node, i) => {
+      qgNodeIndToIdMap[i] = node.id;
+    });
 
-      // Object map mapping qNodeId to Array of Objects of score info
-      // of format { scoreVector, aggScore, kGNodeId }
-      // eg: {"node01": [{ scoreVector, aggScore, id }, ...], "node02": [{ scoreVector, aggScore, id }, ...]}
-      const qgNodeIdToScoreObjArrMap = {};
-      idToIndMaps.qgNodeMap.forEach((qNodeInd, qNodeId) => (qgNodeIdToScoreObjArrMap[qNodeId] = []));
+    // Object map mapping qNodeId to Array of Objects of score info
+    // of format { scoreVector, aggScore, kGNodeId }
+    // eg: {"node01": [{ scoreVector, aggScore, id }, ...], "node02": [{ scoreVector, aggScore, id }, ...]}
+    const qgNodeIdToScoreObjArrMap = {};
+    idToIndMaps.qgNodeMap.forEach((qNodeInd, qNodeId) => (qgNodeIdToScoreObjArrMap[qNodeId] = []));
 
-      const qgNodeIdToCountMap = {};
-      idToIndMaps.qgNodeMap.forEach((qNodeInd, qNodeId) => (qgNodeIdToCountMap[qNodeId] = []));
+    const qgNodeIdToCountMap = {};
+    idToIndMaps.qgNodeMap.forEach((qNodeInd, qNodeId) => (qgNodeIdToCountMap[qNodeId] = []));
 
-      // Iterate through each node in knowledgeGraph and score them
-      kg.nodes.forEach((node) => {
-        const kgNode = _.cloneDeep(node);
-        kgNode.scoreVector = makeEmptyArray(getNumQgNodes(), 0);
-        kgNode.count = makeEmptyArray(getNumQgNodes(), 0);
-        // Iterate through each answer
-        results.forEach((ans) => {
-          const { node_bindings: nodeBindings } = ans;
-          // Iterate through each node_binding in an answer and if the KG node matches any, update score
-          nodeBindings.forEach((nodeBinding) => {
-            if (Array.isArray(nodeBinding.kg_id)) {
-              const ind = nodeBinding.kg_id.indexOf(kgNode.id);
-              if (ind > -1) {
-                // set kg node level for heirarchical graph
-                node.level = idToIndMaps.qgNodeMap.get(nodeBinding.qg_id);
-                kgNode.count[idToIndMaps.qgNodeMap.get(nodeBinding.qg_id)] += 1;
-                if (ans.score !== undefined) {
-                  kgNode.scoreVector[idToIndMaps.qgNodeMap.get(nodeBinding.qg_id)] += ans.score;
-                }
-              }
-            } else if (nodeBinding.kg_id === kgNode.id) {
+    // Iterate through each node in knowledgeGraph and score them
+    kg.nodes.forEach((node) => {
+      const kgNode = _.cloneDeep(node);
+      kgNode.scoreVector = makeEmptyArray(getNumQgNodes(), 0);
+      kgNode.count = makeEmptyArray(getNumQgNodes(), 0);
+      // Iterate through each answer
+      results.forEach((ans) => {
+        const { node_bindings: nodeBindings } = ans;
+        // Iterate through each node_binding in an answer and if the KG node matches any, update score
+        nodeBindings.forEach((nodeBinding) => {
+          if (Array.isArray(nodeBinding.kg_id)) {
+            const ind = nodeBinding.kg_id.indexOf(kgNode.id);
+            if (ind > -1) {
               // set kg node level for heirarchical graph
-              node.level = idToIndMaps.qgNodeMap.get(nodeBinding.qg_id);
-              kgNode.count[idToIndMaps.qgNodeMap.get(nodeBinding.qg_id)] += 1;
+              node.level = getQgNodeInd(nodeBinding.qg_id);
+              kgNode.count[getQgNodeInd(nodeBinding.qg_id)] += 1;
               if (ans.score !== undefined) {
-                kgNode.scoreVector[idToIndMaps.qgNodeMap.get(nodeBinding.qg_id)] += ans.score;
+                kgNode.scoreVector[getQgNodeInd(nodeBinding.qg_id)] += ans.score;
               }
             }
-            // Update score for qNode position in scoreVector since this kGNode was
-            // referenced in this answer
-            // sometimes results don't have scores
+          } else if (nodeBinding.kg_id === kgNode.id) {
+            // set kg node level for heirarchical graph
+            node.level = getQgNodeInd(nodeBinding.qg_id);
+            kgNode.count[getQgNodeInd(nodeBinding.qg_id)] += 1;
+            if (ans.score !== undefined) {
+              kgNode.scoreVector[getQgNodeInd(nodeBinding.qg_id)] += ans.score;
+            }
+          }
+          // Update score for qNode position in scoreVector since this kGNode was
+          // referenced in this answer
+          // sometimes results don't have scores
+        });
+      });
+      kgNode.aggScore = kgNode.scoreVector.reduce((a, b) => a + b, 0);
+      // Update qgNodeIdToScoreObjArrMap with this node for any non-zero
+      // qNodeScore (Meaning that this node was referenced one or more times by
+      // the corresponding qNode for qNodeInd)
+      kgNode.scoreVector.forEach((qNodeScore, qNodeInd) => {
+        if (qNodeScore > 0) {
+          qgNodeIdToScoreObjArrMap[qgNodeIndToIdMap[qNodeInd]].push({
+            scoreVector: kgNode.scoreVector, aggScore: kgNode.aggScore, id: kgNode.id,
           });
-        });
-        kgNode.aggScore = kgNode.scoreVector.reduce((a, b) => a + b, 0);
-        // Update qgNodeIdToScoreObjArrMap with this node for any non-zero
-        // qNodeScore (Meaning that this node was referenced one or more times by
-        // the corresponding qNode for qNodeInd)
-        kgNode.scoreVector.forEach((qNodeScore, qNodeInd) => {
-          if (qNodeScore > 0) {
-            qgNodeIdToScoreObjArrMap[qgNodeIndToIdMap[qNodeInd]].push({
-              scoreVector: kgNode.scoreVector, aggScore: kgNode.aggScore, id: kgNode.id,
-            });
-          }
-        });
-        kgNode.count.forEach((count, qNodeInd) => {
-          if (count > 0) {
-            qgNodeIdToCountMap[qgNodeIndToIdMap[qNodeInd]].push({
-              count, id: kgNode.id,
-            });
-          }
-        });
-      });
-
-      let rankedQgNodeMap = qgNodeIdToScoreObjArrMap;
-      let hasScores = true;
-      Object.values(qgNodeIdToScoreObjArrMap).forEach((arr) => {
-        if (!arr.length) {
-          hasScores = false;
         }
       });
-      if (!hasScores) {
-        rankedQgNodeMap = qgNodeIdToCountMap;
+      kgNode.count.forEach((count, qNodeInd) => {
+        if (count > 0) {
+          qgNodeIdToCountMap[qgNodeIndToIdMap[qNodeInd]].push({
+            count, id: kgNode.id,
+          });
+        }
+      });
+    });
+
+    let rankedQgNodeMap = qgNodeIdToScoreObjArrMap;
+    let hasScores = true;
+    Object.values(qgNodeIdToScoreObjArrMap).forEach((arr) => {
+      if (!arr.length) {
+        hasScores = false;
       }
+    });
+    if (!hasScores) {
+      rankedQgNodeMap = qgNodeIdToCountMap;
+    }
 
-      // Now sort for each qNode, by aggScore and retain a max of Nj nodes for each qNodeId
-      let extraNumNodes = 0; // Increment if any qNodeId utilizes less than Nj nodes
-      let unselectedScoreObjArrMap = []; // Array of { scoreVector, aggScore, kGNodeId } objects that were not selected
-      Object.keys(rankedQgNodeMap).forEach((qGraphNodeId) => {
-        rankedQgNodeMap[qGraphNodeId] = _.uniqBy(rankedQgNodeMap[qGraphNodeId], (el) => el.id); // Remove dup nodes
-        rankedQgNodeMap[qGraphNodeId] = _.reverse(_.sortBy(rankedQgNodeMap[qGraphNodeId], (el) => el.aggScore || el.count));
-        const numQGraphNodes = rankedQgNodeMap[qGraphNodeId].length;
-        if (numQGraphNodes < Nj) {
-          extraNumNodes += Nj - numQGraphNodes;
-        } else {
-          unselectedScoreObjArrMap = unselectedScoreObjArrMap.concat(rankedQgNodeMap[qGraphNodeId].slice(Nj));
-          rankedQgNodeMap[qGraphNodeId] = rankedQgNodeMap[qGraphNodeId].slice(0, Nj);
-        }
-      });
-
-      // Construct list of all nodeIds for final pruned knowledgeGraph
-      let prunedKGNodeIds = [];
-      Object.keys(rankedQgNodeMap).forEach((qGraphNodeId) => {
-        rankedQgNodeMap[qGraphNodeId].forEach((scoreObj) => prunedKGNodeIds.push(scoreObj.id));
-      });
-      const numExtraNodesToGrab = pruneNum - prunedKGNodeIds.length;
-      // If extraNodes available to be populated, sort unselectedScoreObjArrMap and
-      // pick max remaining nodes to pick and add their ids to selectedNodeIdSet
-      // TODO: This step can result in all extra nodes from a single qNode that has high AggScore (eg node6 in message_test.json)
-      if (numExtraNodesToGrab > 0) {
-        unselectedScoreObjArrMap = _.uniqBy(unselectedScoreObjArrMap, (el) => el.id);
-        unselectedScoreObjArrMap = _.reverse(_.sortBy(unselectedScoreObjArrMap, (el) => el.aggScore));
-        prunedKGNodeIds = prunedKGNodeIds.concat(unselectedScoreObjArrMap.slice(0, numExtraNodesToGrab).map((el) => el.id));
+    // Now sort for each qNode, by aggScore and retain a max of Nj nodes for each qNodeId
+    let extraNumNodes = 0; // Increment if any qNodeId utilizes less than Nj nodes
+    let unselectedScoreObjArrMap = []; // Array of { scoreVector, aggScore, kGNodeId } objects that were not selected
+    Object.keys(rankedQgNodeMap).forEach((qGraphNodeId) => {
+      rankedQgNodeMap[qGraphNodeId] = _.uniqBy(rankedQgNodeMap[qGraphNodeId], (el) => el.id); // Remove dup nodes
+      rankedQgNodeMap[qGraphNodeId] = _.reverse(_.sortBy(rankedQgNodeMap[qGraphNodeId], (el) => el.aggScore || el.count));
+      const numQGraphNodes = rankedQgNodeMap[qGraphNodeId].length;
+      if (numQGraphNodes < Nj) {
+        extraNumNodes += Nj - numQGraphNodes;
+      } else {
+        unselectedScoreObjArrMap = unselectedScoreObjArrMap.concat(rankedQgNodeMap[qGraphNodeId].slice(Nj));
+        rankedQgNodeMap[qGraphNodeId] = rankedQgNodeMap[qGraphNodeId].slice(0, Nj);
       }
+    });
 
-      // Construct prunedKgNodeList
-      const prunedKgNodeList = prunedKGNodeIds.map((kgNodeId) => kg.nodes[idToIndMaps.kgNodeMap.get(kgNodeId)]);
-      const prunedKgNodeIdSet = new Set(prunedKgNodeList.map((node) => node.id));
-      // Construct pruned edges from original KG-graph
-      const prunedKgEdgeList = kg.edges.filter((edge) => {
-        if (prunedKgNodeIdSet.has(edge.source_id) && prunedKgNodeIdSet.has(edge.target_id)) {
-          return true;
-        }
-        return false;
-      });
+    // Construct list of all nodeIds for final pruned knowledgeGraph
+    let prunedKGNodeIds = [];
+    Object.keys(rankedQgNodeMap).forEach((qGraphNodeId) => {
+      rankedQgNodeMap[qGraphNodeId].forEach((scoreObj) => prunedKGNodeIds.push(scoreObj.id));
+    });
+    const numExtraNodesToGrab = pruneNum - prunedKGNodeIds.length;
+    // If extraNodes available to be populated, sort unselectedScoreObjArrMap and
+    // pick max remaining nodes to pick and add their ids to selectedNodeIdSet
+    // TODO: This step can result in all extra nodes from a single qNode that has high AggScore (eg node6 in message_test.json)
+    if (numExtraNodesToGrab > 0) {
+      unselectedScoreObjArrMap = _.uniqBy(unselectedScoreObjArrMap, (el) => el.id);
+      unselectedScoreObjArrMap = _.reverse(_.sortBy(unselectedScoreObjArrMap, (el) => el.aggScore));
+      prunedKGNodeIds = prunedKGNodeIds.concat(unselectedScoreObjArrMap.slice(0, numExtraNodesToGrab).map((el) => el.id));
+    }
 
-      const prunedGraph = {
-        nodes: prunedKgNodeList,
-        edges: prunedKgEdgeList,
-      };
+    // Construct prunedKgNodeList
+    const prunedKgNodeList = prunedKGNodeIds.map((kgNodeId) => kg.nodes[idToIndMaps.kgNodeMap.get(kgNodeId)]);
+    const prunedKgNodeIdSet = new Set(prunedKgNodeList.map((node) => node.id));
+    // Construct pruned edges from original KG-graph
+    const prunedKgEdgeList = kg.edges.filter((edge) => {
+      if (prunedKgNodeIdSet.has(edge.source_id) && prunedKgNodeIdSet.has(edge.target_id)) {
+        return true;
+      }
+      return false;
+    });
 
-      // Now set correct type for nodes by going through answers and
-      // allowing for majority vote across all answers for the type
-      const qNodes = qg.nodes;
-      const qNodeBindings = qNodes.map((q) => q.id);
+    const prunedGraph = {
+      nodes: prunedKgNodeList,
+      edges: prunedKgEdgeList,
+    };
 
-      prunedGraph.nodes.forEach((node) => {
-        if ((('type' in node) && Array.isArray(node.type)) || (!('type' in node) && ('labels' in node))) {
-          // if a prunedGraph node doesn't have a type
-          // We will look through all answers
-          // We will count the number of times is used in each qNode
-          // Then take the max to pick the best one
-          // The type is then the type of that qNode
-          const qNodeCounts = qNodeBindings.map(() => 0);
+    // Now set correct type for nodes by going through answers and
+    // allowing for majority vote across all answers for the type
+    const qNodes = qg.nodes;
+    const qNodeBindings = qNodes.map((q) => q.id);
 
-          results.forEach((a) => {
-            // Go through answers and look for this node
-            a.node_bindings.forEach((nodeBinding) => {
-              const theseIds = nodeBinding.kg_id;
-              if (Array.isArray(theseIds)) {
-                // This answer has a set of nodes for this binding
-                if (theseIds.includes(node.id)) {
-                  // The set contains this id
-                  qNodeCounts[qNodeBindings.indexOf(nodeBinding.qg_id)] += 1;
-                }
-              } else if (theseIds === node.id) {
-                // This answer lists this node as qNode: key
+    prunedGraph.nodes.forEach((node) => {
+      if ((('type' in node) && Array.isArray(node.type)) || (!('type' in node) && ('labels' in node))) {
+        // if a prunedGraph node doesn't have a type
+        // We will look through all answers
+        // We will count the number of times is used in each qNode
+        // Then take the max to pick the best one
+        // The type is then the type of that qNode
+        const qNodeCounts = qNodeBindings.map(() => 0);
+
+        results.forEach((a) => {
+          // Go through answers and look for this node
+          a.node_bindings.forEach((nodeBinding) => {
+            const theseIds = nodeBinding.kg_id;
+            if (Array.isArray(theseIds)) {
+              // This answer has a set of nodes for this binding
+              if (theseIds.includes(node.id)) {
+                // The set contains this id
                 qNodeCounts[qNodeBindings.indexOf(nodeBinding.qg_id)] += 1;
               }
-            });
-          });
-          // See what question node this was mapped to most
-          const maxCounts = qNodeCounts.reduce((m, val) => Math.max(m, val));
-          const qNodeIndex = qNodeCounts.indexOf(maxCounts);
-
-          // Use that numQgNodes Nodes Type
-          node.type = qNodes[qNodeIndex].type;
-          if (node.type === 'named_thing') { // we don't actually want any named_things
-            let kgNodeType = getKgNode(node.id).type;
-            if (!Array.isArray(kgNodeType)) { // so the type will always be an array
-              kgNodeType = [kgNodeType];
+            } else if (theseIds === node.id) {
+              // This answer lists this node as qNode: key
+              qNodeCounts[qNodeBindings.indexOf(nodeBinding.qg_id)] += 1;
             }
-            node.type = kgNodeType;
-          }
-        }
-      });
+          });
+        });
+        // See what question node this was mapped to most
+        const maxCounts = qNodeCounts.reduce((m, val) => Math.max(m, val));
+        const qNodeIndex = qNodeCounts.indexOf(maxCounts);
 
-      return prunedGraph;
-    }
-    return {};
+        // Use that numQgNodes Nodes Type
+        node.type = qNodes[qNodeIndex].type;
+        if (node.type === 'named_thing') { // we don't actually want any named_things
+          let kgNodeType = getKgNode(node.id).type;
+          if (!Array.isArray(kgNodeType)) { // so the type will always be an array
+            kgNodeType = [kgNodeType];
+          }
+          node.type = kgNodeType;
+        }
+      }
+    });
+
+    return prunedGraph;
   }
 
   // Returns formatted answerset data for tabular display
