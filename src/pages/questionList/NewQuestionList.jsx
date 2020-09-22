@@ -1,6 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import Box from '@material-ui/core/Box';
+import Typography from '@material-ui/core/Typography';
+
+import { green, red } from '@material-ui/core/colors';
+
+import EditIcon from '@material-ui/icons/Edit';
+import CheckIcon from '@material-ui/icons/Check';
+import ClearIcon from '@material-ui/icons/Clear';
+
+import QuestionTableRow from './subComponents/QuestionTableRow.jsx';
 
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -11,73 +21,87 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 
-import Loading from '../../components/loading/Loading';
-import EmptyTable from '../../components/shared/emptyTableRows/EmptyTable';
-import API from '../../API';
+import Loading from '@/components/loading/Loading';
+import EmptyTable from '@/components/shared/emptyTableRows/EmptyTable';
+
+import API from '@/API';
 
 import './newQuestionList.css';
 
-export default function NewQuestionList({ user }) {
-  const [questions, updateQuestions] = useState([]);
+import UserContext from '@/user';
+
+import { formatDateTimeNicely } from '@/utils/cache';
+
+export default function NewQuestionList() {
+  const [myQuestions, updateMyQuestions] = useState([]);
+  const [publicQuestions, updatePublicQuestions] = useState([]);
   const [loading, toggleLoading] = useState(true);
   const [page, updatePage] = useState(0);
   const [rowsPerPage, updateRowsPerPage] = useState(5);
 
-  useEffect(() => {
-    let token = null;
-    if (user) {
-      token = user.id_token;
-    }
-    API.getQuestions(token)
-      .then((res) => {
-        console.log(res);
-        if (res.status == 'error') {
-          return;
-        }
-        updateQuestions(res);
-        toggleLoading(false);
-      })
-      .catch(() => {
-        toggleLoading(false);
-      });
-  }, [user]);
+  const user = useContext(UserContext);
+
+  async function fetchQuestions() {
+    let questions;
+    try {
+     let response  = await API.getQuestions(user.id_token);
+     questions = JSON.parse(response);
+    } catch {}
+
+    if(!Array.isArray(questions))
+      return;
+
+    // TODO: there might be a new route that will get just questions
+    questions = questions.filter((question) => !question.parent);
+
+    updateMyQuestions(     questions.filter((question) => question.owned));
+    updatePublicQuestions( questions.filter((question) => !question.owned));
+
+    toggleLoading(false);
+  }
+
+  useEffect(() => { fetchQuestions() }, [user]);
+
   return (
     <>
-      <h1>
+
+    <Box my={4}>
+      <Typography variant="h3">
         Robokop Question Library
-        <br />
-        {!loading && (
-          <small>
-            {questions.length} question{questions.length !== 1 ? 's have' : ' has'} been asked using Robokop.
-          </small>
-        )}
-      </h1>
-      {!loading ? (
+      </Typography>
+    </Box>
+
+	 { loading ? <Loading /> : ( <>
+
+     {/* Only show "My Questions" if the user is signed in */}
+
+     { !myQuestions.length ? "" : ( <>
+        <Box my={3}>
+          <Typography variant="h4">
+            My Questions
+          </Typography>
+        </Box>
+
         <Paper id="questionListContainer">
           <TableContainer>
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Question ID</TableCell>
+                  <TableCell>Question Name</TableCell>
+                  <TableCell>Has Answers</TableCell>
+                  <TableCell>Visibility</TableCell>
+                  <TableCell>Created</TableCell>
+                  <TableCell>Edit</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {questions.length ? (
-                  <>
-                    {questions
-                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                      .map((question) => (
-                        <TableRow key={question.id}>
-                          <TableCell scope="row">
-                            <Link to={`/question/${question.id}`}>
-                              {question.id}
-                            </Link>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                  </>
-                ) : (
-                  <EmptyTable numRows={5} numCells={1} />
+                {myQuestions
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((question) => (
+                      <QuestionTableRow 
+                        key={question.id}
+                        question={question} 
+                        onQuestionUpdated={ () => fetchQuestions() } />)
                 )}
               </TableBody>
             </Table>
@@ -85,7 +109,7 @@ export default function NewQuestionList({ user }) {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={questions.length}
+            count={myQuestions.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onChangePage={(e, newPage) => updatePage(newPage)}
@@ -95,9 +119,52 @@ export default function NewQuestionList({ user }) {
             }}
           />
         </Paper>
-      ) : (
-        <Loading />
-      )}
-    </>
-  );
+     </>)}
+
+     {/* Always show public questions */}
+      <Box my={3}>
+        <Typography variant="h4">
+          Public Questions
+        </Typography>
+      </Box>
+
+      <Paper id="questionListContainer">
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Question Name</TableCell>
+                <TableCell>Has Answers</TableCell>
+                <TableCell>Created</TableCell>
+                <TableCell>View Details</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {publicQuestions
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((question) => (
+                      <QuestionTableRow 
+                        key={question.id}
+                        question={question} 
+                        onQuestionUpdated={ fetchQuestions } />)
+                  )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={publicQuestions.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={(e, newPage) => updatePage(newPage)}
+          onChangeRowsPerPage={(e) => {
+            updateRowsPerPage(parseInt(e.target.value, 10));
+            updatePage(0);
+          }}
+        />
+      </Paper>
+
+    </>)}
+  </>);
 }
