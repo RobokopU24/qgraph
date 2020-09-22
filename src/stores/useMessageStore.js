@@ -150,12 +150,16 @@ export default function useMessageStore() {
             if (Array.isArray(nodeBinding.kg_id)) {
               const ind = nodeBinding.kg_id.indexOf(kgNode.id);
               if (ind > -1) {
+                // set kg node level for heirarchical graph
+                node.level = idToIndMaps.qgNodeMap.get(nodeBinding.qg_id);
                 kgNode.count[idToIndMaps.qgNodeMap.get(nodeBinding.qg_id)] += 1;
                 if (ans.score !== undefined) {
                   kgNode.scoreVector[idToIndMaps.qgNodeMap.get(nodeBinding.qg_id)] += ans.score;
                 }
               }
             } else if (nodeBinding.kg_id === kgNode.id) {
+              // set kg node level for heirarchical graph
+              node.level = idToIndMaps.qgNodeMap.get(nodeBinding.qg_id);
               kgNode.count[idToIndMaps.qgNodeMap.get(nodeBinding.qg_id)] += 1;
               if (ans.score !== undefined) {
                 kgNode.scoreVector[idToIndMaps.qgNodeMap.get(nodeBinding.qg_id)] += ans.score;
@@ -276,8 +280,6 @@ export default function useMessageStore() {
           // See what question node this was mapped to most
           const maxCounts = qNodeCounts.reduce((m, val) => Math.max(m, val));
           const qNodeIndex = qNodeCounts.indexOf(maxCounts);
-          // level is added to let the user display the graph hierarchically
-          node.level = qNodeIndex;
 
           // Use that numQgNodes Nodes Type
           node.type = qNodes[qNodeIndex].type;
