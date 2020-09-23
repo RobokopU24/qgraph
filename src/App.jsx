@@ -15,11 +15,15 @@ import Answers from './pages/Answers';
 import Header from './components/header/Header';
 import Footer from './components/footer/Footer';
 
+import { ThemeProvider } from '@material-ui/core/styles';
+import theme from './theme';
+
 export default function App() {
   const [user, setUser] = useState(null);
   const isSignedIn = Boolean(user && user.username);
   return (
     <div id="pageContainer">
+      <ThemeProvider theme={theme}>
       <Header user={user} setUser={setUser} />
       <div id="contentContainer">
         <Switch>
@@ -58,6 +62,7 @@ export default function App() {
         </Switch>
       </div>
       <Footer />
+      </ThemeProvider>
     </div>
   );
 }
