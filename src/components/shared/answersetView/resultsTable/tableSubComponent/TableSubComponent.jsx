@@ -21,10 +21,11 @@ export const answersetSubComponentEnum = {
 
 export default function TableSubComponent(props) {
   const {
-    data, messageStore, activeButton, setActiveButton,
+    data, messageStore,
   } = props;
   const [nodeId, setNodeId] = useState(null);
   const [rowData, updateRowData] = useState({});
+  const [activeSubComponentButton, setActiveSubComponentButton] = useState(answersetSubComponentEnum.graph);
 
   // Method that updates local mobx state with activeButton and nodeId based on props
   function syncPropsWithState() {
@@ -40,9 +41,9 @@ export default function TableSubComponent(props) {
     syncPropsWithState();
   }, []);
 
-  const isJsonActive = activeButton === answersetSubComponentEnum.json;
-  const isGraphActive = activeButton === answersetSubComponentEnum.graph;
-  const isMetadataActive = activeButton === answersetSubComponentEnum.metadata;
+  const isJsonActive = activeSubComponentButton === answersetSubComponentEnum.json;
+  const isGraphActive = activeSubComponentButton === answersetSubComponentEnum.graph;
+  const isMetadataActive = activeSubComponentButton === answersetSubComponentEnum.metadata;
   return (
     <div id="tableSubComponentBackground">
       <div id="tableSubComponentContainer">
@@ -54,7 +55,7 @@ export default function TableSubComponent(props) {
           <Button
             className={isJsonActive ? 'activeSubComponentButton' : ''}
             style={{ textAlign: 'left' }}
-            onClick={() => setActiveButton(answersetSubComponentEnum.json)}
+            onClick={() => setActiveSubComponentButton(answersetSubComponentEnum.json)}
           >
             <span className="valign-center">
               <FaFileCode />
@@ -64,7 +65,7 @@ export default function TableSubComponent(props) {
           <Button
             className={isGraphActive ? 'activeSubComponentButton' : ''}
             style={{ textAlign: 'left' }}
-            onClick={() => setActiveButton(answersetSubComponentEnum.graph)}
+            onClick={() => setActiveSubComponentButton(answersetSubComponentEnum.graph)}
           >
             <div className="valign-center">
               <IoIosGitNetwork />
@@ -74,7 +75,7 @@ export default function TableSubComponent(props) {
           <Button
             className={isMetadataActive ? 'activeSubComponentButton' : ''}
             style={{ textAlign: 'left' }}
-            onClick={() => setActiveButton(answersetSubComponentEnum.metadata)}
+            onClick={() => setActiveSubComponentButton(answersetSubComponentEnum.metadata)}
           >
             <span className="valign-center">
               <FaThList />
