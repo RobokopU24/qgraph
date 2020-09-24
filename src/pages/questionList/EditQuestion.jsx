@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -9,8 +9,22 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 
-export default function EditQuestion({ question, save }) {
+import LinkIcon from '@material-ui/icons/Link';
+import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
+import ShareIcon from '@material-ui/icons/Share';
+import DescriptionIcon from '@material-ui/icons/Description';
+
+import API from '@/API';
+import UserContext from '@/user';
+
+export default function EditQuestion({ question, onQuestionUpdated }) {
   const [newQuestion, updateNewQuestion] = useState(question);
+  const user = useContext(UserContext);
+
+  function save() {
+    API.updateQuestionFields(newQuestion, user.id_token);
+    onQuestionUpdated();
+  }
 
   return (
   <Box mx={1}>
@@ -40,9 +54,60 @@ export default function EditQuestion({ question, save }) {
       <Button
         variant="contained"
         color="primary"
-        onClick={ () => save(newQuestion) }>
+        onClick={ () => save() }>
         Save
       </Button>
     </Box>
+
+    <Box mt={6} mb={4}>
+      <Typography variant="h4">
+        Actions
+      </Typography>
+    </Box>
+
+    <Box my={2}>
+      <Button
+        startIcon={<LinkIcon />}
+        variant="contained"
+        size="large"
+        color="secondary"
+        onClick={ () => 0 }>
+        Get Shareable Link
+      </Button>
+    </Box>
+
+    <Box my={2}>
+      <Button
+        startIcon={<DeleteOutlineIcon />}
+        variant="contained"
+        size="large"
+        color="secondary"
+        onClick={ () => 0 }>
+        Delete
+      </Button>
+    </Box>
+
+    <Box my={2}>
+      <Button
+        startIcon={<ShareIcon />}
+        variant="contained"
+        size="large"
+        color="secondary"
+        onClick={ () => 0 }>
+        Fork
+      </Button>
+    </Box>
+
+    <Box my={2}>
+      <Button
+        startIcon={<DescriptionIcon />}
+        variant="contained"
+        size="large"
+        color="secondary"
+        onClick={ () => 0 }>
+        Download JSON
+      </Button>
+    </Box>
+
   </Box>)
 }

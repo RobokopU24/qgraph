@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -13,9 +13,12 @@ import googleIcon from '../../../public/images/btn_google_light_normal_ios.svg';
 
 import './header.css';
 
-export default function Header(props) {
-  const { user, setUser } = props;
+import UserContext from '@/user';
+
+export default function Header({ setUser }) {
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const user = useContext(UserContext);
 
   function signInSuccess(googleUser) {
     const username = googleUser.getBasicProfile().Ad;

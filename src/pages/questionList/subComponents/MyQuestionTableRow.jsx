@@ -22,7 +22,7 @@ import { green, red } from '@material-ui/core/colors';
 
 import EditQuestion from '../EditQuestion';
 
-export default function MyQuestionTableRow({ question, save }) {
+export default function MyQuestionTableRow({ question, onQuestionUpdated }) {
   const [showModal, toggleShowModal] = useState(false);
 
   function openModal(e) {
@@ -77,7 +77,7 @@ export default function MyQuestionTableRow({ question, save }) {
           </Box>
         </DialogTitle>
         <DialogContent>
-          <EditQuestion question={question} save={save} />
+          <EditQuestion question={question} onQuestionUpdated={onQuestionUpdated} />
         </DialogContent>
       </Dialog>
     </TableRow>

@@ -18,11 +18,14 @@ import Footer from './components/footer/Footer';
 import { ThemeProvider } from '@material-ui/core/styles';
 import theme from './theme';
 
+import UserContext from '@/user';
+
 export default function App() {
   const [user, setUser] = useState(null);
   const isSignedIn = Boolean(user && user.username);
   return (
     <div id="pageContainer">
+      <UserContext.Provider value={user}>
       <ThemeProvider theme={theme}>
       <Header user={user} setUser={setUser} />
       <div id="contentContainer">
@@ -63,6 +66,7 @@ export default function App() {
       </div>
       <Footer />
       </ThemeProvider>
+      </UserContext.Provider>
     </div>
   );
 }
