@@ -1,4 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
+import { useHistory } from "react-router-dom";
+
+import { DataGrid } from '@material-ui/data-grid';
 
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -17,7 +20,11 @@ import DescriptionIcon from '@material-ui/icons/Description';
 import API from '@/API';
 import UserContext from '@/user';
 
+import { formatDateTimeNicely } from '@/utils/cache';
+
 export default function EditQuestion({ question, onQuestionUpdated }) {
+  let history = useHistory();
+
   const [newQuestion, updateNewQuestion] = useState(question);
   const user = useContext(UserContext);
 
@@ -26,14 +33,42 @@ export default function EditQuestion({ question, onQuestionUpdated }) {
     onQuestionUpdated();
   }
 
+  const [historicAnswers, updateHistoricAnswers] = useState([]);
+
+  async function fetchHistoricAnswers() {
+    let answers;
+    try {
+      answers = await API.getAnswersByQ(question.id, user.id_token);
+    } catch(err) {
+      console.log("Failed to fetch questions")
+    }
+    if(Array.isArray(answers))
+      // Spread metadata object so that we don't have nested keys 
+      // when rendering in DataGrid
+      updateHistoricAnswers(answers.map( (a) => ({ ...a.metadata, ...a }) ));
+  }
+
+  useEffect(() => { fetchHistoricAnswers() }, [user]);
+
   return (
   <Box mx={1}>
-    <Box mb={4}>
+
+    <Box my={3} width={1/2}>
+      <TextField 
+        fullWidth
+        value={newQuestion.metadata.name}
+        onChange={(e) => updateNewQuestion({...newQuestion, metadata: {...newQuestion.metadata, name: e.target.value} }) }
+        InputProps={{ readOnly: !question.owned }}
+        label="Name" variant="outlined" />
+    </Box>
+
+    <Box my={4}>
       <FormControl>
         <InputLabel htmlFor="visibility-select">Visibility</InputLabel>
         <Select
             id="visibility-select" 
             value={newQuestion.visibility} 
+            inputProps={{ readOnly: !question.owned }}
             onChange={(e) => updateNewQuestion({...newQuestion, visibility: e.target.value}) } >
           <MenuItem value={1}>Private</MenuItem>
           <MenuItem value={2}>Shareable</MenuItem>
@@ -42,22 +77,16 @@ export default function EditQuestion({ question, onQuestionUpdated }) {
       </FormControl>
     </Box>
 
-    <Box my={2} width={1/2}>
-      <TextField 
-        fullWidth
-        value={newQuestion.metadata.name}
-        onChange={(e) => updateNewQuestion({...newQuestion, metadata: {...newQuestion.metadata, name: e.target.value} }) }
-        label="Name" variant="outlined" />
-    </Box>
-
-    <Box my={4}>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={ () => save() }>
-        Save
-      </Button>
-    </Box>
+    { question.owned && 
+      <Box my={4}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={ () => save() }>
+          Save
+        </Button>
+      </Box>
+    }
 
     <Box mt={6} mb={4}>
       <Typography variant="h4">
@@ -76,6 +105,7 @@ export default function EditQuestion({ question, onQuestionUpdated }) {
       </Button>
     </Box>
 
+    { question.owned && 
     <Box my={2}>
       <Button
         startIcon={<DeleteOutlineIcon />}
@@ -86,6 +116,7 @@ export default function EditQuestion({ question, onQuestionUpdated }) {
         Delete
       </Button>
     </Box>
+    }
 
     <Box my={2}>
       <Button
@@ -108,6 +139,27 @@ export default function EditQuestion({ question, onQuestionUpdated }) {
         Download JSON
       </Button>
     </Box>
+
+    <Box mt={6} mb={4}>
+      <Typography variant="h4">
+        Answers
+      </Typography>
+    </Box>
+
+    <DataGrid 
+      onRowClick={ (param) => history.push(`/answer/${param.id}`) }
+      autoHeight={true}
+      justify="center"
+      columns={[
+        { field: 'id', hide: true },
+        { field: 'created_at', headerName: 'Date', width: '50%',
+          valueGetter: (params) => formatDateTimeNicely(params.value) },
+        { field: 'status', headerName: 'Status', width: '50%' },
+      ]}
+      rows={historicAnswers} />
+
+
+    <Box height={100} />
 
   </Box>)
 }
