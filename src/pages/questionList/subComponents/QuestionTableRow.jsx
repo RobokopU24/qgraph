@@ -87,7 +87,7 @@ export default function MyQuestionTableRow({ question, onQuestionUpdated }) {
           </Box>
         </DialogTitle>
         <DialogContent>
-          <EditQuestion question={question} onQuestionUpdated={onQuestionUpdated} />
+          <EditQuestion question={question} onQuestionUpdated={ onQuestionUpdated } />
         </DialogContent>
       </Dialog>
     </TableRow>

@@ -84,7 +84,7 @@ export default function EditQuestion({ question, onQuestionUpdated }) {
         <Button
           variant="contained"
           color="primary"
-          onClick={ () => save() }>
+          onClick={ save }>
           Save
         </Button>
       </Box>
