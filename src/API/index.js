@@ -17,30 +17,75 @@ async function baseRequest(path, method, body, auth) {
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${auth}`,
     },
   };
-
-  console.log("Request Config:");
-  console.log(config);
+  if(auth)
+    config.headers.Authorization = `Bearer ${auth}`;
 
   let response = await fetch(base_url + path, config);
-
-  const text = await response.text();
-  console.log("Response body:");
-  console.log(text);
-
-  return text;
+  return response.json();
 }
 
-export default {
+let routes = {
   async getQuestions(token) {
     return baseRequest('document?has_parent=false', 'GET', null, token);
   },
-  async updateQuestion(newQuestion, token) {
-    return baseRequest(`document/${newQuestion.id}`, 'PUT', newQuestion, token);
+
+  async getQuestion(question_id, token) {
+    return baseRequest(`document/${question_id}`, 'GET', null, token);
   },
   async getAnswersByQ(question_id, token) {
     return baseRequest(`document/${question_id}/children`, 'GET', null, token);
   },
+
+  async getQuestionData(question_id, token) {
+	  let config = {
+		  method: 'GET',
+		  credentials: "include",
+		  headers: {},
+	  }
+	  if(token)
+		config.headers.Authorization = `Bearer ${token}`;
+	  let response = await fetch(base_url + `document/${question_id}/data`, config);
+	  return response.text();
+  },
+  async setQuestionData(question_id, newData, token) {
+	  let config = {
+		  method: 'PUT',
+		  credentials: "include",
+		  body: newData,
+		  headers: {
+			  Authorization: `Bearer ${token}`,
+		  },
+	  }
+	  let response = await fetch(base_url + `document/${question_id}/data`, config);
+	  return response.json();
+  },
+
+  async createQuestion(question, token) {
+    return baseRequest(`document`, 'POST', question, token);
+  },
+  async updateQuestion(question, token) {
+    return baseRequest(`document/${question.id}`, 'PUT', question, token);
+  },
+  async deleteQuestion(question_id, token) {
+    return baseRequest(`document/${question_id}`, 'DELETE', newQuestion, token);
+  },
+
 }
+
+// Some of the API routes have the same method signatures for questions and answers.
+// 
+// It makes sense to expose these methods separately 
+// so when they are called in UI code it is clear
+// whether the result will be an answer or question
+routes = {...routes,
+  getAnswer:     routes.getQuestion,
+  getAnswerData: routes.getQuestionData,
+
+  createAnswer:  routes.createQuestion,
+  updateAnswer:  routes.updateQuestion,
+  deleteAnswer:  routes.deleteQuestion,
+}
+
+export default routes;
