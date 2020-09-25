@@ -1,87 +1,43 @@
-import axios from 'axios';
+const protocol = 'http';
+const host = process.env.ROBOKACHE_HOST || 'lvh.me';
+const port = 8080;
 
-function errorHandling(err) {
-  /* eslint-disable no-console */
-  let errorText = '';
-  if (err.response) {
-    console.log('Error Status', err.response.status);
-    console.log('Error Downloading', err.response.data);
-    errorText = err.response.data;
-  } else if (err.request) {
-    console.log('No response was received', err.request);
-    errorText = 'There was no response from the server.';
-  } else {
-    console.log('Unknown Error', err.message);
-    errorText = err.message;
-  }
-  return errorText;
-  /* eslint-enable no-console */
+/**
+ * URL Maker
+ * @param {string} ext extension to append to url
+ */
+const base_url = `${protocol}://${host}:${port}/api/`;
+
+// Base request method for all JSON endpoints
+async function baseRequest(path, method, body, auth) {
+  let config = {
+    method: method,
+    body: body && JSON.stringify(body),
+    credentials: "include",
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${auth}`,
+    },
+  };
+
+  console.log("Request Config:");
+  console.log(config);
+
+  let response = await fetch(base_url + path, config);
+
+  const text = await response.text();
+  console.log("Response body:");
+  console.log(text);
+
+  return JSON.parse(text);
 }
 
-const routes = {
-  getUser: () => new Promise((resolve, reject) => {
-    axios.get('/api/user')
-      .then((res) => {
-        console.log('user res', res);
-        resolve(res.data);
-      })
-      .catch((err) => {
-        const errorText = errorHandling(err);
-        reject(errorText);
-      });
-  }),
-  setUser: (token, username) => axios.post('/api/user', { token, username }),
-  getAllQuestions: () => new Promise((resolve, reject) => {
-    axios.get('/api/questions')
-      .then((res) => {
-        console.log('Questions', res);
-        resolve(res);
-      })
-      .catch((err) => {
-        const errorText = errorHandling(err);
-        reject(errorText);
-      });
-  }),
-  createQuestion: (question, token) => new Promise((resolve, reject) => {
-    const config = {
-      method: 'get',
-      url: '/api/questions',
-      headers: {},
-    };
-    if (token) {
-      config.headers.authorization = `Bearer ${token}`;
-    }
-    axios.request({
-      method: 'post',
-      url: '/api/questions',
-      data: question,
-    })
-      .then((res) => {
-        resolve(res);
-      })
-      .catch((err) => {
-        const errorText = errorHandling(err);
-        reject(errorText);
-      });
-  }),
-  getQuestions: (token) => new Promise((resolve, reject) => {
-    const config = {
-      method: 'get',
-      url: '/api/questions',
-      headers: {},
-    };
-    if (token) {
-      config.headers.authorization = `Bearer ${token}`;
-    }
-    axios.request(config)
-      .then((res) => {
-        resolve(res);
-      })
-      .catch((err) => {
-        const errorText = errorHandling(err);
-        reject(errorText);
-      });
-  }),
-};
-
-export default routes;
+export default {
+  async getQuestions(token) {
+    return baseRequest('document?has_parent=false', 'GET', null, token);
+  },
+  async getAnswersByQ(question_id, token) {
+    return baseRequest(`document/${question_id}/children`, 'GET', null, token);
+  },
+}
