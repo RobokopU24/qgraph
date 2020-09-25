@@ -8,7 +8,7 @@ const port = 8080;
  */
 const base_url = `${protocol}://${host}:${port}/api/`;
 
-// Base request method for all JSON endpoints
+// Base request method for all endpoints
 async function baseRequest(path, method, body, auth) {
   let config = {
     method: method,
@@ -30,12 +30,15 @@ async function baseRequest(path, method, body, auth) {
   console.log("Response body:");
   console.log(text);
 
-  return JSON.parse(text);
+  return text;
 }
 
 export default {
   async getQuestions(token) {
     return baseRequest('document?has_parent=false', 'GET', null, token);
+  },
+  async updateQuestion(newQuestion, token) {
+    return baseRequest(`document/${newQuestion.id}`, 'PUT', newQuestion, token);
   },
   async getAnswersByQ(question_id, token) {
     return baseRequest(`document/${question_id}/children`, 'GET', null, token);
