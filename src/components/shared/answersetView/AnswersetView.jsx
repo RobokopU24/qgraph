@@ -4,8 +4,6 @@ import {
   Row, Col, Grid, Tabs, Tab,
 } from 'react-bootstrap';
 
-import QuestionHeader from '../questionHeader/QuestionHeader';
-
 import KnowledgeGraph from '../graphs/KnowledgeGraph';
 import ResultsTable from './resultsTable/ResultsTable';
 import QuestionGraphContainer from '../graphs/QuestionGraphContainer';
@@ -34,9 +32,7 @@ export const answerSetTabEnum = {
  */
 export default function AnswersetView(props) {
   const {
-    messageStore, concepts, question, style, omitHeader, enableQuestionSelect,
-    enableQuestionEdit, callbackQuestionUpdateMeta, callbackQuestionSelect, urlQuestion,
-    callbackAnswersetSelect, urlAnswerset,
+    messageStore, concepts, style,
   } = props;
   const [tabKey, setTabKey] = useState(answerSetTabEnum.answerTable);
 
@@ -64,28 +60,6 @@ export default function AnswersetView(props) {
     <div>
       {hasResults ? (
         <div style={style}>
-          {!omitHeader && (
-            <Row>
-              <Col md={12}>
-                <QuestionHeader
-                  question={question}
-                  answerset={messageStore.message}
-
-                  enableQuestionSelect={enableQuestionSelect}
-                  enableQuestionEdit={enableQuestionEdit}
-                  callbackUpdate={callbackQuestionUpdateMeta}
-                  callbackQuestionSelect={callbackQuestionSelect}
-                  urlQuestion={urlQuestion}
-
-                  callbackAnswersetSelect={callbackAnswersetSelect}
-                  urlAnswerset={urlAnswerset}
-
-                  showDownload
-                  callbackDownload={onDownload}
-                />
-              </Col>
-            </Row>
-          )}
           <QuestionGraphContainer
             messageStore={messageStore}
             concepts={concepts}

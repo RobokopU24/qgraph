@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import shortid from 'shortid';
 import _ from 'lodash';
 
-import CardTypes from '../../../utils/questionNewCardTypes';
 import getNodeTypeColorMap from '../../../utils/colorUtils';
 import entityNameDisplay from '../../../utils/entityNameDisplay';
 
@@ -40,7 +39,7 @@ function defaultNodePreProc(n) {
   }
 
   if ('label' in n) {
-    if (('nodeSpecType' in n) && (n.nodeSpecType === CardTypes.NODETYPE)) {
+    if (('nodeSpecType' in n) && (n.nodeSpecType === 'Node Type')) {
       n.label = entityNameDisplay(n.label);
     }
     // else just keep your label

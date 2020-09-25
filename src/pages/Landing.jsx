@@ -6,7 +6,6 @@ import {
 } from 'react-bootstrap';
 
 import config from '../config.json';
-import PromotedCarousel from '../components/promotedCarousel/PromotedCarousel';
 
 import './simplecss.css';
 
@@ -91,9 +90,6 @@ export default function Landing({ isSignedIn }) {
           )}
         </ButtonToolbar>
       </Jumbotron>
-      {/* <PromotedCarousel
-        appConfig={this.appConfig}
-      /> */}
       <Jumbotron id="landingOptions">
         <h2>Robokop Apps</h2>
         <ListGroup>
@@ -105,47 +101,13 @@ export default function Landing({ isSignedIn }) {
               href="/simple/question"
             />
             <CustomComponent
-              glyph="link"
-              header="Identifier Lookup"
-              text="Provide an identifier and receive all of the other identifiers by which that entity is known, as well as the identifier by which that entity is known in Robokop."
-              href="/simple/synonymize"
-            />
-          </Row>
-          <Row>
-            <CustomComponent
               glyph="import"
               header="Answerset Explorer"
               text="Easily upload JSON files of answersets to view them in Robokop&apos;s graphical interface."
               href="/simple/view"
             />
-            <CustomComponent
-              glyph="fullscreen"
-              header="Expand"
-              text="Build simple one-hop questions and receive ranked results. You can specify returned types, predicates, and edge directionality."
-              href="/simple/expand"
-            />
           </Row>
           <Row>
-            <CustomComponent
-              glyph="random"
-              header="Enrich"
-              text="Provide a list of entities of one type, and receive a list of entities that connect to the input more frequently than would be expected by chance."
-              href="/simple/enriched"
-            />
-            <CustomComponent
-              glyph="duplicate"
-              header="Similarity"
-              text="Perform a Jaccard similarity search in the Robokop knowledge graph, where similarity is calculated over shared nodes. Receive the most similar nodes, along with their similarity scores."
-              href="/simple/similarity"
-            />
-          </Row>
-          <Row>
-            <CustomComponent
-              glyph="list-alt"
-              header="Omnicorp"
-              text="Provide a list of defined identifiers and receive the publications that they share."
-              href="/simple/publications"
-            />
             <CustomComponent
               glyph="screenshot"
               header="Neighborhood"
