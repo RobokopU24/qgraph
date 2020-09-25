@@ -10,7 +10,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
 
-import SubComponent, { answersetSubComponentEnum } from './tableSubComponent/TableSubComponent';
+import SubComponent from './tableSubComponent/TableSubComponent';
 import EmptyTable from '../../emptyTableRows/EmptyTable';
 import AnswersetFilter from './AnswersetFilter';
 
@@ -18,7 +18,6 @@ export default function Table(props) {
   const {
     columns, data, messageStore,
   } = props;
-  const [activeSubComponentButton, setActiveSubComponentButton] = useState(answersetSubComponentEnum.graph);
   const defaultColumn = React.useMemo(() => ({
     minWidth: 500, // minWidth is only used as a limit for resizing
     width: 500, // width is used for both the flex-basis and flex-grow
@@ -125,8 +124,6 @@ export default function Table(props) {
                       <SubComponent
                         data={row.original}
                         messageStore={messageStore}
-                        activeButton={activeSubComponentButton}
-                        setActiveButton={setActiveSubComponentButton}
                       />
                     </td>
                   </tr>

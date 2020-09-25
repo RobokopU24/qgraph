@@ -16,8 +16,7 @@ export default function AnswerTable(props) {
   const { messageStore, concepts } = props;
   const [columns, setColumns] = useState([]);
 
-  const onExpand = useCallback((row, toggleAllRowsExpanded) => {
-    toggleAllRowsExpanded(false);
+  const onExpand = useCallback((row) => {
     row.toggleRowExpanded(!row.isExpanded);
   }, []);
 
@@ -81,8 +80,8 @@ export default function AnswerTable(props) {
       // Make an expander cell
       Header: () => null, // No header
       id: 'expander', // It needs an ID
-      Cell: ({ row, toggleAllRowsExpanded }) => (
-        <IconButton onClick={() => onExpand(row, toggleAllRowsExpanded)}>
+      Cell: ({ row }) => (
+        <IconButton onClick={() => onExpand(row)}>
           {row.isExpanded ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
         </IconButton>
       ),
