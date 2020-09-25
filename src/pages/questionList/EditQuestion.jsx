@@ -29,7 +29,7 @@ export default function EditQuestion({ question, onQuestionUpdated }) {
   const user = useContext(UserContext);
 
   function save() {
-    API.updateQuestionFields(newQuestion, user.id_token);
+    API.updateQuestion(newQuestion, user.id_token);
     onQuestionUpdated();
   }
 
@@ -38,14 +38,16 @@ export default function EditQuestion({ question, onQuestionUpdated }) {
   async function fetchHistoricAnswers() {
     let answers;
     try {
-      answers = await API.getAnswersByQ(question.id, user.id_token);
-    } catch(err) {
-      console.log("Failed to fetch questions")
-    }
-    if(Array.isArray(answers))
-      // Spread metadata object so that we don't have nested keys 
-      // when rendering in DataGrid
-      updateHistoricAnswers(answers.map( (a) => ({ ...a.metadata, ...a }) ));
+      let response = await API.getAnswersByQ(question.id, user.id_token);
+      answers = JSON.parse(response);
+    } catch {}
+
+    if(!Array.isArray(answers))
+      return;
+
+    // Spread metadata object so that we don't have nested keys 
+    // when rendering in DataGrid
+    updateHistoricAnswers(answers.map( (a) => ({ ...a.metadata, ...a }) ));
   }
 
   useEffect(() => { fetchHistoricAnswers() }, [user]);
