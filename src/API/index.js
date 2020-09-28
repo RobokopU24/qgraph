@@ -116,12 +116,14 @@ let baseRoutes = {
 let routes = {
   getQuestion:     baseRoutes.getDocument,
   getQuestionData: baseRoutes.getDocumentData,
+  setQuestionData: baseRoutes.setDocumentData,
   createQuestion:  baseRoutes.createDocument,
   updateQuestion:  baseRoutes.updateDocument,
   deleteQuestion:  baseRoutes.deleteDocument,
 
   getAnswer:     baseRoutes.getDocument,
   getAnswerData: baseRoutes.getDocumentData,
+  setAnswerData: baseRoutes.setDocumentData,
   createAnswer:  baseRoutes.createDocument,
   updateAnswer:  baseRoutes.updateDocument,
   deleteAnswer:  baseRoutes.deleteDocument,
