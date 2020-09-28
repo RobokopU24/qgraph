@@ -47,7 +47,7 @@ async function baseRequest(path, method, body, token) {
 }
 
 let baseRoutes = {
-  async getDocuments(token) {
+  async getDocumentsNoParent(token) {
     return baseRequest('document?has_parent=false', 'GET', null, token);
   },
 
@@ -114,7 +114,7 @@ let routes = {
   updateAnswer:  baseRoutes.updateDocument,
   deleteAnswer:  baseRoutes.deleteDocument,
 
-  getQuestions: baseRoutes.getDocuments,
+  getQuestions: baseRoutes.getDocumentsNoParent,
   getAnswersByQuestion: baseRoutes.getChildrenByDocument,
 }
 
