@@ -4,10 +4,8 @@ import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import _ from 'lodash';
 
-// import AnswersetFilter from './AnswersetFilter';
 import entityNameDisplay from '../../../../utils/entityNameDisplay';
 import getNodeTypeColorMap from '../../../../utils/colorUtils';
-// import getColumnWidth from '../../../../utils/rtColumnWidth';
 import Table from './Table';
 
 import './resultsTable.css';
@@ -29,9 +27,6 @@ export default function AnswerTable(props) {
       if (colSpecObj.isSet) {
         colSpecObj.accessor = (d) => (d[nodeId][0].name ? d[nodeId][0].name : d[nodeId][0].id);
         colSpecObj.style = { cursor: 'pointer', userSelect: 'none' };
-        // cellTextFn returns array of strings to be used for display
-        // in custom Cell renderer. This modularity is so that it can
-        // be re-used in the getColumnWidth() method
         const cellTextFn = (setNodes) => {
           if (!setNodes) {
             return [];
@@ -56,13 +51,8 @@ export default function AnswerTable(props) {
             </span>
           );
         };
-        // colSpecObj.width = getColumnWidth(
-        //   data, colSpecObj.accessor, colSpecObj.Header,
-        //   (setNodes) => `${cellTextFn(setNodes).join(' ')}   `,
-        // );
       } else {
         colSpecObj.accessor = (d) => (d[nodeId][0].name ? d[nodeId][0].name : d[nodeId][0].id);
-        // colSpecObj.width = getColumnWidth(data, colSpecObj.accessor, colSpecObj.Header);
       }
       // this initializes the filter object for all nodes
       colSpecObj.filterable = true;
