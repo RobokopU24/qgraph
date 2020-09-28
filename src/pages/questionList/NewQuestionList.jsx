@@ -31,8 +31,9 @@ export default function NewQuestionList({ user }) {
     API.getQuestions(token)
       .then((res) => {
         console.log(res);
-        if(res.status == 'error')
+        if (res.status == 'error') {
           return;
+        }
         updateQuestions(res);
         toggleLoading(false);
       })
