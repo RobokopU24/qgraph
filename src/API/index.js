@@ -19,57 +19,58 @@ async function baseRequest(path, method, body, auth) {
       'Content-Type': 'application/json',
     },
   };
-  if(auth)
+  if(auth) {
     config.headers.Authorization = `Bearer ${auth}`;
+  }
 
   let response = await fetch(base_url + path, config);
   return response.json();
 }
 
-let routes = {
-  async getQuestions(token) {
+let baseRoutes = {
+  async getDocuments(token) {
     return baseRequest('document?has_parent=false', 'GET', null, token);
   },
 
-  async getQuestion(question_id, token) {
-    return baseRequest(`document/${question_id}`, 'GET', null, token);
+  async getDocument(doc_id, token) {
+    return baseRequest(`document/${doc_id}`, 'GET', null, token);
   },
-  async getAnswersByQ(question_id, token) {
-    return baseRequest(`document/${question_id}/children`, 'GET', null, token);
-  },
-
-  async getQuestionData(question_id, token) {
-	  let config = {
-		  method: 'GET',
-		  credentials: "include",
-		  headers: {},
-	  }
-	  if(token)
-		config.headers.Authorization = `Bearer ${token}`;
-	  let response = await fetch(base_url + `document/${question_id}/data`, config);
-	  return response.text();
-  },
-  async setQuestionData(question_id, newData, token) {
-	  let config = {
-		  method: 'PUT',
-		  credentials: "include",
-		  body: newData,
-		  headers: {
-			  Authorization: `Bearer ${token}`,
-		  },
-	  }
-	  let response = await fetch(base_url + `document/${question_id}/data`, config);
-	  return response.json();
+  async getChildrenByDocument(doc_id, token) {
+    return baseRequest(`document/${doc_id}/children`, 'GET', null, token);
   },
 
-  async createQuestion(question, token) {
-    return baseRequest(`document`, 'POST', question, token);
+  async getDocumentData(doc_id, token) {
+    let config = {
+      method: 'GET',
+      credentials: "include",
+      headers: {},
+    }
+    if(token)
+      config.headers.Authorization = `Bearer ${token}`;
+    let response = await fetch(base_url + `document/${doc_id}/data`, config);
+    return response.text();
   },
-  async updateQuestion(question, token) {
-    return baseRequest(`document/${question.id}`, 'PUT', question, token);
+  async setDocumentData(doc_id, newData, token) {
+    let config = {
+      method: 'PUT',
+      credentials: "include",
+      body: newData,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+    let response = await fetch(base_url + `document/${doc_id}/data`, config);
+    return response.json();
   },
-  async deleteQuestion(question_id, token) {
-    return baseRequest(`document/${question_id}`, 'DELETE', newQuestion, token);
+
+  async createDocument(doc, token) {
+    return baseRequest(`document`, 'POST', doc, token);
+  },
+  async updateDocument(doc, token) {
+    return baseRequest(`document/${doc.id}`, 'PUT', doc, token);
+  },
+  async deleteDocument(doc_id, token) {
+    return baseRequest(`document/${doc_id}`, 'DELETE', newDocument, token);
   },
 
 }
@@ -79,13 +80,20 @@ let routes = {
 // It makes sense to expose these methods separately 
 // so when they are called in UI code it is clear
 // whether the result will be an answer or question
-routes = {...routes,
-  getAnswer:     routes.getQuestion,
-  getAnswerData: routes.getQuestionData,
+let routes = {
+  getQuestion:     baseRoutes.getDocument,
+  getQuestionData: baseRoutes.getDocumentData,
+  createQuestion:  baseRoutes.createDocument,
+  updateQuestion:  baseRoutes.updateDocument,
+  deleteQuestion:  baseRoutes.deleteDocument,
 
-  createAnswer:  routes.createQuestion,
-  updateAnswer:  routes.updateQuestion,
-  deleteAnswer:  routes.deleteQuestion,
+  getAnswer:     baseRoutes.getDocument,
+  getAnswerData: baseRoutes.getDocumentData,
+  createAnswer:  baseRoutes.createDocument,
+  updateAnswer:  baseRoutes.updateDocument,
+  deleteAnswer:  baseRoutes.deleteDocument,
+
+  getAnswersByQuestion: baseRoutes.getChildrenByDocument,
 }
 
 export default routes;
