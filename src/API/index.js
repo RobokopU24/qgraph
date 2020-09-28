@@ -1,4 +1,4 @@
-const axios = require('axios');
+import axios from 'axios';
 
 const protocol = 'http';
 const host = process.env.ROBOKACHE_HOST || 'lvh.me';
@@ -11,39 +11,43 @@ const port = 8080;
 const base_url = `${protocol}://${host}:${port}/api/`;
 
 function handleAxiosError(error) {
-	let errorResponse;
-	if (error.response) {
-		errorResponse = error.response.data;
-		errorResponse.status = "error";
-	} else {
-		// This either means the server is unreachable or there was
-		// some error setting up the request object
-		errorResponse = {
-			message: "An unknown error occured",
-			status: "error"
-		}
-	}
-	return {data: errorResponse};
+  let errorResponse;
+  if (error.response) {
+    errorResponse = error.response.data;
+    errorResponse.status = "error";
+  } else {
+    // This either means the server is unreachable or there was
+    // some error setting up the request object
+    errorResponse = {
+      message: "An unknown error occured",
+      status: "error"
+    }
+  }
+  return errorResponse;
 }
 
 // Base request method for all endpoints
 async function baseRequest(path, method, body, token) {
-	let config = {
-		url: base_url + path,
-		method: method,
-		data: body,
-		withCredentials: true,
-		headers: {
-			'Accept': 'application/json',
-			'Content-Type': 'application/json',
-		},
-	};
-	if (token) {
-		config.headers.Authorization = `Bearer ${token}`;
-	}
+  let config = {
+    url: base_url + path,
+    method: method,
+    data: body,
+    withCredentials: true,
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+  };
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
 
-	let response = await axios(config).catch(handleAxiosError);
-	return response.data;
+  try {
+    let response = await axios(config);
+    return response.data;
+  } catch(error) {
+    return handleAxiosError(error);
+  }
 }
 
 let baseRoutes = {
@@ -59,29 +63,37 @@ let baseRoutes = {
   },
 
   async getDocumentData(doc_id, token) {
-	let config = {
-		url: `${base_url}document/${doc_id}/data`,
-		method: 'GET',
-		withCredentials: true,
-		headers: {},
-	};
+    let config = {
+      url: `${base_url}document/${doc_id}/data`,
+      method: 'GET',
+      withCredentials: true,
+      headers: {},
+    };
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-	}
-    let response = await axios(config).catch(handleAxiosError);
-    return response.data;
+    }
+    try {
+      let response = await axios(config);
+      return response.data;
+    } catch(error) {
+      return handleAxiosError(error);
+    }
   },
   async setDocumentData(doc_id, newData, token) {
-	let config = {
-		url: `${base_url}document/${doc_id}/data`,
-		method: 'PUT',
-		data: newData,
-		withCredentials: true,
-		headers: {},
-	};
+    let config = {
+      url: `${base_url}document/${doc_id}/data`,
+      method: 'PUT',
+      data: newData,
+      withCredentials: true,
+      headers: {},
+    };
     config.headers.Authorization = `Bearer ${token}`;
-    let response = await axios(config).catch(handleAxiosError);
-    return response.data;
+    try {
+      let response = await axios(config);
+      return response.data;
+    } catch(error) {
+      return handleAxiosError(error);
+    }
   },
 
   async createDocument(doc, token) {
