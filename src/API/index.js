@@ -19,7 +19,7 @@ async function baseRequest(path, method, body, auth) {
       'Content-Type': 'application/json',
     },
   };
-  if(auth) {
+  if (auth) {
     config.headers.Authorization = `Bearer ${auth}`;
   }
 
