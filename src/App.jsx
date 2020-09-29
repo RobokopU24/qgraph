@@ -9,8 +9,8 @@ import TermsofService from './pages/TermsofService';
 import SimpleViewer from './pages/SimpleViewer';
 
 import Neighborhood from './pages/neighborhood/Neighborhood';
-import NewQuestionList from './pages/questionList/NewQuestionList';
-import QuestionAnswerViewer from './pages/questionAnswerViewer/QuestionAnswerViewer.jsx';
+import QuestionList from '@/pages/questionList/QuestionList';
+import QuestionAnswerViewer from './pages/QuestionAnswerViewer.jsx';
 
 import Header from './components/header/Header';
 import Footer from './components/footer/Footer';
@@ -43,10 +43,10 @@ export default function App() {
             <Neighborhood />
           </Route>
           <Route path="/questions">
-            <NewQuestionList user={user} />
+            <QuestionList />
           </Route>
           <Route path="/question/:question_id">
-            <QuestionAnswerViewer user={user} />
+            <QuestionAnswerViewer />
           </Route>
           <Route path="/termsofservice">
             <TermsofService />

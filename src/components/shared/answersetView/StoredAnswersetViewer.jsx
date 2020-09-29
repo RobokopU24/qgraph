@@ -3,8 +3,8 @@ import React, { useState, useContext, useEffect } from 'react';
 import Box from '@material-ui/core/Box';
 import Alert from '@material-ui/lab/Alert';
 
+import AnswersetView from './AnswersetView';
 import Loading from '@/components/loading/Loading';
-import AnswersetView from '@/components/shared/answersetView/AnswersetView';
 import useMessageStore from '@/stores/useMessageStore';
 import config from '@/config.json';
 import parseMessage from '@/utils/parseMessage';
@@ -12,7 +12,11 @@ import parseMessage from '@/utils/parseMessage';
 import API from '@/API';
 import UserContext from '@/user';
 
-export default function StoredAnswersetViewer({ question_id, answer_id }) {
+/*
+ * Display an Answerset stored in Robokache
+ * Wrapper around AnswersetView
+ */
+export default function StoredAnswersetView({ question_id, answer_id }) {
   const [loading, toggleLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
 

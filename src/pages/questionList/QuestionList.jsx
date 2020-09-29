@@ -27,13 +27,13 @@ import EmptyTable from '@/components/shared/emptyTableRows/EmptyTable';
 
 import API from '@/API';
 
-import './newQuestionList.css';
+import './questionList.css';
 
 import UserContext from '@/user';
 
 import { formatDateTimeNicely } from '@/utils/cache';
 
-export default function NewQuestionList() {
+export default function QuestionList() {
   const [myQuestions, updateMyQuestions] = useState([]);
   const [publicQuestions, updatePublicQuestions] = useState([]);
   const [loading, toggleLoading] = useState(true);
