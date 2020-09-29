@@ -10,7 +10,7 @@ import SimpleViewer from './pages/SimpleViewer';
 
 import Neighborhood from './pages/neighborhood/Neighborhood';
 import NewQuestionList from './pages/questionList/NewQuestionList';
-import Answers from './pages/Answers';
+import QuestionAnswerViewer from './pages/questionAnswerViewer/QuestionAnswerViewer.jsx';
 
 import Header from './components/header/Header';
 import Footer from './components/footer/Footer';
@@ -46,7 +46,7 @@ export default function App() {
             <NewQuestionList user={user} />
           </Route>
           <Route path="/question/:question_id">
-            <Answers user={user} />
+            <QuestionAnswerViewer user={user} />
           </Route>
           <Route path="/termsofservice">
             <TermsofService />

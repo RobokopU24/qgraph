@@ -39,14 +39,14 @@ export default function MyQuestionTableRow({ question, onQuestionUpdated }) {
   return (
     <TableRow 
       key={question.id}
-      onClick={ () => history.push(`/answer/${question.metadata.firstAnswer}`) }
+      onClick={ () => history.push(`/question/${question.id}`) }
       hover={true} style={{cursor: 'pointer'}} >
 
       <TableCell>
         {question.metadata.name}
       </TableCell>
       <TableCell> 
-        {question.metadata.firstAnswer ? 
+        {question.metadata.hasAnswers ? 
           <CheckIcon style={{ color: green[500] }}/> : 
           <ClearIcon style={{ color: red[500] }}/>
         }
