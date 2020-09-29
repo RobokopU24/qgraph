@@ -5,13 +5,13 @@ import { useParams } from 'react-router-dom';
 // import MenuItem from '@material-ui/core/MenuItem';
 // import InputLabel from '@material-ui/core/InputLabel';
 
+import API from '@/API';
+
 import Loading from '../components/loading/Loading';
 import AnswersetView from '../components/shared/answersetView/AnswersetView';
 import useMessageStore from '../stores/useMessageStore';
 
 import config from '../config.json';
-
-import API from '@/API';
 
 /**
  * Answer viewer
@@ -33,7 +33,7 @@ export default function Answer({ user }) {
 
     let response;
     response = await API.getQuestionData(question_id, token);
-    if (response.status == 'error') {
+    if (response.status === 'error') {
       setErrorMessage('Unable to load question.');
       toggleLoading(false);
       return;
@@ -41,22 +41,22 @@ export default function Answer({ user }) {
     const query_graph = response;
 
     response = await API.getAnswersByQuestion(question_id, token);
-    if (response.status == 'error') {
+    if (response.status === 'error') {
       setErrorMessage('Unable to get answers to question.');
       toggleLoading(false);
       return;
     }
     const answers = response;
     // Pick the first answer
-    if (answers.length == 0) {
+    if (answers.length === 0) {
       setErrorMessage('No answers found.');
       toggleLoading(false);
       return;
     }
 
-    let selected_answer = answers[0];
+    const selected_answer = answers[0];
     response = await API.getAnswerData(selected_answer.id, token);
-    if (response.status == 'error') {
+    if (response.status === 'error') {
       setErrorMessage('Unable to get answer data.');
       toggleLoading(false);
       return;
@@ -70,7 +70,7 @@ export default function Answer({ user }) {
   }
 
   useEffect(() => {
-    fetchQuestionAnswerData() 
+    fetchQuestionAnswerData();
   }, [question_id, user]);
 
   // useEffect(() => {
