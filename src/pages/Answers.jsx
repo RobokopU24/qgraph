@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
 // import FormControl from '@material-ui/core/FormControl';
 // import Select from '@material-ui/core/Select';
 // import MenuItem from '@material-ui/core/MenuItem';
@@ -11,6 +10,8 @@ import AnswersetView from '../components/shared/answersetView/AnswersetView';
 import useMessageStore from '../stores/useMessageStore';
 
 import config from '../config.json';
+
+import API from '@/API';
 
 /**
  * Answer viewer
@@ -24,79 +25,52 @@ export default function Answer({ user }) {
   const [errorMessage, setErrorMessage] = useState('Something went wrong. Check the console for more information.');
   const messageStore = useMessageStore();
 
-  useEffect(() => {
-    if (question_id) {
-      toggleLoading(true);
-      let axiosConfig = {
-        method: 'get',
-        url: `/api/questions/${question_id}`,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      };
-      if (user) {
-        axiosConfig.headers.authorization = `Bearer ${user.id_token}`;
-      }
-      axios.request(axiosConfig)
-        .then((res) => {
-          // console.log('question', res.data);
-          axiosConfig = {
-            method: 'get',
-            url: '/api/answers',
-            params: { question_id },
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          };
-          if (user) {
-            axiosConfig.headers.authorization = `Bearer ${user.id_token}`;
-          }
-          axios.request(axiosConfig)
-            .then((response) => {
-              // console.log('answers', response.data);
-              if (response.data && Array.isArray(response.data)) {
-                axiosConfig = {
-                  method: 'get',
-                  url: `/api/answers/${response.data[0].id}`,
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                };
-                if (user) {
-                  axiosConfig.headers.authorization = `Bearer ${user.id_token}`;
-                }
-                axios.request(axiosConfig)
-                  .then((res3) => {
-                    // console.log('answer', res3.data);
-                    const { knowledge_graph, results } = res3.data;
-                    const query_graph = res.data;
-                    const message = { query_graph, knowledge_graph, results };
-                    messageStore.initializeMessage(message);
-                    setMessageSaved(true);
-                    toggleLoading(false);
-                  })
-                  .catch((err) => {
-                    console.log('err', err);
-                    setErrorMessage(`Unable to get answer: ${response.data[0].id}`);
-                    toggleLoading(false);
-                  });
-              } else {
-                setErrorMessage('This question has no visible answers.');
-                toggleLoading(false);
-              }
-            })
-            .catch((err) => {
-              console.log('err', err);
-              setErrorMessage(`Unable to retrieve answers for question: ${question_id}`);
-              toggleLoading(false);
-            });
-        })
-        .catch((err) => {
-          console.log('err', err);
-          setErrorMessage('Unable to load question.');
-          toggleLoading(false);
-        });
+  async function fetchQuestionAnswerData() {
+    let token;
+    if (user) {
+      token = user.id_token;
     }
+
+    let response;
+    response = await API.getQuestionData(question_id, token);
+    if (response.status == 'error') {
+      setErrorMessage('Unable to load question.');
+      toggleLoading(false);
+      return;
+    }
+    const query_graph = response;
+
+    response = await API.getAnswersByQuestion(question_id, token);
+    if (response.status == 'error') {
+      setErrorMessage('Unable to get answers to question.');
+      toggleLoading(false);
+      return;
+    }
+    const answers = response;
+    // Pick the first answer
+    if (answers.length == 0) {
+      setErrorMessage('No answers found.');
+      toggleLoading(false);
+      return;
+    }
+
+    let selected_answer = answers[0];
+    response = await API.getAnswerData(selected_answer.id, token);
+    if (response.status == 'error') {
+      setErrorMessage('Unable to get answer data.');
+      toggleLoading(false);
+      return;
+    }
+
+    const { knowledge_graph, results } = response;
+    const message = { query_graph, knowledge_graph, results };
+    messageStore.initializeMessage(message);
+    setMessageSaved(true);
+    toggleLoading(false);
+  }
+
+  useEffect(() => {
+    fetchQuestionAnswerData() 
   }, [question_id, user]);
 
   // useEffect(() => {

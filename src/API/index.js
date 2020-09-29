@@ -1,87 +1,135 @@
 import axios from 'axios';
 
-function errorHandling(err) {
-  /* eslint-disable no-console */
-  let errorText = '';
-  if (err.response) {
-    console.log('Error Status', err.response.status);
-    console.log('Error Downloading', err.response.data);
-    errorText = err.response.data;
-  } else if (err.request) {
-    console.log('No response was received', err.request);
-    errorText = 'There was no response from the server.';
+const protocol = 'http';
+const host = process.env.ROBOKACHE_HOST || 'lvh.me';
+const port = 8080;
+
+/**
+ * URL Maker
+ * @param {string} ext extension to append to url
+ */
+const base_url = `${protocol}://${host}:${port}/api/`;
+
+function handleAxiosError(error) {
+  let errorResponse;
+  if (error.response) {
+    errorResponse = error.response.data;
+    errorResponse.status = "error";
   } else {
-    console.log('Unknown Error', err.message);
-    errorText = err.message;
+    // This either means the server is unreachable or there was
+    // some error setting up the request object
+    errorResponse = {
+      message: "An unknown error occured",
+      status: "error"
+    }
   }
-  return errorText;
-  /* eslint-enable no-console */
+  return errorResponse;
 }
 
-const routes = {
-  getUser: () => new Promise((resolve, reject) => {
-    axios.get('/api/user')
-      .then((res) => {
-        console.log('user res', res);
-        resolve(res.data);
-      })
-      .catch((err) => {
-        const errorText = errorHandling(err);
-        reject(errorText);
-      });
-  }),
-  setUser: (token, username) => axios.post('/api/user', { token, username }),
-  getAllQuestions: () => new Promise((resolve, reject) => {
-    axios.get('/api/questions')
-      .then((res) => {
-        console.log('Questions', res);
-        resolve(res);
-      })
-      .catch((err) => {
-        const errorText = errorHandling(err);
-        reject(errorText);
-      });
-  }),
-  createQuestion: (question, token) => new Promise((resolve, reject) => {
-    const config = {
-      method: 'get',
-      url: '/api/questions',
+// Base request method for all endpoints
+async function baseRequest(path, method, body, token) {
+  let config = {
+    url: base_url + path,
+    method: method,
+    data: body,
+    withCredentials: true,
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+  };
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  try {
+    let response = await axios(config);
+    return response.data;
+  } catch(error) {
+    return handleAxiosError(error);
+  }
+}
+
+let baseRoutes = {
+  async getDocumentsNoParent(token) {
+    return baseRequest('document?has_parent=false', 'GET', null, token);
+  },
+
+  async getDocument(doc_id, token) {
+    return baseRequest(`document/${doc_id}`, 'GET', null, token);
+  },
+  async getChildrenByDocument(doc_id, token) {
+    return baseRequest(`document/${doc_id}/children`, 'GET', null, token);
+  },
+
+  async getDocumentData(doc_id, token) {
+    let config = {
+      url: `${base_url}document/${doc_id}/data`,
+      method: 'GET',
+      withCredentials: true,
       headers: {},
     };
     if (token) {
-      config.headers.authorization = `Bearer ${token}`;
+      config.headers.Authorization = `Bearer ${token}`;
     }
-    axios.request({
-      method: 'post',
-      url: '/api/questions',
-      data: question,
-    })
-      .then((res) => {
-        resolve(res);
-      })
-      .catch((err) => {
-        const errorText = errorHandling(err);
-        reject(errorText);
-      });
-  }),
-  getQuestions: (token) => new Promise((resolve, reject) => {
-    const config = {
-      method: 'get',
-      url: '/api/questions',
+    try {
+      let response = await axios(config);
+      return response.data;
+    } catch(error) {
+      return handleAxiosError(error);
+    }
+  },
+  async setDocumentData(doc_id, newData, token) {
+    let config = {
+      url: `${base_url}document/${doc_id}/data`,
+      method: 'PUT',
+      data: newData,
+      withCredentials: true,
       headers: {},
     };
-    if (token) {
-      config.headers.authorization = `Bearer ${token}`;
+    config.headers.Authorization = `Bearer ${token}`;
+    try {
+      let response = await axios(config);
+      return response.data;
+    } catch(error) {
+      return handleAxiosError(error);
     }
-    axios.request(config)
-      .then((res) => {
-        resolve(res);
-      })
-      .catch((err) => {
-        const errorText = errorHandling(err);
-        reject(errorText);
-      });
-  }),
-};
+  },
+
+  async createDocument(doc, token) {
+    return baseRequest(`document`, 'POST', doc, token);
+  },
+  async updateDocument(doc, token) {
+    return baseRequest(`document/${doc.id}`, 'PUT', doc, token);
+  },
+  async deleteDocument(doc_id, token) {
+    return baseRequest(`document/${doc_id}`, 'DELETE', newDocument, token);
+  },
+
+}
+
+// Some of the API routes have the same method signatures for questions and answers.
+// 
+// It makes sense to expose these methods separately 
+// so when they are called in UI code it is clear
+// whether the result will be an answer or question
+let routes = {
+  getQuestion:     baseRoutes.getDocument,
+  getQuestionData: baseRoutes.getDocumentData,
+  setQuestionData: baseRoutes.setDocumentData,
+  createQuestion:  baseRoutes.createDocument,
+  updateQuestion:  baseRoutes.updateDocument,
+  deleteQuestion:  baseRoutes.deleteDocument,
+
+  getAnswer:     baseRoutes.getDocument,
+  getAnswerData: baseRoutes.getDocumentData,
+  setAnswerData: baseRoutes.setDocumentData,
+  createAnswer:  baseRoutes.createDocument,
+  updateAnswer:  baseRoutes.updateDocument,
+  deleteAnswer:  baseRoutes.deleteDocument,
+
+  getQuestions: baseRoutes.getDocumentsNoParent,
+  getAnswersByQuestion: baseRoutes.getChildrenByDocument,
+}
 
 export default routes;

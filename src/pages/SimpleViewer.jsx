@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 
 import { Row, Col } from 'react-bootstrap';
 import Dropzone from 'react-dropzone';
@@ -14,6 +13,8 @@ import useMessageStore from '../stores/useMessageStore';
 import config from '../config.json';
 import parseMessage from '../utils/parseMessage';
 
+import API from '@/API';
+
 export default function SimpleViewer(props) {
   const { user } = props;
   // We only read the communications config on creation
@@ -27,64 +28,48 @@ export default function SimpleViewer(props) {
   const [showSnackbar, toggleSnackbar] = useState(false);
   const messageStore = useMessageStore();
 
-  function uploadMessage() {
-    const defaultQuestion = { parent: '', visibility: 0 };
-    axios.request({
-      method: 'post',
-      url: '/api/questions',
-      data: defaultQuestion,
-      headers: {
-        Authorization: `Bearer ${user.id_token}`,
-      },
-    })
-      .then((resp) => {
-        // console.log('created question', resp);
-        const question_id = resp.data;
-        const formData = new FormData();
-        const blob = new Blob([JSON.stringify(messageStore.message.query_graph)], {
-          type: 'application/json',
-        });
-        formData.append('question', blob);
-        axios.request({
-          method: 'put',
-          url: `/api/questions/${question_id}/update`,
-          data: formData,
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${user.id_token}`,
-          },
-        })
-          .then((res) => {
-            // console.log('question updated', res.data);
-            const answerData = new FormData();
-            const answerBlob = new Blob([JSON.stringify({
-              knowledge_graph: messageStore.message.knowledge_graph,
-              results: messageStore.message.results,
-            })], {
-              type: 'application/json',
-            });
-            answerData.append('answer', answerBlob);
-            axios.request({
-              url: '/api/answers',
-              method: 'post',
-              params: {
-                question_id,
-              },
-              data: answerData,
-              headers: {
-                'Content-Type': 'multipart/form-data',
-                Authorization: `Bearer ${user.id_token}`,
-              },
-            })
-              .then((response) => {
-                // console.log('answers response', response.data);
-                toggleSnackbar(true);
-              })
-              .catch((error) => {
-                console.log('answers error', error);
-              });
-          });
-      });
+  async function uploadMessage() {
+    console.log("Uploading message");
+    const defaultQuestion = { parent: '', visibility: 1 };
+
+    let response;
+
+    // Create question
+    response = await API.createQuestion(defaultQuestion, user.id_token);
+    if (response.status == 'error') {
+      setErrorMessage('Unable to create question.');
+      return;
+    }
+    const questionId = response.id;
+
+    // Upload question data
+    const questionData = JSON.stringify(messageStore.message.query_graph);
+    response = await API.setQuestionData(questionId, questionData, user.id_token);
+    if (response.status == 'error') {
+      setErrorMessage('Unable to upload question data.');
+      return;
+    }
+
+    // Create Answer
+    response = await API.createAnswer({parent: questionId, visibility: 1}, user.id_token);
+    if (response.status == 'error') {
+      setErrorMessage('Unable to create answer object.');
+      return;
+    }
+    const answerId = response.id;
+    // Upload answer data
+    const answerData = JSON.stringify({
+      knowledge_graph: messageStore.message.knowledge_graph,
+      results: messageStore.message.results,
+    });
+    // Upload answer data
+    response = await API.setAnswerData(answerId, answerData, user.id_token);
+    if (response.status == 'error') {
+      setErrorMessage('Unable to upload answer data.');
+      return;
+    }
+
+    toggleSnackbar(true);
   }
 
   function onDrop(acceptedFiles) {
