@@ -12,6 +12,7 @@ import ClearIcon from '@material-ui/icons/Clear';
 
 import QuestionTableRow from './subComponents/QuestionTableRow.jsx';
 
+import Alert from '@material-ui/lab/Alert';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -36,23 +37,22 @@ export default function NewQuestionList() {
   const [myQuestions, updateMyQuestions] = useState([]);
   const [publicQuestions, updatePublicQuestions] = useState([]);
   const [loading, toggleLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
   const [page, updatePage] = useState(0);
   const [rowsPerPage, updateRowsPerPage] = useState(5);
 
   const user = useContext(UserContext);
 
   async function fetchQuestions() {
-    let questions;
-    try {
-     let response  = await API.getQuestions(user.id_token);
-     questions = JSON.parse(response);
-    } catch {}
+    let response;
 
-    if(!Array.isArray(questions))
+    response  = await API.getQuestions(user && user.id_token);
+    if (response.status == 'error') {
+      setErrorMessage(response.message);
+      toggleLoading(false);
       return;
-
-    // TODO: there might be a new route that will get just questions
-    questions = questions.filter((question) => !question.parent);
+    }
+    let questions = response;
 
     updateMyQuestions(     questions.filter((question) => question.owned));
     updatePublicQuestions( questions.filter((question) => !question.owned));
@@ -72,6 +72,13 @@ export default function NewQuestionList() {
     </Box>
 
 	 { loading ? <Loading /> : ( <>
+     { errorMessage ? (
+       <Box display="flex" justifyContent="center">
+           <Alert variant="filled" severity="error">
+             {errorMessage}
+           </Alert>
+       </Box>
+     ) : ( <>
 
      {/* Only show "My Questions" if the user is signed in */}
 
@@ -165,6 +172,7 @@ export default function NewQuestionList() {
         />
       </Paper>
 
+     </>)}
     </>)}
   </>);
 }
