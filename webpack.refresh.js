@@ -1,11 +1,9 @@
+const path = require('path');
+const webpack = require('webpack');
 const { merge } = require('webpack-merge');
-
-var path = require('path');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
 const common = require('./webpack.common.js');
-const webpack = require('webpack');
-
-const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
 module.exports = merge(common, {
   devServer: {
@@ -30,13 +28,13 @@ module.exports = merge(common, {
           },
         ],
       },
-    ]
+    ],
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    new ReactRefreshWebpackPlugin()
+    new ReactRefreshWebpackPlugin(),
   ],
   entry: [
-    'webpack-hot-middleware/client'
+    'webpack-hot-middleware/client',
   ],
 });
