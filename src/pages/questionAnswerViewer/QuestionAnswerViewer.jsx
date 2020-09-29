@@ -17,6 +17,8 @@ import Select from '@material-ui/core/Select';
 import API from '@/API';
 import { formatDateTimeNicely } from '@/utils/cache';
 
+import StoredAnswersetViewer from './subComponents/StoredAnswersetViewer';
+
 export default function QuestionAnswerViewer() {
   const [question, updateQuestion] = useState(null);
   const [answers, updateAnswers] = useState([]);
@@ -89,6 +91,14 @@ export default function QuestionAnswerViewer() {
           </FormControl>
         </Box>
     </> )}
+
+    { (question && selectedAnswer) && 
+      <StoredAnswersetViewer 
+          answer_id={selectedAnswer.id}
+          question_id={question.id}
+        />
+    }
+
   </>
   );
 }
