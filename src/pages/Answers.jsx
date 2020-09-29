@@ -25,12 +25,12 @@ export default function Answer({ user }) {
   const [errorMessage, setErrorMessage] = useState('Something went wrong. Check the console for more information.');
   const messageStore = useMessageStore();
 
-  let token;
-  if (user) {
-    token = user.id_token;
-  }
-
   async function fetchQuestionAnswerData() {
+    let token;
+    if (user) {
+      token = user.id_token;
+    }
+
     let response;
     response = await API.getQuestionData(question_id, token);
     if (response.status == 'error') {
@@ -38,7 +38,7 @@ export default function Answer({ user }) {
       toggleLoading(false);
       return;
     }
-    let query_graph = response;
+    const query_graph = response;
 
     response = await API.getAnswersByQuestion(question_id, token);
     if (response.status == 'error') {
@@ -46,7 +46,7 @@ export default function Answer({ user }) {
       toggleLoading(false);
       return;
     }
-    let answers = response;
+    const answers = response;
     // Pick the first answer
     if (answers.length == 0) {
       setErrorMessage('No answers found.');
@@ -69,8 +69,9 @@ export default function Answer({ user }) {
     toggleLoading(false);
   }
 
-  useEffect(() => { fetchQuestionAnswerData() },
-    [question_id, user]);
+  useEffect(() => {
+    fetchQuestionAnswerData() 
+  }, [question_id, user]);
 
   // useEffect(() => {
   //   console.log('visiblity set to', visibility);

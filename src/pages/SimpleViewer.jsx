@@ -28,8 +28,6 @@ export default function SimpleViewer(props) {
   const [showSnackbar, toggleSnackbar] = useState(false);
   const messageStore = useMessageStore();
 
-  console.log("Rendering SimpleViewer");
-
   async function uploadMessage() {
     console.log("Uploading message");
     const defaultQuestion = { parent: '', visibility: 1 };
@@ -61,9 +59,9 @@ export default function SimpleViewer(props) {
     const answerId = response.id;
     // Upload answer data
     const answerData = JSON.stringify({
-              knowledge_graph: messageStore.message.knowledge_graph,
-              results: messageStore.message.results,
-            });
+      knowledge_graph: messageStore.message.knowledge_graph,
+      results: messageStore.message.results,
+    });
     // Upload answer data
     response = await API.setAnswerData(answerId, answerData, user.id_token);
     if (response.status == 'error') {
