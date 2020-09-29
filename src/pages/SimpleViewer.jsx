@@ -27,6 +27,60 @@ export default function SimpleViewer(props) {
   const [showSnackbar, toggleSnackbar] = useState(false);
   const messageStore = useMessageStore();
 
+  function askQuestion() {
+    const defaultQuestion = { parent: '', visibility: 0 };
+    axios.request({
+      method: 'post',
+      url: '/api/questions',
+      data: defaultQuestion,
+      headers: {
+        Authorization: `Bearer ${user.id_token}`,
+      },
+    })
+      .then((resp) => {
+        // console.log('created question', resp);
+        const question_id = resp.data;
+        const formData = new FormData();
+        const blob = new Blob([JSON.stringify(messageStore.message.query_graph)], {
+          type: 'application/json',
+        });
+        formData.append('question', blob);
+        axios.request({
+          method: 'put',
+          url: `/api/questions/${question_id}/update`,
+          data: formData,
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${user.id_token}`,
+          },
+        })
+          .then((res) => {
+            axios.request({
+              method: 'post',
+              url: '/api/get_answers',
+              params: {
+                question_id
+              },
+              headers: {
+                Authorization: `Bearer ${user.id_token}`,
+              },
+            })
+              .then((res) => {
+                console.log('answers response', res);
+              })
+              .catch((err) => {
+                console.log('Ask questions error:', err);
+              });
+          })
+          .catch((err) => {
+            console.log('Question update error:', err);
+          });
+      })
+      .catch((err) => {
+        console.log('Question create error:', err);
+      });
+  }
+
   function uploadMessage() {
     const defaultQuestion = { parent: '', visibility: 0 };
     axios.request({
@@ -139,7 +193,10 @@ export default function SimpleViewer(props) {
                 omitHeader
               />
               {user && (
-                <button type="button" onClick={uploadMessage}>Upload</button>
+                <>
+                  <button type="button" onClick={uploadMessage}>Upload</button>
+                  <button type="button" onClick={askQuestion}>Ask ARA</button>
+                </>
               )}
               <Snackbar
                 open={showSnackbar}
