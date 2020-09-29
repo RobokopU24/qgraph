@@ -30,12 +30,11 @@ export default function NewQuestionList({ user }) {
     }
     API.getQuestions(token)
       .then((res) => {
-        let fetchedQuestions = [];
-        if (Array.isArray(res.data)) {
-          // TODO: there might be a new route that will get just questions
-          fetchedQuestions = res.data.filter((question) => !question.parent);
+        console.log(res);
+        if (res.status == 'error') {
+          return;
         }
-        updateQuestions(fetchedQuestions);
+        updateQuestions(res);
         toggleLoading(false);
       })
       .catch(() => {
