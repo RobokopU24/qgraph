@@ -49,6 +49,9 @@ const config = {
       path.join(__dirname, '.'),
       'node_modules',
     ],
+    alias: {
+      '@' : path.resolve('src'),
+    }
   },
   plugins: [
     new HtmlWebpackPlugin({
