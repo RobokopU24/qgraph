@@ -20,7 +20,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 
 import { green, red } from '@material-ui/core/colors';
 
-import EditQuestion from '../EditQuestion';
+import EditQuestion from '@/pages/EditQuestion';
 
 import { visibilityMapping } from '@/utils/cache';
 
@@ -87,7 +87,7 @@ export default function MyQuestionTableRow({ question, onQuestionUpdated }) {
           </Box>
         </DialogTitle>
         <DialogContent>
-          <EditQuestion question={question} onQuestionUpdated={ onQuestionUpdated } />
+          <EditQuestion question={question} onUpdated={ onQuestionUpdated } />
         </DialogContent>
       </Dialog>
     </TableRow>

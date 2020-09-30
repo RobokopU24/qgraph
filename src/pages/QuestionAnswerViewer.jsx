@@ -9,6 +9,14 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
+import Alert from '@material-ui/lab/Alert';
+
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import Dialog from '@material-ui/core/Dialog';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 import EditIcon from '@material-ui/icons/Edit';
 import VisibilityIcon from '@material-ui/icons/Visibility';
@@ -20,9 +28,13 @@ import { formatDateTimeNicely } from '@/utils/cache';
 import Loading from '@/components/loading/Loading';
 import StoredAnswersetViewer from '@/components/shared/answersetView/StoredAnswersetViewer';
 
+import EditAnswer from '@/pages/EditAnswer';
+
 export default function QuestionAnswerViewer() {
   const [question, updateQuestion] = useState(null);
   const [answers, updateAnswers] = useState([]);
+
+  const [showEditAnswer, toggleShowEditAnswer] = useState(false);
 
   const user = useContext(UserContext);
 
@@ -65,13 +77,17 @@ export default function QuestionAnswerViewer() {
     } let answers = response;
     updateAnswers(answers);
 
-    if (!answer_id) {
+    if (!answer_id && answers.length > 0) {
       // Set default answer to first
       history.push(`/question/${question_id}/answer/${answers[0].id}`) 
     }
   }
 
-  useEffect(() => { fetchAnswers() }, [user, question_id]);
+  function getAnswer(answer_id) {
+    return answers.find((a) => a.id === answer_id);
+  }
+
+  useEffect(() => { fetchAnswers() }, [user, question_id, answer_id]);
 
   return (
     <>
@@ -87,6 +103,11 @@ export default function QuestionAnswerViewer() {
               </Button>
             </Box>
             
+            { answers.length === 0 ? (
+              <Alert severity="error">
+                There are no answers associated with this question. Please try re-submitting.
+              </Alert>
+            ) : ( 
             <Box>
               <FormControl>
                 <InputLabel htmlFor="answer-select">Viewing Answer From</InputLabel>
@@ -104,10 +125,47 @@ export default function QuestionAnswerViewer() {
                 </Select>
               </FormControl>
             </Box>
+            )}
         </> )}
 
     <Route path={ `${path}/answer/:answer_id` } render={(props) => (
-      <StoredAnswersetViewer {...props.match.params} />
+      <>
+        <Button
+          onClick={ () => toggleShowEditAnswer(true) }
+          variant="contained"
+          color="primary">
+          <MoreVertIcon />
+        </Button>
+        <Dialog
+          open={showEditAnswer}
+          onClick={(e) => e.stopPropagation() }
+          onClose={() => toggleShowEditAnswer(false)}
+          maxWidth="lg"
+          fullWidth
+          aria-labelledby="EditQuestionModal">
+
+          <DialogTitle>
+            <Box my={3} display="flex" justifyContent="space-between" alignItems="center">
+              <Typography variant="h3">
+                Answer Details
+              </Typography>
+              <IconButton aria-label="close" onClick={() => toggleShowEditAnswer(false)}>
+                <CloseIcon fontSize="large" />
+              </IconButton>
+            </Box>
+          </DialogTitle>
+          <DialogContent>
+            <EditAnswer 
+              answer={getAnswer(answer_id)}
+              afterDelete={() => {
+                  toggleShowEditAnswer(false);
+                  history.push(`/question/${question_id}`);
+              }} />
+          </DialogContent>
+        </Dialog>
+
+        <StoredAnswersetViewer {...props.match.params} />
+      </>
     )} />
 
   </>

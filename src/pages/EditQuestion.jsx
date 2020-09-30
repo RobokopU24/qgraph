@@ -15,22 +15,29 @@ import Button from '@material-ui/core/Button';
 import LinkIcon from '@material-ui/icons/Link';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import ShareIcon from '@material-ui/icons/Share';
-import DescriptionIcon from '@material-ui/icons/Description';
 
 import API from '@/API';
 import UserContext from '@/user';
+import ClipboardButton from '@/components/shared/ClipboardButton';
+import NewDownloadButton from '@/components/shared/NewDownloadButton';
 
 import { formatDateTimeNicely } from '@/utils/cache';
 
-export default function EditQuestion({ question, onQuestionUpdated }) {
+export default function EditQuestion({ question, onUpdated }) {
   let history = useHistory();
+
+  const fullLocation = location.origin + `/question/${question.id}`;  
 
   const [newQuestion, updateNewQuestion] = useState(question);
   const user = useContext(UserContext);
 
   function save() {
     API.updateQuestion(newQuestion, user.id_token);
-    onQuestionUpdated();
+    onUpdated();
+  }
+  async function handleDelete() {
+    await API.deleteQuestion(question.id, user.id_token);
+    onUpdated();
   }
 
   const [historicAnswers, updateHistoricAnswers] = useState([]);
@@ -97,14 +104,12 @@ export default function EditQuestion({ question, onQuestionUpdated }) {
     </Box>
 
     <Box my={2}>
-      <Button
+      <ClipboardButton
         startIcon={<LinkIcon />}
-        variant="contained"
-        size="large"
-        color="secondary"
-        onClick={ () => 0 }>
-        Get Shareable Link
-      </Button>
+        displayText="Get Shareable Link"
+        notificationText="Shareable link copied to clipboard"
+        clipboardText={fullLocation}
+      />
     </Box>
 
     { question.owned && 
@@ -114,7 +119,7 @@ export default function EditQuestion({ question, onQuestionUpdated }) {
         variant="contained"
         size="large"
         color="secondary"
-        onClick={ () => 0 }>
+        onClick={ handleDelete }>
         Delete
       </Button>
     </Box>
@@ -132,14 +137,11 @@ export default function EditQuestion({ question, onQuestionUpdated }) {
     </Box>
 
     <Box my={2}>
-      <Button
-        startIcon={<DescriptionIcon />}
-        variant="contained"
-        size="large"
-        color="secondary"
-        onClick={ () => 0 }>
-        Download JSON
-      </Button>
+      <NewDownloadButton
+        displayText="Download JSON"
+        getData={ () => API.getQuestionData(question.id, user.id_token) }
+        fileName="question_data.json" 
+      />
     </Box>
 
     <Box mt={6} mb={4}>
