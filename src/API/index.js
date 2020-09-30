@@ -14,27 +14,27 @@ function handleAxiosError(error) {
   let errorResponse;
   if (error.response) {
     errorResponse = error.response.data;
-    errorResponse.status = "error";
+    errorResponse.status = 'error';
   } else {
     // This either means the server is unreachable or there was
     // some error setting up the request object
     errorResponse = {
-      message: "An unknown error occured",
-      status: "error"
-    }
+      message: 'An unknown error occured',
+      status: 'error',
+    };
   }
   return errorResponse;
 }
 
 // Base request method for all endpoints
 async function baseRequest(path, method, body, token) {
-  let config = {
+  const config = {
     url: base_url + path,
-    method: method,
+    method,
     data: body,
     withCredentials: true,
     headers: {
-      'Accept': 'application/json',
+      Accept: 'application/json',
       'Content-Type': 'application/json',
     },
   };
@@ -43,14 +43,14 @@ async function baseRequest(path, method, body, token) {
   }
 
   try {
-    let response = await axios(config);
+    const response = await axios(config);
     return response.data;
-  } catch(error) {
+  } catch (error) {
     return handleAxiosError(error);
   }
 }
 
-let baseRoutes = {
+const baseRoutes = {
   async getDocumentsNoParent(token) {
     return baseRequest('document?has_parent=false', 'GET', null, token);
   },
@@ -63,7 +63,7 @@ let baseRoutes = {
   },
 
   async getDocumentData(doc_id, token) {
-    let config = {
+    const config = {
       url: `${base_url}document/${doc_id}/data`,
       method: 'GET',
       withCredentials: true,
@@ -73,14 +73,14 @@ let baseRoutes = {
       config.headers.Authorization = `Bearer ${token}`;
     }
     try {
-      let response = await axios(config);
+      const response = await axios(config);
       return response.data;
-    } catch(error) {
+    } catch (error) {
       return handleAxiosError(error);
     }
   },
   async setDocumentData(doc_id, newData, token) {
-    let config = {
+    const config = {
       url: `${base_url}document/${doc_id}/data`,
       method: 'PUT',
       data: newData,
@@ -89,47 +89,46 @@ let baseRoutes = {
     };
     config.headers.Authorization = `Bearer ${token}`;
     try {
-      let response = await axios(config);
+      const response = await axios(config);
       return response.data;
-    } catch(error) {
+    } catch (error) {
       return handleAxiosError(error);
     }
   },
 
   async createDocument(doc, token) {
-    return baseRequest(`document`, 'POST', doc, token);
+    return baseRequest('document', 'POST', doc, token);
   },
   async updateDocument(doc, token) {
     return baseRequest(`document/${doc.id}`, 'PUT', doc, token);
   },
   async deleteDocument(doc_id, token) {
-    return baseRequest(`document/${doc_id}`, 'DELETE', newDocument, token);
+    return baseRequest(`document/${doc_id}`, 'DELETE', undefined, token);
   },
-
-}
+};
 
 // Some of the API routes have the same method signatures for questions and answers.
-// 
-// It makes sense to expose these methods separately 
+//
+// It makes sense to expose these methods separately
 // so when they are called in UI code it is clear
 // whether the result will be an answer or question
-let routes = {
-  getQuestion:     baseRoutes.getDocument,
+const routes = {
+  getQuestion: baseRoutes.getDocument,
   getQuestionData: baseRoutes.getDocumentData,
   setQuestionData: baseRoutes.setDocumentData,
-  createQuestion:  baseRoutes.createDocument,
-  updateQuestion:  baseRoutes.updateDocument,
-  deleteQuestion:  baseRoutes.deleteDocument,
+  createQuestion: baseRoutes.createDocument,
+  updateQuestion: baseRoutes.updateDocument,
+  deleteQuestion: baseRoutes.deleteDocument,
 
-  getAnswer:     baseRoutes.getDocument,
+  getAnswer: baseRoutes.getDocument,
   getAnswerData: baseRoutes.getDocumentData,
   setAnswerData: baseRoutes.setDocumentData,
-  createAnswer:  baseRoutes.createDocument,
-  updateAnswer:  baseRoutes.updateDocument,
-  deleteAnswer:  baseRoutes.deleteDocument,
+  createAnswer: baseRoutes.createDocument,
+  updateAnswer: baseRoutes.updateDocument,
+  deleteAnswer: baseRoutes.deleteDocument,
 
   getQuestions: baseRoutes.getDocumentsNoParent,
   getAnswersByQuestion: baseRoutes.getChildrenByDocument,
-}
+};
 
 export default routes;

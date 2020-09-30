@@ -5,6 +5,8 @@ import Dropzone from 'react-dropzone';
 import { FaCloudUploadAlt } from 'react-icons/fa';
 import Snackbar from '@material-ui/core/Snackbar';
 
+import API from '@/API';
+
 // import AppConfig from '../AppConfig';
 import Loading from '../components/loading/Loading';
 import AnswersetView from '../components/shared/answersetView/AnswersetView';
@@ -12,8 +14,6 @@ import AnswersetView from '../components/shared/answersetView/AnswersetView';
 import useMessageStore from '../stores/useMessageStore';
 import config from '../config.json';
 import parseMessage from '../utils/parseMessage';
-
-import API from '@/API';
 
 export default function SimpleViewer(props) {
   const { user } = props;
@@ -83,14 +83,13 @@ export default function SimpleViewer(props) {
   }
 
   async function uploadMessage() {
-    console.log("Uploading message");
     const defaultQuestion = { parent: '', visibility: 1 };
 
     let response;
 
     // Create question
     response = await API.createQuestion(defaultQuestion, user.id_token);
-    if (response.status == 'error') {
+    if (response.status === 'error') {
       setErrorMessage('Unable to create question.');
       return;
     }
@@ -99,14 +98,14 @@ export default function SimpleViewer(props) {
     // Upload question data
     const questionData = JSON.stringify(messageStore.message.query_graph);
     response = await API.setQuestionData(questionId, questionData, user.id_token);
-    if (response.status == 'error') {
+    if (response.status === 'error') {
       setErrorMessage('Unable to upload question data.');
       return;
     }
 
     // Create Answer
-    response = await API.createAnswer({parent: questionId, visibility: 1}, user.id_token);
-    if (response.status == 'error') {
+    response = await API.createAnswer({ parent: questionId, visibility: 1 }, user.id_token);
+    if (response.status === 'error') {
       setErrorMessage('Unable to create answer object.');
       return;
     }
@@ -118,7 +117,7 @@ export default function SimpleViewer(props) {
     });
     // Upload answer data
     response = await API.setAnswerData(answerId, answerData, user.id_token);
-    if (response.status == 'error') {
+    if (response.status === 'error') {
       setErrorMessage('Unable to upload answer data.');
       return;
     }
