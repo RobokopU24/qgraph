@@ -30,8 +30,6 @@ export default function QuestionAnswerViewer() {
   let { path } = useRouteMatch();
   let history = useHistory();
 
-  console.log(question_id);
-
   let answer_id;
   // If we are rendering an answer, get answer_id with useRouteMatch
   let match = useRouteMatch(`${path}/answer/:answer_id`);
@@ -67,8 +65,10 @@ export default function QuestionAnswerViewer() {
     } let answers = response;
     updateAnswers(answers);
 
-    // Set default answer to first
-    history.push(`/question/${question_id}/answer/${answers[1].id}`) 
+    if (!answer_id) {
+      // Set default answer to first
+      history.push(`/question/${question_id}/answer/${answers[0].id}`) 
+    }
   }
 
   useEffect(() => { fetchAnswers() }, [user, question_id]);
@@ -92,7 +92,7 @@ export default function QuestionAnswerViewer() {
                 <InputLabel htmlFor="answer-select">Viewing Answer From</InputLabel>
                 <Select
                     id="answer-select" 
-                    value={answer_id} 
+                    value={answer_id || ''} 
                     onChange={ (e) => 
                         history.push(`/question/${question_id}/answer/${e.target.value}`) 
                     } >
