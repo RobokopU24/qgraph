@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { Route, useRouteMatch, useHistory } from "react-router-dom";
 
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
@@ -22,11 +23,21 @@ import StoredAnswersetViewer from '@/components/shared/answersetView/StoredAnswe
 export default function QuestionAnswerViewer() {
   const [question, updateQuestion] = useState(null);
   const [answers, updateAnswers] = useState([]);
-  const [selectedAnswer, updateSelectedAnswer] = useState({});
 
   const user = useContext(UserContext);
 
   let { question_id } = useParams();
+  let { path } = useRouteMatch();
+  let history = useHistory();
+
+  console.log(question_id);
+
+  let answer_id;
+  // If we are rendering an answer, get answer_id with useRouteMatch
+  let match = useRouteMatch(`${path}/answer/:answer_id`);
+  if (match) {
+    answer_id = match.params.answer_id;
+  }
 
   async function fetchQuestion() {
     let token;
@@ -53,51 +64,51 @@ export default function QuestionAnswerViewer() {
     if (response.status == 'error') {
       console.log("Error getting question")
       return;
-    }
-    let answers = response;
+    } let answers = response;
     updateAnswers(answers);
 
     // Set default answer to first
-    updateSelectedAnswer(answers[0]);
+    history.push(`/question/${question_id}/answer/${answers[1].id}`) 
   }
 
   useEffect(() => { fetchAnswers() }, [user, question_id]);
 
   return (
     <>
-      { !question ? <Loading /> : ( <> 
-        <Box my={4} display="flex" justifyContent="space-between">
-          <Typography variant="h3">
-            Question: {question.metadata.name}
-          </Typography>
-          <Button
-              variant="contained"
-              color="primary">
-            { question.owned ? <EditIcon /> : <VisibilityIcon /> }
-          </Button>
-        </Box>
-        
-        <Box>
-          <FormControl>
-            <InputLabel htmlFor="answer-select">Viewing Answer From</InputLabel>
-            <Select
-                id="answer-select" 
-                value={selectedAnswer} 
-                onChange={ (e) => updateSelectedAnswer(e) } >
-              { answers.map((a) => 
-                <MenuItem key={a.id} value={a}>{ formatDateTimeNicely(a.created_at) }</MenuItem>
-              ) }
-            </Select>
-          </FormControl>
-        </Box>
-    </> )}
+          { !question ? <Loading /> : ( <> 
+            <Box my={4} display="flex" justifyContent="space-between">
+              <Typography variant="h3">
+                Question: {question.metadata.name}
+              </Typography>
+              <Button
+                  variant="contained"
+                  color="primary">
+                { question.owned ? <EditIcon /> : <VisibilityIcon /> }
+              </Button>
+            </Box>
+            
+            <Box>
+              <FormControl>
+                <InputLabel htmlFor="answer-select">Viewing Answer From</InputLabel>
+                <Select
+                    id="answer-select" 
+                    value={answer_id} 
+                    onChange={ (e) => 
+                        history.push(`/question/${question_id}/answer/${e.target.value}`) 
+                    } >
+                  { answers.map((a) => 
+                    <MenuItem key={a.id} value={a.id}>
+                      { formatDateTimeNicely(a.created_at) }
+                    </MenuItem>
+                  ) }
+                </Select>
+              </FormControl>
+            </Box>
+        </> )}
 
-    { (question && selectedAnswer) && 
-      <StoredAnswersetViewer 
-          answer_id={selectedAnswer.id}
-          question_id={question.id}
-        />
-    }
+    <Route path={ `${path}/answer/:answer_id` } render={(props) => (
+      <StoredAnswersetViewer {...props.match.params} />
+    )} />
 
   </>
   );
