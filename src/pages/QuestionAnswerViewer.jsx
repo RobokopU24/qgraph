@@ -10,6 +10,12 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import Alert from '@material-ui/lab/Alert';
+import blueGrey from '@material-ui/core/colors/red';
+
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
 
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -92,15 +98,10 @@ export default function QuestionAnswerViewer() {
   return (
     <>
           { !question ? <Loading /> : ( <> 
-            <Box my={4} display="flex" justifyContent="space-between">
+            <Box my={4}>
               <Typography variant="h3">
                 Question: {question.metadata.name}
               </Typography>
-              <Button
-                  variant="contained"
-                  color="primary">
-                { question.owned ? <EditIcon /> : <VisibilityIcon /> }
-              </Button>
             </Box>
             
             { answers.length === 0 ? (
@@ -130,39 +131,30 @@ export default function QuestionAnswerViewer() {
 
     <Route path={ `${path}/answer/:answer_id` } render={(props) => (
       <>
-        <Button
-          onClick={ () => toggleShowEditAnswer(true) }
-          variant="contained"
-          color="primary">
-          <MoreVertIcon />
-        </Button>
-        <Dialog
-          open={showEditAnswer}
-          onClick={(e) => e.stopPropagation() }
-          onClose={() => toggleShowEditAnswer(false)}
-          maxWidth="lg"
-          fullWidth
-          aria-labelledby="EditQuestionModal">
+        <Box mb={4} mt={12}>
+          <Typography variant="h5">
+            Answer From: { formatDateTimeNicely(getAnswer(answer_id).created_at) }
+          </Typography>
+        </Box>
 
-          <DialogTitle>
-            <Box my={3} display="flex" justifyContent="space-between" alignItems="center">
-              <Typography variant="h3">
-                Answer Details
-              </Typography>
-              <IconButton aria-label="close" onClick={() => toggleShowEditAnswer(false)}>
-                <CloseIcon fontSize="large" />
-              </IconButton>
-            </Box>
-          </DialogTitle>
-          <DialogContent>
-            <EditAnswer 
-              answer={getAnswer(answer_id)}
-              afterDelete={() => {
-                  toggleShowEditAnswer(false);
+        <Box my={4} width={1/2}>
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="answer-details-content"
+              id="answer-details-header"
+            >
+              <Typography>Details</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <EditAnswer 
+                answer={getAnswer(answer_id)}
+                afterDelete={() => {
                   history.push(`/question/${question_id}`);
-              }} />
-          </DialogContent>
-        </Dialog>
+                }} />
+            </AccordionDetails>
+          </Accordion>
+        </Box>
 
         <StoredAnswersetViewer {...props.match.params} />
       </>

@@ -89,7 +89,5 @@ export default function EditAnswer({ answer, afterDelete }) {
       />
     </Box>
 
-    <Box height={100} />
-
   </Box>)
 }
