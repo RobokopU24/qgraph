@@ -46,6 +46,7 @@ export default function StoredAnswersetView({ question_id, answer_id }) {
 
     const parsedMessage = parseMessage(message);
     messageStore.initializeMessage(parsedMessage);
+    setErrorMessage('');
     toggleLoading(false);
   }
 
