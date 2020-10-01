@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 import Paper from '@material-ui/core/Paper';
@@ -28,10 +27,9 @@ export default function NewQuestionList({ user }) {
     if (user) {
       token = user.id_token;
     }
-    API.getQuestions(token)
+    API.cache.getQuestions(token)
       .then((res) => {
-        console.log(res);
-        if (res.status == 'error') {
+        if (res.status === 'error') {
           return;
         }
         updateQuestions(res);
