@@ -28,58 +28,29 @@ export default function SimpleViewer(props) {
   const [showSnackbar, toggleSnackbar] = useState(false);
   const messageStore = useMessageStore();
 
-  function askQuestion() {
-    const defaultQuestion = { parent: '', visibility: 0 };
-    axios.request({
-      method: 'post',
-      url: '/api/questions',
-      data: defaultQuestion,
-      headers: {
-        Authorization: `Bearer ${user.id_token}`,
-      },
-    })
-      .then((resp) => {
-        // console.log('created question', resp);
-        const question_id = resp.data;
-        const formData = new FormData();
-        const blob = new Blob([JSON.stringify(messageStore.message.query_graph)], {
-          type: 'application/json',
-        });
-        formData.append('question', blob);
-        axios.request({
-          method: 'put',
-          url: `/api/questions/${question_id}/update`,
-          data: formData,
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${user.id_token}`,
-          },
-        })
-          .then((res) => {
-            axios.request({
-              method: 'post',
-              url: '/api/get_answers',
-              params: {
-                question_id
-              },
-              headers: {
-                Authorization: `Bearer ${user.id_token}`,
-              },
-            })
-              .then((res) => {
-                console.log('answers response', res);
-              })
-              .catch((err) => {
-                console.log('Ask questions error:', err);
-              });
-          })
-          .catch((err) => {
-            console.log('Question update error:', err);
-          });
-      })
-      .catch((err) => {
-        console.log('Question create error:', err);
-      });
+  async function askQuestion() {
+    const defaultQuestion = { parent: '', visibility: 1 };
+    let response;
+
+    response = await API.cache.createQuestion(defaultQuestion, user.id_token);
+    if (response.status === 'error') {
+      setErrorMessage('Unable to create question.');
+      return;
+    }
+
+    const questionId = response.id;
+    // Upload question data
+    const questionData = JSON.stringify(messageStore.message.query_graph);
+    response = await API.cache.setQuestionData(questionId, questionData, user.id_token);
+    if (response.status === 'error') {
+      setErrorMessage('Unable to upload question data.');
+      return;
+    }
+    response = await API.server.getAnswer(questionId, messageStore.message.query_graph, user.id_token);
+    if (response.status === 'error') {
+      setErrorMessage('Unable to ask question.');
+    }
+    toggleSnackbar(true);
   }
 
   async function uploadMessage() {
@@ -88,7 +59,7 @@ export default function SimpleViewer(props) {
     let response;
 
     // Create question
-    response = await API.createQuestion(defaultQuestion, user.id_token);
+    response = await API.cache.createQuestion(defaultQuestion, user.id_token);
     if (response.status === 'error') {
       setErrorMessage('Unable to create question.');
       return;
@@ -97,14 +68,14 @@ export default function SimpleViewer(props) {
 
     // Upload question data
     const questionData = JSON.stringify(messageStore.message.query_graph);
-    response = await API.setQuestionData(questionId, questionData, user.id_token);
+    response = await API.cache.setQuestionData(questionId, questionData, user.id_token);
     if (response.status === 'error') {
       setErrorMessage('Unable to upload question data.');
       return;
     }
 
     // Create Answer
-    response = await API.createAnswer({ parent: questionId, visibility: 1 }, user.id_token);
+    response = await API.cache.createAnswer({ parent: questionId, visibility: 1 }, user.id_token);
     if (response.status === 'error') {
       setErrorMessage('Unable to create answer object.');
       return;
@@ -116,7 +87,7 @@ export default function SimpleViewer(props) {
       results: messageStore.message.results,
     });
     // Upload answer data
-    response = await API.setAnswerData(answerId, answerData, user.id_token);
+    response = await API.cache.setAnswerData(answerId, answerData, user.id_token);
     if (response.status === 'error') {
       setErrorMessage('Unable to upload answer data.');
       return;
@@ -143,7 +114,6 @@ export default function SimpleViewer(props) {
           setMessageSaved(true);
         } catch (err) {
           console.log(err);
-          // window.alert('Failed to load this Answerset file. Are you sure this is valid?');
           setErrorMessage('There was the problem loading the file. Is this valid JSON?');
         }
         toggleLoading(false);
