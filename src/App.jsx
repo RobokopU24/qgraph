@@ -9,17 +9,24 @@ import TermsofService from './pages/TermsofService';
 import SimpleViewer from './pages/SimpleViewer';
 
 import Neighborhood from './pages/neighborhood/Neighborhood';
-import NewQuestionList from './pages/questionList/NewQuestionList';
-import Answers from './pages/Answers';
+import QuestionList from '@/pages/questionList/QuestionList';
+import QuestionAnswerViewer from './pages/QuestionAnswerViewer.jsx';
 
 import Header from './components/header/Header';
 import Footer from './components/footer/Footer';
+
+import { ThemeProvider } from '@material-ui/core/styles';
+import theme from './theme';
+
+import UserContext from '@/user';
 
 export default function App() {
   const [user, setUser] = useState(null);
   const isSignedIn = Boolean(user && user.username);
   return (
     <div id="pageContainer">
+      <UserContext.Provider value={user}>
+      <ThemeProvider theme={theme}>
       <Header user={user} setUser={setUser} />
       <div id="contentContainer">
         <Switch>
@@ -36,10 +43,10 @@ export default function App() {
             <Neighborhood />
           </Route>
           <Route path="/questions">
-            <NewQuestionList user={user} />
+            <QuestionList />
           </Route>
           <Route path="/question/:question_id">
-            <Answers user={user} />
+            <QuestionAnswerViewer />
           </Route>
           <Route path="/termsofservice">
             <TermsofService />
@@ -58,6 +65,8 @@ export default function App() {
         </Switch>
       </div>
       <Footer />
+      </ThemeProvider>
+      </UserContext.Provider>
     </div>
   );
 }
