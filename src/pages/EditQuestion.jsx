@@ -31,20 +31,28 @@ export default function EditQuestion({ question, onUpdated, onDeleted }) {
   const [newQuestion, updateNewQuestion] = useState(question);
   const user = useContext(UserContext);
 
+  let token;
+  if (user) {
+    token = user.id_token;
+  }
+
   async function save() {
-    await API.updateQuestion(newQuestion, user.id_token);
+    await API.updateQuestion(newQuestion, token);
     onUpdated();
   }
 
   async function handleDelete() {
-    await API.deleteQuestion(question.id, user.id_token);
+    await API.deleteQuestion(question.id, token);
     onDeleted();
   }
 
   const [historicAnswers, updateHistoricAnswers] = useState([]);
 
   async function fetchHistoricAnswers() {
-    const response = await API.getAnswersByQuestion(question.id, user.id_token);
+    const response = await API.getAnswersByQuestion(question.id, token);
+    if (response.status === 'error') {
+      return;
+    }
     const answers = response;
 
     // Spread metadata object so that we don't have nested keys
@@ -62,7 +70,7 @@ export default function EditQuestion({ question, onUpdated, onDeleted }) {
           fullWidth
           value={newQuestion.metadata.name}
           onChange={(e) => updateNewQuestion({ ...newQuestion, metadata: { ...newQuestion.metadata, name: e.target.value } })}
-          InputProps={{ readOnly: !question.owned }}
+          InputProps={{ disabled: !question.owned }}
           label="Name"
           variant="outlined"
         />
@@ -74,7 +82,7 @@ export default function EditQuestion({ question, onUpdated, onDeleted }) {
           <Select
             id="visibility-select"
             value={newQuestion.visibility}
-            inputProps={{ readOnly: !question.owned }}
+            inputProps={{ disabled: !question.owned }}
             onChange={(e) => updateNewQuestion({ ...newQuestion, visibility: e.target.value })}
           >
             <MenuItem value={1}>Private</MenuItem>

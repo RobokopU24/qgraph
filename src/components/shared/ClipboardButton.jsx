@@ -37,7 +37,7 @@ export default function ClipboardButton({
         value={clipboardText}
       />
 
-      <Snackbar open={snackbarNotification} autoHideDuration={6000} onClose={() => updateSnackbarNotification('')}>
+      <Snackbar open={!!snackbarNotification} autoHideDuration={6000} onClose={() => updateSnackbarNotification('')}>
         <Alert severity="success">
           {snackbarNotification}
         </Alert>
