@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Button from '@material-ui/core/Button';
 
 import Alert from '@material-ui/lab/Alert';
@@ -9,9 +9,9 @@ export default function ClipboardButton({
 }) {
   const [snackbarNotification, updateSnackbarNotification] = useState('');
 
-  const shareableLinkInputRef = React.createRef();
+  const shareableLinkInputRef = useRef();
 
-  async function copyToClipboard() {
+  function copyToClipboard() {
     shareableLinkInputRef.current.type = 'text';
     shareableLinkInputRef.current.select();
     document.execCommand('copy');

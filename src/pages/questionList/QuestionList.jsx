@@ -27,8 +27,12 @@ export default function QuestionList() {
   const [publicQuestions, updatePublicQuestions] = useState([]);
   const [loading, toggleLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
-  const [page, updatePage] = useState(0);
-  const [rowsPerPage, updateRowsPerPage] = useState(5);
+
+  const [myQuestionsPage, myQuestionsUpdatePage] = useState(0);
+  const [myQuestionsRowsPerPage, myQuestionsUpdateRowsPerPage] = useState(5);
+
+  const [publicQuestionsPage, publicQuestionsUpdatePage] = useState(0);
+  const [publicQuestionsRowsPerPage, publicQuestionsUpdateRowsPerPage] = useState(5);
 
   const user = useContext(UserContext);
 
@@ -69,55 +73,58 @@ export default function QuestionList() {
           ) : (
             <>
 
-              {/* Only show "My Questions" if the user is signed in */}
+              <Box my={3}>
+                <Typography variant="h4">
+                  My Questions
+                </Typography>
+              </Box>
 
-              { !myQuestions.length ? '' : (
-                <>
-                  <Box my={3}>
-                    <Typography variant="h4">
-                      My Questions
-                    </Typography>
-                  </Box>
-
-                  <Paper id="questionListContainer">
-                    <TableContainer>
-                      <Table>
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>Question Name</TableCell>
-                            <TableCell>Has Answers</TableCell>
-                            <TableCell>Visibility</TableCell>
-                            <TableCell>Created</TableCell>
-                            <TableCell>Edit</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {myQuestions
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((question) => (
-                              <QuestionTableRow
-                                key={question.id}
-                                question={question}
-                                onQuestionUpdated={fetchQuestions}
-                              />
-                            ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                    <TablePagination
-                      rowsPerPageOptions={[5, 10, 25]}
-                      component="div"
-                      count={myQuestions.length}
-                      rowsPerPage={rowsPerPage}
-                      page={page}
-                      onChangePage={(e, newPage) => updatePage(newPage)}
-                      onChangeRowsPerPage={(e) => {
-                        updateRowsPerPage(parseInt(e.target.value, 10));
-                        updatePage(0);
-                      }}
-                    />
-                  </Paper>
-                </>
+              { myQuestions.length === 0 ? (
+                <Box my={4}>
+                  <Alert severity="info">
+                    You do not have any questions that belong to you.
+                    Please sign in or ask a question.
+                  </Alert>
+                </Box>
+              ) : (
+                <Paper id="questionListContainer">
+                  <TableContainer>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Question Name</TableCell>
+                          <TableCell>Has Answers</TableCell>
+                          <TableCell>Visibility</TableCell>
+                          <TableCell>Created</TableCell>
+                          <TableCell>Edit</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {myQuestions
+                          .slice(myQuestionsPage * myQuestionsRowsPerPage, myQuestionsPage * myQuestionsRowsPerPage + myQuestionsRowsPerPage)
+                          .map((question) => (
+                            <QuestionTableRow
+                              key={question.id}
+                              question={question}
+                              onQuestionUpdated={fetchQuestions}
+                            />
+                          ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                  <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    component="div"
+                    count={myQuestions.length}
+                    rowsPerPage={myQuestionsRowsPerPage}
+                    page={myQuestionsPage}
+                    onChangePage={(e, newPage) => myQuestionsUpdatePage(newPage)}
+                    onChangeRowsPerPage={(e) => {
+                      myQuestionsUpdateRowsPerPage(parseInt(e.target.value, 10));
+                      myQuestionsUpdatePage(0);
+                    }}
+                  />
+                </Paper>
               )}
 
               {/* Always show public questions */}
@@ -140,7 +147,7 @@ export default function QuestionList() {
                     </TableHead>
                     <TableBody>
                       {publicQuestions
-                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        .slice(publicQuestionsPage * publicQuestionsRowsPerPage, publicQuestionsPage * publicQuestionsRowsPerPage + publicQuestionsRowsPerPage)
                         .map((question) => (
                           <QuestionTableRow
                             key={question.id}
@@ -155,12 +162,12 @@ export default function QuestionList() {
                   rowsPerPageOptions={[5, 10, 25]}
                   component="div"
                   count={publicQuestions.length}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  onChangePage={(e, newPage) => updatePage(newPage)}
+                  rowsPerPage={publicQuestionsRowsPerPage}
+                  page={publicQuestionsPage}
+                  onChangePage={(e, newPage) => publicQuestionsUpdatePage(newPage)}
                   onChangeRowsPerPage={(e) => {
-                    updateRowsPerPage(parseInt(e.target.value, 10));
-                    updatePage(0);
+                    publicQuestionsUpdateRowsPerPage(parseInt(e.target.value, 10));
+                    publicQuestionsUpdatePage(0);
                   }}
                 />
               </Paper>
