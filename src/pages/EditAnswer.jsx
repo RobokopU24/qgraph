@@ -22,7 +22,7 @@ export default function EditAnswer({ answer, afterDelete }) {
   const user = useContext(UserContext);
 
   const router_location = useLocation();
-  const fullLocation = location.origin + router_location.pathname;
+  const fullLocation = window.location.origin + router_location.pathname;
 
   function save() {
     API.updateAnswer(newAnswer, user.id_token);

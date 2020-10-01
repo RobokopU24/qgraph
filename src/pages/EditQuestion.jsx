@@ -26,7 +26,7 @@ import { formatDateTimeNicely } from '@/utils/cache';
 export default function EditQuestion({ question, onUpdated }) {
   const history = useHistory();
 
-  const fullLocation = `${location.origin}/question/${question.id}`;
+  const fullLocation = `${window.location.origin}/question/${question.id}`;
 
   const [newQuestion, updateNewQuestion] = useState(question);
   const user = useContext(UserContext);
