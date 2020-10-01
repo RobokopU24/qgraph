@@ -142,6 +142,7 @@ export default function EditQuestion({ question, onUpdated, onDeleted }) {
 
       <Box my={2}>
         <Button
+          disabled
           startIcon={<ShareIcon />}
           variant="contained"
           size="large"
@@ -156,7 +157,7 @@ export default function EditQuestion({ question, onUpdated, onDeleted }) {
         <NewDownloadButton
           displayText="Download JSON"
           getData={() => API.getQuestionData(question.id, token)}
-          fileName={questionFileName}
+          fileName={questionFileName()}
         />
       </Box>
 

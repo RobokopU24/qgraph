@@ -72,7 +72,7 @@ export default function QuestionAnswerViewer() {
 
     if (!answer_id && newAnswers.length > 0) {
       // Set default answer to first
-      history.push(`/question/${question_id}/answer/${newAnswers[0].id}`);
+      history.replace(`/question/${question_id}/answer/${newAnswers[0].id}`);
     }
   }
 
