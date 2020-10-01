@@ -23,7 +23,7 @@ import NewDownloadButton from '@/components/shared/NewDownloadButton';
 
 import { formatDateTimeNicely } from '@/utils/cache';
 
-export default function EditQuestion({ question, onUpdated }) {
+export default function EditQuestion({ question, onUpdated, onDeleted }) {
   const history = useHistory();
 
   const fullLocation = `${window.location.origin}/question/${question.id}`;
@@ -31,13 +31,14 @@ export default function EditQuestion({ question, onUpdated }) {
   const [newQuestion, updateNewQuestion] = useState(question);
   const user = useContext(UserContext);
 
-  function save() {
-    API.updateQuestion(newQuestion, user.id_token);
+  async function save() {
+    await API.updateQuestion(newQuestion, user.id_token);
     onUpdated();
   }
+
   async function handleDelete() {
     await API.deleteQuestion(question.id, user.id_token);
-    onUpdated();
+    onDeleted();
   }
 
   const [historicAnswers, updateHistoricAnswers] = useState([]);
@@ -56,7 +57,7 @@ export default function EditQuestion({ question, onUpdated }) {
   return (
     <Box mx={1}>
 
-      <Box my={3} width={1 / 2}>
+      <Box my={3}>
         <TextField
           fullWidth
           value={newQuestion.metadata.name}
