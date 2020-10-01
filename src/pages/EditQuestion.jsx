@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import slugify from 'slugify';
 
 import { DataGrid } from '@material-ui/data-grid';
 
@@ -61,6 +62,12 @@ export default function EditQuestion({ question, onUpdated, onDeleted }) {
   }
 
   useEffect(() => { fetchHistoricAnswers(); }, [user]);
+
+  function questionFileName() {
+    const question_name_slug = slugify(question.metadata.name, '_',
+      { strict: true });
+    return `${question_name_slug}.json`;
+  }
 
   return (
     <Box mx={1}>
@@ -148,8 +155,8 @@ export default function EditQuestion({ question, onUpdated, onDeleted }) {
       <Box my={2}>
         <NewDownloadButton
           displayText="Download JSON"
-          getData={() => API.getQuestionData(question.id, user.id_token)}
-          fileName="question_data.json"
+          getData={() => API.getQuestionData(question.id, token)}
+          fileName={questionFileName}
         />
       </Box>
 
