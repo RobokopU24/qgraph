@@ -96,7 +96,6 @@ export default function QuestionList() {
                           <TableCell>Has Answers</TableCell>
                           <TableCell>Visibility</TableCell>
                           <TableCell>Created</TableCell>
-                          <TableCell>Edit</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -142,7 +141,6 @@ export default function QuestionList() {
                         <TableCell>Question Name</TableCell>
                         <TableCell>Has Answers</TableCell>
                         <TableCell>Created</TableCell>
-                        <TableCell>View Details</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
