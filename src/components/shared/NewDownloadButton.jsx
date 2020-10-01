@@ -4,16 +4,16 @@ import DescriptionIcon from '@material-ui/icons/Description';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 export default function NewDownloadButton({ displayText, getData, fileName }) {
-  const [ blobURL, setBlobURL ] = useState('');
-  const [ loading, setLoading ] = useState(false);
+  const [blobURL, setBlobURL] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  let hiddenButton = useRef();
+  const hiddenButton = useRef();
 
   async function download() {
     setLoading(true);
 
-    let response = await getData();
-    let blob = new Blob([JSON.stringify(response)], {type: "octet/stream"})
+    const response = await getData();
+    const blob = new Blob([JSON.stringify(response)], { type: 'octet/stream' });
     setBlobURL(window.URL.createObjectURL(blob));
     hiddenButton.current.click();
 
@@ -23,14 +23,15 @@ export default function NewDownloadButton({ displayText, getData, fileName }) {
   return (
     <>
       <Button
-        onClick={ !loading && download }
+        onClick={!loading && download}
         startIcon={!loading && <DescriptionIcon />}
         variant="contained"
         size="large"
-        color="secondary">
+        color="secondary"
+      >
         {loading ? <CircularProgress /> : displayText}
       </Button>
       <a ref={hiddenButton} href={blobURL} download={fileName} />
     </>
-  )
+  );
 }

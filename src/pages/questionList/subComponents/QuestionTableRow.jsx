@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory } from "react-router-dom";
+import { useHistory } from 'react-router-dom';
 
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
@@ -22,12 +22,10 @@ import { green, red } from '@material-ui/core/colors';
 
 import EditQuestion from '@/pages/EditQuestion';
 
-import { visibilityMapping } from '@/utils/cache';
-
-import { formatDateTimeNicely } from '@/utils/cache';
+import { visibilityMapping, formatDateTimeNicely } from '@/utils/cache';
 
 export default function MyQuestionTableRow({ question, onQuestionUpdated }) {
-  let history = useHistory();
+  const history = useHistory();
 
   const [showModal, toggleShowModal] = useState(false);
 
@@ -37,49 +35,52 @@ export default function MyQuestionTableRow({ question, onQuestionUpdated }) {
   }
 
   return (
-    <TableRow 
+    <TableRow
       key={question.id}
-      onClick={ () => history.push(`/question/${question.id}`) }
-      hover={true} style={{cursor: 'pointer'}} >
+      onClick={() => history.push(`/question/${question.id}`)}
+      hover
+      style={{ cursor: 'pointer' }}
+    >
 
       <TableCell>
         {question.metadata.name}
       </TableCell>
-      <TableCell> 
-        {question.metadata.hasAnswers ? 
-          <CheckIcon style={{ color: green[500] }}/> : 
-          <ClearIcon style={{ color: red[500] }}/>
-        }
+      <TableCell>
+        {question.metadata.hasAnswers ?
+          <CheckIcon style={{ color: green[500] }} /> :
+          <ClearIcon style={{ color: red[500] }} />}
       </TableCell>
-      { question.owned && 
-        <TableCell> 
+      { question.owned && (
+        <TableCell>
           { visibilityMapping[question.visibility] }
         </TableCell>
-      }
-      <TableCell> 
+      )}
+      <TableCell>
         { formatDateTimeNicely(question.created_at) }
       </TableCell>
-      <TableCell> 
+      <TableCell>
         <Button
-            variant="contained"
-            color="primary"
-            onClick={ openModal }>
+          variant="contained"
+          color="primary"
+          onClick={openModal}
+        >
           { question.owned ? <EditIcon /> : <VisibilityIcon /> }
         </Button>
       </TableCell>
 
       <Dialog
         open={showModal}
-        onClick={(e) => e.stopPropagation() }
+        onClick={(e) => e.stopPropagation()}
         onClose={() => toggleShowModal(false)}
         maxWidth="lg"
         fullWidth
-        aria-labelledby="EditQuestionModal">
+        aria-labelledby="EditQuestionModal"
+      >
 
         <DialogTitle>
           <Box my={3} display="flex" justifyContent="space-between" alignItems="center">
             <Typography variant="h3">
-              {question.owned ? "Edit Question" : "Question Details"}
+              {question.owned ? 'Edit Question' : 'Question Details'}
             </Typography>
             <IconButton aria-label="close" onClick={() => toggleShowModal(false)}>
               <CloseIcon fontSize="large" />
@@ -87,7 +88,7 @@ export default function MyQuestionTableRow({ question, onQuestionUpdated }) {
           </Box>
         </DialogTitle>
         <DialogContent>
-          <EditQuestion question={question} onUpdated={ onQuestionUpdated } />
+          <EditQuestion question={question} onUpdated={onQuestionUpdated} />
         </DialogContent>
       </Dialog>
     </TableRow>

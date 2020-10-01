@@ -4,7 +4,9 @@ import Button from '@material-ui/core/Button';
 import Alert from '@material-ui/lab/Alert';
 import Snackbar from '@material-ui/core/Snackbar';
 
-export default function ClipboardButton({ startIcon, displayText, clipboardText, notificationText }) {
+export default function ClipboardButton({
+  startIcon, displayText, clipboardText, notificationText,
+}) {
   const [snackbarNotification, updateSnackbarNotification] = useState('');
 
   const shareableLinkInputRef = React.createRef();
@@ -24,19 +26,22 @@ export default function ClipboardButton({ startIcon, displayText, clipboardText,
         variant="contained"
         size="large"
         color="secondary"
-        onClick={ () => copyToClipboard() }>
+        onClick={() => copyToClipboard()}
+      >
         {displayText}
       </Button>
 
-      <input type="hidden" 
-          ref={shareableLinkInputRef} 
-          value={clipboardText} />
+      <input
+        type="hidden"
+        ref={shareableLinkInputRef}
+        value={clipboardText}
+      />
 
-      <Snackbar open={snackbarNotification} autoHideDuration={6000} onClose={ () => updateSnackbarNotification('') }>
+      <Snackbar open={snackbarNotification} autoHideDuration={6000} onClose={() => updateSnackbarNotification('')}>
         <Alert severity="success">
           {snackbarNotification}
         </Alert>
       </Snackbar>
     </>
-  )
+  );
 }
