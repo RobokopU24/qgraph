@@ -22,14 +22,14 @@ export default function EditAnswer({ answer, afterDelete }) {
   const user = useContext(UserContext);
 
   const router_location = useLocation();
-  const fullLocation = location.origin + router_location.pathname;
+  const fullLocation = window.location.origin + router_location.pathname;
 
-  function save() {
-    API.updateAnswer(newAnswer, user.id_token);
+  async function save() {
+    await API.cache.updateAnswer(newAnswer, user.id_token);
   }
 
   async function handleDelete() {
-    await API.deleteAnswer(answer.id, user.id_token);
+    await API.cache.deleteAnswer(answer.id, user.id_token);
     afterDelete();
   }
   return (

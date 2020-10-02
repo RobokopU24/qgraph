@@ -33,7 +33,7 @@ export default function QuestionList() {
   const user = useContext(UserContext);
 
   async function fetchQuestions() {
-    const response = await API.getQuestions(user && user.id_token);
+    const response = await API.cache.getQuestions(user && user.id_token);
     if (response.status === 'error') {
       setErrorMessage(response.message);
       toggleLoading(false);

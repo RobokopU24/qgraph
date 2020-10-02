@@ -26,24 +26,24 @@ import { formatDateTimeNicely } from '@/utils/cache';
 export default function EditQuestion({ question, onUpdated }) {
   const history = useHistory();
 
-  const fullLocation = `${location.origin}/question/${question.id}`;
+  const fullLocation = `${window.location.origin}/question/${question.id}`;
 
   const [newQuestion, updateNewQuestion] = useState(question);
   const user = useContext(UserContext);
 
-  function save() {
-    API.updateQuestion(newQuestion, user.id_token);
+  async function save() {
+    await API.cache.updateQuestion(newQuestion, user.id_token);
     onUpdated();
   }
   async function handleDelete() {
-    await API.deleteQuestion(question.id, user.id_token);
+    await API.cache.deleteQuestion(question.id, user.id_token);
     onUpdated();
   }
 
   const [historicAnswers, updateHistoricAnswers] = useState([]);
 
   async function fetchHistoricAnswers() {
-    const response = await API.getAnswersByQuestion(question.id, user.id_token);
+    const response = await API.cache.getAnswersByQuestion(question.id, user.id_token);
     const answers = response;
 
     // Spread metadata object so that we don't have nested keys
