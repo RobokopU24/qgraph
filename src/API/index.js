@@ -79,13 +79,23 @@ const baseRoutes = {
       return handleAxiosError(error);
     }
   },
-  async setDocumentData(doc_id, newData, token) {
+  async setDocumentData(doc_id, newData, token, onUploadPercentage) {
+    function onUploadProgress(progressEvent) {
+      const percentCompleted = Math.round(
+        (progressEvent.loaded * 100) / progressEvent.total,
+      );
+
+      if (onUploadPercentage) {
+        onUploadPercentage(percentCompleted);
+      }
+    }
     const config = {
       url: `${base_url}document/${doc_id}/data`,
       method: 'PUT',
       data: newData,
       withCredentials: true,
       headers: {},
+      onUploadProgress,
     };
     config.headers.Authorization = `Bearer ${token}`;
     try {

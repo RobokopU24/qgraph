@@ -3,10 +3,11 @@ import React, { useState, useContext, useEffect } from 'react';
 import Box from '@material-ui/core/Box';
 import Alert from '@material-ui/lab/Alert';
 
-import Loading from '@/components/loading/Loading';
 import useMessageStore from '@/stores/useMessageStore';
 import config from '@/config.json';
 import parseMessage from '@/utils/parseMessage';
+
+import Loading from '@/components/loading/Loading';
 
 import API from '@/API';
 import UserContext from '@/user';
@@ -62,7 +63,9 @@ export default function StoredAnswersetView({ question_id, answer_id }) {
 
   return (
     <>
-      { loading ? <Loading /> : (
+      { loading ? (
+        <Loading />
+      ) : (
         <>
           { errorMessage ? (
             <Box display="flex" justifyContent="center">

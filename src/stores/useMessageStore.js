@@ -12,6 +12,7 @@ const makeEmptyArray = (len, init) => {
 
 export default function useMessageStore() {
   const message = useRef(null);
+  const originalText = useRef('');
   const filter = useRef({});
   // const [activeAnswerId, updateActiveAnswerId] = useState(null);
   // const [denseAnswer, updateDenseAnswer] = useState({});
@@ -51,7 +52,8 @@ export default function useMessageStore() {
     });
   }
 
-  function initializeMessage(msg) {
+  function initializeMessage(msg, givenOriginalText) {
+    originalText.current = givenOriginalText;
     message.current = msg;
     message.current.results.forEach((a, i) => {
       if (!a.id) {
@@ -759,6 +761,7 @@ export default function useMessageStore() {
 
   return {
     message: message.current,
+    originalText: originalText.current,
     initializeMessage,
     annotatedPrunedKnowledgeGraph,
     numKgNodes: getNumKgNodes(),

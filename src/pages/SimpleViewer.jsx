@@ -5,6 +5,10 @@ import Dropzone from 'react-dropzone';
 import { FaCloudUploadAlt } from 'react-icons/fa';
 import Snackbar from '@material-ui/core/Snackbar';
 
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Button from '@material-ui/core/Button';
+import Box from '@material-ui/core/Box';
+
 import API from '@/API';
 
 // import AppConfig from '../AppConfig';
@@ -27,6 +31,9 @@ export default function SimpleViewer(props) {
   const [loadingMessage, setLoadingMessage] = useState('');
   const [showSnackbar, toggleSnackbar] = useState(false);
   const messageStore = useMessageStore();
+
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploading, toggleUploading] = useState(false);
 
   async function uploadMessage() {
     const defaultQuestion = {
@@ -60,16 +67,16 @@ export default function SimpleViewer(props) {
       return;
     }
     const answerId = response.id;
+
     // Upload answer data
-    const answerData = JSON.stringify({
-      knowledge_graph: messageStore.message.knowledge_graph,
-      results: messageStore.message.results,
-    });
-    // Upload answer data
-    response = await API.setAnswerData(answerId, answerData, user.id_token);
+    toggleUploading(true);
+    response = await API.setAnswerData(answerId,
+      messageStore.originalText,
+      user.id_token,
+      setUploadProgress);
+    toggleUploading(false);
     if (response.status === 'error') {
       setErrorMessage('Unable to upload answer data.');
-      return;
     }
 
     toggleSnackbar(true);
@@ -89,10 +96,9 @@ export default function SimpleViewer(props) {
         try {
           const message = JSON.parse(fileContents);
           const parsedMessage = parseMessage(message);
-          messageStore.initializeMessage(parsedMessage);
+          messageStore.initializeMessage(parsedMessage, fileContents);
           setMessageSaved(true);
         } catch (err) {
-          console.log(err);
           // window.alert('Failed to load this Answerset file. Are you sure this is valid?');
           setErrorMessage('There was the problem loading the file. Is this valid JSON?');
         }
@@ -127,12 +133,24 @@ export default function SimpleViewer(props) {
                 omitHeader
               />
               {user && (
-                <button type="button" onClick={uploadMessage}>Upload</button>
+                <Box my={5}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={uploadMessage}
+                    startIcon={
+                      uploading &&
+                      <CircularProgress value={uploadProgress} variant="determinate" />
+                    }
+                  >
+                    { uploading ? '' : 'Upload' }
+                  </Button>
+                </Box>
               )}
               <Snackbar
                 open={showSnackbar}
                 onClose={() => toggleSnackbar(false)}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
                 message="Message saved successfully!"
               />
             </>
