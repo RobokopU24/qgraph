@@ -24,8 +24,8 @@ import { formatDateTimeNicely } from '@/utils/cache';
 import Loading from '@/components/loading/Loading';
 import StoredAnswersetViewer from '@/components/shared/answersetView/StoredAnswersetViewer';
 
-import EditQuestion from '@/pages/EditQuestion';
-import EditAnswer from '@/pages/EditAnswer';
+import EditQuestion from './subComponents/EditQuestion';
+import EditAnswer from './subComponents/EditAnswer';
 
 export default function QuestionAnswerViewer() {
   const [question, updateQuestion] = useState(null);

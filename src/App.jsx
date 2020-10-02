@@ -10,7 +10,7 @@ import SimpleViewer from '@/pages/SimpleViewer';
 
 import Neighborhood from '@/pages/neighborhood/Neighborhood';
 import QuestionList from '@/pages/questionList/QuestionList';
-import QuestionAnswerViewer from '@/pages/QuestionAnswerViewer';
+import QuestionAnswerViewer from '@/pages/questionAnswerViewer/QuestionAnswerViewer';
 
 import Header from '@/components/header/Header';
 import Footer from '@/components/footer/Footer';
