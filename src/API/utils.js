@@ -7,7 +7,7 @@ function handleAxiosError(error) {
     // This either means the server is unreachable or there was
     // some error setting up the request object
     errorResponse = {
-      message: 'An unknown error occured',
+      message: 'We were unable to reach the backend server to process your request. Please try again later.',
       status: 'error',
     };
   }

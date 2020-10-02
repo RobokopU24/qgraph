@@ -1,23 +1,23 @@
 import axios from 'axios';
 import handleAxiosError from './utils';
 
+const messenger = 'http://robokop.renci.org:4868';
+
 const baseRoutes = {
   /**
-   * Send a query graph to the server to ask an ARA for an answer
-   * @param {string} questionId robokache question id
-   * @param {object} questionData query graph object
-   * @param {string} token jws token
+   * Send a query graph to ask an ARA for an answer
+   * @param {object} question query graph object
    */
-  async getAnswer(questionId, token) {
+  async getAnswer(question) {
     const config = {
-      url: '/api/answer',
+      url: `${messenger}/answer`,
       method: 'POST',
-      params: {
-        questionId,
+      data: {
+        message: {
+          query_graph: question,
+        },
       },
-      headers: {},
     };
-    config.headers.Authorization = token;
     try {
       const response = await axios(config);
       return response.data;
