@@ -6,6 +6,7 @@ import { FaCloudUploadAlt } from 'react-icons/fa';
 import Snackbar from '@material-ui/core/Snackbar';
 
 import API from '@/API';
+import { formatDateTimeNicely } from '@/utils/cache';
 
 // import AppConfig from '../AppConfig';
 import Loading from '../components/loading/Loading';
@@ -29,7 +30,11 @@ export default function SimpleViewer(props) {
   const messageStore = useMessageStore();
 
   async function askQuestion() {
-    const defaultQuestion = { parent: '', visibility: 1 };
+    const defaultQuestion = {
+      parent: '',
+      visibility: 1,
+      metadata: { name: `Simple Viewer Question - ${formatDateTimeNicely(new Date().toLocaleString())}` },
+    };
     let response;
 
     response = await API.cache.createQuestion(defaultQuestion, user.id_token);
@@ -46,7 +51,7 @@ export default function SimpleViewer(props) {
       setErrorMessage('Unable to upload question data.');
       return;
     }
-    response = await API.server.getAnswer(questionId, messageStore.message.query_graph, user.id_token);
+    response = await API.server.getAnswer(questionId, user.id_token);
     if (response.status === 'error') {
       setErrorMessage('Unable to ask question.');
       return;
