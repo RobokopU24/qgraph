@@ -13,7 +13,7 @@ export default function NewDownloadButton({ displayText, getData, fileName }) {
     setLoading(true);
 
     const response = await getData();
-    const blob = new Blob([JSON.stringify(response)], { type: 'octet/stream' });
+    const blob = new Blob([JSON.stringify(response)], { type: 'application/json' });
     setBlobURL(window.URL.createObjectURL(blob));
     hiddenButton.current.click();
 
