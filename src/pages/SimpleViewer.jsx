@@ -29,7 +29,11 @@ export default function SimpleViewer(props) {
   const messageStore = useMessageStore();
 
   async function uploadMessage() {
-    const defaultQuestion = { parent: '', visibility: 1 };
+    const defaultQuestion = {
+      parent: '',
+      visibility: 1,
+      metadata: { name: 'Simple Viewer Question' },
+    };
 
     let response;
 

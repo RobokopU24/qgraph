@@ -38,6 +38,9 @@ export default function EditQuestion({ question, onUpdated, onDeleted }) {
   }
 
   async function save() {
+    if (!newQuestion.metadata.name) {
+      return;
+    }
     await API.updateQuestion(newQuestion, token);
     onUpdated();
   }
@@ -69,15 +72,26 @@ export default function EditQuestion({ question, onUpdated, onDeleted }) {
     return `${question_name_slug}.json`;
   }
 
+  function handleNameUpdate(e) {
+    updateNewQuestion(
+      {
+        ...newQuestion,
+        metadata: { ...newQuestion.metadata, name: e.target.value },
+      },
+    );
+  }
+
   return (
     <Box mx={1}>
 
       <Box my={3}>
         <TextField
+          error={!newQuestion.metadata.name}
+          helperText={!newQuestion.metadata.name && 'This field is required'}
           fullWidth
           value={newQuestion.metadata.name}
-          onChange={(e) => updateNewQuestion({ ...newQuestion, metadata: { ...newQuestion.metadata, name: e.target.value } })}
-          InputProps={{ disabled: !question.owned }}
+          onChange={handleNameUpdate}
+          disabled={!question.owned}
           label="Name"
           variant="outlined"
         />
@@ -157,7 +171,7 @@ export default function EditQuestion({ question, onUpdated, onDeleted }) {
         <NewDownloadButton
           displayText="Download JSON"
           getData={() => API.getQuestionData(question.id, token)}
-          fileName={questionFileName()}
+          fileName={questionFileName}
         />
       </Box>
 
