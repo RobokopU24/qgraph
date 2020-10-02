@@ -4,6 +4,7 @@ import {
 } from 'react-router-dom';
 
 import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -47,7 +48,7 @@ export default function QuestionAnswerViewer() {
     if (user) {
       token = user.id_token;
     }
-    const response = await API.getQuestion(question_id, token);
+    const response = await API.cache.getQuestion(question_id, token);
     if (response.status === 'error') {
       return;
     }
@@ -61,7 +62,7 @@ export default function QuestionAnswerViewer() {
     if (user) {
       token = user.id_token;
     }
-    const response = await API.getAnswersByQuestion(question_id, token);
+    const response = await API.cache.getAnswersByQuestion(question_id, token);
     if (response.status === 'error') {
       return;
     }
@@ -78,7 +79,19 @@ export default function QuestionAnswerViewer() {
     return answers.find((a) => a.id === id);
   }
 
-  useEffect(() => { fetchAnswers(); }, [user, question_id, answer_id]);
+  useEffect(() => {
+    fetchAnswers();
+  }, [user, question_id, answer_id]);
+
+  async function getNewAnswer() {
+    if (!user.id_token) {
+      const response = await API.messenger.getAnswer(question);
+      console.log(response);
+    } else {
+      const response = await API.server.getAnswer(question_id, user.id_token);
+      console.log('Got new answer back', response);
+    }
+  }
 
   return (
     <>
@@ -111,6 +124,11 @@ export default function QuestionAnswerViewer() {
                     )) }
                   </Select>
                 </FormControl>
+                <Button
+                  onClick={getNewAnswer}
+                >
+                  Get A New Answer
+                </Button>
               </Box>
             )}
           </>
