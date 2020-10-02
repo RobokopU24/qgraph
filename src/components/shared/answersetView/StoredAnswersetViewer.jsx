@@ -45,9 +45,14 @@ export default function StoredAnswersetView({ question_id, answer_id }) {
     const message =
       { ...answerResponse, query_graph: questionResponse };
 
-    const parsedMessage = parseMessage(message);
-    messageStore.initializeMessage(parsedMessage);
-    setErrorMessage('');
+    try {
+      const parsedMessage = parseMessage(message);
+      messageStore.initializeMessage(parsedMessage);
+      setErrorMessage('');
+    } catch (err) {
+      setErrorMessage('Unable to parse message. Please ensure that the question you submitted is a valid JSON object.');
+    }
+
     toggleLoading(false);
   }
 

@@ -11,6 +11,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import Alert from '@material-ui/lab/Alert';
+import Divider from '@material-ui/core/Divider';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Accordion from '@material-ui/core/Accordion';
@@ -24,6 +25,7 @@ import { formatDateTimeNicely } from '@/utils/cache';
 import Loading from '@/components/loading/Loading';
 import StoredAnswersetViewer from '@/components/shared/answersetView/StoredAnswersetViewer';
 
+import EditQuestion from '@/pages/EditQuestion';
 import EditAnswer from '@/pages/EditAnswer';
 
 export default function QuestionAnswerViewer() {
@@ -55,7 +57,9 @@ export default function QuestionAnswerViewer() {
     updateQuestion(response);
   }
 
-  useEffect(() => { fetchQuestion(); }, [user, question_id]);
+  useEffect(() => {
+    fetchQuestion();
+  }, [user, question_id]);
 
   async function fetchAnswers() {
     let token;
@@ -71,7 +75,7 @@ export default function QuestionAnswerViewer() {
 
     if (!answer_id && newAnswers.length > 0) {
       // Set default answer to first
-      history.push(`/question/${question_id}/answer/${newAnswers[0].id}`);
+      history.replace(`/question/${question_id}/answer/${newAnswers[0].id}`);
     }
   }
 
@@ -93,6 +97,10 @@ export default function QuestionAnswerViewer() {
     }
   }
 
+  function handleQuestionDeleted() {
+    history.push('/questions');
+  }
+
   return (
     <>
       { !question ? <Loading /> :
@@ -102,6 +110,25 @@ export default function QuestionAnswerViewer() {
               <Typography variant="h3">
                 Question: {question.metadata.name}
               </Typography>
+            </Box>
+
+            <Box my={4} mx="auto" width={2 / 3}>
+              <Accordion>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="question-details-content"
+                  id="question-details-header"
+                >
+                  <Typography>Details</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <EditQuestion
+                    question={question}
+                    onUpdated={fetchQuestion}
+                    onDeleted={handleQuestionDeleted}
+                  />
+                </AccordionDetails>
+              </Accordion>
             </Box>
 
             { answers.length === 0 ? (
@@ -134,18 +161,22 @@ export default function QuestionAnswerViewer() {
           </>
         )}
 
+      <Box my={8}>
+        <Divider />
+      </Box>
+
       <Route
         path={`${path}/answer/:answer_id`}
         render={(props) => (
           getAnswer(answer_id) && (
             <>
-              <Box mb={4} mt={12}>
-                <Typography variant="h5">
+              <Box mb={4}>
+                <Typography variant="h4">
                   Answer Explorer
                 </Typography>
               </Box>
 
-              <Box my={4} width={1 / 2}>
+              <Box my={4} mx="auto" width={2 / 3}>
                 <Accordion>
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}

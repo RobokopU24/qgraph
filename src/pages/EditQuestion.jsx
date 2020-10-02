@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import slugify from 'slugify';
 
 import { DataGrid } from '@material-ui/data-grid';
 
@@ -23,7 +24,7 @@ import NewDownloadButton from '@/components/shared/NewDownloadButton';
 
 import { formatDateTimeNicely } from '@/utils/cache';
 
-export default function EditQuestion({ question, onUpdated }) {
+export default function EditQuestion({ question, onUpdated, onDeleted }) {
   const history = useHistory();
 
   const fullLocation = `${window.location.origin}/question/${question.id}`;
@@ -31,19 +32,28 @@ export default function EditQuestion({ question, onUpdated }) {
   const [newQuestion, updateNewQuestion] = useState(question);
   const user = useContext(UserContext);
 
+  let token;
+  if (user) {
+    token = user.id_token;
+  }
+
   async function save() {
-    await API.cache.updateQuestion(newQuestion, user.id_token);
+    await API.updateQuestion(newQuestion, token);
     onUpdated();
   }
+
   async function handleDelete() {
-    await API.cache.deleteQuestion(question.id, user.id_token);
-    onUpdated();
+    await API.cache.deleteQuestion(question.id, token);
+    onDeleted();
   }
 
   const [historicAnswers, updateHistoricAnswers] = useState([]);
 
   async function fetchHistoricAnswers() {
-    const response = await API.cache.getAnswersByQuestion(question.id, user.id_token);
+    const response = await API.cache.getAnswersByQuestion(question.id, token);
+    if (response.status === 'error') {
+      return;
+    }
     const answers = response;
 
     // Spread metadata object so that we don't have nested keys
@@ -53,15 +63,21 @@ export default function EditQuestion({ question, onUpdated }) {
 
   useEffect(() => { fetchHistoricAnswers(); }, [user]);
 
+  function questionFileName() {
+    const question_name_slug = slugify(question.metadata.name, '_',
+      { strict: true });
+    return `${question_name_slug}.json`;
+  }
+
   return (
     <Box mx={1}>
 
-      <Box my={3} width={1 / 2}>
+      <Box my={3}>
         <TextField
           fullWidth
           value={newQuestion.metadata.name}
           onChange={(e) => updateNewQuestion({ ...newQuestion, metadata: { ...newQuestion.metadata, name: e.target.value } })}
-          InputProps={{ readOnly: !question.owned }}
+          InputProps={{ disabled: !question.owned }}
           label="Name"
           variant="outlined"
         />
@@ -73,7 +89,7 @@ export default function EditQuestion({ question, onUpdated }) {
           <Select
             id="visibility-select"
             value={newQuestion.visibility}
-            inputProps={{ readOnly: !question.owned }}
+            inputProps={{ disabled: !question.owned }}
             onChange={(e) => updateNewQuestion({ ...newQuestion, visibility: e.target.value })}
           >
             <MenuItem value={1}>Private</MenuItem>
@@ -126,6 +142,7 @@ export default function EditQuestion({ question, onUpdated }) {
 
       <Box my={2}>
         <Button
+          disabled
           startIcon={<ShareIcon />}
           variant="contained"
           size="large"
@@ -139,8 +156,8 @@ export default function EditQuestion({ question, onUpdated }) {
       <Box my={2}>
         <NewDownloadButton
           displayText="Download JSON"
-          getData={() => API.getQuestionData(question.id, user.id_token)}
-          fileName="question_data.json"
+          getData={() => API.getQuestionData(question.id, token)}
+          fileName={questionFileName()}
         />
       </Box>
 
