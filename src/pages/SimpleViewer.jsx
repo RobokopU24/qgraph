@@ -49,6 +49,19 @@ export default function SimpleViewer(props) {
     response = await API.server.getAnswer(questionId, messageStore.message.query_graph, user.id_token);
     if (response.status === 'error') {
       setErrorMessage('Unable to ask question.');
+      return;
+    }
+    response = await API.cache.getQuestion(questionId, user.id_token);
+    if (response.status === 'error') {
+      setErrorMessage('Unable to get the question.');
+      return;
+    }
+    const questionMeta = response;
+    questionMeta.metadata.hasAnswers = true;
+    response = await API.cache.updateQuestion(questionMeta, user.id_token);
+    if (response.status === 'error') {
+      setErrorMessage('Unable to update the question.');
+      return;
     }
     toggleSnackbar(true);
   }
