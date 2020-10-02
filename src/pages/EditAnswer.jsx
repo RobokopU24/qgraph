@@ -85,7 +85,7 @@ export default function EditAnswer({ answer, afterDelete }) {
         <NewDownloadButton
           displayText="Download JSON"
           getData={() => API.getAnswerData(answer.id, user.id_token)}
-          fileName="answer_data.json"
+          fileName={() => 'answer_data.json'}
         />
       </Box>
 

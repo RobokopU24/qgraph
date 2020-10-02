@@ -31,7 +31,7 @@ export default function NewDownloadButton({ displayText, getData, fileName }) {
       >
         {loading ? <CircularProgress /> : displayText}
       </Button>
-      <a ref={hiddenButton} href={blobURL} download={fileName} />
+      <a ref={hiddenButton} href={blobURL} download={fileName()} />
     </>
   );
 }
