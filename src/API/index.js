@@ -1,9 +1,9 @@
 import cache from './robokache';
 import server from './server';
-import messenger from './messenger';
+import ara from './ara';
 
 export default {
   cache,
   server,
-  messenger,
+  ara,
 };
