@@ -41,7 +41,7 @@ export default function EditQuestion({ question, onUpdated, onDeleted }) {
     if (!newQuestion.metadata.name) {
       return;
     }
-    await API.updateQuestion(newQuestion, token);
+    await API.cache.updateQuestion(newQuestion, token);
     onUpdated();
   }
 
@@ -170,7 +170,7 @@ export default function EditQuestion({ question, onUpdated, onDeleted }) {
       <Box my={2}>
         <NewDownloadButton
           displayText="Download JSON"
-          getData={() => API.getQuestionData(question.id, token)}
+          getData={() => API.cache.getQuestionData(question.id, token)}
           fileName={questionFileName}
         />
       </Box>
