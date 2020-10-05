@@ -18,7 +18,7 @@ import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import ShareIcon from '@material-ui/icons/Share';
 
 import API from '@/API';
-import UserContext from '@/user';
+import UserContext from '@/context/user';
 import ClipboardButton from '@/components/shared/ClipboardButton';
 import NewDownloadButton from '@/components/shared/NewDownloadButton';
 

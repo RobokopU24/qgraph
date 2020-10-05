@@ -13,7 +13,7 @@ import LinkIcon from '@material-ui/icons/Link';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 
 import API from '@/API';
-import UserContext from '@/user';
+import UserContext from '@/context/user';
 import ClipboardButton from '@/components/shared/ClipboardButton';
 import NewDownloadButton from '@/components/shared/NewDownloadButton';
 

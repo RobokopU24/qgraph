@@ -16,7 +16,7 @@ import API from '@/API';
 
 import './questionList.css';
 
-import UserContext from '@/user';
+import UserContext from '@/context/user';
 
 import usePageStatus from '@/usePageStatus';
 
@@ -36,12 +36,9 @@ export default function QuestionList() {
   const pageStatus = usePageStatus();
 
   async function fetchQuestions() {
-    pageStatus.toggleLoading(true);
-
     const response = await API.getQuestions(user && user.id_token);
     if (response.status === 'error') {
       pageStatus.setError(response.message);
-      pageStatus.toggleLoading(false);
       return;
     }
     const questions = response;
@@ -62,7 +59,9 @@ export default function QuestionList() {
         </Typography>
       </Box>
 
-      { !pageStatus.displayPage ? <pageStatus.Display /> : (
+      <pageStatus.Display />
+
+      { pageStatus.displayPage && (
         <>
           <Box my={3}>
             <Typography variant="h4">

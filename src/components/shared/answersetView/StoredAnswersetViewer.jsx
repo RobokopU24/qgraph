@@ -9,7 +9,7 @@ import config from '@/config.json';
 import parseMessage from '@/utils/parseMessage';
 
 import API from '@/API';
-import UserContext from '@/user';
+import UserContext from '@/context/user';
 
 import AnswersetView from './AnswersetView';
 

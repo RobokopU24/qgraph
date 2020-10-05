@@ -17,7 +17,9 @@ import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 
-import UserContext from '@/user';
+import UserContext from '@/context/user';
+import AlertContext from '@/context/alert';
+
 import API from '@/API';
 import { formatDateTimeNicely } from '@/utils/cache';
 import usePageStatus from '@/usePageStatus';
@@ -32,6 +34,7 @@ export default function QuestionAnswerViewer() {
   const [answers, updateAnswers] = useState([]);
 
   const user = useContext(UserContext);
+  const displayAlert = useContext(AlertContext);
 
   const { question_id } = useParams();
   const { path } = useRouteMatch();
@@ -86,11 +89,10 @@ export default function QuestionAnswerViewer() {
   }
 
   function handleQuestionUpdated(response) {
-    console.log('Question updated');
     if (response.status === 'error') {
-      pageStatus.showMessage('error', response.message);
+      displayAlert('error', response.message);
     } else {
-      pageStatus.showMessage('success', 'Updated question');
+      displayAlert('success', 'Updated question');
       fetchQuestion();
     }
   }
