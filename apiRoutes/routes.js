@@ -10,9 +10,11 @@ router.route('/answer')
   .post(async (req, res) => {
     const { questionId } = req.query;
     try {
+      // TODO: do we first check to see if the question is owned by user?
       let response = await robokache.getQuestionData(questionId, req.headers.authorization);
       if (response.status === 'error') {
         console.log('Unable to get query graph.');
+        return res.send(response);
       }
       const query_graph = response;
       const config = {
@@ -31,16 +33,18 @@ router.route('/answer')
       response = await robokache.createAnswer({ parent: questionId, visibility: 1 }, req.headers.authorization);
       if (response.status === 'error') {
         console.log('Unable to create a new answer.');
+        return res.send(response);
       }
       const answerId = response.id;
       response = await robokache.setAnswerData(answerId, answer, req.headers.authorization);
       if (response.status === 'error') {
         console.log('Unable to save answer.');
+        return res.send(response);
       }
-      res.status(200).send('Success');
+      return res.status(200).send({ id: answerId });
     } catch (error) {
       // TODO: can we handle this better?
-      res.status(500).send(handleAxiosError(error));
+      return res.status(500).send(handleAxiosError(error));
     }
   });
 
