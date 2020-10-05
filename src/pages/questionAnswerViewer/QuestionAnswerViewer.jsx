@@ -155,7 +155,7 @@ export default function QuestionAnswerViewer() {
                     )) }
                   </Select>
                 </FormControl>
-                {user.id_token && (
+                {user && user.id_token && (
                   <Button
                     onClick={getNewAnswer}
                   >
