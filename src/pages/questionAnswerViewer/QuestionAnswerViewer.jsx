@@ -99,9 +99,9 @@ export default function QuestionAnswerViewer() {
 
   function handleQuestionDeleted(response) {
     if (response.status === 'error') {
-      pageStatus.showMessage('error', response.message);
+      displayAlert('error', response.message);
     } else {
-      pageStatus.showMessage('success', 'Deleted Question');
+      displayAlert('success', 'Deleted Question');
     }
     history.push('/questions');
   }
