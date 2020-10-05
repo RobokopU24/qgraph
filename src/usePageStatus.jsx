@@ -10,6 +10,12 @@ const CenteredAlert = withStyles({
   root: { justifyContent: 'center' },
 })(Alert);
 
+/*
+ * Store to manage page error handling.
+ *
+ * Handles the display of a loading indicator when the page is first
+ * rendered and an optional error message.
+*/
 export default function usePageStatus() {
   // Full page loading indicator
   const [loading, toggleLoading] = useState(true);
