@@ -41,13 +41,13 @@ export default function EditQuestion({ question, onUpdated, onDeleted }) {
     if (!newQuestion.metadata.name) {
       return;
     }
-    await API.updateQuestion(newQuestion, token);
-    onUpdated();
+    const response = await API.updateQuestion(newQuestion, token);
+    onUpdated(response);
   }
 
   async function handleDelete() {
-    await API.deleteQuestion(question.id, token);
-    onDeleted();
+    const response = await API.deleteQuestion(question.id, token);
+    onDeleted(response);
   }
 
   const [historicAnswers, updateHistoricAnswers] = useState([]);

@@ -5,9 +5,10 @@ import './loading.css';
 const Loading = (props) => {
   const showMessage = Boolean(props && ('message' in props));
   const { message } = props;
+  const { positionStatic } = props;
 
   return (
-    <div className="loader">
+    <div className={positionStatic ? 'loader-static' : 'loader-absolute'}>
       <div className="bubble" />
       <div className="bubble" />
       <div className="bubble" />
