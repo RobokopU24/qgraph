@@ -24,8 +24,12 @@ export default function EditAnswer({ answer, afterDelete }) {
   const router_location = useLocation();
   const fullLocation = window.location.origin + router_location.pathname;
 
-  async function save() {
-    await API.cache.updateAnswer(newAnswer, user.id_token);
+  async function save(ans) {
+    const response = await API.cache.updateAnswer(ans, user.id_token);
+    if (response.status === 'error') {
+      return;
+    }
+    updateNewAnswer(ans);
   }
 
   async function handleDelete() {
@@ -42,10 +46,7 @@ export default function EditAnswer({ answer, afterDelete }) {
             id="visibility-select"
             value={newAnswer.visibility}
             inputProps={{ readOnly: !answer.owned }}
-            onChange={(e) => {
-              updateNewAnswer({ ...newAnswer, visibility: e.target.value });
-              save();
-            }}
+            onChange={(e) => save({ ...newAnswer, visibility: e.target.value })}
           >
             <MenuItem value={1}>Private</MenuItem>
             <MenuItem value={2}>Shareable</MenuItem>
@@ -84,7 +85,7 @@ export default function EditAnswer({ answer, afterDelete }) {
       <Box my={2}>
         <NewDownloadButton
           displayText="Download JSON"
-          getData={() => API.getAnswerData(answer.id, user.id_token)}
+          getData={() => API.cache.getAnswerData(answer.id, user.id_token)}
           fileName={() => 'answer_data.json'}
         />
       </Box>
