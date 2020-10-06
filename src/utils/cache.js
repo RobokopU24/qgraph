@@ -5,6 +5,14 @@ export const visibilityMapping = {
   3: 'Public',
 };
 
+/**
+ * Convert a type of visibility to what Robokache is expecting
+ * @param {('Invisible'|'Private'|'Shareable'|'Public')} value
+ */
+export function visibility(value) {
+  return Object.keys(visibilityMapping).find((key) => visibility[key] === value);
+}
+
 export function formatDateTimeNicely(dateString) {
   const jsDate = new Date(dateString);
   const options = {

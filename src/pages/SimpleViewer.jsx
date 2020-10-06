@@ -4,9 +4,10 @@ import { Row, Col } from 'react-bootstrap';
 import Dropzone from 'react-dropzone';
 import { FaCloudUploadAlt } from 'react-icons/fa';
 import Snackbar from '@material-ui/core/Snackbar';
+import Button from '@material-ui/core/Button';
 
 import API from '@/API';
-import { formatDateTimeNicely } from '@/utils/cache';
+import { visibility } from '@/utils/cache';
 
 // import AppConfig from '../AppConfig';
 import Loading from '../components/loading/Loading';
@@ -32,8 +33,8 @@ export default function SimpleViewer(props) {
   async function askQuestion() {
     const defaultQuestion = {
       parent: '',
-      visibility: 1,
-      metadata: { name: `Simple Viewer Question - ${formatDateTimeNicely(new Date().toLocaleString())}` },
+      visibility: visibility('Private'),
+      metadata: { name: 'Simple Viewer Question' },
     };
     let response;
 
@@ -51,7 +52,7 @@ export default function SimpleViewer(props) {
       setErrorMessage('Unable to upload question data.');
       return;
     }
-    response = await API.server.getAnswer(questionId, user.id_token);
+    response = await API.queryDispatcher.getAnswer(questionId, user.id_token);
     if (response.status === 'error') {
       setErrorMessage('Unable to ask question.');
       return;
@@ -74,7 +75,7 @@ export default function SimpleViewer(props) {
   async function uploadMessage() {
     const defaultQuestion = {
       parent: '',
-      visibility: 1,
+      visibility: visibility('Private'),
       metadata: { name: 'Simple Viewer Question' },
     };
 
@@ -170,8 +171,8 @@ export default function SimpleViewer(props) {
               />
               {user && (
                 <>
-                  <button type="button" onClick={uploadMessage}>Upload</button>
-                  <button type="button" onClick={askQuestion}>Ask ARA</button>
+                  <Button onClick={uploadMessage}>Upload</Button>
+                  <Button onClick={askQuestion}>Ask ARA</Button>
                 </>
               )}
               <Snackbar
