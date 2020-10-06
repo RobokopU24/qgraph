@@ -1,9 +1,9 @@
 import cache from './robokache';
-import server from './server';
+import queryDispatcher from './queryDispatcher';
 import ara from './ara';
 
 export default {
   cache,
-  server,
+  queryDispatcher,
   ara,
 };
