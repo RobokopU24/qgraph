@@ -114,17 +114,17 @@ export default function QuestionAnswerViewer() {
   }, [user, question_id, answer_id]);
 
   async function getNewAnswer() {
-    // TODO: do we only let the owner of a question ask for new answer?
-    const response = await API.server.getAnswer(question_id, user.id_token);
+    const response = await API.queryDispatcher.getAnswer(question_id, user.id_token);
     if (response.status === 'error') {
-      // TODO: we should display an error
+      pageStatus.setFailure(response.message);
       return;
     }
-    // TODO: instead of just going to the new answer page, we could show a snackbar the user
-    // can click on to take them to the new page. This would help with longer-running questions.
-    // The snackbar would need to be global so it can show on any page the user is on at the time
-    // the answer gets back.
-    history.replace(`/question/${question_id}/answer/${response.id}`);
+    displayAlert(
+      'success',
+      <Button onClick={() => history.replace(`/question/${question_id}/answer/${response.id}`)}>
+        A new answer is ready!
+      </Button>,
+    );
   }
 
   return (
@@ -178,14 +178,15 @@ export default function QuestionAnswerViewer() {
                   )) }
                 </Select>
               </FormControl>
-              {user && user.id_token && (
-                <Button
-                  onClick={getNewAnswer}
-                >
-                  Get A New Answer
-                </Button>
-              )}
             </Box>
+          )}
+
+          {question && question.owned && (
+            <Button
+              onClick={getNewAnswer}
+            >
+              Get A New Answer
+            </Button>
           )}
 
           <Box my={8}>
