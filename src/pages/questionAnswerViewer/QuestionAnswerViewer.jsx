@@ -17,11 +17,13 @@ import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 
-import UserContext from '@/user';
+import UserContext from '@/context/user';
+import AlertContext from '@/context/alert';
+
 import API from '@/API';
 import { formatDateTimeNicely } from '@/utils/cache';
+import usePageStatus from '@/utils/usePageStatus';
 
-import Loading from '@/components/loading/Loading';
 import StoredAnswersetViewer from '@/components/shared/answersetView/StoredAnswersetViewer';
 
 import EditQuestion from './subComponents/EditQuestion';
@@ -32,10 +34,13 @@ export default function QuestionAnswerViewer() {
   const [answers, updateAnswers] = useState([]);
 
   const user = useContext(UserContext);
+  const displayAlert = useContext(AlertContext);
 
   const { question_id } = useParams();
   const { path } = useRouteMatch();
   const history = useHistory();
+
+  const pageStatus = usePageStatus();
 
   let answer_id;
   // If we are rendering an answer, get answer_id with useRouteMatch
@@ -51,9 +56,11 @@ export default function QuestionAnswerViewer() {
     }
     const response = await API.getQuestion(question_id, token);
     if (response.status === 'error') {
+      pageStatus.setFailure(response.message);
       return;
     }
     updateQuestion(response);
+    pageStatus.setSuccess();
   }
 
   useEffect(() => { fetchQuestion(); }, [user, question_id]);
@@ -65,6 +72,7 @@ export default function QuestionAnswerViewer() {
     }
     const response = await API.getAnswersByQuestion(question_id, token);
     if (response.status === 'error') {
+      pageStatus.setFailure(response.message);
       return;
     }
     const newAnswers = response;
@@ -80,108 +88,123 @@ export default function QuestionAnswerViewer() {
     return answers.find((a) => a.id === id);
   }
 
-  function handleQuestionDeleted() {
-    history.push('/questions');
+  function handleQuestionUpdated(response) {
+    if (response.status === 'error') {
+      displayAlert('error', response.message);
+    } else {
+      displayAlert('success', 'Updated question');
+      fetchQuestion();
+    }
+  }
+
+  function handleQuestionDeleted(response) {
+    if (response.status === 'error') {
+      displayAlert('error', response.message);
+    } else {
+      displayAlert('success', 'Deleted Question');
+      history.push('/questions');
+    }
   }
 
   useEffect(() => { fetchAnswers(); }, [user, question_id, answer_id]);
 
   return (
     <>
-      { !question ? <Loading /> :
-        (
-          <>
-            <Box my={4}>
-              <Typography variant="h3">
-                Question: {question.metadata.name}
-              </Typography>
-            </Box>
+      <pageStatus.Display />
 
-            <Box my={4} mx="auto" width={2 / 3}>
-              <Accordion>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="question-details-content"
-                  id="question-details-header"
+      { pageStatus.displayPage && (
+        <>
+          <Box my={4}>
+            <Typography variant="h3">
+              Question: {question.metadata.name}
+            </Typography>
+          </Box>
+
+          <Box my={4} mx="auto" width={2 / 3}>
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="question-details-content"
+                id="question-details-header"
+              >
+                <Typography>Details</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <EditQuestion
+                  question={question}
+                  onUpdated={handleQuestionUpdated}
+                  onDeleted={handleQuestionDeleted}
+                />
+              </AccordionDetails>
+            </Accordion>
+          </Box>
+
+          { answers.length === 0 ? (
+            <Alert severity="error">
+              There are no answers associated with this question. Please try re-submitting.
+            </Alert>
+          ) : (
+            <Box>
+              <FormControl>
+                <InputLabel htmlFor="answer-select">Viewing Answer From</InputLabel>
+                <Select
+                  id="answer-select"
+                  value={answer_id || ''}
+                  onChange={(e) => history.push(`/question/${question_id}/answer/${e.target.value}`)}
                 >
-                  <Typography>Details</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <EditQuestion
-                    question={question}
-                    onUpdated={fetchQuestion}
-                    onDeleted={handleQuestionDeleted}
-                  />
-                </AccordionDetails>
-              </Accordion>
+                  { answers.map((a) => (
+                    <MenuItem key={a.id} value={a.id}>
+                      { formatDateTimeNicely(a.created_at) }
+                    </MenuItem>
+                  )) }
+                </Select>
+              </FormControl>
             </Box>
+          )}
 
-            { answers.length === 0 ? (
-              <Alert severity="error">
-                There are no answers associated with this question. Please try re-submitting.
-              </Alert>
-            ) : (
-              <Box>
-                <FormControl>
-                  <InputLabel htmlFor="answer-select">Viewing Answer From</InputLabel>
-                  <Select
-                    id="answer-select"
-                    value={answer_id || ''}
-                    onChange={(e) => history.push(`/question/${question_id}/answer/${e.target.value}`)}
-                  >
-                    { answers.map((a) => (
-                      <MenuItem key={a.id} value={a.id}>
-                        { formatDateTimeNicely(a.created_at) }
-                      </MenuItem>
-                    )) }
-                  </Select>
-                </FormControl>
-              </Box>
+          <Box my={8}>
+            <Divider />
+          </Box>
+
+          <Route
+            path={`${path}/answer/:answer_id`}
+            render={(props) => (
+              getAnswer(answer_id) && (
+                <>
+                  <Box mb={4}>
+                    <Typography variant="h4">
+                      Answer Explorer
+                    </Typography>
+                  </Box>
+
+                  <Box my={4} mx="auto" width={2 / 3}>
+                    <Accordion>
+                      <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="answer-details-content"
+                        id="answer-details-header"
+                      >
+                        <Typography>Details</Typography>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <EditAnswer
+                          answer={getAnswer(answer_id)}
+                          afterDelete={() => {
+                            history.push(`/question/${question_id}`);
+                          }}
+                        />
+                      </AccordionDetails>
+                    </Accordion>
+                  </Box>
+
+                  <StoredAnswersetViewer {...props.match.params} />
+                </>
+              )
             )}
-          </>
-        )}
+          />
 
-      <Box my={8}>
-        <Divider />
-      </Box>
-
-      <Route
-        path={`${path}/answer/:answer_id`}
-        render={(props) => (
-          getAnswer(answer_id) && (
-            <>
-              <Box mb={4}>
-                <Typography variant="h4">
-                  Answer Explorer
-                </Typography>
-              </Box>
-
-              <Box my={4} mx="auto" width={2 / 3}>
-                <Accordion>
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="answer-details-content"
-                    id="answer-details-header"
-                  >
-                    <Typography>Details</Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <EditAnswer
-                      answer={getAnswer(answer_id)}
-                      afterDelete={() => {
-                        history.push(`/question/${question_id}`);
-                      }}
-                    />
-                  </AccordionDetails>
-                </Accordion>
-              </Box>
-
-              <StoredAnswersetViewer {...props.match.params} />
-            </>
-          )
-        )}
-      />
-
+        </>
+      )}
     </>
   );
 }

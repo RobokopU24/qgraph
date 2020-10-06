@@ -9,7 +9,8 @@ import config from '@/config.json';
 import parseMessage from '@/utils/parseMessage';
 
 import API from '@/API';
-import UserContext from '@/user';
+import UserContext from '@/context/user';
+import usePageStatus from '@/utils/usePageStatus';
 
 import AnswersetView from './AnswersetView';
 
@@ -18,9 +19,7 @@ import AnswersetView from './AnswersetView';
  * Wrapper around AnswersetView
  */
 export default function StoredAnswersetView({ question_id, answer_id }) {
-  const [loading, toggleLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState('');
-
+  const pageStatus = usePageStatus();
   const messageStore = useMessageStore();
   const user = useContext(UserContext);
 
@@ -32,13 +31,11 @@ export default function StoredAnswersetView({ question_id, answer_id }) {
        await Promise.all([questionPromise, answerPromise]);
 
     if (questionResponse.status === 'error') {
-      setErrorMessage(questionResponse.message);
-      toggleLoading(false);
+      pageStatus.setFailure(questionResponse.message);
       return;
     }
     if (answerResponse.status === 'error') {
-      setErrorMessage(answerResponse.message);
-      toggleLoading(false);
+      pageStatus.setFailure(questionResponse.message);
       return;
     }
 
@@ -48,12 +45,10 @@ export default function StoredAnswersetView({ question_id, answer_id }) {
     try {
       const parsedMessage = parseMessage(message);
       messageStore.initializeMessage(parsedMessage);
-      setErrorMessage('');
+      pageStatus.setSuccess();
     } catch (err) {
-      setErrorMessage('Unable to parse message. Please ensure that the question you submitted is a valid JSON object.');
+      pageStatus.setFailure('Unable to parse message. Please ensure that the question you submitted is a valid JSON object.');
     }
-
-    toggleLoading(false);
   }
 
   useEffect(() => {
@@ -62,22 +57,16 @@ export default function StoredAnswersetView({ question_id, answer_id }) {
 
   return (
     <>
-      { loading ? <Loading /> : (
+      <pageStatus.Display />
+
+      { pageStatus.displayPage && (
         <>
-          { errorMessage ? (
-            <Box display="flex" justifyContent="center">
-              <Alert variant="filled" severity="error">
-                {errorMessage}
-              </Alert>
-            </Box>
-          ) : (
-            <AnswersetView
-              user={user}
-              concepts={config.concepts}
-              messageStore={messageStore}
-              omitHeader
-            />
-          )}
+          <AnswersetView
+            user={user}
+            concepts={config.concepts}
+            messageStore={messageStore}
+            omitHeader
+          />
         </>
       )}
     </>
