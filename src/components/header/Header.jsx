@@ -9,11 +9,11 @@ import IconButton from '@material-ui/core/IconButton';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 
+import UserContext from '@/context/user';
+
 import googleIcon from '../../../public/images/btn_google_light_normal_ios.svg';
 
 import './header.css';
-
-import UserContext from '@/user';
 
 export default function Header({ setUser }) {
   const [anchorEl, setAnchorEl] = useState(null);

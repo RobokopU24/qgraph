@@ -18,7 +18,7 @@ import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import ShareIcon from '@material-ui/icons/Share';
 
 import API from '@/API';
-import UserContext from '@/user';
+import UserContext from '@/context/user';
 import ClipboardButton from '@/components/shared/ClipboardButton';
 import NewDownloadButton from '@/components/shared/NewDownloadButton';
 
@@ -41,13 +41,13 @@ export default function EditQuestion({ question, onUpdated, onDeleted }) {
     if (!newQuestion.metadata.name) {
       return;
     }
-    await API.cache.updateQuestion(newQuestion, token);
-    onUpdated();
+    const response = await API.cache.updateQuestion(newQuestion, token);
+    onUpdated(response);
   }
 
   async function handleDelete() {
-    await API.cache.deleteQuestion(question.id, token);
-    onDeleted();
+    const response = await API.cache.deleteQuestion(question.id, token);
+    onDeleted(response);
   }
 
   const [historicAnswers, updateHistoricAnswers] = useState([]);
