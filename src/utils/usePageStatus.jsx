@@ -22,23 +22,48 @@ export default function usePageStatus() {
   // Full page error indicator
   const [error, setError] = useState('');
 
+  function setLoading() {
+    setError('');
+    toggleLoading(true);
+  }
+
+  function setSuccess() {
+    setError('');
+    toggleLoading(false);
+  }
+
+  function setFailure(newErr) {
+    setError(newErr);
+    toggleLoading(false);
+  }
+
   function Display() {
-    return (
-      <Box mt={10}>
-        {error && (
+    if (error) {
+      return (
+        <Box mt={10}>
           <CenteredAlert severity="error">
             {error}
           </CenteredAlert>
-        )}
+        </Box>
+      );
+    }
 
-        {(!error && loading) && <Loading positionStatic />}
-      </Box>
-    );
+    if (loading) {
+      return (
+        <Box mt={10}>
+          <Loading positionStatic />
+        </Box>
+      );
+    }
+
+    // Nothing to render
+    return null;
   }
 
   return {
-    toggleLoading,
-    setError,
+    setLoading,
+    setSuccess,
+    setFailure,
     Display: useCallback(Display, [loading, error]),
     displayPage: !loading && !error,
   };

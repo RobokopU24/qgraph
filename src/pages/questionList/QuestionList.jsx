@@ -18,7 +18,7 @@ import './questionList.css';
 
 import UserContext from '@/context/user';
 
-import usePageStatus from '@/usePageStatus';
+import usePageStatus from '@/utils/usePageStatus';
 
 import QuestionTableRow from './subComponents/QuestionTableRow';
 
@@ -38,7 +38,7 @@ export default function QuestionList() {
   async function fetchQuestions() {
     const response = await API.getQuestions(user && user.id_token);
     if (response.status === 'error') {
-      pageStatus.setError(response.message);
+      pageStatus.setFailure(response.message);
       return;
     }
     const questions = response;
@@ -46,7 +46,7 @@ export default function QuestionList() {
     updateMyQuestions(questions.filter((question) => question.owned));
     updatePublicQuestions(questions.filter((question) => !question.owned));
 
-    pageStatus.toggleLoading(false);
+    pageStatus.setSuccess();
   }
 
   useEffect(() => { fetchQuestions(); }, [user]);

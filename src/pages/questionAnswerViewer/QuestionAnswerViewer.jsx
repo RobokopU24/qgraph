@@ -22,7 +22,7 @@ import AlertContext from '@/context/alert';
 
 import API from '@/API';
 import { formatDateTimeNicely } from '@/utils/cache';
-import usePageStatus from '@/usePageStatus';
+import usePageStatus from '@/utils/usePageStatus';
 
 import StoredAnswersetViewer from '@/components/shared/answersetView/StoredAnswersetViewer';
 
@@ -56,11 +56,11 @@ export default function QuestionAnswerViewer() {
     }
     const response = await API.getQuestion(question_id, token);
     if (response.status === 'error') {
-      pageStatus.setError(response.message);
+      pageStatus.setFailure(response.message);
       return;
     }
     updateQuestion(response);
-    pageStatus.toggleLoading(false);
+    pageStatus.setSuccess();
   }
 
   useEffect(() => { fetchQuestion(); }, [user, question_id]);
@@ -72,7 +72,7 @@ export default function QuestionAnswerViewer() {
     }
     const response = await API.getAnswersByQuestion(question_id, token);
     if (response.status === 'error') {
-      pageStatus.setError(response.message);
+      pageStatus.setFailure(response.message);
       return;
     }
     const newAnswers = response;
@@ -102,8 +102,8 @@ export default function QuestionAnswerViewer() {
       displayAlert('error', response.message);
     } else {
       displayAlert('success', 'Deleted Question');
+      history.push('/questions');
     }
-    history.push('/questions');
   }
 
   useEffect(() => { fetchAnswers(); }, [user, question_id, answer_id]);

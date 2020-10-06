@@ -8,15 +8,13 @@ import Guide from '@/pages/Guide';
 import TermsofService from '@/pages/TermsofService';
 import SimpleViewer from '@/pages/SimpleViewer';
 
-import Snackbar from '@material-ui/core/Snackbar';
-import Alert from '@material-ui/lab/Alert';
-
 import Neighborhood from '@/pages/neighborhood/Neighborhood';
 import QuestionList from '@/pages/questionList/QuestionList';
 import QuestionAnswerViewer from '@/pages/questionAnswerViewer/QuestionAnswerViewer';
 
 import Header from '@/components/header/Header';
 import Footer from '@/components/footer/Footer';
+import AlertWrapper from '@/components/AlertWrapper';
 
 import { ThemeProvider } from '@material-ui/core/styles';
 import theme from '@/theme';
@@ -39,21 +37,10 @@ export default function App() {
       <AlertContext.Provider value={simpleSetAlert}>
         <UserContext.Provider value={user}>
           <ThemeProvider theme={theme}>
-            <Snackbar
-              open={alert.msg}
-              anchorOrigin={
-                { vertical: 'top', horizontal: 'center' }
-              }
-              onClose={() => setAlert({})}
-            >
-              <Alert
-                variant="filled"
-                severity={alert.severity}
-              >
-                {alert.msg}
-              </Alert>
-            </Snackbar>
-
+            <AlertWrapper
+              alert={alert}
+              onClose={() => simpleSetAlert(alert.severity, '')}
+            />
             <Header user={user} setUser={setUser} />
             <div id="contentContainer">
               <Switch>
