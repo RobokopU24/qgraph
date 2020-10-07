@@ -11,6 +11,11 @@
   width: 20rem;
 }
 
+.loadingMessage {
+  display: block;
+  margin: 30 auto;
+}
+
 .bubble {
   animation: expand 1.2s ease-in-out infinite;
   border-radius: 20px;
