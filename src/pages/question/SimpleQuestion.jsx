@@ -11,24 +11,22 @@ import API from '@/API';
 
 import AnswersetView from '@/components/shared/answersetView/AnswersetView';
 import parseMessage from '@/utils/parseMessage';
+import useMessageStore from '@/stores/useMessageStore';
+import usePageStatus from '@/utils/usePageStatus';
 
 import './newQuestion.css';
-import Loading from '../../components/loading/Loading';
-import QuickQuestionError from './subComponents/QuickQuestionError';
 import QuestionBuilder from './questionBuilder/QuestionBuilder';
 
-import useMessageStore from '../../stores/useMessageStore';
 import useQuestionStore from './useQuestionStore';
 import config from '../../config.json';
 
 export default function SimpleQuestion() {
   const user = useContext(UserContext);
-  const [fail, setFail] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [ready, setReady] = useState(false);
   const messageStore = useMessageStore();
   const questionStore = useQuestionStore();
+  const answersetStatus = usePageStatus();
+
+  const [submittedQuestion, toggleSubmittedQuestion] = useState(false);
 
   function onDownloadQuestion() {
     const data = questionStore.getMachineQuestionSpecJson;
@@ -68,16 +66,22 @@ export default function SimpleQuestion() {
   }
 
   async function onSubmit() {
-    setLoading(true);
+    toggleSubmittedQuestion(true);
+    answersetStatus.setLoading();
+
     const response = await API.ara.getAnswer(questionStore.query_graph);
     if (response.status === 'error') {
-      setFail(true);
-      setErrorMessage(response.message);
+      answersetStatus.setFail(response.message);
+      return;
     }
-    const parsedMessage = parseMessage(response);
-    messageStore.initializeMessage(parsedMessage);
-    setLoading(false);
-    setReady(true);
+    try {
+      const parsedMessage = parseMessage(response);
+      messageStore.initializeMessage(parsedMessage);
+    } catch (err) {
+      answersetStatus.setFail(response.message);
+      return;
+    }
+    answersetStatus.setSuccess();
   }
 
   function resetQuestion() {
@@ -88,7 +92,7 @@ export default function SimpleQuestion() {
   return (
     <Grid>
       <Row>
-        {!loading && !ready && (
+        {!submittedQuestion ? (
           <>
             <h1 className="robokopApp">
               Ask a Quick Question
@@ -111,34 +115,28 @@ export default function SimpleQuestion() {
               submit={onSubmit}
             />
           </>
-        )}
-        {ready && (
+        ) : (
           <>
-            <div style={{ position: 'block', paddingBottom: '10px' }}>
-              <h1 style={{ display: 'inline' }}>{questionStore.questionName}</h1>
-              <span style={{ fontSize: '22px', float: 'right', marginTop: '10px' }} title="Download">
-                <FaDownload style={{ cursor: 'pointer' }} onClick={onDownloadAnswer} />
-              </span>
-            </div>
-            <AnswersetView
-              user={user}
-              concepts={config.concepts}
-              messageStore={messageStore}
-              omitHeader
-            />
+            <answersetStatus.Display />
+            { answersetStatus.displayPage && (
+              <>
+                <div style={{ position: 'block', paddingBottom: '10px' }}>
+                  <h1 style={{ display: 'inline' }}>{questionStore.questionName}</h1>
+                  <span style={{ fontSize: '22px', float: 'right', marginTop: '10px' }} title="Download">
+                    <FaDownload style={{ cursor: 'pointer' }} onClick={onDownloadAnswer} />
+                  </span>
+                </div>
+                <AnswersetView
+                  user={user}
+                  concepts={config.concepts}
+                  messageStore={messageStore}
+                  omitHeader
+                />
+              </>
+            )}
           </>
         )}
-        {loading && (
-          <Loading
-            message={<p style={{ textAlign: 'center' }}>Loading Answerset</p>}
-          />
-        )}
       </Row>
-      <QuickQuestionError
-        showModal={fail}
-        closeModal={resetQuestion}
-        errorMessage={errorMessage}
-      />
     </Grid>
   );
 }
