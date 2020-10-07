@@ -41,7 +41,7 @@ export default function QuestionAnswerViewer() {
   const { path } = useRouteMatch();
   const history = useHistory();
 
-  const pageStatus = usePageStatus();
+  const pageStatus = usePageStatus(true);
 
   let answer_id;
   // If we are rendering an answer, get answer_id with useRouteMatch
@@ -106,6 +106,15 @@ export default function QuestionAnswerViewer() {
     } else {
       displayAlert('success', 'Deleted Question');
       history.push('/questions');
+    }
+  }
+
+  function handleAnswerDeleted(response) {
+    if (response.status === 'error') {
+      displayAlert('error', response.message);
+    } else {
+      displayAlert('success', 'Deleted Answer');
+      history.push(`/question/${question_id}`);
     }
   }
 
@@ -184,6 +193,7 @@ export default function QuestionAnswerViewer() {
           {question && question.owned && (
             <Button
               onClick={getNewAnswer}
+              variant="contained"
             >
               Get A New Answer
             </Button>
@@ -216,9 +226,7 @@ export default function QuestionAnswerViewer() {
                       <AccordionDetails>
                         <EditAnswer
                           answer={getAnswer(answer_id)}
-                          afterDelete={() => {
-                            history.push(`/question/${question_id}`);
-                          }}
+                          afterDelete={handleAnswerDeleted}
                         />
                       </AccordionDetails>
                     </Accordion>

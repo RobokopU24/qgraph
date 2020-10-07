@@ -19,7 +19,7 @@ import AnswersetView from './AnswersetView';
  * Wrapper around AnswersetView
  */
 export default function StoredAnswersetView({ question_id, answer_id }) {
-  const pageStatus = usePageStatus();
+  const pageStatus = usePageStatus(true);
   const messageStore = useMessageStore();
   const user = useContext(UserContext);
 
