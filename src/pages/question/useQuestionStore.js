@@ -12,7 +12,6 @@ export default function useQuestionStore() {
   // const [concepts, setConcepts] = useState([]);
   const [question_name, updateQuestionName] = useState('');
   const [query_graph, updateQueryGraph] = useState(null);
-  const [max_connectivity, setMaxConnectivity] = useState(0);
   const [notes, updateNotes] = useState('');
   // const [graphState, updateGraphState] = useState(graphStates.empty);
   // const [graphState, updateGraphState] = useState('empty');
@@ -26,7 +25,6 @@ export default function useQuestionStore() {
   function resetQuestion() {
     updateQuestionName('');
     updateQueryGraph(null);
-    setMaxConnectivity(0);
     updateNotes('');
     // updateGraphState('empty');
     // updatePanelState([]);
@@ -68,19 +66,12 @@ export default function useQuestionStore() {
    * @param {Object} question
    * @param {String} question.question_name name of question
    * @param {Object} question.query_graph contains nodes and edges
-   * @param {Number} question.max_connectivity number of max edges on each node
    */
   function validateQuestion(question) {
     if (!('query_graph' in question) || question.query_graph === null) {
       return false;
     }
     if (!('nodes' in question.query_graph) || !('edges' in question.query_graph)) {
-      return false;
-    }
-    if (!('question_name' in question) || question.question_name === '') {
-      return false;
-    }
-    if (!('max_connectivity' in question)) {
       return false;
     }
     return true;
@@ -96,26 +87,24 @@ export default function useQuestionStore() {
    * @param {Object} qGraph.query_graph object containing nodes and edges
    * @param {Array} qGraph.query_graph.edges array of edges
    * @param {Array} qGraph.query_graph.nodes array of nodes
-   * @param {Number} qGraph.max_connectivity number of connections between nodes
    */
   function questionSpecToPanelState(qGraph) {
-    try {
-      resetQuestion();
-      const questionGraphInput = _.cloneDeep(qGraph);
-      const valid = validateQuestion(questionGraphInput);
-      if (!valid) {
-        throw Error('This question graph is invalid.');
-      }
-      updateQueryGraph(questionGraphInput.query_graph);
-      updateQuestionName(questionGraphInput.question_name || '');
-      setMaxConnectivity(typeof questionGraphInput.max_connectivity === 'number' ? questionGraphInput.max_connectivity : 'None');
-    } catch (err) {
-      resetQuestion();
-      console.error('Failed to read this Question template', err);
-      throw Error('Unable to load question.');
-      // TODO: window alert
-      // window.alert('Failed to read this Question template. Are you sure this is valid?');
+    // try {
+    resetQuestion();
+    const questionGraphInput = _.cloneDeep(qGraph);
+    const valid = validateQuestion(questionGraphInput);
+    if (!valid) {
+      throw Error('This question graph is invalid.');
     }
+    updateQueryGraph(questionGraphInput.query_graph);
+    updateQuestionName(questionGraphInput.question_name || '');
+    // } catch (err) {
+    //  resetQuestion();
+    //  console.error('Failed to read this Question template', err);
+    //  throw Error('Unable to load question.');
+    // TODO: window alert
+    // window.alert('Failed to read this Question template. Are you sure this is valid?');
+    // }
   }
 
   // function openQuestionPanel(type) {
@@ -135,16 +124,13 @@ export default function useQuestionStore() {
 
   function isValidQuestion() {
     return validateQuestion({
-      question_name,
       query_graph,
-      max_connectivity,
     });
   }
 
   return {
     question_name,
     query_graph,
-    max_connectivity,
     isValidQuestion,
     // panelState,
     // activePanelState,
