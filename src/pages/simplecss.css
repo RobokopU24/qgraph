@@ -48,3 +48,12 @@ a .list-group-item-text {
     margin-bottom: 20px;
     cursor: pointer;
 }
+#simpleViewerLoading {
+    min-height: 400px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+}
