@@ -1,16 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   Grid, Row, Tabs, Tab,
 } from 'react-bootstrap';
 import { FaDownload } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
+import UserContext from '@/context/user';
+
+import API from '@/API';
+
+import AnswersetView from '@/components/shared/answersetView/AnswersetView';
+import parseMessage from '@/utils/parseMessage';
+
 import './newQuestion.css';
-// import AnswersetStore from '../../stores/messageAnswersetStore';
 import Loading from '../../components/loading/Loading';
-import MessageAnswersetTable from '../../components/shared/answersetView/answersTable/AnswersTable';
-import AnswersetGraph from '../../components/shared/graphs/AnswersetGraph';
-import QuestionGraphContainer from '../../components/shared/graphs/QuestionGraphContainer';
 import QuickQuestionError from './subComponents/QuickQuestionError';
 import QuestionBuilder from './questionBuilder/QuestionBuilder';
 
@@ -18,9 +21,8 @@ import useMessageStore from '../../stores/useMessageStore';
 import useQuestionStore from './useQuestionStore';
 import config from '../../config.json';
 
-export default function SimpleQuestion(props) {
-  const { user } = props;
-  const [tabKey, setTabKey] = useState(1);
+export default function SimpleQuestion() {
+  const user = useContext(UserContext);
   const [fail, setFail] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -65,39 +67,17 @@ export default function SimpleQuestion(props) {
     }
   }
 
-  function onSubmit() {
-    const questionText = questionStore.questionName;
-    const machineQuestion = questionStore.getMachineQuestionSpecJson.machine_question;
-    const maxConnect = questionStore.max_connectivity;
-    const newBoardInfo = {
-      natural_question: questionText,
-      notes: '',
-      machine_question: machineQuestion,
-      max_connectivity: maxConnect,
-    };
+  async function onSubmit() {
     setLoading(true);
-    setReady(false);
-    // this.appConfig.simpleQuick(
-    //   newBoardInfo,
-    //   (data) => {
-    //     if (!data.answers.length) {
-    //       throw Error('No answers were found');
-    //     }
-    //     messageStore.setMessage(data);
-    //     setLoading(false);
-    //     setReady(true);
-    //   },
-    //   (err) => {
-    //     console.log('Trouble asking question:', err);
-    //     if (err.response || err.response) {
-    //       setErrorMessage('Please check the console for a more descriptive error message');
-    //     } else {
-    //       setErrorMessage(err.message);
-    //     }
-    //     setLoading(false);
-    //     setFail(true);
-    //   },
-    // );
+    const response = await API.ara.getAnswer(questionStore.query_graph);
+    if (response.status === 'error') {
+      setFail(true);
+      setErrorMessage(response.message);
+    }
+    const parsedMessage = parseMessage(response);
+    messageStore.initializeMessage(parsedMessage);
+    setLoading(false);
+    setReady(true);
   }
 
   function resetQuestion() {
@@ -140,36 +120,12 @@ export default function SimpleQuestion(props) {
                 <FaDownload style={{ cursor: 'pointer' }} onClick={onDownloadAnswer} />
               </span>
             </div>
-            <QuestionGraphContainer
-              messageStore={messageStore}
+            <AnswersetView
+              user={user}
               concepts={config.concepts}
+              messageStore={messageStore}
+              omitHeader
             />
-            <Tabs
-              activeKey={tabKey}
-              onSelect={(e) => setTabKey(e)}
-              animation
-              id="answerset_tabs"
-              mountOnEnter
-            >
-              <Tab
-                eventKey={1}
-                title="Answers Table"
-              >
-                <MessageAnswersetTable
-                  concepts={config.concepts}
-                  messageStore={messageStore}
-                />
-              </Tab>
-              <Tab
-                eventKey={2}
-                title="Aggregate Graph"
-              >
-                <AnswersetGraph
-                  concepts={config.concepts}
-                  messageStore={messageStore}
-                />
-              </Tab>
-            </Tabs>
           </>
         )}
         {loading && (
