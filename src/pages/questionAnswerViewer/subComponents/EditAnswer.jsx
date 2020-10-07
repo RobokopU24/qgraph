@@ -33,8 +33,8 @@ export default function EditAnswer({ answer, afterDelete }) {
   }
 
   async function handleDelete() {
-    await API.cache.deleteAnswer(answer.id, user.id_token);
-    afterDelete();
+    const response = await API.cache.deleteAnswer(answer.id, user.id_token);
+    afterDelete(response);
   }
   return (
     <Box mx={1}>
