@@ -2,6 +2,9 @@ import React, { useEffect, useRef } from 'react';
 import {
   FormControl, Button, Badge, InputGroup, Glyphicon,
 } from 'react-bootstrap';
+
+import _ from 'lodash';
+
 import { AutoSizer, List } from 'react-virtualized';
 import shortid from 'shortid';
 
@@ -38,17 +41,18 @@ export default function NodePanel({ panelStore }) {
     let colorStripes = [];
     let typeColor = '';
     if (isConcept) {
-      name = filteredConcepts[index].label;
+      name = filteredConcepts[index].name;
       entry = filteredConcepts[index];
       ({ type } = filteredConcepts[index]); // this is a string
       const typeColorMap = getNodeTypeColorMap();
       typeColor = typeColorMap(type);
     } else {
       const i = index - filteredConcepts.length;
-      name = curies[i].label;
       entry = curies[i];
-      ({ degree, type } = curies[i]); // destructuring magic, type is array
-      curie = curies[i].value;
+
+      ({
+        degree, type, name, curie,
+      } = entry);
       const urls = curieUrls(curie);
       links = (
         <span>

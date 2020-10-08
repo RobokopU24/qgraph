@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import _ from 'lodash';
 
+import API from '@/API';
+
 import entityNameDisplay from '../../../utils/entityNameDisplay';
 import config from '../../../config.json';
 
@@ -54,17 +56,28 @@ export default function useNodePanels() {
   }
 
   function select(entry) {
-    console.log('entry', entry);
+    setSearchTerm(entityNameDisplay(entry.curie));
+    const mostGenericType = entry.type.find((t) => t !== 'named_thing');
+    setType(mostGenericType);
   }
 
-  function updateSearchTerm(value) {
+  async function updateSearchTerm(value) {
+    updateFilteredConcepts([]);
+    updateCuries([]);
+    setLoading(true);
     setSearchTerm(value);
+
     if (curie.length) {
       setCurie([]);
     }
     if (type) {
       setType('');
     }
+
+    const response = await API.ranker.entityLookup(value);
+    await new Promise((r) => setTimeout(r, 2000));
+    updateCuries(response);
+    setLoading(false);
   }
 
   return {
@@ -79,5 +92,6 @@ export default function useNodePanels() {
     reset,
     select,
     updateSearchTerm,
+    loading,
   };
 }

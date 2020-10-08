@@ -45,6 +45,7 @@ export default function NewQuestionPanelModal({ panelStore }) {
   const backgroundColor = getBackgroundColor(isNodePanel);
   return (
     <Modal
+      style={{ marginTop: '5%' }}
       show={panelStore.showPanel}
       backdrop="static"
       onHide={() => panelStore.togglePanel(false)}
