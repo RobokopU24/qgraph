@@ -123,6 +123,7 @@ export default function QuestionAnswerViewer() {
   }, [user, question_id, answer_id]);
 
   async function getNewAnswer() {
+    displayAlert('info', "Fetching answer, we will let you know when it's ready.");
     const response = await API.queryDispatcher.getAnswer(question_id, user.id_token);
     if (response.status === 'error') {
       pageStatus.setFailure(response.message);
@@ -130,9 +131,15 @@ export default function QuestionAnswerViewer() {
     }
     displayAlert(
       'success',
-      <Button onClick={() => history.replace(`/question/${question_id}/answer/${response.id}`)}>
-        A new answer is ready!
-      </Button>,
+      <>
+        <h4>A new answer is ready!</h4>
+        <Button
+          onClick={() => history.replace(`/question/${question_id}/answer/${response.id}`)}
+          variant="contained"
+        >
+          View new answer
+        </Button>
+      </>,
     );
   }
 
