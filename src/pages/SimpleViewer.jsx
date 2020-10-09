@@ -33,7 +33,7 @@ export default function SimpleViewer(props) {
 
     response = await API.cache.createQuestion(defaultQuestion, user.id_token);
     if (response.status === 'error') {
-      pageStatus.setFailure(response.message);
+      displayAlert('error', response.message);
       return;
     }
 
@@ -42,24 +42,24 @@ export default function SimpleViewer(props) {
     const questionData = JSON.stringify(messageStore.message.query_graph);
     response = await API.cache.setQuestionData(questionId, questionData, user.id_token);
     if (response.status === 'error') {
-      pageStatus.setFailure(response.message);
+      displayAlert('error', response.message);
       return;
     }
     response = await API.queryDispatcher.getAnswer(questionId, user.id_token);
     if (response.status === 'error') {
-      pageStatus.setFailure(response.message);
+      displayAlert('error', response.message);
       return;
     }
     response = await API.cache.getQuestion(questionId, user.id_token);
     if (response.status === 'error') {
-      pageStatus.setFailure(response.message);
+      displayAlert('error', response.message);
       return;
     }
     const questionMeta = response;
     questionMeta.metadata.hasAnswers = true;
     response = await API.cache.updateQuestion(questionMeta, user.id_token);
     if (response.status === 'error') {
-      pageStatus.setFailure(response.message);
+      displayAlert('error', response.message);
       return;
     }
     displayAlert('success', 'A new ARA answer has been saved.');
@@ -77,7 +77,7 @@ export default function SimpleViewer(props) {
     // Create question
     response = await API.cache.createQuestion(defaultQuestion, user.id_token);
     if (response.status === 'error') {
-      pageStatus.setFailure(response.message);
+      displayAlert('error', response.message);
       return;
     }
     const questionId = response.id;
@@ -86,14 +86,14 @@ export default function SimpleViewer(props) {
     const questionData = JSON.stringify(messageStore.message.query_graph);
     response = await API.cache.setQuestionData(questionId, questionData, user.id_token);
     if (response.status === 'error') {
-      pageStatus.setFailure(response.message);
+      displayAlert('error', response.message);
       return;
     }
 
     // Create Answer
     response = await API.cache.createAnswer({ parent: questionId, visibility: 1 }, user.id_token);
     if (response.status === 'error') {
-      pageStatus.setFailure(response.message);
+      displayAlert('error', response.message);
       return;
     }
     const answerId = response.id;
@@ -105,7 +105,7 @@ export default function SimpleViewer(props) {
     // Upload answer data
     response = await API.cache.setAnswerData(answerId, answerData, user.id_token);
     if (response.status === 'error') {
-      pageStatus.setFailure(response.message);
+      displayAlert('error', response.message);
       return;
     }
     displayAlert('success', 'Message saved successfully!');
