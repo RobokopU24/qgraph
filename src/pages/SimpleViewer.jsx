@@ -1,62 +1,99 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 
 import { Row, Col } from 'react-bootstrap';
 import Dropzone from 'react-dropzone';
 import { FaCloudUploadAlt } from 'react-icons/fa';
-import Snackbar from '@material-ui/core/Snackbar';
+import Button from '@material-ui/core/Button';
 
 import API from '@/API';
+import { useVisibility } from '@/utils/cache';
+import AlertContext from '@/context/alert';
+import config from '@/config.json';
+import parseMessage from '@/utils/parseMessage';
+import usePageStatus from '@/utils/usePageStatus';
+import useMessageStore from '@/stores/useMessageStore';
 
-// import AppConfig from '../AppConfig';
-import Loading from '../components/loading/Loading';
-import AnswersetView from '../components/shared/answersetView/AnswersetView';
-// import AnswersetStore from './stores/messageAnswersetStore';
-import useMessageStore from '../stores/useMessageStore';
-import config from '../config.json';
-import parseMessage from '../utils/parseMessage';
+import AnswersetView from '@/components/shared/answersetView/AnswersetView';
 
 export default function SimpleViewer(props) {
   const { user } = props;
-  // We only read the communications config on creation
-  // const [appConfig, setAppConfig] = useState(new AppConfig(config));
   const [messageSaved, setMessageSaved] = useState(false);
-  const [loading, toggleLoading] = useState(false);
-  // const [user, setUser] = useState({});
-  // const [concepts, setConcepts] = useState([]);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [loadingMessage, setLoadingMessage] = useState('');
-  const [showSnackbar, toggleSnackbar] = useState(false);
   const messageStore = useMessageStore();
+  const pageStatus = usePageStatus(false);
+  const visibility = useVisibility();
+  const displayAlert = useContext(AlertContext);
+
+  async function askQuestion() {
+    const defaultQuestion = {
+      parent: '',
+      visibility: visibility.toInt('Private'),
+      metadata: { name: 'Simple Viewer Question' },
+    };
+    let response;
+
+    response = await API.cache.createQuestion(defaultQuestion, user.id_token);
+    if (response.status === 'error') {
+      displayAlert('error', response.message);
+      return;
+    }
+
+    const questionId = response.id;
+    // Upload question data
+    const questionData = JSON.stringify(messageStore.message.query_graph);
+    response = await API.cache.setQuestionData(questionId, questionData, user.id_token);
+    if (response.status === 'error') {
+      displayAlert('error', response.message);
+      return;
+    }
+    response = await API.queryDispatcher.getAnswer(questionId, user.id_token);
+    if (response.status === 'error') {
+      displayAlert('error', response.message);
+      return;
+    }
+    response = await API.cache.getQuestion(questionId, user.id_token);
+    if (response.status === 'error') {
+      displayAlert('error', response.message);
+      return;
+    }
+    const questionMeta = response;
+    questionMeta.metadata.hasAnswers = true;
+    response = await API.cache.updateQuestion(questionMeta, user.id_token);
+    if (response.status === 'error') {
+      displayAlert('error', response.message);
+      return;
+    }
+    displayAlert('success', 'A new ARA answer has been saved.');
+  }
 
   async function uploadMessage() {
     const defaultQuestion = {
       parent: '',
-      visibility: 1,
+      visibility: visibility.toInt('Private'),
       metadata: { name: 'Simple Viewer Question' },
     };
 
     let response;
 
     // Create question
-    response = await API.createQuestion(defaultQuestion, user.id_token);
+    response = await API.cache.createQuestion(defaultQuestion, user.id_token);
     if (response.status === 'error') {
-      setErrorMessage('Unable to create question.');
+      displayAlert('error', response.message);
       return;
     }
     const questionId = response.id;
 
     // Upload question data
     const questionData = JSON.stringify(messageStore.message.query_graph);
-    response = await API.setQuestionData(questionId, questionData, user.id_token);
+    response = await API.cache.setQuestionData(questionId, questionData, user.id_token);
     if (response.status === 'error') {
-      setErrorMessage('Unable to upload question data.');
+      displayAlert('error', response.message);
       return;
     }
 
     // Create Answer
-    response = await API.createAnswer({ parent: questionId, visibility: 1 }, user.id_token);
+    response = await API.cache.createAnswer({ parent: questionId, visibility: 1 }, user.id_token);
     if (response.status === 'error') {
-      setErrorMessage('Unable to create answer object.');
+      displayAlert('error', response.message);
       return;
     }
     const answerId = response.id;
@@ -66,24 +103,21 @@ export default function SimpleViewer(props) {
       results: messageStore.message.results,
     });
     // Upload answer data
-    response = await API.setAnswerData(answerId, answerData, user.id_token);
+    response = await API.cache.setAnswerData(answerId, answerData, user.id_token);
     if (response.status === 'error') {
-      setErrorMessage('Unable to upload answer data.');
+      displayAlert('error', response.message);
       return;
     }
-
-    toggleSnackbar(true);
+    displayAlert('success', 'Message saved successfully!');
   }
 
   function onDrop(acceptedFiles) {
     acceptedFiles.forEach((file) => {
       const fr = new window.FileReader();
       fr.onloadstart = () => {
-        toggleLoading(true);
+        pageStatus.setLoading('Loading message...');
         setMessageSaved(false);
-        setLoadingMessage('Loading Answers...');
       };
-      // fr.onloadend = () => toggleLoading(false);
       fr.onload = (e) => {
         const fileContents = e.target.result;
         try {
@@ -91,16 +125,14 @@ export default function SimpleViewer(props) {
           const parsedMessage = parseMessage(message);
           messageStore.initializeMessage(parsedMessage);
           setMessageSaved(true);
+          pageStatus.setSuccess();
         } catch (err) {
           console.log(err);
-          // window.alert('Failed to load this Answerset file. Are you sure this is valid?');
-          setErrorMessage('There was the problem loading the file. Is this valid JSON?');
+          pageStatus.setFailure('There was the problem loading the file. Is this valid JSON?');
         }
-        toggleLoading(false);
       };
       fr.onerror = () => {
-        // window.alert('Sorry but there was a problem uploading the file. The file may be invalid.');
-        setErrorMessage('There was the problem loading the file. Is this valid JSON?');
+        pageStatus.setFailure('There was the problem loading the file. Is this valid JSON?');
       };
       fr.readAsText(file);
     });
@@ -108,17 +140,11 @@ export default function SimpleViewer(props) {
 
   return (
     <>
-      {loading ? (
+      <pageStatus.Display />
+
+      {pageStatus.displayPage && (
         <>
-          <h1>
-            {loadingMessage}
-            <br />
-          </h1>
-          <Loading />
-        </>
-      ) : (
-        <>
-          {messageSaved && !errorMessage && (
+          {messageSaved ? (
             <>
               <AnswersetView
                 user={user}
@@ -127,17 +153,24 @@ export default function SimpleViewer(props) {
                 omitHeader
               />
               {user && (
-                <button type="button" onClick={uploadMessage}>Upload</button>
+                <>
+                  <Button
+                    onClick={uploadMessage}
+                    variant="contained"
+                    style={{ marginRight: 10 }}
+                  >
+                    Upload
+                  </Button>
+                  <Button
+                    onClick={askQuestion}
+                    variant="contained"
+                  >
+                    Ask ARA
+                  </Button>
+                </>
               )}
-              <Snackbar
-                open={showSnackbar}
-                onClose={() => toggleSnackbar(false)}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-                message="Message saved successfully!"
-              />
             </>
-          )}
-          {!errorMessage && !messageSaved && (
+          ) : (
             <Row>
               <Col md={12}>
                 <h1>
@@ -170,17 +203,6 @@ export default function SimpleViewer(props) {
                 </Dropzone>
               </Col>
             </Row>
-          )}
-          {errorMessage && (
-            <>
-              <h1>
-                There was a problem loading the file.
-              </h1>
-              <br />
-              <p>
-                {errorMessage}
-              </p>
-            </>
           )}
         </>
       )}

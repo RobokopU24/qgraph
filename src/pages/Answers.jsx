@@ -32,7 +32,7 @@ export default function Answer({ user }) {
     }
 
     let response;
-    response = await API.getQuestionData(question_id, token);
+    response = await API.cache.getQuestionData(question_id, token);
     if (response.status === 'error') {
       setErrorMessage('Unable to load question.');
       toggleLoading(false);
@@ -40,7 +40,7 @@ export default function Answer({ user }) {
     }
     const query_graph = response;
 
-    response = await API.getAnswersByQuestion(question_id, token);
+    response = await API.cache.getAnswersByQuestion(question_id, token);
     if (response.status === 'error') {
       setErrorMessage('Unable to get answers to question.');
       toggleLoading(false);
@@ -55,7 +55,7 @@ export default function Answer({ user }) {
     }
 
     const selected_answer = answers[0];
-    response = await API.getAnswerData(selected_answer.id, token);
+    response = await API.cache.getAnswerData(selected_answer.id, token);
     if (response.status === 'error') {
       setErrorMessage('Unable to get answer data.');
       toggleLoading(false);

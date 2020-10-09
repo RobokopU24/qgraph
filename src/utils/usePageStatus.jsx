@@ -10,25 +10,31 @@ const CenteredAlert = withStyles({
   root: { justifyContent: 'center' },
 })(Alert);
 
-/*
+/**
  * Store to manage page error handling.
+ * @param {boolean} startAsLoading should the page initialize in a loading state?
  *
  * Handles the display of a loading indicator when the page is first
  * rendered and an optional error message.
-*/
-export default function usePageStatus() {
+ */
+export default function usePageStatus(startAsLoading) {
   // Full page loading indicator
-  const [loading, toggleLoading] = useState(true);
+  const [loading, toggleLoading] = useState(!!startAsLoading);
+  const [loadingMessage, setLoadingMessage] = useState('');
   // Full page error indicator
   const [error, setError] = useState('');
 
-  function setLoading() {
+  function setLoading(msg) {
     setError('');
+    if (msg) {
+      setLoadingMessage(msg);
+    }
     toggleLoading(true);
   }
 
   function setSuccess() {
     setError('');
+    setLoadingMessage('');
     toggleLoading(false);
   }
 
@@ -51,7 +57,7 @@ export default function usePageStatus() {
     if (loading) {
       return (
         <Box mt={10}>
-          <Loading positionStatic />
+          <Loading positionStatic message={loadingMessage} />
         </Box>
       );
     }

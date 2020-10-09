@@ -9,10 +9,11 @@ import ClearIcon from '@material-ui/icons/Clear';
 
 import { green, red } from '@material-ui/core/colors';
 
-import { visibilityMapping, formatDateTimeNicely } from '@/utils/cache';
+import { useVisibility, formatDateTimeNicely } from '@/utils/cache';
 
 export default function QuestionTableRow({ question }) {
   const history = useHistory();
+  const visibility = useVisibility();
 
   return (
     <TableRow
@@ -32,7 +33,7 @@ export default function QuestionTableRow({ question }) {
       </TableCell>
       { question.owned && (
         <TableCell>
-          { visibilityMapping[question.visibility] }
+          { visibility.toString(question.visibility) }
         </TableCell>
       )}
       <TableCell>

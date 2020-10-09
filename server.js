@@ -2,7 +2,7 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const apiRoutes = require('./serverRoutes');
+const queryDispatcher = require('./queryDispatcher');
 
 const PORT = process.env.PORT || 80;
 const app = express();
@@ -25,7 +25,7 @@ if (process.env.HOT_RELOAD) {
 }
 
 // These are api routes
-app.use(apiRoutes);
+app.use(queryDispatcher);
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'pack/index.html'));

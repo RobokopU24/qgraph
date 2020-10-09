@@ -41,19 +41,19 @@ export default function EditQuestion({ question, onUpdated, onDeleted }) {
     if (!newQuestion.metadata.name) {
       return;
     }
-    const response = await API.updateQuestion(newQuestion, token);
+    const response = await API.cache.updateQuestion(newQuestion, token);
     onUpdated(response);
   }
 
   async function handleDelete() {
-    const response = await API.deleteQuestion(question.id, token);
+    const response = await API.cache.deleteQuestion(question.id, token);
     onDeleted(response);
   }
 
   const [historicAnswers, updateHistoricAnswers] = useState([]);
 
   async function fetchHistoricAnswers() {
-    const response = await API.getAnswersByQuestion(question.id, token);
+    const response = await API.cache.getAnswersByQuestion(question.id, token);
     if (response.status === 'error') {
       return;
     }
@@ -170,7 +170,7 @@ export default function EditQuestion({ question, onUpdated, onDeleted }) {
       <Box my={2}>
         <NewDownloadButton
           displayText="Download JSON"
-          getData={() => API.getQuestionData(question.id, token)}
+          getData={() => API.cache.getQuestionData(question.id, token)}
           fileName={questionFileName}
         />
       </Box>

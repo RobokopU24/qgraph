@@ -19,13 +19,13 @@ import AnswersetView from './AnswersetView';
  * Wrapper around AnswersetView
  */
 export default function StoredAnswersetView({ question_id, answer_id }) {
-  const pageStatus = usePageStatus();
+  const pageStatus = usePageStatus(true);
   const messageStore = useMessageStore();
   const user = useContext(UserContext);
 
   async function fetchQuestionAnswerData() {
-    const questionPromise = API.getQuestionData(question_id, user && user.id_token);
-    const answerPromise = API.getAnswerData(answer_id, user && user.id_token);
+    const questionPromise = API.cache.getQuestionData(question_id, user && user.id_token);
+    const answerPromise = API.cache.getAnswerData(answer_id, user && user.id_token);
 
     const [questionResponse, answerResponse] =
        await Promise.all([questionPromise, answerPromise]);

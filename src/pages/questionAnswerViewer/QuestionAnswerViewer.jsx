@@ -4,6 +4,7 @@ import {
 } from 'react-router-dom';
 
 import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -40,7 +41,7 @@ export default function QuestionAnswerViewer() {
   const { path } = useRouteMatch();
   const history = useHistory();
 
-  const pageStatus = usePageStatus();
+  const pageStatus = usePageStatus(true);
 
   let answer_id;
   // If we are rendering an answer, get answer_id with useRouteMatch
@@ -54,7 +55,7 @@ export default function QuestionAnswerViewer() {
     if (user) {
       token = user.id_token;
     }
-    const response = await API.getQuestion(question_id, token);
+    const response = await API.cache.getQuestion(question_id, token);
     if (response.status === 'error') {
       pageStatus.setFailure(response.message);
       return;
@@ -63,14 +64,16 @@ export default function QuestionAnswerViewer() {
     pageStatus.setSuccess();
   }
 
-  useEffect(() => { fetchQuestion(); }, [user, question_id]);
+  useEffect(() => {
+    fetchQuestion();
+  }, [user, question_id]);
 
   async function fetchAnswers() {
     let token;
     if (user) {
       token = user.id_token;
     }
-    const response = await API.getAnswersByQuestion(question_id, token);
+    const response = await API.cache.getAnswersByQuestion(question_id, token);
     if (response.status === 'error') {
       pageStatus.setFailure(response.message);
       return;
@@ -106,7 +109,39 @@ export default function QuestionAnswerViewer() {
     }
   }
 
-  useEffect(() => { fetchAnswers(); }, [user, question_id, answer_id]);
+  function handleAnswerDeleted(response) {
+    if (response.status === 'error') {
+      displayAlert('error', response.message);
+    } else {
+      displayAlert('success', 'Deleted Answer');
+      history.push(`/question/${question_id}`);
+    }
+  }
+
+  useEffect(() => {
+    fetchAnswers();
+  }, [user, question_id, answer_id]);
+
+  async function getNewAnswer() {
+    displayAlert('info', "Fetching answer, we will let you know when it's ready.");
+    const response = await API.queryDispatcher.getAnswer(question_id, user.id_token);
+    if (response.status === 'error') {
+      pageStatus.setFailure(response.message);
+      return;
+    }
+    displayAlert(
+      'success',
+      <>
+        <h4>A new answer is ready!</h4>
+        <Button
+          onClick={() => history.replace(`/question/${question_id}/answer/${response.id}`)}
+          variant="contained"
+        >
+          View new answer
+        </Button>
+      </>,
+    );
+  }
 
   return (
     <>
@@ -162,6 +197,15 @@ export default function QuestionAnswerViewer() {
             </Box>
           )}
 
+          {question && question.owned && (
+            <Button
+              onClick={getNewAnswer}
+              variant="contained"
+            >
+              Get A New Answer
+            </Button>
+          )}
+
           <Box my={8}>
             <Divider />
           </Box>
@@ -189,9 +233,7 @@ export default function QuestionAnswerViewer() {
                       <AccordionDetails>
                         <EditAnswer
                           answer={getAnswer(answer_id)}
-                          afterDelete={() => {
-                            history.push(`/question/${question_id}`);
-                          }}
+                          afterDelete={handleAnswerDeleted}
                         />
                       </AccordionDetails>
                     </Accordion>
