@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 
 import { Row, Col } from 'react-bootstrap';
 import Dropzone from 'react-dropzone';
 import { FaCloudUploadAlt } from 'react-icons/fa';
-import Snackbar from '@material-ui/core/Snackbar';
 import Button from '@material-ui/core/Button';
 
 import API from '@/API';
 import { useVisibility } from '@/utils/cache';
+import AlertContext from '@/context/alert';
 import config from '@/config.json';
-import Loading from '@/components/loading/Loading';
 import parseMessage from '@/utils/parseMessage';
 import usePageStatus from '@/utils/usePageStatus';
 import useMessageStore from '@/stores/useMessageStore';
@@ -19,10 +18,10 @@ import AnswersetView from '@/components/shared/answersetView/AnswersetView';
 export default function SimpleViewer(props) {
   const { user } = props;
   const [messageSaved, setMessageSaved] = useState(false);
-  const [showSnackbar, toggleSnackbar] = useState(false);
   const messageStore = useMessageStore();
   const pageStatus = usePageStatus(false);
   const visibility = useVisibility();
+  const displayAlert = useContext(AlertContext);
 
   async function askQuestion() {
     const defaultQuestion = {
@@ -63,7 +62,7 @@ export default function SimpleViewer(props) {
       pageStatus.setFailure(response.message);
       return;
     }
-    toggleSnackbar(true);
+    displayAlert('success', 'A new ARA answer has been saved.');
   }
 
   async function uploadMessage() {
@@ -109,15 +108,14 @@ export default function SimpleViewer(props) {
       pageStatus.setFailure(response.message);
       return;
     }
-
-    toggleSnackbar(true);
+    displayAlert('success', 'Message saved successfully!');
   }
 
   function onDrop(acceptedFiles) {
     acceptedFiles.forEach((file) => {
       const fr = new window.FileReader();
       fr.onloadstart = () => {
-        pageStatus.setLoading();
+        pageStatus.setLoading('Loading message...');
         setMessageSaved(false);
       };
       fr.onload = (e) => {
@@ -142,7 +140,9 @@ export default function SimpleViewer(props) {
 
   return (
     <>
-      {pageStatus.displayPage ? (
+      <pageStatus.Display />
+
+      {pageStatus.displayPage && (
         <>
           {messageSaved ? (
             <>
@@ -169,12 +169,6 @@ export default function SimpleViewer(props) {
                   </Button>
                 </>
               )}
-              <Snackbar
-                open={showSnackbar}
-                onClose={() => toggleSnackbar(false)}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-                message="Message saved successfully!"
-              />
             </>
           ) : (
             <Row>
@@ -211,10 +205,6 @@ export default function SimpleViewer(props) {
             </Row>
           )}
         </>
-      ) : (
-        <div id="simpleViewerLoading">
-          <Loading message="Loading message..." />
-        </div>
       )}
     </>
   );
