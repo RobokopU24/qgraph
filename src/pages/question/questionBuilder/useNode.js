@@ -1,10 +1,8 @@
 import { useState } from 'react';
-import _ from 'lodash';
 
 import API from '@/API';
-
-import entityNameDisplay from '../../../utils/entityNameDisplay';
-import config from '../../../config.json';
+import config from '@/config.json';
+import entityNameDisplay from '@/utils/entityNameDisplay';
 
 const setify = (type) => `set of ${type}s`;
 const conceptsWithSets = [];
@@ -23,7 +21,7 @@ export default function useNodePanels() {
   const [curieEnabled, setCurieEnabled] = useState(false);
   const [set, setSet] = useState(false);
   const [regular, setRegular] = useState(false);
-  const [conceptsWithSets, setConceptsWithSets] = useState([]);
+  // const [conceptsWithSets, setConceptsWithSets] = useState([]);
   const [filteredConcepts, updateFilteredConcepts] = useState([]);
   const [curies, updateCuries] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -38,7 +36,7 @@ export default function useNodePanels() {
     setCurieEnabled(false);
     setSet(false);
     setRegular(false);
-    setConceptsWithSets([]);
+    // setConceptsWithSets([]);
     updateFilteredConcepts([]);
     updateCuries([]);
     setLoading(false);
@@ -62,20 +60,18 @@ export default function useNodePanels() {
   }
 
   async function updateSearchTerm(value) {
-    updateFilteredConcepts([]);
     updateCuries([]);
     setLoading(true);
     setSearchTerm(value);
 
-    if (curie.length) {
-      setCurie([]);
-    }
-    if (type) {
-      setType('');
-    }
+    // Update list of concepts
+    const newFilteredConcepts = conceptsWithSets.filter(
+      (concept) => concept.label.includes(value.toLowerCase()),
+    );
+    updateFilteredConcepts(newFilteredConcepts);
 
+    // Get and update list of curies
     const response = await API.ranker.entityLookup(value);
-    await new Promise((r) => setTimeout(r, 2000));
     updateCuries(response);
     setLoading(false);
   }

@@ -41,7 +41,7 @@ export default function NodePanel({ panelStore }) {
     let colorStripes = [];
     let typeColor = '';
     if (isConcept) {
-      name = filteredConcepts[index].name;
+      name = filteredConcepts[index].label;
       entry = filteredConcepts[index];
       ({ type } = filteredConcepts[index]); // this is a string
       const typeColorMap = getNodeTypeColorMap();
