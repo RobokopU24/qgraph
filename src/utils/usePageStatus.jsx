@@ -57,8 +57,7 @@ export default function usePageStatus(startAsLoading) {
     if (loading) {
       return (
         <Box mt={10}>
-          <Loading positionStatic />
-          {loadingMessage}
+          <Loading positionStatic message={loadingMessage} />
         </Box>
       );
     }

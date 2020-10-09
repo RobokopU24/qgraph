@@ -3,7 +3,6 @@ import React from 'react';
 import './loading.css';
 
 const Loading = (props) => {
-  const showMessage = Boolean(props && ('message' in props));
   const { message, positionStatic } = props;
 
   return (
@@ -14,7 +13,7 @@ const Loading = (props) => {
         <div className="bubble" />
         <div className="bubble" />
       </div>
-      {showMessage && (
+      {message && (
         <h3 className="loadingMessage">{message}</h3>
       )}
     </div>
