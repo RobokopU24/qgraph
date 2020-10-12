@@ -18,6 +18,8 @@ export default function useNewQuestionPanel() {
   const node = useNode();
   const edge = useEdge();
 
+  const [unsavedChanges, toggleUnsavedChanges] = useState(false);
+
   /**
    * Load a copy of the query graph to be modified for new question
    * @param {object} qGraph query graph. Will make a copy and modify said copy.
@@ -32,10 +34,13 @@ export default function useNewQuestionPanel() {
    * @param {string} id unique id of node or edge. i.e. n0, n1, e0...
    */
   function openPanel(type, id) {
+    console.log(id);
     setPanelType(type);
     if (type === 'node') {
-      if (id) { // load node from query graph
-        const nodeSeed = query_graph.nodes.find((n) => n.id === id);
+      // Can't do if(id) because that evaluates to false when id == 0 🤦
+      if (id !== null && id !== undefined) { // load node from query graph
+        const nodeSeed = query_graph.nodes[id];
+        nodeSeed.id = id;
         setName(id);
         node.initialize(nodeSeed);
       } else { // new node
@@ -82,7 +87,32 @@ export default function useNewQuestionPanel() {
     updateQueryGraph(trimmedQueryGraph);
   }
 
+  function saveActivePanel() {
+    const q_graph = _.cloneDeep(query_graph);
+    if (panelType === 'node') {
+      const new_node = {
+        curie: node.curie,
+        type: node.type,
+        name: node.name,
+      };
+      // New node
+      if (!node.id) {
+        q_graph.nodes.push(new_node);
+      } else {
+        const existing_node_index = q_graph.nodes.indexOf((n) => n.id === node.id);
+        q_graph.nodes[existing_node_index] = new_node;
+      }
+    } else {
+      // TODO implement
+    }
+    updateQueryGraph(q_graph);
+    return q_graph;
+  }
+
   return {
+    unsavedChanges,
+    toggleUnsavedChanges,
+    saveActivePanel,
     showPanel,
     panelType,
     name,

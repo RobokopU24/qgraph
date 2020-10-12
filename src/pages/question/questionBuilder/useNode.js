@@ -7,8 +7,8 @@ import entityNameDisplay from '@/utils/entityNameDisplay';
 const setify = (type) => `set of ${type}s`;
 const conceptsWithSets = [];
 config.concepts.forEach((concept) => {
-  conceptsWithSets.push({ label: concept, type: concept, set: false });
-  conceptsWithSets.push({ label: setify(concept), type: concept, set: true });
+  conceptsWithSets.push({ name: concept, type: concept, set: false });
+  conceptsWithSets.push({ name: setify(concept), type: concept, set: true });
 });
 
 export default function useNodePanels() {
@@ -53,20 +53,38 @@ export default function useNodePanels() {
     setCurie(seed.curie || []);
   }
 
+  /*
+   * Convert a list of types to a single type
+   * by picking the first one in the list (that is not named_thing)
+  */
+  function conceptListToString(curieTypes) {
+    const specificConcepts = config.concepts.filter((t) => t !== 'named_thing');
+    const curieType = specificConcepts.find((concept) => curieTypes.includes(concept));
+    return curieType || '';
+  }
+
   function select(entry) {
-    setSearchTerm(entityNameDisplay(entry.curie));
-    const mostGenericType = entry.type.find((t) => t !== 'named_thing');
-    setType(mostGenericType);
+    setSearchTerm(entityNameDisplay(entry.name));
+    setName(entityNameDisplay(entry.name));
+    if (entry.curie) {
+      setCurie(entry.curie);
+    }
+    setType(conceptListToString(entry.type));
   }
 
   async function updateSearchTerm(value) {
+    // Clear existing selection
+    setType('');
+    setName('');
+    setCurie('');
+
     updateCuries([]);
     setLoading(true);
     setSearchTerm(value);
 
     // Update list of concepts
     const newFilteredConcepts = conceptsWithSets.filter(
-      (concept) => concept.label.includes(value.toLowerCase()),
+      (concept) => concept.name.includes(value.toLowerCase()),
     );
     updateFilteredConcepts(newFilteredConcepts);
 
@@ -77,6 +95,8 @@ export default function useNodePanels() {
   }
 
   return {
+    name,
+    id,
     filteredConcepts,
     curie,
     curies,

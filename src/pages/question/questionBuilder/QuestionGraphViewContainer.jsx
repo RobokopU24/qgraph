@@ -36,6 +36,7 @@ export default function QuestionGraphViewContainer(props) {
   const panelStore = useNewQuestionPanel();
 
   function graphClickCallback(data) {
+    console.log(data);
     if (data.nodes.length > 0) {
       // const clickedNode = questionStore.getNode(data.nodes[0]);
       // questionStore.updateNodeById(data.nodes[0]);
@@ -138,6 +139,7 @@ export default function QuestionGraphViewContainer(props) {
         </div>
       )}
       <NewQuestionPanelModal
+        onQuestionUpdated={(updated_q) => questionStore.questionSpecToPanelState(updated_q)}
         panelStore={panelStore}
       />
       <Modal

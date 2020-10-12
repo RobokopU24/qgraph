@@ -41,7 +41,7 @@ export default function NodePanel({ panelStore }) {
     let colorStripes = [];
     let typeColor = '';
     if (isConcept) {
-      name = filteredConcepts[index].label;
+      name = filteredConcepts[index].name;
       entry = filteredConcepts[index];
       ({ type } = filteredConcepts[index]); // this is a string
       const typeColorMap = getNodeTypeColorMap();
@@ -57,7 +57,7 @@ export default function NodePanel({ panelStore }) {
       links = (
         <span>
           {urls.map((u) => (
-            <a target="_blank" rel="noreferrer" href={u.url} alt={u.label} key={shortid.generate()} style={{ paddingRight: '3px' }}><img src={u.iconUrl} alt={u.label} height={16} width={16} /></a>
+            <a target="_blank" rel="noreferrer" href={u.url} alt={u.name} key={shortid.generate()} style={{ paddingRight: '3px' }}><img src={u.iconUrl} alt={u.name} height={16} width={16} /></a>
           ))}
         </span>
       );
@@ -132,7 +132,7 @@ export default function NodePanel({ panelStore }) {
           />
           {!showOptions && node.curie.length > 0 && (
             <InputGroup.Addon>
-              {node.curie[0]}
+              {node.curie}
             </InputGroup.Addon>
           )}
           <InputGroup.Addon

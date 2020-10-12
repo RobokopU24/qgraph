@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Modal, ButtonGroup, Button } from 'react-bootstrap';
 import { FaSave, FaTrash, FaUndo } from 'react-icons/fa';
 import _ from 'lodash';
@@ -16,7 +16,7 @@ import config from '../../../config.json';
  * Modal for creation of a new node or edge
  * @param {Object} panelStore new question panel custom hook
  */
-export default function NewQuestionPanelModal({ panelStore }) {
+export default function NewQuestionPanelModal({ panelStore, onQuestionUpdated }) {
   /**
    * Get the panel background color
    * @param {Boolean} isNodePanel is panel of type node
@@ -36,6 +36,11 @@ export default function NewQuestionPanelModal({ panelStore }) {
     const color1 = panelColorMap(type1);
     const color2 = panelColorMap(type2);
     return { backgroundImage: `linear-gradient(80deg, ${color1} 50%, ${color2} 50%)`, borderRadius: '5px 5px 0px 0px' };
+  }
+
+  function handleSave() {
+    const updatedQueryGraph = panelStore.saveActivePanel();
+    onQuestionUpdated({ query_graph: updatedQueryGraph });
   }
 
   const isNodePanel = panelStore.panelType === 'node';
@@ -93,10 +98,10 @@ export default function NewQuestionPanelModal({ panelStore }) {
               {' Undo'}
             </Button>
           )}
-          {!_.isEmpty({}) && (
+          {true && (
             <Button
-              onClick={panelStore.saveActivePanel}
-              disabled={!unsavedChanges || !isValidPanel}
+              onClick={handleSave}
+              disabled={!(unsavedChanges || isNewPanel)}
               bsStyle={isValidPanel ? (unsavedChanges ? 'primary' : 'default') : 'danger'} // eslint-disable-line no-nested-ternary
               title={isValidPanel ? (unsavedChanges ? 'Save changes' : 'No changes to save') : 'Fix invalid panel entries first'} // eslint-disable-line no-nested-ternary
             >
