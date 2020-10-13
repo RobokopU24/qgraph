@@ -46,7 +46,6 @@ export default function useNodePanels() {
 
   function initialize(seed) {
     reset();
-    console.log('seed', seed);
     setId(seed.id || null);
     setType(seed.type || '');
     setName(seed.name || seed.type || '');

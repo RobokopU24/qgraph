@@ -47,7 +47,7 @@ export default function useNewQuestionPanel() {
         node.reset();
         setName(`n${query_graph.nodes.length}`);
       }
-    } else if (id !== null) { // load edge from query graph
+    } else if (id !== null && id !== undefined) { // load edge from query graph
       const edgeSeed = query_graph.edges[id];
       console.log(edgeSeed);
       setName(id);

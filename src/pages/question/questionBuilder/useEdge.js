@@ -26,9 +26,8 @@ export default function useEdgePanels() {
   }
 
   function initialize(seed) {
-    console.log(seed);
     reset();
-    setId(seed.id || '');
+    setId(seed.id || null);
     setSourceId(seed.source_id || null);
     if (seed.target_id !== null) {
       setTargetId(seed.target_id);
