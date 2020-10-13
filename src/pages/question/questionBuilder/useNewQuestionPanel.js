@@ -91,10 +91,15 @@ export default function useNewQuestionPanel() {
     const q_graph = _.cloneDeep(query_graph);
     if (panelType === 'node') {
       const new_node = {
-        curie: node.curie,
         type: node.type,
-        name: node.name,
       };
+      if (node.curie) {
+        new_node.curie = node.curie;
+      }
+      if (node.name) {
+        new_node.name = node.name;
+      }
+
       // New node
       if (!node.id) {
         q_graph.nodes.push(new_node);
@@ -103,7 +108,20 @@ export default function useNewQuestionPanel() {
         q_graph.nodes[existing_node_index] = new_node;
       }
     } else {
-      // TODO implement
+      const new_edge = {
+        source_id: edge.sourceId,
+        target_id: edge.targetId,
+      };
+      if (node.predicate) {
+        new_edge.type = node.predicate;
+      }
+      // New edge
+      if (!edge.id) {
+        q_graph.edges.push(new_edge);
+      } else {
+        const existing_edge_index = q_graph.edges.indexOf((n) => n.id === edge.id);
+        q_graph.edges[existing_edge_index] = new_edge;
+      }
     }
     updateQueryGraph(q_graph);
     return q_graph;

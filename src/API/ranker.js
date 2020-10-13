@@ -5,11 +5,9 @@ const ranker = 'http://robokop.renci.org:6011/api';
 
 const baseRoutes = {
   /**
-   * Send a query graph to ask an ARA for an answer
-   * @param {object} question query graph object
+   * Look up possible entities using a search string
    */
   async entityLookup(entity_name) {
-    console.log(entity_name);
     const config = {
       headers: {
         'Content-Type': 'text/plain',
@@ -25,10 +23,27 @@ const baseRoutes = {
       return handleAxiosError(error);
     }
   },
+  /**
+   * Look up possible predicates given two entities
+   */
+  async predicateLookup(firstNode, secondNode) {
+    const config = {
+      url: `${ranker}/count_predicates`,
+      method: 'POST',
+      data: [firstNode, secondNode],
+    };
+    try {
+      const response = await axios(config);
+      return response.data;
+    } catch (error) {
+      return handleAxiosError(error);
+    }
+  },
 };
 
 const routes = {
   entityLookup: baseRoutes.entityLookup,
+  predicateLookup: baseRoutes.predicateLookup,
 };
 
 export default routes;

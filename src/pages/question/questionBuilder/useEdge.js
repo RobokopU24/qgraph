@@ -1,6 +1,4 @@
-import { useState, useRef } from 'react';
-
-const _publicFields = ['id', 'source_id', 'target_id', 'predicate'];
+import { useState, useRef, useCallback } from 'react';
 
 export default function useEdgePanels() {
   const [id, setId] = useState(null);
@@ -13,11 +11,7 @@ export default function useEdgePanels() {
   const [broken, setBroken] = useState(false);
 
   const [predicatesReady, setPredicatesReady] = useState(false); // True when requesting end-point for predicates for source/target pairing
-  const [predicateList, updatePredicateList] = useState([]);
-  const [disablePredicates, setDisablePredicates] = useState(false);
-
-  const connectionsCancel = useRef(null);
-  const predicatesCancel = useRef(null);
+  const [predicateList, setPredicateList] = useState([]);
 
   function reset() {
     setId(null);
@@ -29,7 +23,6 @@ export default function useEdgePanels() {
     setBroken(false);
     setPredicatesReady(false);
     updatePredicateList([]);
-    setDisablePredicates(false);
   }
 
   function initialize(seed) {
@@ -39,11 +32,34 @@ export default function useEdgePanels() {
     setSourceId(seed.source_id || null);
   }
 
+  function updateSourceId(newSourceId) {
+    setSourceId(newSourceId);
+    setTargetId(null);
+    setPredicatesReady(false);
+  }
+
+  function updateTargetId(newTargetId) {
+    setTargetId(newTargetId);
+    setPredicatesReady(false);
+  }
+
+  function updatePredicateList(newPredicateList) {
+    setPredicateList(newPredicateList);
+    setPredicatesReady(true);
+  }
+
   return {
     id,
     sourceId,
+    updateSourceId,
     targetId,
+    updateTargetId,
+    predicateList,
+    predicatesReady,
+    updatePredicateList,
+    setPredicate,
     reset,
     initialize,
+    targetNodeList,
   };
 }

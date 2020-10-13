@@ -1,4 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
+import _ from 'lodash';
+
+import API from '@/API';
 import {
   Form, Col, Glyphicon, Badge, Button,
 } from 'react-bootstrap';
@@ -18,28 +21,45 @@ export default function EdgePanel(props) {
   const { panelStore } = props;
   const { edge } = panelStore;
 
-  /**
-   * Cancel any calls in progress
-   */
-  // useEffect(() => () => {
-  //   edge.cancelConnectionsCall();
-  //   edge.cancelPredicatesCall();
-  // }, []);
+  async function fetchPredicates(sourceNode, targetNode) {
+    console.log('nodes', sourceNode, targetNode);
+    const response = await API.ranker.predicateLookup(sourceNode, targetNode);
+    console.log('response', response);
+    edge.updatePredicateList(
+      Object.entries(response).map((key, value) => ({
+        name: key,
+        degree: value,
+      })),
+    );
+  }
 
-  const validNodeSelectionList = panelStore.query_graph.nodes.filter((n) => !n.deleted);
-  console.log(validNodeSelectionList);
-  const {
-    predicateList, targetNodeList, disablePredicates, predicatesReady, connectionsCountReady,
-    source_id, target_id,
-  } = panelStore.edge;
+  function handleTargetIdUpdate(value) {
+    const newTargetId = value.id;
+    edge.updateTargetId(newTargetId);
+    if (newTargetId !== null && edge.sourceId !== null) {
+      const sourceNode = { ...panelStore.query_graph.nodes[edge.sourceId] };
+      const targetNode = { ...panelStore.query_graph.nodes[newTargetId] };
+      // Including name in the node breaks the API call
+      delete sourceNode.name;
+      delete targetNode.name;
+      fetchPredicates(sourceNode, targetNode);
+    }
+  }
+
+  const validNodeSelectionList = panelStore.query_graph.nodes.map(
+    (n, i) => ({ ...n, id: i }),
+  ).filter((n) => !n.deleted);
   // Determine default message for predicate selection component
   let predicateInputMsg = 'Choose optional predicate(s)...';
-  if (!predicatesReady) {
+  if (!edge.predicatesReady) {
     predicateInputMsg = 'Loading...';
-  } else if (disablePredicates) {
+  } else if (edge.disablePredicates) {
     predicateInputMsg = 'Source and/or Target Nodes need to be specified...';
   }
-  const disabledSwitch = source_id === null || target_id === null;
+  const disabledSwitch = edge.sourceId === null || edge.targetId === null;
+
+  console.log(validNodeSelectionList);
+  console.log(edge);
   return (
     <Form horizontal>
       <Col sm={5}>
@@ -50,9 +70,9 @@ export default function EdgePanel(props) {
           itemComponent={listItem}
           textField="name"
           valueField="id"
-          value={edge.source_id}
-          onChange={(value) => edge.updateField('source_id', value.id)}
-          containerClassName={edge.isValidSource ? 'valid' : 'invalid'}
+          value={edge.sourceId}
+          onChange={(value) => edge.updateSourceId(value.id)}
+          containerClassName={edge.sourceId !== null ? 'valid' : 'invalid'}
         />
       </Col>
       <Col sm={2} id="nodesSwitch">
@@ -68,15 +88,14 @@ export default function EdgePanel(props) {
         <h4 style={{ color: '#CCCCCC' }}>TARGET</h4>
         <DropdownList
           filter="contains"
-          data={targetNodeList}
-          busy={!connectionsCountReady}
+          data={validNodeSelectionList.filter((n, i) => i !== edge.sourceId)}
           busySpinner={<FaSpinner className="icon-spin" />}
           itemComponent={listItem}
           textField="name"
           valueField="id"
-          value={edge.target_id}
-          onChange={(value) => edge.updateField('target_id', value.id)}
-          containerClassName={edge.isValidTarget ? 'valid' : 'invalid'}
+          value={edge.targetId}
+          onChange={handleTargetIdUpdate}
+          containerClassName={edge.targetId !== null ? 'valid' : 'invalid'}
         />
       </Col>
       <Col sm={12} style={{ marginTop: '40px' }}>
@@ -84,16 +103,16 @@ export default function EdgePanel(props) {
         <Multiselect
           filter="contains"
           allowCreate={false}
-          readOnly={!predicatesReady || disablePredicates}
-          busy={!predicatesReady}
-          data={predicateList}
+          readOnly={!edge.predicatesReady || edge.disablePredicates}
+          busy={!edge.predicatesReady}
+          data={edge.predicateList}
           itemComponent={listItem}
           busySpinner={<FaSpinner className="icon-spin" />}
           placeholder={predicateInputMsg}
           textField={(value) => value.name || value}
           value={edge.predicate}
           valueField={(value) => value.name || value}
-          onChange={(value) => edge.updatePredicate(value)}
+          onChange={(value) => edge.setPredicate(value)}
           containerClassName={edge.isValidPredicate ? 'valid' : 'invalid'}
           messages={{
             emptyList: 'No predicates were found',
