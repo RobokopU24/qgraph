@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
+
+import _ from 'lodash';
 
 import API from '@/API';
 import config from '@/config.json';
@@ -72,7 +74,19 @@ export default function useNodePanels() {
     setType(conceptListToString(entry.type));
   }
 
-  async function updateSearchTerm(value) {
+  async function fetchCuries(newSearchTerm) {
+    // Get and update list of curies
+    const response = await API.ranker.entityLookup(newSearchTerm);
+    updateCuries(response);
+    setLoading(false);
+  }
+  // Create a debounced version that persists on renders
+  const fetchCuriesDebounced = useCallback(
+    _.debounce(fetchCuries, 500),
+    [],
+  );
+
+  function updateSearchTerm(value) {
     // Clear existing selection
     setType('');
     setName('');
@@ -88,10 +102,7 @@ export default function useNodePanels() {
     );
     updateFilteredConcepts(newFilteredConcepts);
 
-    // Get and update list of curies
-    const response = await API.ranker.entityLookup(value);
-    updateCuries(response);
-    setLoading(false);
+    fetchCuriesDebounced(value);
   }
 
   return {
