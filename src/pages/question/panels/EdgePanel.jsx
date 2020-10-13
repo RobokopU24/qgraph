@@ -58,8 +58,6 @@ export default function EdgePanel(props) {
   }
   const disabledSwitch = edge.sourceId === null || edge.targetId === null;
 
-  console.log(validNodeSelectionList);
-  console.log(edge);
   return (
     <Form horizontal>
       <Col sm={5}>

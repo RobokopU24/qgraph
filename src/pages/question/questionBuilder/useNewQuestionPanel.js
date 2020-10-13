@@ -47,8 +47,9 @@ export default function useNewQuestionPanel() {
         node.reset();
         setName(`n${query_graph.nodes.length}`);
       }
-    } else if (id) { // load edge from query graph
-      const edgeSeed = query_graph.edges.find((e) => e.id === id);
+    } else if (id !== null) { // load edge from query graph
+      const edgeSeed = query_graph.edges[id];
+      console.log(edgeSeed);
       setName(id);
       edge.initialize(edgeSeed);
     } else { // new edge
@@ -72,7 +73,7 @@ export default function useNewQuestionPanel() {
         nodeIds.add(e.target_id);
       }
     });
-    q_graph.nodes = q_graph.nodes.filter((n) => nodeIds.has(n.id));
+    q_graph.nodes = q_graph.nodes.filter((n, i) => nodeIds.has(i));
     return q_graph;
   }
 
@@ -80,11 +81,20 @@ export default function useNewQuestionPanel() {
    * Remove current node by active id
    */
   function removeNode() {
+    console.log(activePanelId);
     const q_graph = _.cloneDeep(query_graph);
-    const activeInd = q_graph.nodes.findIndex((n) => n.id === activePanelId);
-    q_graph.nodes[activeInd].deleted = true;
+    q_graph.nodes[activePanelId].deleted = true;
     const trimmedQueryGraph = trimFloatingNodes(q_graph);
     updateQueryGraph(trimmedQueryGraph);
+  }
+
+  /**
+   * Remove current edge by active id
+   */
+  function removeEdge() {
+    const q_graph = _.cloneDeep(query_graph);
+    q_graph.edges.splice(activePanelId, 1);
+    updateQueryGraph(q_graph);
   }
 
   function saveActivePanel() {
@@ -143,5 +153,6 @@ export default function useNewQuestionPanel() {
     setPanelType,
     openPanel,
     removeNode,
+    removeEdge,
   };
 }

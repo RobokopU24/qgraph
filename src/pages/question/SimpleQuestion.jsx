@@ -2,6 +2,9 @@ import React, { useState, useContext } from 'react';
 import {
   Grid, Row, Tabs, Tab,
 } from 'react-bootstrap';
+
+import _ from 'lodash';
+
 import { FaDownload } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
@@ -61,7 +64,10 @@ export default function SimpleQuestion() {
 
   function onResetQuestion() {
     if (window.confirm('Are you sure you want to reset this question? This action cannot be undone.')) {
-      messageStore.setMessage({});
+      messageStore.initializeMessage({
+        results: [],
+        query_graph: { nodes: [], edges: [] },
+      });
     }
   }
 

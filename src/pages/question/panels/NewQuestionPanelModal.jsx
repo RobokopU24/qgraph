@@ -46,7 +46,7 @@ export default function NewQuestionPanelModal({ panelStore, onQuestionUpdated })
   const isNodePanel = panelStore.panelType === 'node';
   const unsavedChanges = false;
   const isValidPanel = true;
-  const isNewPanel = !panelStore.activePanelId;
+  const isNewPanel = panelStore.activePanelId == null;
   const backgroundColor = getBackgroundColor(isNodePanel);
   return (
     <Modal

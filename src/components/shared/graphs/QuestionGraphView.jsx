@@ -153,6 +153,11 @@ export default function QuestionGraphView(props) {
       n.id = i;
     }); /* eslint-enable no-param-reassign */
 
+    graph.edges.forEach((e, i) => {
+      // Use index as ID
+      e.id = i;
+    });
+
     graph.nodes = graph.nodes.map(nodePreProcFn);
     graph.edges = graph.edges.map(edgePreProcFn);
     return graph;

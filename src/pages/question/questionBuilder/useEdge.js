@@ -30,6 +30,9 @@ export default function useEdgePanels() {
     reset();
     setId(seed.id || '');
     setSourceId(seed.source_id || null);
+    if (seed.target_id !== null) {
+      setTargetId(seed.target_id);
+    }
   }
 
   function updateSourceId(newSourceId) {
