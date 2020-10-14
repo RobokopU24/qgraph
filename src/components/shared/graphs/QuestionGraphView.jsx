@@ -1,7 +1,6 @@
 import React, {
-  useState, useEffect, useRef, useMemo,
+  useEffect, useRef, useMemo,
 } from 'react';
-import shortid from 'shortid';
 import _ from 'lodash';
 
 import getNodeTypeColorMap from '../../../utils/colorUtils';
@@ -169,7 +168,7 @@ export default function QuestionGraphView(props) {
     const graph = _.cloneDeep(question);
     const isValid = !(graph == null) && (Object.prototype.hasOwnProperty.call(graph, 'nodes')) && (Object.prototype.hasOwnProperty.call(graph, 'edges'));
     if (!isValid) {
-      return;
+      return null;
     }
     // potential change display depending on size/shape of graph
     let actualHeight = height;
