@@ -134,6 +134,7 @@ export default function useNewQuestionPanel() {
       }
     }
     updateQueryGraph(q_graph);
+    togglePanel(false);
     return q_graph;
   }
 

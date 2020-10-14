@@ -26,9 +26,9 @@ export default function EdgePanel(props) {
     const response = await API.ranker.predicateLookup(sourceNode, targetNode);
     console.log('response', response);
     edge.updatePredicateList(
-      Object.entries(response).map((key, value) => ({
-        name: key,
-        degree: value,
+      Object.keys(response).map((name) => ({
+        name,
+        degree: response[name],
       })),
     );
   }

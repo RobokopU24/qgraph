@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {
+  useState, useEffect, useRef, useMemo,
+} from 'react';
 import shortid from 'shortid';
 import _ from 'lodash';
 
@@ -122,8 +124,8 @@ export default function QuestionGraphView(props) {
     graphClickCallback, nodePreProcFn = defaultNodePreProc, edgePreProcFn = defaultEdgePreProc,
     interactable = true,
   } = props;
-  const [displayGraph, setDisplayGraph] = useState(null);
-  const [displayOptions, updateDisplayOptions] = useState({});
+  // const [displayGraph, setDisplayGraph] = useState(null);
+  // const [displayOptions, updateDisplayOptions] = useState({});
   const network = useRef(null);
 
   // Bind network fit callbacks to resize graph and cancel fit callbacks on start of zoom/pan
@@ -135,8 +137,8 @@ export default function QuestionGraphView(props) {
   }
 
   /* eslint-disable no-param-reassign */
-  function getDisplayGraph(rawGraph) {
-    const graph = _.cloneDeep(rawGraph);
+  function getDisplayGraph() {
+    const graph = _.cloneDeep(question);
 
     // Adds vis.js specific tags to manage colors in graph
     const nodeTypeColorMap = getNodeTypeColorMap(config.concepts);
@@ -163,7 +165,12 @@ export default function QuestionGraphView(props) {
     return graph;
   }
 
-  function getDisplayOptions(graph) {
+  function getDisplayOptions() {
+    const graph = _.cloneDeep(question);
+    const isValid = !(graph == null) && (Object.prototype.hasOwnProperty.call(graph, 'nodes')) && (Object.prototype.hasOwnProperty.call(graph, 'edges'));
+    if (!isValid) {
+      return;
+    }
     // potential change display depending on size/shape of graph
     let actualHeight = height;
     if (!(typeof actualHeight === 'string' || actualHeight instanceof String)) {
@@ -252,28 +259,14 @@ export default function QuestionGraphView(props) {
     });
   }
 
-  function getGraphOptions() {
-    let graph = _.cloneDeep(question);
-
-    const isValid = !(graph == null) && (Object.prototype.hasOwnProperty.call(graph, 'nodes')) && (Object.prototype.hasOwnProperty.call(graph, 'edges'));
-    if (isValid) {
-      graph = getDisplayGraph(graph);
-    }
-    const graphOptions = getDisplayOptions(graph);
-
-    setDisplayGraph(graph);
-    updateDisplayOptions(graphOptions);
-  }
-
-  useEffect(() => {
-    getGraphOptions();
-  }, [question]);
-
   useEffect(() => {
     if (selectable && network.current) {
       setNetworkCallbacks();
     }
   }, [network.current]);
+
+  const displayGraph = useMemo(getDisplayGraph, [props]);
+  const displayOptions = useMemo(getDisplayOptions, [props]);
 
   return (
     <>

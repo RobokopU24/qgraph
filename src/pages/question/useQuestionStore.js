@@ -90,14 +90,14 @@ export default function useQuestionStore() {
    */
   function questionSpecToPanelState(qGraph) {
     // try {
-    resetQuestion();
+    // resetQuestion();
     const questionGraphInput = _.cloneDeep(qGraph);
     const valid = validateQuestion(questionGraphInput);
     if (!valid) {
       throw Error('This question graph is invalid.');
     }
     updateQueryGraph(questionGraphInput.query_graph);
-    updateQuestionName(questionGraphInput.question_name || '');
+    // updateQuestionName(questionGraphInput.question_name || '');
     // } catch (err) {
     //  resetQuestion();
     //  console.error('Failed to read this Question template', err);
