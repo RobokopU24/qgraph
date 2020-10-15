@@ -109,14 +109,12 @@ export default function AnswerTable(props) {
   }
 
   useEffect(() => {
-    if (!columns.length) {
-      if (messageStore.unknownNodes) {
-        window.alert('We were able to retrieve the answers to this question. However, it seems there was an error retrieving some of the nodes. If you would like complete answers, please try asking this question again.');
-      }
-      const { columnHeaders, answers } = messageStore.answerSetTableData();
-      initializeState(columnHeaders, answers);
+    if (messageStore.unknownNodes) {
+      window.alert('We were able to retrieve the answers to this question. However, it seems there was an error retrieving some of the nodes. If you would like complete answers, please try asking this question again.');
     }
-  }, []);
+    const { columnHeaders, answers } = messageStore.answerSetTableData();
+    initializeState(columnHeaders, answers);
+  }, [messageStore.message]);
 
   return (
     <>
