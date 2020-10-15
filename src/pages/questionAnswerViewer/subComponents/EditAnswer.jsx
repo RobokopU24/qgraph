@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import FormControl from '@material-ui/core/FormControl';
@@ -36,6 +36,11 @@ export default function EditAnswer({ answer, afterDelete }) {
     const response = await API.cache.deleteAnswer(answer.id, user.id_token);
     afterDelete(response);
   }
+
+  useEffect(() => {
+    updateNewAnswer(answer);
+  }, [answer]);
+
   return (
     <Box mx={1}>
 
@@ -45,7 +50,7 @@ export default function EditAnswer({ answer, afterDelete }) {
           <Select
             id="visibility-select"
             value={newAnswer.visibility}
-            inputProps={{ readOnly: !answer.owned }}
+            disabled={!answer.owned}
             onChange={(e) => save({ ...newAnswer, visibility: e.target.value })}
           >
             <MenuItem value={1}>Private</MenuItem>
@@ -68,7 +73,7 @@ export default function EditAnswer({ answer, afterDelete }) {
         clipboardText={fullLocation}
       />
 
-      { answer.owned && (
+      {answer.owned && (
         <Box my={2}>
           <Button
             startIcon={<DeleteOutlineIcon />}
