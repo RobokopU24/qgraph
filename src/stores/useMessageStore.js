@@ -13,8 +13,6 @@ const makeEmptyArray = (len, init) => {
 export default function useMessageStore() {
   const [message, setMessage] = useState({});
   const filter = useRef({});
-  // const [activeAnswerId, updateActiveAnswerId] = useState(null);
-  // const [denseAnswer, updateDenseAnswer] = useState({});
   const [numAgSetNodes, updateNumAgSetNodes] = useState(10);
   const [idToIndMaps, setIdToIndMaps] = useState(null);
   const [filterKeys, setFilterKeys] = useState({});
