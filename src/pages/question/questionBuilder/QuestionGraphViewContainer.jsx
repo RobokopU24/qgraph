@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaSpinner, FaPlusSquare } from 'react-icons/fa';
 import { Modal, Button } from 'react-bootstrap';
+import queryGraphUtils from '@/utils/queryGraph';
 
 import QuestionGraphView from '../../../components/shared/graphs/QuestionGraphView';
 import NewQuestionPanelModal from '../panels/NewQuestionPanelModal';
@@ -60,7 +61,7 @@ export default function QuestionGraphViewContainer(props) {
    */
   function saveJsonEditor(question) {
     try {
-      questionStore.questionSpecToPanelState(question);
+      questionStore.fromListRepresentation(question);
       toggleJsonEditor(!showJsonEditor);
       toggleGraph(true);
     } catch (err) {
@@ -86,8 +87,8 @@ export default function QuestionGraphViewContainer(props) {
 
   // const showFetching = questionStore.graphState === graphStates.fetching;
   // const notInitialized = questionStore.graphState === graphStates.empty;
-  const numNodes = panelStore.query_graph.nodes.length;
-  const numEdges = panelStore.query_graph.edges.length;
+  const numNodes = Object.entries(panelStore.query_graph.nodes).length;
+  const numEdges = Object.entries(panelStore.query_graph.edges).length;
   // const error = questionStore.graphState === graphStates.error;
 
   return (
@@ -97,7 +98,7 @@ export default function QuestionGraphViewContainer(props) {
         <QuestionGraphView
           height={height}
           width={width}
-          question={panelStore.query_graph}
+          question={queryGraphUtils.toListRepresentation(panelStore.query_graph)}
           concepts={config.concepts}
           graphState={questionStore.graphState}
           selectable
@@ -138,7 +139,7 @@ export default function QuestionGraphViewContainer(props) {
         </div>
       )}
       <NewQuestionPanelModal
-        onQuestionUpdated={(updated_q) => questionStore.questionSpecToPanelState(updated_q)}
+        onQuestionUpdated={(updated_q) => questionStore.updateQueryGraph(updated_q)}
         panelStore={panelStore}
       />
       <Modal

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import _ from 'lodash';
+import queryGraphUtils from '@/utils/queryGraph';
 
 function getEmptyQueryGraph() {
   return {
@@ -77,36 +78,6 @@ export default function useQuestionStore() {
     return true;
   }
 
-  /**
-   * Convert JSON workflow input format to internal Panel State representation.
-   * panelState is set to an Array in internal Panel state representation of form:
-   * [ InputPanel instance, OperationPanel instance, ... ]
-   * Note: This method overwrites all supplied node/edge ids to internal integer representation
-   * @param {Object} qGraph Object for new question
-   * @param {String} qGraph.question_name name of the question
-   * @param {Object} qGraph.query_graph object containing nodes and edges
-   * @param {Array} qGraph.query_graph.edges array of edges
-   * @param {Array} qGraph.query_graph.nodes array of nodes
-   */
-  function questionSpecToPanelState(qGraph) {
-    // try {
-    // resetQuestion();
-    const questionGraphInput = _.cloneDeep(qGraph);
-    const valid = validateQuestion(questionGraphInput);
-    if (!valid) {
-      throw Error('This question graph is invalid.');
-    }
-    updateQueryGraph(questionGraphInput.query_graph);
-    // updateQuestionName(questionGraphInput.question_name || '');
-    // } catch (err) {
-    //  resetQuestion();
-    //  console.error('Failed to read this Question template', err);
-    //  throw Error('Unable to load question.');
-    // TODO: window alert
-    // window.alert('Failed to read this Question template. Are you sure this is valid?');
-    // }
-  }
-
   // function openQuestionPanel(type) {
   //   newQuestionPanel.create(type);
   //   togglePanelModal(true);
@@ -128,6 +99,15 @@ export default function useQuestionStore() {
     });
   }
 
+  function loadListRepresentation(input) {
+    const dictRepresentation = queryGraphUtils.fromListRepresentation(input);
+    updateQueryGraph(dictRepresentation);
+  }
+
+  function getListRepresentation() {
+    return queryGraphUtils.toListRepresentation(query_graph);
+  }
+
   return {
     question_name,
     query_graph,
@@ -139,10 +119,12 @@ export default function useQuestionStore() {
     // newQuestionPanel,
     updateQuestionName,
     makeQuestion,
-    questionSpecToPanelState,
     resetQuestion,
     // openQuestionPanel,
     // togglePanelModal,
     // savePanel,
+    loadListRepresentation,
+    getListRepresentation,
+    updateQueryGraph,
   };
 }

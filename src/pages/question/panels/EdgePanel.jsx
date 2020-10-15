@@ -38,20 +38,30 @@ export default function EdgePanel(props) {
     edge.updateTargetId(newTargetId);
     if (newTargetId !== null && edge.sourceId !== null) {
       let sourceNode =
-        panelStore.query_graph.nodes.find((n) => n.id === edge.sourceId);
+        panelStore.query_graph.nodes[edge.sourceId];
       let targetNode =
-        panelStore.query_graph.nodes.find((n) => n.id === newTargetId);
+        panelStore.query_graph.nodes[newTargetId];
       // Including name in the node breaks the API call
+      // So we make a copy and remove it
       sourceNode = { ...sourceNode };
       targetNode = { ...targetNode };
       delete sourceNode.name;
       delete targetNode.name;
       fetchPredicates(sourceNode, targetNode);
     }
+    panelStore.toggleUnsavedChanges(true);
+  }
+
+  function handleSourceIdUpdate(value) {
+    panelStore.toggleUnsavedChanges(true);
+    edge.updateSourceId(value.id);
   }
 
   const validNodeSelectionList =
-    panelStore.query_graph.nodes.filter((n) => !n.deleted);
+    Object.entries(panelStore.query_graph.nodes).map(
+      ([id, node]) => ({ ...node, id }),
+    ).filter((n) => !n.deleted);
+
   // Determine default message for predicate selection component
   let predicateInputMsg = 'Choose optional predicate(s)...';
   if (!edge.predicatesReady) {
@@ -72,7 +82,7 @@ export default function EdgePanel(props) {
           textField="name"
           valueField="id"
           value={edge.sourceId}
-          onChange={(value) => edge.updateSourceId(value.id)}
+          onChange={handleSourceIdUpdate}
           containerClassName={
             validNodeSelectionList.find((n) => n.id === edge.sourceId)
               ? 'valid' : 'invalid'

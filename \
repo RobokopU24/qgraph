@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import _ from 'lodash';
 
 import useNode from './useNode';
@@ -51,30 +51,6 @@ export default function useNewQuestionPanel() {
     return `n${index}`;
   }
 
-  // Initialize node or edge
-  // based on given id and type
-  function initializeNodeOrEdge() {
-    if (panelType === 'node') {
-      if (activePanelId) { // load node from query graph
-        const nodeSeed = query_graph.nodes[activePanelId];
-        setName(activePanelId);
-        node.initialize(nodeSeed);
-      } else { // new node
-        node.reset();
-        setName(getNextNodeID());
-      }
-    } else if (activePanelId) { // load edge from query graph
-      const edgeSeed = query_graph.edges[activePanelId];
-      setName(activePanelId);
-      edge.initialize(edgeSeed);
-    } else { // new edge
-      edge.reset();
-      setName(getNextEdgeID());
-    }
-  }
-
-  useEffect(initializeNodeOrEdge, [activePanelId, panelType]);
-
   /**
    * Open a node/edpe panel either fresh or with a seed id
    * @param {string} type either node or edge
@@ -82,17 +58,26 @@ export default function useNewQuestionPanel() {
    */
   function openPanel(type, id) {
     setPanelType(type);
+    if (type === 'node') {
+      if (id) { // load node from query graph
+        const nodeSeed = query_graph.nodes[id];
+        setName(id);
+        node.initialize(nodeSeed);
+      } else { // new node
+        node.reset();
+        setName(getNextNodeID());
+      }
+    } else if (id) { // load edge from query graph
+      const edgeSeed = query_graph.edges[id];
+      setName(id);
+      edge.initialize(edgeSeed);
+    } else { // new edge
+      edge.reset();
+      setName(getNextEdgeID());
+    }
+    // we need active id for node/edge removal
     updateActivePanelId(id);
-
     togglePanel(true);
-    toggleUnsavedChanges(false);
-  }
-
-  function revertActivePanel() {
-    node.reset();
-    edge.reset();
-    initializeNodeOrEdge();
-    toggleUnsavedChanges(false);
   }
 
   /**
@@ -105,12 +90,12 @@ export default function useNewQuestionPanel() {
       notFloatingNodeIDs.add(e.source_id);
       notFloatingNodeIDs.add(e.target_id);
     });
-    const floatingNodeIDs = Object.keys(q_graph.nodes).filter((id) => !(notFloatingNodeIDs.has(id)));
 
-    // Trim a node if it is floating and marked for deletion
     const nodesToTrim = Object.entries(q_graph.nodes)
-      .filter(([id, n]) => floatingNodeIDs.includes(id) && n.deleted)
+      .filter(([id, n]) => !(id in notFloatingNodeIDs) && n.deleted)
       .map(([id, n]) => id);
+
+    console.log('Trimming nodes', nodesToTrim);
 
     q_graph.nodes = _.omit(q_graph.nodes, nodesToTrim);
     // q_graph.nodes = _.pick(q_graph.nodes, notFloatingNodeIDs);
@@ -134,8 +119,7 @@ export default function useNewQuestionPanel() {
   function removeEdge() {
     const q_graph = _.cloneDeep(query_graph);
     delete q_graph.edges[activePanelId];
-    const trimmedQueryGraph = trimFloatingNodes(q_graph);
-    updateQueryGraph(trimmedQueryGraph);
+    updateQueryGraph(q_graph);
   }
 
   function saveActivePanel() {
@@ -191,7 +175,6 @@ export default function useNewQuestionPanel() {
     togglePanel,
     setPanelType,
     openPanel,
-    revertActivePanel,
     removeNode,
     removeEdge,
   };

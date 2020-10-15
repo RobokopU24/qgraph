@@ -29,9 +29,9 @@ export default function NewQuestionPanelModal({ panelStore, onQuestionUpdated })
     }
     const { nodes } = panelStore.query_graph;
     // only find the node panels in questionStore state.
-    const node1 = nodes.find((node) => node.id === panelStore.edge.source_id);
+    const node1 = nodes[panelStore.edge.source_id];
     const type1 = (node1 && node1.type) || 'edge';
-    const node2 = nodes.find((node) => node.id === panelStore.edge.target_id);
+    const node2 = nodes[panelStore.edge.target_id];
     const type2 = (node2 && node2.type) || 'edge';
     const color1 = panelColorMap(type1);
     const color2 = panelColorMap(type2);
@@ -40,7 +40,7 @@ export default function NewQuestionPanelModal({ panelStore, onQuestionUpdated })
 
   function handleSave() {
     const updatedQueryGraph = panelStore.saveActivePanel();
-    onQuestionUpdated({ query_graph: updatedQueryGraph });
+    onQuestionUpdated(updatedQueryGraph);
   }
 
   const isNodePanel = panelStore.panelType === 'node';
@@ -71,7 +71,7 @@ export default function NewQuestionPanelModal({ panelStore, onQuestionUpdated })
       </Modal.Body>
       <Modal.Footer>
         <ButtonGroup className="pull-right">
-          {(panelStore.query_graph.nodes.length > 0) && (
+          {(Object.entries(panelStore.query_graph.nodes).length > 0) && (
             <Button
               onClick={() => {
                 if (!isNewPanel) {
@@ -91,8 +91,8 @@ export default function NewQuestionPanelModal({ panelStore, onQuestionUpdated })
           {!isNewPanel && (
             <Button
               onClick={panelStore.revertActivePanel}
-              disabled={!unsavedChanges}
-              title={unsavedChanges ? 'Undo unsaved changes' : 'No changes to undo'}
+              disabled={!panelStore.unsavedChanges}
+              title={panelStore.unsavedChanges ? 'Undo unsaved changes' : 'No changes to undo'}
             >
               <FaUndo style={{ verticalAlign: 'text-top' }} />
               {' Undo'}
@@ -101,9 +101,9 @@ export default function NewQuestionPanelModal({ panelStore, onQuestionUpdated })
           {true && (
             <Button
               onClick={handleSave}
-              disabled={!(unsavedChanges || isNewPanel)}
-              bsStyle={isValidPanel ? (unsavedChanges ? 'primary' : 'default') : 'danger'} // eslint-disable-line no-nested-ternary
-              title={isValidPanel ? (unsavedChanges ? 'Save changes' : 'No changes to save') : 'Fix invalid panel entries first'} // eslint-disable-line no-nested-ternary
+              disabled={!(panelStore.unsavedChanges || isNewPanel)}
+              bsStyle={isValidPanel ? (panelStore.unsavedChanges ? 'primary' : 'default') : 'danger'} // eslint-disable-line no-nested-ternary
+              title={isValidPanel ? (panelStore.unsavedChanges ? 'Save changes' : 'No changes to save') : 'Fix invalid panel entries first'} // eslint-disable-line no-nested-ternary
             >
               <FaSave style={{ verticalAlign: 'text-top' }} />
               {' Save'}

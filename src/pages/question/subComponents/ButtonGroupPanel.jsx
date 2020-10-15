@@ -11,10 +11,11 @@ import { FaPlusSquare, FaPlus } from 'react-icons/fa';
  * @param {function} toggleJsonEditor function to close the advanced json editor
  */
 export default function ButtonGroupPanel({ panelStore, toggleJsonEditor }) {
-  const atleastTwoNodes = panelStore.query_graph.nodes.filter((node) => !node.deleted).length >= 2;
+  const numNodes = Object.entries(panelStore.query_graph.nodes)
+    .filter(([id, node]) => !node.deleted).length;
   return (
     <>
-      {panelStore.query_graph.nodes.length > 0 && (
+      {numNodes > 0 && (
         <div
           style={{
             position: 'absolute', left: '30px', top: '60px', zIndex: 99,
@@ -26,8 +27,8 @@ export default function ButtonGroupPanel({ panelStore, toggleJsonEditor }) {
             </Button>
             <Button
               onClick={() => panelStore.openPanel('edge')}
-              disabled={!atleastTwoNodes}
-              title={!atleastTwoNodes ? 'Please create two nodes before connecting them with an edge' : ''}
+              disabled={numNodes < 2}
+              title={numNodes < 2 ? 'Please create two nodes before connecting them with an edge' : ''}
             >
               <FaPlus style={{ verticalAlign: 'text-top' }} />{' Add Edge'}
             </Button>

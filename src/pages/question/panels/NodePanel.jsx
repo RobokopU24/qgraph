@@ -25,6 +25,11 @@ export default function NodePanel({ panelStore }) {
     input.current.focus();
   }, []);
 
+  function handleSelect(entry) {
+    panelStore.toggleUnsavedChanges(true);
+    panelStore.node.select(entry);
+  }
+
   function rowRenderer({
     index,
     key,
@@ -100,7 +105,7 @@ export default function NodePanel({ panelStore }) {
           <Badge>{degree}</Badge>
           {links}
           <Button
-            onClick={() => panelStore.node.select(entry)}
+            onClick={() => handleSelect(entry)}
           >
             Select
           </Button>

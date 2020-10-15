@@ -137,7 +137,6 @@ export default function QuestionGraphView(props) {
 
   /* eslint-disable no-param-reassign */
   function getDisplayGraph() {
-    console.log('Re-rendering display graph');
     const graph = _.cloneDeep(question);
 
     // Adds vis.js specific tags to manage colors in graph
