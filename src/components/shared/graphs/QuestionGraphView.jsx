@@ -123,8 +123,6 @@ export default function QuestionGraphView(props) {
     graphClickCallback, nodePreProcFn = defaultNodePreProc, edgePreProcFn = defaultEdgePreProc,
     interactable = true,
   } = props;
-  // const [displayGraph, setDisplayGraph] = useState(null);
-  // const [displayOptions, updateDisplayOptions] = useState({});
   const network = useRef(null);
 
   // Bind network fit callbacks to resize graph and cancel fit callbacks on start of zoom/pan
@@ -158,11 +156,10 @@ export default function QuestionGraphView(props) {
   }
 
   function getDisplayOptions() {
-    const graph = _.cloneDeep(question);
-    const isValid = !(graph == null) && (Object.prototype.hasOwnProperty.call(graph, 'nodes')) && (Object.prototype.hasOwnProperty.call(graph, 'edges'));
-    if (!isValid) {
+    if (!question || !question.nodes || !question.edges) {
       return null;
     }
+    const graph = _.cloneDeep(question);
     // potential change display depending on size/shape of graph
     let actualHeight = height;
     if (!(typeof actualHeight === 'string' || actualHeight instanceof String)) {

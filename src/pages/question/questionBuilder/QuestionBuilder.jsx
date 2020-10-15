@@ -80,7 +80,7 @@ export default function QuestionBuilder(props) {
         const fileContents = e.target.result;
         try {
           const fileContentObj = JSON.parse(fileContents);
-          questionStore.fromListRepresentation(fileContentObj);
+          questionStore.loadListRepresentation(fileContentObj);
           setStep('build');
           setLoading(false);
         } catch (err) {

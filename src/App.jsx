@@ -69,14 +69,14 @@ export default function App() {
                 <Route
                   path="/simple"
                   render={({ match: { url } }) => (
-                    <Switch>
+                    <>
                       <Route path={`${url}/view`} exact>
                         <SimpleViewer />
                       </Route>
                       <Route path={`${url}/question`} exact>
                         <SimpleQuestion />
                       </Route>
-                    </Switch>
+                    </>
                   )}
                 />
                 <Route path="/">

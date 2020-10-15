@@ -32,7 +32,7 @@ export default function SimpleQuestion() {
   const [submittedQuestion, toggleSubmittedQuestion] = useState(false);
 
   function onDownloadQuestion() {
-    const data = questionStore.getMachineQuestionSpecJson;
+    const data = questionStore.getListRepresentation();
     // Transform the data into a json blob and give it a url
     const json = JSON.stringify(data, null, 2);
     const blob = new Blob([json], { type: 'application/json' });

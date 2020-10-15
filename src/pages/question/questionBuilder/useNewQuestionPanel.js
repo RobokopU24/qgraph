@@ -25,7 +25,6 @@ export default function useNewQuestionPanel() {
    * @param {object} qGraph query graph. Will make a copy and modify said copy.
    */
   function load(qGraph) {
-    console.log('Loading', qGraph);
     updateQueryGraph(_.cloneDeep(qGraph));
   }
 
