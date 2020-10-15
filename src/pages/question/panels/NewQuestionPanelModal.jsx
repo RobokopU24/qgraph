@@ -29,9 +29,9 @@ export default function NewQuestionPanelModal({ panelStore, onQuestionUpdated })
     }
     const { nodes } = panelStore.query_graph;
     // only find the node panels in questionStore state.
-    const node1 = nodes[panelStore.edge.source_id];
+    const node1 = nodes.find((node) => node.id === panelStore.edge.source_id);
     const type1 = (node1 && node1.type) || 'edge';
-    const node2 = nodes[panelStore.edge.target_id];
+    const node2 = nodes.find((node) => node.id === panelStore.edge.target_id);
     const type2 = (node2 && node2.type) || 'edge';
     const color1 = panelColorMap(type1);
     const color2 = panelColorMap(type2);

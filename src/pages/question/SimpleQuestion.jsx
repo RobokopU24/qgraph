@@ -73,19 +73,6 @@ export default function SimpleQuestion() {
     }
   }
 
-  function queryGraphStringifyIds(query_graph) {
-    // Add IDs to query_graph if they don't exist
-    query_graph.nodes =
-      query_graph.nodes.map((n, i) => ({ ...n, id: `n${i}` }));
-    query_graph.edges =
-      query_graph.edges.map((e, i) => ({
-        ...e,
-        id: `e${i}`,
-        source_id: `n${e.source_id}`,
-        target_id: `n${e.target_id}`,
-      }));
-  }
-
   async function onSubmit() {
     toggleSubmittedQuestion(true);
     answersetStatus.setLoading();
@@ -93,7 +80,6 @@ export default function SimpleQuestion() {
     const query_graph = _.cloneDeep(
       questionStore.query_graph,
     );
-    queryGraphStringifyIds(query_graph);
     const response = await API.ara.getAnswer(query_graph);
     if (response.status === 'error') {
       answersetStatus.setFailure(response.message);

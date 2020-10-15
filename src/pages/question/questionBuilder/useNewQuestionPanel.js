@@ -34,13 +34,10 @@ export default function useNewQuestionPanel() {
    * @param {string} id unique id of node or edge. i.e. n0, n1, e0...
    */
   function openPanel(type, id) {
-    console.log(id);
     setPanelType(type);
     if (type === 'node') {
-      // Can't do if(id) because that evaluates to false when id == 0 🤦
       if (id !== null && id !== undefined) { // load node from query graph
-        const nodeSeed = query_graph.nodes[id];
-        nodeSeed.id = id;
+        const nodeSeed = query_graph.nodes.find((n) => n.id === id);
         setName(id);
         node.initialize(nodeSeed);
       } else { // new node
@@ -48,8 +45,7 @@ export default function useNewQuestionPanel() {
         setName(`n${query_graph.nodes.length}`);
       }
     } else if (id !== null && id !== undefined) { // load edge from query graph
-      const edgeSeed = query_graph.edges[id];
-      console.log(edgeSeed);
+      const edgeSeed = query_graph.edges.find((e) => e.id === id);
       setName(id);
       edge.initialize(edgeSeed);
     } else { // new edge
@@ -73,7 +69,7 @@ export default function useNewQuestionPanel() {
         nodeIds.add(e.target_id);
       }
     });
-    q_graph.nodes = q_graph.nodes.filter((n, i) => nodeIds.has(i));
+    q_graph.nodes = q_graph.nodes.filter((n) => nodeIds.has(n.id));
     return q_graph;
   }
 
@@ -81,9 +77,9 @@ export default function useNewQuestionPanel() {
    * Remove current node by active id
    */
   function removeNode() {
-    console.log(activePanelId);
     const q_graph = _.cloneDeep(query_graph);
-    q_graph.nodes[activePanelId].deleted = true;
+    const nodeToDelete = q_graph.nodes.find((n) => n.id === activePanelId);
+    nodeToDelete.deleted = true;
     const trimmedQueryGraph = trimFloatingNodes(q_graph);
     updateQueryGraph(trimmedQueryGraph);
   }
@@ -112,10 +108,12 @@ export default function useNewQuestionPanel() {
 
       // New node
       if (!node.id) {
+        new_node.id = `n${q_graph.nodes.length}`;
         q_graph.nodes.push(new_node);
       } else {
-        const existing_node_index = q_graph.nodes.indexOf((n) => n.id === node.id);
-        q_graph.nodes[existing_node_index] = new_node;
+        let existing_node = q_graph.nodes.find((n) => n.id === node.id);
+        // eslint-disable-next-line no-unused-vars
+        existing_node = new_node;
       }
     } else {
       const new_edge = {
@@ -127,10 +125,12 @@ export default function useNewQuestionPanel() {
       }
       // New edge
       if (!edge.id) {
+        new_edge.id = `e${q_graph.edges.length}`;
         q_graph.edges.push(new_edge);
       } else {
-        const existing_edge_index = q_graph.edges.indexOf((n) => n.id === edge.id);
-        q_graph.edges[existing_edge_index] = new_edge;
+        let existing_edge = q_graph.edges.find((e) => e.id === edge.id);
+        // eslint-disable-next-line no-unused-vars
+        existing_edge = new_edge;
       }
     }
     updateQueryGraph(q_graph);

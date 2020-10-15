@@ -37,18 +37,21 @@ export default function EdgePanel(props) {
     const newTargetId = value.id;
     edge.updateTargetId(newTargetId);
     if (newTargetId !== null && edge.sourceId !== null) {
-      const sourceNode = { ...panelStore.query_graph.nodes[edge.sourceId] };
-      const targetNode = { ...panelStore.query_graph.nodes[newTargetId] };
+      let sourceNode =
+        panelStore.query_graph.nodes.find((n) => n.id === edge.sourceId);
+      let targetNode =
+        panelStore.query_graph.nodes.find((n) => n.id === newTargetId);
       // Including name in the node breaks the API call
+      sourceNode = { ...sourceNode };
+      targetNode = { ...targetNode };
       delete sourceNode.name;
       delete targetNode.name;
       fetchPredicates(sourceNode, targetNode);
     }
   }
 
-  const validNodeSelectionList = panelStore.query_graph.nodes.map(
-    (n, i) => ({ ...n, id: i }),
-  ).filter((n) => !n.deleted);
+  const validNodeSelectionList =
+    panelStore.query_graph.nodes.filter((n) => !n.deleted);
   // Determine default message for predicate selection component
   let predicateInputMsg = 'Choose optional predicate(s)...';
   if (!edge.predicatesReady) {
@@ -70,7 +73,10 @@ export default function EdgePanel(props) {
           valueField="id"
           value={edge.sourceId}
           onChange={(value) => edge.updateSourceId(value.id)}
-          containerClassName={edge.sourceId !== null ? 'valid' : 'invalid'}
+          containerClassName={
+            validNodeSelectionList.find((n) => n.id === edge.sourceId)
+              ? 'valid' : 'invalid'
+          }
         />
       </Col>
       <Col sm={2} id="nodesSwitch">
@@ -86,14 +92,17 @@ export default function EdgePanel(props) {
         <h4 style={{ color: '#CCCCCC' }}>TARGET</h4>
         <DropdownList
           filter="contains"
-          data={validNodeSelectionList.filter((n, i) => i !== edge.sourceId)}
+          data={validNodeSelectionList.filter((n) => n.id !== edge.sourceId)}
           busySpinner={<FaSpinner className="icon-spin" />}
           itemComponent={listItem}
           textField="name"
           valueField="id"
           value={edge.targetId}
           onChange={handleTargetIdUpdate}
-          containerClassName={edge.targetId !== null ? 'valid' : 'invalid'}
+          containerClassName={
+            validNodeSelectionList.find((n) => n.id === edge.targetId)
+              ? 'valid' : 'invalid'
+          }
         />
       </Col>
       <Col sm={12} style={{ marginTop: '40px' }}>

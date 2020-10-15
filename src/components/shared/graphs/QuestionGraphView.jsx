@@ -143,7 +143,7 @@ export default function QuestionGraphView(props) {
     // Adds vis.js specific tags to manage colors in graph
     const nodeTypeColorMap = getNodeTypeColorMap(config.concepts);
 
-    graph.nodes.forEach((n, i) => {
+    graph.nodes.forEach((n) => {
       const backgroundColor = nodeTypeColorMap(n.type);
       n.color = {
         border: '#000000',
@@ -151,14 +151,7 @@ export default function QuestionGraphView(props) {
         highlight: { background: backgroundColor, border: '#000000' },
         hover: { background: backgroundColor, border: '#000000' },
       };
-      // Use index as ID
-      n.id = i;
     }); /* eslint-enable no-param-reassign */
-
-    graph.edges.forEach((e, i) => {
-      // Use index as ID
-      e.id = i;
-    });
 
     graph.nodes = graph.nodes.map(nodePreProcFn);
     graph.edges = graph.edges.map(edgePreProcFn);
