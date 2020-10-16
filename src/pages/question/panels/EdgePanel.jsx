@@ -8,6 +8,8 @@ import {
 import { FaSpinner } from 'react-icons/fa';
 import { Multiselect, DropdownList } from 'react-widgets';
 
+import entityNameDisplay from '@/utils/entityNameDisplay';
+
 const listItem = ({ item }) => (
   <div className="listItem">
     {item.name}
@@ -57,7 +59,11 @@ export default function EdgePanel(props) {
 
   const validNodeSelectionList =
     Object.entries(panelStore.query_graph.nodes).map(
-      ([id, node]) => ({ ...node, id }),
+      ([id, node]) => ({
+        ...node,
+        name: node.name || entityNameDisplay(node.type),
+        id,
+      }),
     ).filter((n) => !n.deleted);
 
   // Determine default message for predicate selection component
@@ -68,8 +74,6 @@ export default function EdgePanel(props) {
     predicateInputMsg = 'Source and/or Target Nodes need to be specified...';
   }
   const disabledSwitch = edge.sourceId === null || edge.targetId === null;
-
-  console.log(validNodeSelectionList);
 
   return (
     <Form horizontal>

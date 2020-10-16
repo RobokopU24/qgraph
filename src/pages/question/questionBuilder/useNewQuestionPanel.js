@@ -45,10 +45,10 @@ export default function useNewQuestionPanel() {
    */
   function getNextEdgeID() {
     let index = 0;
-    while (`n${index}` in query_graph.nodes) {
+    while (`e${index}` in query_graph.edges) {
       index += 1;
     }
-    return `n${index}`;
+    return `e${index}`;
   }
 
   // Initialize node or edge

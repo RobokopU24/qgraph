@@ -77,9 +77,7 @@ export default function SimpleQuestion() {
     toggleSubmittedQuestion(true);
     answersetStatus.setLoading();
 
-    const query_graph = _.cloneDeep(
-      questionStore.query_graph,
-    );
+    const query_graph = questionStore.getListRepresentation();
     const response = await API.ara.getAnswer(query_graph);
     if (response.status === 'error') {
       answersetStatus.setFailure(response.message);
