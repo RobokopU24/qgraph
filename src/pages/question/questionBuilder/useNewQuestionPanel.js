@@ -12,9 +12,10 @@ const initialQueryGraph = {
 export default function useNewQuestionPanel() {
   const [name, setName] = useState('');
   const [query_graph, updateQueryGraph] = useState(initialQueryGraph);
+
   const [showPanel, togglePanel] = useState(false);
-  const [panelType, setPanelType] = useState(null);
-  const [activePanelId, updateActivePanelId] = useState(null);
+
+  const [panelInfo, setPanelInfo] = useState({ type: null, id: null });
   const node = useNode();
   const edge = useEdge();
 
@@ -53,26 +54,28 @@ export default function useNewQuestionPanel() {
   // Initialize node or edge
   // based on given id and type
   function initializeNodeOrEdge() {
-    if (panelType === 'node') {
-      if (activePanelId) { // load node from query graph
-        const nodeSeed = query_graph.nodes[activePanelId];
-        setName(activePanelId);
+    if (panelInfo.type === 'node') {
+      if (panelInfo.id) { // load node from query graph
+        const nodeSeed = query_graph.nodes[panelInfo.id];
+        setName(panelInfo.id);
         node.initialize(nodeSeed);
       } else { // new node
         node.reset();
         setName(getNextNodeID());
       }
-    } else if (activePanelId) { // load edge from query graph
-      const edgeSeed = query_graph.edges[activePanelId];
-      setName(activePanelId);
-      edge.initialize(edgeSeed);
-    } else { // new edge
-      edge.reset();
-      setName(getNextEdgeID());
+    } else if (panelInfo.type === 'edge') {
+      if (panelInfo.id) { // load edge from query graph
+        const edgeSeed = query_graph.edges[panelInfo.id];
+        setName(panelInfo.id);
+        edge.initialize(edgeSeed);
+      } else { // new edge
+        edge.reset();
+        setName(getNextEdgeID());
+      }
     }
   }
 
-  useEffect(initializeNodeOrEdge, [activePanelId, panelType]);
+  useEffect(initializeNodeOrEdge, [panelInfo]);
 
   /**
    * Open a node/edpe panel either fresh or with a seed id
@@ -80,8 +83,7 @@ export default function useNewQuestionPanel() {
    * @param {string} id unique id of node or edge. i.e. n0, n1, e0...
    */
   function openPanel(type, id) {
-    setPanelType(type);
-    updateActivePanelId(id);
+    setPanelInfo({ type, id });
 
     togglePanel(true);
     toggleUnsavedChanges(false);
@@ -121,7 +123,7 @@ export default function useNewQuestionPanel() {
    */
   function removeNode() {
     const q_graph = _.cloneDeep(query_graph);
-    const nodeToDelete = q_graph.nodes[activePanelId];
+    const nodeToDelete = q_graph.nodes[panelInfo.id];
     nodeToDelete.deleted = true;
     const trimmedQueryGraph = trimFloatingNodes(q_graph);
     updateQueryGraph(trimmedQueryGraph);
@@ -132,14 +134,14 @@ export default function useNewQuestionPanel() {
    */
   function removeEdge() {
     const q_graph = _.cloneDeep(query_graph);
-    delete q_graph.edges[activePanelId];
+    delete q_graph.edges[panelInfo.id];
     const trimmedQueryGraph = trimFloatingNodes(q_graph);
     updateQueryGraph(trimmedQueryGraph);
   }
 
   function saveActivePanel() {
     const q_graph = _.cloneDeep(query_graph);
-    if (panelType === 'node') {
+    if (panelInfo.type === 'node') {
       const new_node = {
         type: node.type,
       };
@@ -150,10 +152,10 @@ export default function useNewQuestionPanel() {
         new_node.name = node.name;
       }
 
-      if (!activePanelId) {
+      if (!panelInfo.id) {
         q_graph.nodes[getNextNodeID()] = new_node;
       } else {
-        q_graph.nodes[activePanelId] = new_node;
+        q_graph.nodes[panelInfo.id] = new_node;
       }
     } else {
       const new_edge = {
@@ -164,10 +166,10 @@ export default function useNewQuestionPanel() {
         new_edge.type = node.predicate;
       }
 
-      if (!activePanelId) {
+      if (!panelInfo.id) {
         q_graph.edges[getNextEdgeID()] = new_edge;
       } else {
-        q_graph.edges[activePanelId] = new_edge;
+        q_graph.edges[panelInfo.id] = new_edge;
       }
     }
     updateQueryGraph(q_graph);
@@ -180,15 +182,14 @@ export default function useNewQuestionPanel() {
     toggleUnsavedChanges,
     saveActivePanel,
     showPanel,
-    panelType,
+    panelType: panelInfo.type,
     name,
     query_graph,
     node,
     edge,
-    activePanelId,
+    activePanelId: panelInfo.id,
     load,
     togglePanel,
-    setPanelType,
     openPanel,
     revertActivePanel,
     removeNode,

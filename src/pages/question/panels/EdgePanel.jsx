@@ -22,9 +22,7 @@ export default function EdgePanel(props) {
   const { edge } = panelStore;
 
   async function fetchPredicates(sourceNode, targetNode) {
-    console.log('nodes', sourceNode, targetNode);
     const response = await API.ranker.predicateLookup(sourceNode, targetNode);
-    console.log('response', response);
     edge.updatePredicateList(
       Object.keys(response).map((name) => ({
         name,
@@ -70,6 +68,8 @@ export default function EdgePanel(props) {
     predicateInputMsg = 'Source and/or Target Nodes need to be specified...';
   }
   const disabledSwitch = edge.sourceId === null || edge.targetId === null;
+
+  console.log(validNodeSelectionList);
 
   return (
     <Form horizontal>
