@@ -113,7 +113,7 @@ export default function useNewQuestionPanel() {
       .filter(([id, n]) => floatingNodeIDs.includes(id) && n.deleted)
       .map(([id, n]) => id);
 
-    q_graph.nodes = _.omit(q_graph.nodes, nodesToTrim);
+    q_graph.nodes = _.omitBy(q_graph.nodes, (n, id) => nodesToTrim.includes(id));
     // q_graph.nodes = _.pick(q_graph.nodes, notFloatingNodeIDs);
     return q_graph;
   }
@@ -172,9 +172,10 @@ export default function useNewQuestionPanel() {
         q_graph.edges[panelInfo.id] = new_edge;
       }
     }
-    updateQueryGraph(q_graph);
+    const trimmedQueryGraph = trimFloatingNodes(q_graph);
+    updateQueryGraph(trimmedQueryGraph);
     togglePanel(false);
-    return q_graph;
+    return trimmedQueryGraph;
   }
 
   return {
