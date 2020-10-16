@@ -20,10 +20,32 @@ export default function Header({ setUser }) {
 
   const user = useContext(UserContext);
 
+  /**
+   * Automatically refresh a user token a minute before it expires
+   * This will run in the background and ping google every 30 mins or so
+   * @param {number} timeToRefresh number of seconds before a token is set to expire
+   * @param {object} googleUser google user object
+   */
+  function refreshToken(timeToRefresh, googleUser) {
+    setTimeout(async () => {
+      try {
+        const { id_token, expires_in } = await googleUser.reloadAuthResponse();
+        const username = googleUser.getBasicProfile().Ad;
+        setUser({ username, id_token });
+        const newRefreshTime = (expires_in - 60) * 1000;
+        refreshToken(newRefreshTime, googleUser);
+      } catch (err) {
+        console.log('Error refreshing user:', err.type);
+      }
+    }, timeToRefresh);
+  }
+
   function signInSuccess(googleUser) {
     const username = googleUser.getBasicProfile().Ad;
-    const { id_token } = googleUser.getAuthResponse();
+    const { id_token, expires_in } = googleUser.getAuthResponse();
     setUser({ username, id_token });
+    const timeToRefresh = (expires_in - 60) * 1000;
+    refreshToken(timeToRefresh, googleUser);
   }
 
   function onSignIn() {
