@@ -20,7 +20,7 @@ function fromListRepresentation(listRepresentation) {
    * Get a list based representation of the query_graph
    * where nodes and edges are lists with an internal "id" property
    */
-function toListRepresentation(dictRepresentation) {
+function toListRepresentation(dictRepresentation = { nodes: {}, edges: {} }) {
   const listRepresentation = {};
 
   listRepresentation.nodes =

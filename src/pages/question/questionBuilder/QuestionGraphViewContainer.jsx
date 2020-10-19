@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, {
+  useState, useEffect, useMemo, useCallback,
+} from 'react';
 import { FaSpinner, FaPlusSquare } from 'react-icons/fa';
 import { Modal, Button } from 'react-bootstrap';
 import queryGraphUtils from '@/utils/queryGraph';
@@ -49,6 +51,7 @@ export default function QuestionGraphViewContainer(props) {
       // panelStore.loadEdge(clickedEdge);
     }
   }
+  const graphClickCallbackMemo = useCallback(() => graphClickCallback, []);
 
   /**
    * Save the value from the json editor
@@ -90,6 +93,11 @@ export default function QuestionGraphViewContainer(props) {
   const numNodes = Object.entries(panelStore.query_graph.nodes).length;
   const numEdges = Object.entries(panelStore.query_graph.edges).length;
   // const error = questionStore.graphState === graphStates.error;
+  //
+  const query_graph_list_format = useMemo(
+    () => queryGraphUtils.toListRepresentation(panelStore.query_graph),
+    [panelStore.query_graph],
+  );
 
   return (
     <div id="QuestionGraphViewContainer">
@@ -98,11 +106,11 @@ export default function QuestionGraphViewContainer(props) {
         <QuestionGraphView
           height={height}
           width={width}
-          question={queryGraphUtils.toListRepresentation(panelStore.query_graph)}
+          question={query_graph_list_format}
           concepts={config.concepts}
           graphState={questionStore.graphState}
           selectable
-          graphClickCallback={graphClickCallback}
+          graphClickCallback={graphClickCallbackMemo}
         />
       ) : (
         <div

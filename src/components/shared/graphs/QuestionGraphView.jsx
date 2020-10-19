@@ -254,8 +254,10 @@ export default function QuestionGraphView(props) {
     }
   }, [network.current]);
 
-  const displayGraph = useMemo(getDisplayGraph, [Object.values(props)]);
-  const displayOptions = useMemo(getDisplayOptions, [Object.values(props)]);
+  const displayGraphDependencies = [question, nodePreProcFn, edgePreProcFn, graphClickCallback];
+  const displayGraph = useMemo(getDisplayGraph, displayGraphDependencies);
+  const displayOptions = useMemo(getDisplayOptions,
+    displayGraphDependencies.concat([selectable, height, width, interactable]));
 
   return (
     <>
