@@ -10,6 +10,7 @@ import { FaSpinner } from 'react-icons/fa';
 import { Multiselect, DropdownList } from 'react-widgets';
 
 import entityNameDisplay from '@/utils/entityNameDisplay';
+import usePageStatus from '@/utils/usePageStatus';
 
 const listItem = ({ item }) => (
   <div className="listItem">
@@ -21,6 +22,7 @@ const listItem = ({ item }) => (
 );
 
 export default function EdgePanel(props) {
+  const predicateStatus = usePageStatus(false);
   const { panelStore } = props;
   const { edge } = panelStore;
 
@@ -39,6 +41,9 @@ export default function EdgePanel(props) {
     delete sourceNode.name;
     delete targetNode.name;
     const response = await API.ranker.predicateLookup(sourceNode, targetNode);
+    if (response.status === 'error') {
+      predicateStatus.setFailure('Failed to contact predicate lookup server. Please try again later');
+    }
     edge.updatePredicateList(
       Object.keys(response).map((name) => ({
         name,
@@ -126,27 +131,31 @@ export default function EdgePanel(props) {
           }
         />
       </Col>
-      <Col sm={12} style={{ marginTop: '40px' }}>
-        <h4 style={{ color: '#CCCCCC' }}>PREDICATES</h4>
-        <Multiselect
-          filter="contains"
-          allowCreate={false}
-          readOnly={!edge.predicatesReady || edge.disablePredicates}
-          busy={!edge.predicatesReady}
-          data={edge.predicateList}
-          itemComponent={listItem}
-          busySpinner={<FaSpinner className="icon-spin" />}
-          placeholder={predicateInputMsg}
-          textField={(value) => value.name || value}
-          value={edge.predicate}
-          valueField={(value) => value.name || value}
-          onChange={handlePredicateUpdate}
-          containerClassName={edge.isValidPredicate() ? 'valid' : 'invalid'}
-          messages={{
-            emptyList: 'No predicates were found',
-          }}
-        />
-      </Col>
+
+      <predicateStatus.Display />
+      { predicateStatus.displayPage && (
+        <Col sm={12} style={{ marginTop: '40px' }}>
+          <h4 style={{ color: '#CCCCCC' }}>PREDICATES</h4>
+          <Multiselect
+            filter="contains"
+            allowCreate={false}
+            readOnly={!edge.predicatesReady || edge.disablePredicates}
+            busy={!edge.predicatesReady}
+            data={edge.predicateList}
+            itemComponent={listItem}
+            busySpinner={<FaSpinner className="icon-spin" />}
+            placeholder={predicateInputMsg}
+            textField={(value) => value.name || value}
+            value={edge.predicate}
+            valueField={(value) => value.name || value}
+            onChange={handlePredicateUpdate}
+            containerClassName={edge.isValidPredicate() ? 'valid' : 'invalid'}
+            messages={{
+              emptyList: 'No predicates were found',
+            }}
+          />
+        </Col>
+      )}
     </Form>
   );
 }
