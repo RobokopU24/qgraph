@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function useEdgePanels() {
   const [id, setId] = useState(null);
@@ -12,6 +12,22 @@ export default function useEdgePanels() {
 
   const [predicatesReady, setPredicatesReady] = useState(false); // True when requesting end-point for predicates for source/target pairing
   const [predicateList, setPredicateList] = useState([]);
+
+  function updateSourceId(newSourceId) {
+    setSourceId(newSourceId);
+    setTargetId(null);
+    setPredicatesReady(false);
+  }
+
+  function updateTargetId(newTargetId) {
+    setTargetId(newTargetId);
+    setPredicatesReady(false);
+  }
+
+  function updatePredicateList(newPredicateList) {
+    setPredicateList(newPredicateList);
+    setPredicatesReady(true);
+  }
 
   function reset() {
     setId(null);
@@ -30,22 +46,15 @@ export default function useEdgePanels() {
     setId(seed.id || null);
     setSourceId(seed.source_id || null);
     setTargetId(seed.target_id || null);
+    if (seed.type) {
+      setPredicate(seed.type.map(
+        (p_name) => ({ name: p_name }),
+      ));
+    }
   }
 
-  function updateSourceId(newSourceId) {
-    setSourceId(newSourceId);
-    setTargetId(null);
-    setPredicatesReady(false);
-  }
-
-  function updateTargetId(newTargetId) {
-    setTargetId(newTargetId);
-    setPredicatesReady(false);
-  }
-
-  function updatePredicateList(newPredicateList) {
-    setPredicateList(newPredicateList);
-    setPredicatesReady(true);
+  function isValidPredicate() {
+    return predicate.every((p) => predicateList.includes(p));
   }
 
   return {
@@ -57,9 +66,11 @@ export default function useEdgePanels() {
     predicateList,
     predicatesReady,
     updatePredicateList,
+    predicate,
     setPredicate,
     reset,
     initialize,
     targetNodeList,
+    isValidPredicate,
   };
 }

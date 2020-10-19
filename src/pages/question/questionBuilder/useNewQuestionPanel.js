@@ -162,8 +162,8 @@ export default function useNewQuestionPanel() {
         source_id: edge.sourceId,
         target_id: edge.targetId,
       };
-      if (node.predicate) {
-        new_edge.type = node.predicate;
+      if (edge.predicate) {
+        new_edge.type = edge.predicate.map((p) => p.name);
       }
 
       if (!panelInfo.id) {

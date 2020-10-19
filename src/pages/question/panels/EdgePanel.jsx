@@ -2,6 +2,7 @@ import React, { useEffect, useCallback } from 'react';
 import _ from 'lodash';
 
 import API from '@/API';
+
 import {
   Form, Col, Glyphicon, Badge, Button,
 } from 'react-bootstrap';
@@ -23,7 +24,20 @@ export default function EdgePanel(props) {
   const { panelStore } = props;
   const { edge } = panelStore;
 
-  async function fetchPredicates(sourceNode, targetNode) {
+  async function fetchPredicates() {
+    if (!edge.sourceId || !edge.targetId) {
+      return;
+    }
+    let sourceNode =
+        panelStore.query_graph.nodes[edge.sourceId];
+    let targetNode =
+        panelStore.query_graph.nodes[edge.targetId];
+      // Including name in the node breaks the API call
+      // So we make a copy and remove it
+    sourceNode = { ...sourceNode };
+    targetNode = { ...targetNode };
+    delete sourceNode.name;
+    delete targetNode.name;
     const response = await API.ranker.predicateLookup(sourceNode, targetNode);
     edge.updatePredicateList(
       Object.keys(response).map((name) => ({
@@ -33,28 +47,21 @@ export default function EdgePanel(props) {
     );
   }
 
+  useEffect(() => { fetchPredicates(); }, [edge.sourceId, edge.targetId]);
+
   function handleTargetIdUpdate(value) {
-    const newTargetId = value.id;
-    edge.updateTargetId(newTargetId);
-    if (newTargetId !== null && edge.sourceId !== null) {
-      let sourceNode =
-        panelStore.query_graph.nodes[edge.sourceId];
-      let targetNode =
-        panelStore.query_graph.nodes[newTargetId];
-      // Including name in the node breaks the API call
-      // So we make a copy and remove it
-      sourceNode = { ...sourceNode };
-      targetNode = { ...targetNode };
-      delete sourceNode.name;
-      delete targetNode.name;
-      fetchPredicates(sourceNode, targetNode);
-    }
+    edge.updateTargetId(value.id);
     panelStore.toggleUnsavedChanges(true);
   }
 
   function handleSourceIdUpdate(value) {
-    panelStore.toggleUnsavedChanges(true);
     edge.updateSourceId(value.id);
+    panelStore.toggleUnsavedChanges(true);
+  }
+
+  function handlePredicateUpdate(value) {
+    edge.setPredicate(value);
+    panelStore.toggleUnsavedChanges(true);
   }
 
   const validNodeSelectionList =
@@ -133,8 +140,8 @@ export default function EdgePanel(props) {
           textField={(value) => value.name || value}
           value={edge.predicate}
           valueField={(value) => value.name || value}
-          onChange={(value) => edge.setPredicate(value)}
-          containerClassName={edge.isValidPredicate ? 'valid' : 'invalid'}
+          onChange={handlePredicateUpdate}
+          containerClassName={edge.isValidPredicate() ? 'valid' : 'invalid'}
           messages={{
             emptyList: 'No predicates were found',
           }}
