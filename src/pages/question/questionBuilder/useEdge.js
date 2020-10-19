@@ -24,6 +24,12 @@ export default function useEdgePanels() {
     setPredicatesReady(false);
   }
 
+  function switchSourceTarget() {
+    setSourceId(targetId);
+    setTargetId(sourceId);
+    setPredicatesReady(false);
+  }
+
   function updatePredicateList(newPredicateList) {
     setPredicateList(newPredicateList);
     setPredicatesReady(true);
@@ -72,5 +78,6 @@ export default function useEdgePanels() {
     initialize,
     targetNodeList,
     isValidPredicate,
+    switchSourceTarget,
   };
 }
