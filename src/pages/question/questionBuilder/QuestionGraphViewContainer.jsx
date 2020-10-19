@@ -51,7 +51,7 @@ export default function QuestionGraphViewContainer(props) {
       // panelStore.loadEdge(clickedEdge);
     }
   }
-  const graphClickCallbackMemo = useCallback(() => graphClickCallback, []);
+  const graphClickCallbackMemo = useMemo(() => graphClickCallback, []);
 
   /**
    * Save the value from the json editor
@@ -90,8 +90,8 @@ export default function QuestionGraphViewContainer(props) {
 
   // const showFetching = questionStore.graphState === graphStates.fetching;
   // const notInitialized = questionStore.graphState === graphStates.empty;
-  const numNodes = Object.entries(panelStore.query_graph.nodes).length;
-  const numEdges = Object.entries(panelStore.query_graph.edges).length;
+  const numNodes = Object.keys(panelStore.query_graph.nodes).length;
+  const numEdges = Object.keys(panelStore.query_graph.edges).length;
   // const error = questionStore.graphState === graphStates.error;
   //
   const query_graph_list_format = useMemo(

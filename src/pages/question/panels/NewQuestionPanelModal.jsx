@@ -71,7 +71,7 @@ export default function NewQuestionPanelModal({ panelStore, onQuestionUpdated })
       </Modal.Body>
       <Modal.Footer>
         <ButtonGroup className="pull-right">
-          {(Object.entries(panelStore.query_graph.nodes).length > 0) && (
+          {(Object.keys(panelStore.query_graph.nodes).length > 0) && (
             <Button
               onClick={() => {
                 if (!isNewPanel) {
@@ -98,17 +98,15 @@ export default function NewQuestionPanelModal({ panelStore, onQuestionUpdated })
               {' Undo'}
             </Button>
           )}
-          {true && (
-            <Button
-              onClick={handleSave}
-              disabled={!(panelStore.unsavedChanges || isNewPanel)}
-              bsStyle={isValidPanel ? (panelStore.unsavedChanges ? 'primary' : 'default') : 'danger'} // eslint-disable-line no-nested-ternary
-              title={isValidPanel ? (panelStore.unsavedChanges ? 'Save changes' : 'No changes to save') : 'Fix invalid panel entries first'} // eslint-disable-line no-nested-ternary
-            >
-              <FaSave style={{ verticalAlign: 'text-top' }} />
-              {' Save'}
-            </Button>
-          )}
+          <Button
+            onClick={handleSave}
+            disabled={!(panelStore.unsavedChanges || isNewPanel)}
+            bsStyle={isValidPanel ? (panelStore.unsavedChanges ? 'primary' : 'default') : 'danger'} // eslint-disable-line no-nested-ternary
+            title={isValidPanel ? (panelStore.unsavedChanges ? 'Save changes' : 'No changes to save') : 'Fix invalid panel entries first'} // eslint-disable-line no-nested-ternary
+          >
+            <FaSave style={{ verticalAlign: 'text-top' }} />
+            {' Save'}
+          </Button>
         </ButtonGroup>
       </Modal.Footer>
     </Modal>

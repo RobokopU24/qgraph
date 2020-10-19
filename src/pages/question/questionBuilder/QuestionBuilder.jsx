@@ -7,14 +7,14 @@ import {
 } from 'react-bootstrap';
 import _ from 'lodash';
 
-import HelpButton from '../../../components/shared/HelpButton';
+import HelpButton from '@/components/shared/HelpButton';
+import config from '@/config.json';
+
 import NewQuestionButtons from './NewQuestionButtons';
 import QuestionGraphViewContainer from './QuestionGraphViewContainer';
 import QuestionTemplateModal from './QuestionTemplate';
 import QuestionListModal from './QuestionListModal';
-// import questionTemplates from '../../../../../queries/index';
 
-import config from '../../../config.json';
 /**
  * Main Question Builder component
  * @param {object} questionStore new question custom hook

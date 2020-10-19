@@ -64,10 +64,11 @@ export default function SimpleQuestion() {
 
   function onResetQuestion() {
     if (window.confirm('Are you sure you want to reset this question? This action cannot be undone.')) {
-      const emptyQueryGraph = { nodes: [], edges: [] };
+      const emptyGraph = { nodes: [], edges: [] };
       messageStore.initializeMessage({
         results: [],
-        query_graph: emptyQueryGraph,
+        query_graph: emptyGraph,
+        knowledge_graph: emptyGraph,
       });
       questionStore.resetQuestion();
     }
