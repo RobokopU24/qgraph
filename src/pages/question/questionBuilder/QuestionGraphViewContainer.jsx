@@ -81,19 +81,24 @@ export default function QuestionGraphViewContainer(props) {
     }
   }
 
+  const numNodes = Object.keys(panelStore.query_graph.nodes).length;
+  const numEdges = Object.keys(panelStore.query_graph.edges).length;
+
+  // Update panelStore when questionStore changes
   useEffect(() => {
     if (questionStore.query_graph) {
       panelStore.load(questionStore.query_graph);
-      toggleGraph(true);
+    } else {
+      toggleGraph(false);
     }
   }, [questionStore.query_graph]);
 
-  // const showFetching = questionStore.graphState === graphStates.fetching;
-  // const notInitialized = questionStore.graphState === graphStates.empty;
-  const numNodes = Object.keys(panelStore.query_graph.nodes).length;
-  const numEdges = Object.keys(panelStore.query_graph.edges).length;
-  // const error = questionStore.graphState === graphStates.error;
-  //
+  // Show graph if there are any nodes or edges
+  useEffect(() => {
+    toggleGraph(panelStore.query_graph &&
+                (numNodes || numEdges));
+  }, [panelStore.query_graph]);
+
   const query_graph_list_format = useMemo(
     () => queryGraphUtils.toListRepresentation(panelStore.query_graph),
     [panelStore.query_graph],
