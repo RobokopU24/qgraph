@@ -104,6 +104,8 @@ export default function useNodePanels() {
     fetchCuriesDebounced(value);
   }
 
+  const isValid = !!id || !!type;
+
   return {
     name,
     id,
@@ -119,5 +121,6 @@ export default function useNodePanels() {
     select,
     updateSearchTerm,
     loading,
+    isValid,
   };
 }

@@ -149,7 +149,7 @@ export default function EdgePanel(props) {
             value={edge.predicate}
             valueField={(value) => value.name || value}
             onChange={handlePredicateUpdate}
-            containerClassName={edge.isValidPredicate() ? 'valid' : 'invalid'}
+            containerClassName={edge.isValidPredicate ? 'valid' : 'invalid'}
             messages={{
               emptyList: 'No predicates were found',
             }}

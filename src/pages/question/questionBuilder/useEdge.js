@@ -31,7 +31,15 @@ export default function useEdgePanels() {
   }
 
   function updatePredicateList(newPredicateList) {
+    // Reload selected predicates from the list
+    // Useful because when predicate is given as a seed
+    // it will not have all of the info
+    //
+    const reloadedPredicates = predicate.map(
+      (existingPredicate) => newPredicateList.find((p) => p.name === existingPredicate.name),
+    ).filter((v) => !!v);
     setPredicateList(newPredicateList);
+    setPredicate(reloadedPredicates);
     setPredicatesReady(true);
   }
 
@@ -59,9 +67,9 @@ export default function useEdgePanels() {
     }
   }
 
-  function isValidPredicate() {
-    return predicate.every((p) => predicateList.includes(p));
-  }
+  const isValidPredicate = predicate.every((p) => predicateList.includes(p));
+
+  const isValid = sourceId && targetId && isValidPredicate;
 
   return {
     id,
@@ -74,10 +82,11 @@ export default function useEdgePanels() {
     updatePredicateList,
     predicate,
     setPredicate,
+    isValidPredicate,
     reset,
     initialize,
     targetNodeList,
-    isValidPredicate,
+    isValid,
     switchSourceTarget,
   };
 }

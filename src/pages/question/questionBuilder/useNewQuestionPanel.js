@@ -178,9 +178,18 @@ export default function useNewQuestionPanel() {
     return trimmedQueryGraph;
   }
 
+  // Determine if current panel is valid
+  let isValid;
+  if (panelInfo.type === 'node') {
+    isValid = node.isValid;
+  } else {
+    isValid = edge.isValid;
+  }
+
   return {
     unsavedChanges,
     toggleUnsavedChanges,
+    isValid,
     saveActivePanel,
     showPanel,
     panelType: panelInfo.type,

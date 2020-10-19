@@ -45,7 +45,6 @@ export default function NewQuestionPanelModal({ panelStore, onQuestionUpdated })
 
   const isNodePanel = panelStore.panelType === 'node';
   const unsavedChanges = false;
-  const isValidPanel = true;
   const isNewPanel = panelStore.activePanelId == null;
   const backgroundColor = getBackgroundColor(isNodePanel);
   return (
@@ -100,9 +99,12 @@ export default function NewQuestionPanelModal({ panelStore, onQuestionUpdated })
           )}
           <Button
             onClick={handleSave}
-            disabled={!(panelStore.unsavedChanges || isNewPanel)}
-            bsStyle={isValidPanel ? (panelStore.unsavedChanges ? 'primary' : 'default') : 'danger'} // eslint-disable-line no-nested-ternary
-            title={isValidPanel ? (panelStore.unsavedChanges ? 'Save changes' : 'No changes to save') : 'Fix invalid panel entries first'} // eslint-disable-line no-nested-ternary
+            disabled={!(
+              panelStore.isValid &&
+              (panelStore.unsavedChanges || isNewPanel)
+            )}
+            bsStyle={panelStore.isValid ? (panelStore.unsavedChanges ? 'primary' : 'default') : 'danger'} // eslint-disable-line no-nested-ternary
+            title={panelStore.isValid ? (panelStore.unsavedChanges ? 'Save changes' : 'No changes to save') : 'Fix invalid panel entries first'} // eslint-disable-line no-nested-ternary
           >
             <FaSave style={{ verticalAlign: 'text-top' }} />
             {' Save'}
