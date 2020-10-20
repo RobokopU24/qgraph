@@ -137,7 +137,7 @@ export default function NodePanel({ panelStore }) {
           />
           {!showOptions && node.curie.length > 0 && (
             <InputGroup.Addon>
-              {node.curie}
+              {node.curie[0]}
             </InputGroup.Addon>
           )}
           <InputGroup.Addon

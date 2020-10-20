@@ -68,7 +68,7 @@ export default function useNodePanels() {
     setSearchTerm(entityNameDisplay(entry.name));
     setName(entityNameDisplay(entry.name));
     if (entry.curie) {
-      setCurie(entry.curie);
+      setCurie([entry.curie]);
     }
     setType(conceptListToString(entry.type));
   }
