@@ -144,6 +144,9 @@ export default function useNewQuestionPanel() {
       if (node.name) {
         new_node.name = node.name;
       }
+      if (node.set) {
+        new_node.set = node.set;
+      }
 
       if (!panelInfo.id) {
         q_graph.nodes[getNextNodeID()] = new_node;

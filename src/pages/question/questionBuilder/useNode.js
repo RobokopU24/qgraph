@@ -69,6 +69,9 @@ export default function useNodePanels() {
     if (entry.curie) {
       setCurie([entry.curie]);
     }
+    if (entry.set) {
+      setSet(true);
+    }
     setType(conceptListToString(entry.type));
   }
 
