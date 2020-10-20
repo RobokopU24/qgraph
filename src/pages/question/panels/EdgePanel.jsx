@@ -30,16 +30,16 @@ export default function EdgePanel(props) {
     if (!edge.sourceId || !edge.targetId) {
       return;
     }
-    let sourceNode =
-        panelStore.query_graph.nodes[edge.sourceId];
-    let targetNode =
-        panelStore.query_graph.nodes[edge.targetId];
-      // Including name in the node breaks the API call
+    const sourceNode =
+      { ...panelStore.query_graph.nodes[edge.sourceId] };
+    const targetNode =
+      { ...panelStore.query_graph.nodes[edge.targetId] };
+      // Including name or empty curie list in the node breaks the API call
       // So we make a copy and remove it
-    sourceNode = { ...sourceNode };
-    targetNode = { ...targetNode };
     delete sourceNode.name;
     delete targetNode.name;
+    if (sourceNode.curie.length === 0) delete sourceNode.curie;
+    if (targetNode.curie.length === 0) delete targetNode.curie;
     const response = await API.ranker.predicateLookup(sourceNode, targetNode);
     if (response.status === 'error') {
       predicateStatus.setFailure('Failed to contact predicate lookup server. Please try again later');
@@ -66,6 +66,11 @@ export default function EdgePanel(props) {
 
   function handlePredicateUpdate(value) {
     edge.setPredicate(value);
+    panelStore.toggleUnsavedChanges(true);
+  }
+
+  function handleSwitchSourceTarget() {
+    edge.switchSourceTarget();
     panelStore.toggleUnsavedChanges(true);
   }
 
@@ -107,7 +112,7 @@ export default function EdgePanel(props) {
       </Col>
       <Col sm={2} id="nodesSwitch">
         <Button
-          onClick={edge.switchSourceTarget}
+          onClick={() => handleSwitchSourceTarget()}
           id="nodeSwitchButton"
           disabled={disabledSwitch}
         >
