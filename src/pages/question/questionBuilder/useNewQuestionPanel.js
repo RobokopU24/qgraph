@@ -117,8 +117,7 @@ export default function useNewQuestionPanel() {
    */
   function removeNode() {
     const q_graph = _.cloneDeep(query_graph);
-    const nodeToDelete = q_graph.nodes[panelInfo.id];
-    nodeToDelete.deleted = true;
+    q_graph.nodes[panelInfo.id].deleted = true;
     const trimmedQueryGraph = trimFloatingNodes(q_graph);
     updateQueryGraph(trimmedQueryGraph);
   }
