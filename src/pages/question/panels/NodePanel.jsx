@@ -1,4 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React, {
+  useEffect, useRef, useCallback, useContext,
+} from 'react';
 import {
   FormControl, Button, Badge, InputGroup, Glyphicon,
 } from 'react-bootstrap';
@@ -7,6 +9,9 @@ import _ from 'lodash';
 
 import { AutoSizer, List } from 'react-virtualized';
 import shortid from 'shortid';
+
+import AlertContext from '@/context/alert';
+import API from '@/API';
 
 import entityNameDisplay from '../../../utils/entityNameDisplay';
 import curieUrls from '../../../utils/curieUrls';
@@ -20,6 +25,8 @@ import NodeProperties from './NodeProperties';
 export default function NodePanel({ panelStore }) {
   const input = useRef(null);
   const { node } = panelStore;
+
+  const displayAlert = useContext(AlertContext);
 
   useEffect(() => {
     input.current.focus();
@@ -114,6 +121,38 @@ export default function NodePanel({ panelStore }) {
     );
   }
 
+  async function fetchCuries(newSearchTerm) {
+    // Get and update list of curies
+    const response = await API.ranker.entityLookup(newSearchTerm);
+    if (response.status === 'error' || !_.isArray(response)) {
+      displayAlert('error',
+        'Failed to contact server to search curies. You will still be able to select generic types. Please try again later');
+    } else {
+      node.updateCuries(response);
+    }
+    node.setLoading(false);
+  }
+
+  // Create a debounced version that persists on renders
+  const fetchCuriesDebounced = useCallback(
+    _.debounce(fetchCuries, 500),
+    [],
+  );
+
+  async function updateSearchTerm(value) {
+    // Clear existing selection
+    node.clearSelection();
+    // Clear existing curies
+    node.updateCuries([]);
+    // Update list of concepts
+    node.updateFilteredConcepts(value);
+    // Update search term
+    node.setSearchTerm(value);
+
+    node.setLoading(true);
+    fetchCuriesDebounced(value);
+  }
+
   const showOptions = node.searchTerm && !node.type;
   const showConstraints = node.regular || node.set;
   const rightButtonContents = showOptions ? (<Glyphicon glyph="remove" />) : (<Glyphicon glyph="triangle-bottom" />);
@@ -133,7 +172,7 @@ export default function NodePanel({ panelStore }) {
             placeholder="Start typing to search."
             value={node.searchTerm}
             inputRef={(ref) => { input.current = ref; }}
-            onChange={(e) => node.updateSearchTerm(e.target.value)}
+            onChange={(e) => updateSearchTerm(e.target.value)}
           />
           {!showOptions && node.curie.length > 0 && (
             <InputGroup.Addon>

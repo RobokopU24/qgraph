@@ -1,8 +1,7 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 
 import _ from 'lodash';
 
-import API from '@/API';
 import config from '@/config.json';
 import entityNameDisplay from '@/utils/entityNameDisplay';
 
@@ -24,7 +23,7 @@ export default function useNodePanels() {
   const [set, setSet] = useState(false);
   const [regular, setRegular] = useState(false);
   // const [conceptsWithSets, setConceptsWithSets] = useState([]);
-  const [filteredConcepts, updateFilteredConcepts] = useState([]);
+  const [filteredConcepts, setFilteredConcepts] = useState([]);
   const [curies, updateCuries] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -39,7 +38,7 @@ export default function useNodePanels() {
     setSet(false);
     setRegular(false);
     // setConceptsWithSets([]);
-    updateFilteredConcepts([]);
+    setFilteredConcepts([]);
     updateCuries([]);
     setLoading(false);
   }
@@ -73,41 +72,28 @@ export default function useNodePanels() {
     setType(conceptListToString(entry.type));
   }
 
-  async function fetchCuries(newSearchTerm) {
-    // Get and update list of curies
-    const response = await API.ranker.entityLookup(newSearchTerm);
-    updateCuries(response);
-    setLoading(false);
-  }
-  // Create a debounced version that persists on renders
-  const fetchCuriesDebounced = useCallback(
-    _.debounce(fetchCuries, 500),
-    [],
-  );
-
-  function updateSearchTerm(value) {
-    // Clear existing selection
+  function clearSelection() {
     setType('');
     setName('');
-    setCurie('');
+    setCurie([]);
+  }
 
-    updateCuries([]);
-    setLoading(true);
-    setSearchTerm(value);
-
-    // Update list of concepts
+  function updateFilteredConcepts(value) {
     const newFilteredConcepts = conceptsWithSets.filter(
       (concept) => concept.name.includes(value.toLowerCase()),
     );
-    updateFilteredConcepts(newFilteredConcepts);
-
-    fetchCuriesDebounced(value);
+    setFilteredConcepts(newFilteredConcepts);
   }
 
   const isValid = !!id || !!type;
 
   return {
     name,
+    clearSelection,
+    updateCuries,
+    updateFilteredConcepts,
+    setLoading,
+    setSearchTerm,
     id,
     filteredConcepts,
     curie,
@@ -119,7 +105,6 @@ export default function useNodePanels() {
     initialize,
     reset,
     select,
-    updateSearchTerm,
     loading,
     isValid,
   };
