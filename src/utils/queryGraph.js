@@ -1,9 +1,16 @@
+function getEmptyGraph() {
+  return {
+    nodes: {},
+    edges: {},
+  };
+}
+
 /*
    * Load the internal query_graph from a list representation
    * where nodes and edges are lists with an internal "id" property
    */
 function fromListRepresentation(listRepresentation) {
-  const newQueryGraph = { nodes: {}, edges: {} };
+  const newQueryGraph = getEmptyGraph();
 
   listRepresentation.nodes.forEach((node) => {
     newQueryGraph.nodes[node.id] = { ...node, id: undefined };
@@ -37,4 +44,5 @@ function toListRepresentation(dictRepresentation = { nodes: {}, edges: {} }) {
 export default {
   fromListRepresentation,
   toListRepresentation,
+  getEmptyGraph,
 };

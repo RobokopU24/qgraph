@@ -12,7 +12,7 @@ function getEmptyQueryGraph() {
 export default function useQuestionStore() {
   // const [concepts, setConcepts] = useState([]);
   const [question_name, updateQuestionName] = useState('');
-  const [query_graph, updateQueryGraph] = useState(null);
+  const [query_graph, updateQueryGraph] = useState(queryGraphUtils.getEmptyGraph());
   const [notes, updateNotes] = useState('');
   // const [graphState, updateGraphState] = useState(graphStates.empty);
   // const [graphState, updateGraphState] = useState('empty');
@@ -25,7 +25,7 @@ export default function useQuestionStore() {
 
   function resetQuestion() {
     updateQuestionName('');
-    updateQueryGraph(null);
+    updateQueryGraph(queryGraphUtils.getEmptyQueryGraph());
     updateNotes('');
     // updateGraphState('empty');
     // updatePanelState([]);

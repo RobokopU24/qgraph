@@ -1,17 +1,14 @@
 import { useState, useEffect } from 'react';
 import _ from 'lodash';
 
+import queryGraphUtils from '@/utils/queryGraph';
+
 import useNode from './useNode';
 import useEdge from './useEdge';
 
-const initialQueryGraph = {
-  nodes: {},
-  edges: {},
-};
-
 export default function useNewQuestionPanel() {
   const [name, setName] = useState('');
-  const [query_graph, updateQueryGraph] = useState(initialQueryGraph);
+  const [query_graph, updateQueryGraph] = useState(queryGraphUtils.getEmptyGraph());
 
   const [showPanel, togglePanel] = useState(false);
 

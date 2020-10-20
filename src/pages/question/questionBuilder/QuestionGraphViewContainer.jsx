@@ -35,7 +35,6 @@ function getHeight() {
 export default function QuestionGraphViewContainer(props) {
   const { questionStore, height = getHeight(), width = '100%' } = props;
   const [showJsonEditor, toggleJsonEditor] = useState(false);
-  const [showGraph, toggleGraph] = useState(false);
   const panelStore = useNewQuestionPanel();
 
   function graphClickCallback(data) {
@@ -66,7 +65,6 @@ export default function QuestionGraphViewContainer(props) {
     try {
       questionStore.fromListRepresentation(question);
       toggleJsonEditor(!showJsonEditor);
-      toggleGraph(true);
     } catch (err) {
       console.error(err);
       // TODO: what did this used to be?
@@ -86,18 +84,8 @@ export default function QuestionGraphViewContainer(props) {
 
   // Update panelStore when questionStore changes
   useEffect(() => {
-    if (questionStore.query_graph) {
-      panelStore.load(questionStore.query_graph);
-    } else {
-      toggleGraph(false);
-    }
+    panelStore.load(questionStore.query_graph);
   }, [questionStore.query_graph]);
-
-  // Show graph if there are any nodes or edges
-  useEffect(() => {
-    toggleGraph(panelStore.query_graph &&
-                (numNodes || numEdges));
-  }, [panelStore.query_graph]);
 
   const query_graph_list_format = useMemo(
     () => queryGraphUtils.toListRepresentation(panelStore.query_graph),
@@ -107,7 +95,7 @@ export default function QuestionGraphViewContainer(props) {
   return (
     <div id="QuestionGraphViewContainer">
       <ButtonGroupPanel panelStore={panelStore} toggleJsonEditor={() => toggleJsonEditor(!showJsonEditor)} />
-      {showGraph ? (
+      {(numNodes || numEdges) ? (
         <QuestionGraphView
           height={height}
           width={width}
