@@ -65,14 +65,11 @@ export default function App() {
                 <Route path="/termsofservice">
                   <TermsofService />
                 </Route>
-                <Route
-                  path="/simple"
-                  render={({ match: { url } }) => (
-                    <>
-                      <Route path={`${url}/view`} component={() => SimpleViewer({ user })} exact />
-                    </>
-                  )}
-                />
+                <Route path="/simple/view">
+                  <SimpleViewer
+                    user={user}
+                  />
+                </Route>
                 <Route path="/">
                   <Landing isSignedIn={isSignedIn} />
                 </Route>
