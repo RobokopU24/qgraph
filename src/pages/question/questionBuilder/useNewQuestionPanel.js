@@ -103,12 +103,9 @@ export default function useNewQuestionPanel() {
       notFloatingNodeIDs.add(e.source_id);
       notFloatingNodeIDs.add(e.target_id);
     });
-    const floatingNodeIDs = Object.keys(q_graph.nodes).filter((id) => !(notFloatingNodeIDs.has(id)));
 
     // Trim a node if it is floating and marked for deletion
-    const nodesToTrim = Object.entries(q_graph.nodes)
-      .filter(([id, n]) => floatingNodeIDs.includes(id) && n.deleted)
-      .map(([id, n]) => id);
+    const nodesToTrim = Object.keys(q_graph.nodes).filter((id) => (!notFloatingNodeIDs.has(id) && q_graph.nodes[id].deleted));
 
     q_graph.nodes = _.omitBy(q_graph.nodes, (n, id) => nodesToTrim.includes(id));
     // q_graph.nodes = _.pick(q_graph.nodes, notFloatingNodeIDs);
