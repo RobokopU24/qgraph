@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {
+  useState, useEffect, useRef, useContext,
+} from 'react';
 import Dropzone from 'react-dropzone';
 import { FaUpload, FaFolder } from 'react-icons/fa';
 import { GoRepoForked } from 'react-icons/go';
@@ -10,6 +12,7 @@ import _ from 'lodash';
 import HelpButton from '@/components/shared/HelpButton';
 import config from '@/config.json';
 
+import AlertContext from '@/context/alert';
 import NewQuestionButtons from './NewQuestionButtons';
 import QuestionGraphViewContainer from './QuestionGraphViewContainer';
 import QuestionTemplateModal from './QuestionTemplate';
@@ -35,6 +38,8 @@ export default function QuestionBuilder(props) {
   const [loading, setLoading] = useState(false);
   // used just for focus
   const questionName = useRef(null);
+
+  const displayAlert = useContext(AlertContext);
 
   useEffect(() => {
     if (questionStore.question_name) {
@@ -71,30 +76,48 @@ export default function QuestionBuilder(props) {
     toggleModal(false);
   }
 
+  function validateAndParseFile(fileContents) {
+    let fileContentObj;
+    try {
+      fileContentObj = JSON.parse(fileContents);
+    } catch (err) {
+      displayAlert('error',
+        'The provided file is not valid JSON. Please fix and try again.');
+      setStep('options');
+      return;
+    }
+
+    if (!('query_graph' in fileContentObj)) {
+      displayAlert('error',
+        'The provided file does not have a query_graph object. Please ensure that the file format adheres to the Reasoner Standard API Query Schema.');
+      setStep('options');
+      return;
+    }
+
+    if (!_.isArray(fileContentObj.query_graph.nodes) ||
+       !_.isArray(fileContentObj.query_graph.edges)) {
+      displayAlert('error',
+        'The provided file does not have an array of nodes or edges. Please ensure that the file format adheres to the Reasoner Standard API Query Schema.');
+      setStep('options');
+      return;
+    }
+
+    questionStore.loadListRepresentation(
+      fileContentObj.query_graph,
+    );
+    setStep('build');
+    setLoading(false);
+  }
+
   function onDropFile(acceptedFiles, rejectedFiles) { // eslint-disable-line no-unused-vars
     acceptedFiles.forEach((file) => {
       const fr = new window.FileReader();
       fr.onloadstart = () => setLoading(true);
       // fr.onloadend = () => this.setState({ graphState: graphStates.fetching });
-      fr.onload = (e) => {
-        const fileContents = e.target.result;
-        try {
-          const fileContentObj = JSON.parse(fileContents);
-          questionStore.loadListRepresentation(fileContentObj);
-          setStep('build');
-          setLoading(false);
-        } catch (err) {
-          console.error(err);
-          // window.alert('Failed to read this Question template. Are you sure this is valid?');
-          // questionStore.setGraphState(graphStates.error);
-          setLoading(false);
-        }
-      };
+      fr.onload = (e) => validateAndParseFile(e.target.result);
       fr.onerror = () => {
-        window.alert('Sorry but there was a problem uploading the file. The file may be invalid JSON.');
-        questionStore.resetQuestion();
-        setLoading(false);
-        // questionStore.setGraphState(graphStates.error);
+        displayAlert('error', 'Sorry but there was a problem uploading the file. Please try again.');
+        setStep('options');
       };
       fr.readAsText(file);
     });
