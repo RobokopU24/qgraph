@@ -1,4 +1,6 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, {
+  useEffect, useState, useContext, useRef,
+} from 'react';
 import { Link } from 'react-router-dom';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -10,6 +12,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 
 import UserContext from '@/context/user';
+import AlertContext from '@/context/alert';
 
 import googleIcon from '../../../public/images/btn_google_light_normal_ios.svg';
 
@@ -17,8 +20,10 @@ import './header.css';
 
 export default function Header({ setUser }) {
   const [anchorEl, setAnchorEl] = useState(null);
+  const timeoutId = useRef(null);
 
   const user = useContext(UserContext);
+  const displayAlert = useContext(AlertContext);
 
   /**
    * Automatically refresh a user token a minute before it expires
@@ -27,7 +32,7 @@ export default function Header({ setUser }) {
    * @param {object} googleUser google user object
    */
   function refreshToken(timeToRefresh, googleUser) {
-    setTimeout(async () => {
+    timeoutId.current = setTimeout(async () => {
       try {
         const { id_token, expires_in } = await googleUser.reloadAuthResponse();
         const username = googleUser.getBasicProfile().Ad;
@@ -35,7 +40,8 @@ export default function Header({ setUser }) {
         const newRefreshTime = (expires_in - 60) * 1000;
         refreshToken(newRefreshTime, googleUser);
       } catch (err) {
-        console.log('Error refreshing user:', err.type);
+        displayAlert('error', 'Lost connection to Google. Please sign in again.');
+        setUser(null);
       }
     }, timeToRefresh);
   }
@@ -67,6 +73,7 @@ export default function Header({ setUser }) {
     GoogleAuth.signOut()
       .then(() => {
         setUser(null);
+        clearTimeout(timeoutId.current);
         // This disconnect closes the scope to the Robokop google credentials
         GoogleAuth.disconnect();
       });
