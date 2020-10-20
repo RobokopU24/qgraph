@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState } from 'react';
+import React from 'react';
 import {
   useTable, usePagination, useExpanded, useSortBy, useFilters,
 } from 'react-table';
