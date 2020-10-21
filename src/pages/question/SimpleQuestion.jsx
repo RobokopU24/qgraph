@@ -1,35 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   Grid, Row, Tabs, Tab,
 } from 'react-bootstrap';
+
+import _ from 'lodash';
+
 import { FaDownload } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
+import UserContext from '@/context/user';
+
+import API from '@/API';
+
+import AnswersetView from '@/components/shared/answersetView/AnswersetView';
+import parseMessage from '@/utils/parseMessage';
+import useMessageStore from '@/stores/useMessageStore';
+import usePageStatus from '@/utils/usePageStatus';
+import queryGraphUtils from '@/utils/queryGraph';
+
 import './newQuestion.css';
-// import AnswersetStore from '../../stores/messageAnswersetStore';
-import Loading from '../../components/loading/Loading';
-import MessageAnswersetTable from '../../components/shared/answersetView/answersTable/AnswersTable';
-import AnswersetGraph from '../../components/shared/graphs/AnswersetGraph';
-import QuestionGraphContainer from '../../components/shared/graphs/QuestionGraphContainer';
-import QuickQuestionError from './subComponents/QuickQuestionError';
 import QuestionBuilder from './questionBuilder/QuestionBuilder';
 
-import useMessageStore from '../../stores/useMessageStore';
 import useQuestionStore from './useQuestionStore';
 import config from '../../config.json';
 
-export default function SimpleQuestion(props) {
-  const { user } = props;
-  const [tabKey, setTabKey] = useState(1);
-  const [fail, setFail] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [ready, setReady] = useState(false);
+export default function SimpleQuestion() {
+  const user = useContext(UserContext);
   const messageStore = useMessageStore();
   const questionStore = useQuestionStore();
+  const answersetStatus = usePageStatus();
+
+  const [submittedQuestion, toggleSubmittedQuestion] = useState(false);
 
   function onDownloadQuestion() {
-    const data = questionStore.getMachineQuestionSpecJson;
+    const query_graph = queryGraphUtils.convert.internalToReasoner(
+      questionStore.query_graph,
+    );
+    const data = { query_graph };
+
     // Transform the data into a json blob and give it a url
     const json = JSON.stringify(data, null, 2);
     const blob = new Blob([json], { type: 'application/json' });
@@ -61,43 +69,36 @@ export default function SimpleQuestion(props) {
 
   function onResetQuestion() {
     if (window.confirm('Are you sure you want to reset this question? This action cannot be undone.')) {
-      messageStore.setMessage({});
+      const emptyGraph = { nodes: [], edges: [] };
+      messageStore.initializeMessage({
+        results: [],
+        query_graph: emptyGraph,
+        knowledge_graph: emptyGraph,
+      });
+      questionStore.resetQuestion();
     }
   }
 
-  function onSubmit() {
-    const questionText = questionStore.questionName;
-    const machineQuestion = questionStore.getMachineQuestionSpecJson.machine_question;
-    const maxConnect = questionStore.max_connectivity;
-    const newBoardInfo = {
-      natural_question: questionText,
-      notes: '',
-      machine_question: machineQuestion,
-      max_connectivity: maxConnect,
-    };
-    setLoading(true);
-    setReady(false);
-    // this.appConfig.simpleQuick(
-    //   newBoardInfo,
-    //   (data) => {
-    //     if (!data.answers.length) {
-    //       throw Error('No answers were found');
-    //     }
-    //     messageStore.setMessage(data);
-    //     setLoading(false);
-    //     setReady(true);
-    //   },
-    //   (err) => {
-    //     console.log('Trouble asking question:', err);
-    //     if (err.response || err.response) {
-    //       setErrorMessage('Please check the console for a more descriptive error message');
-    //     } else {
-    //       setErrorMessage(err.message);
-    //     }
-    //     setLoading(false);
-    //     setFail(true);
-    //   },
-    // );
+  async function onSubmit() {
+    toggleSubmittedQuestion(true);
+    answersetStatus.setLoading();
+
+    const query_graph = queryGraphUtils.convert.internalToReasoner(
+      questionStore.query_graph,
+    );
+    const response = await API.ara.getAnswer(query_graph);
+    if (response.status === 'error') {
+      answersetStatus.setFailure(response.message);
+      return;
+    }
+    try {
+      const parsedMessage = parseMessage(response);
+      messageStore.initializeMessage(parsedMessage);
+    } catch (err) {
+      answersetStatus.setFailure(response.message);
+      return;
+    }
+    answersetStatus.setSuccess();
   }
 
   function resetQuestion() {
@@ -108,7 +109,7 @@ export default function SimpleQuestion(props) {
   return (
     <Grid>
       <Row>
-        {!loading && !ready && (
+        {!submittedQuestion ? (
           <>
             <h1 className="robokopApp">
               Ask a Quick Question
@@ -131,58 +132,28 @@ export default function SimpleQuestion(props) {
               submit={onSubmit}
             />
           </>
-        )}
-        {ready && (
+        ) : (
           <>
-            <div style={{ position: 'block', paddingBottom: '10px' }}>
-              <h1 style={{ display: 'inline' }}>{questionStore.questionName}</h1>
-              <span style={{ fontSize: '22px', float: 'right', marginTop: '10px' }} title="Download">
-                <FaDownload style={{ cursor: 'pointer' }} onClick={onDownloadAnswer} />
-              </span>
-            </div>
-            <QuestionGraphContainer
-              messageStore={messageStore}
-              concepts={config.concepts}
-            />
-            <Tabs
-              activeKey={tabKey}
-              onSelect={(e) => setTabKey(e)}
-              animation
-              id="answerset_tabs"
-              mountOnEnter
-            >
-              <Tab
-                eventKey={1}
-                title="Answers Table"
-              >
-                <MessageAnswersetTable
+            <answersetStatus.Display />
+            { answersetStatus.displayPage && (
+              <>
+                <div style={{ position: 'block', paddingBottom: '10px' }}>
+                  <h1 style={{ display: 'inline' }}>{questionStore.questionName}</h1>
+                  <span style={{ fontSize: '22px', float: 'right', marginTop: '10px' }} title="Download">
+                    <FaDownload style={{ cursor: 'pointer' }} onClick={onDownloadAnswer} />
+                  </span>
+                </div>
+                <AnswersetView
+                  user={user}
                   concepts={config.concepts}
                   messageStore={messageStore}
+                  omitHeader
                 />
-              </Tab>
-              <Tab
-                eventKey={2}
-                title="Aggregate Graph"
-              >
-                <AnswersetGraph
-                  concepts={config.concepts}
-                  messageStore={messageStore}
-                />
-              </Tab>
-            </Tabs>
+              </>
+            )}
           </>
         )}
-        {loading && (
-          <Loading
-            message={<p style={{ textAlign: 'center' }}>Loading Answerset</p>}
-          />
-        )}
       </Row>
-      <QuickQuestionError
-        showModal={fail}
-        closeModal={resetQuestion}
-        errorMessage={errorMessage}
-      />
     </Grid>
   );
 }

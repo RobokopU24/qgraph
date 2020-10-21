@@ -7,6 +7,7 @@ import Help from '@/pages/Help';
 import Guide from '@/pages/Guide';
 import TermsofService from '@/pages/TermsofService';
 import SimpleViewer from '@/pages/SimpleViewer';
+import SimpleQuestion from '@/pages/question/SimpleQuestion';
 
 import Neighborhood from '@/pages/neighborhood/Neighborhood';
 import QuestionList from '@/pages/questionList/QuestionList';
@@ -69,7 +70,12 @@ export default function App() {
                   path="/simple"
                   render={({ match: { url } }) => (
                     <>
-                      <Route path={`${url}/view`} component={() => SimpleViewer({ user })} exact />
+                      <Route path={`${url}/view`} exact>
+                        <SimpleViewer />
+                      </Route>
+                      <Route path={`${url}/question`} exact>
+                        <SimpleQuestion />
+                      </Route>
                     </>
                   )}
                 />
