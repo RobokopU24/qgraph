@@ -11,8 +11,8 @@ import { FaPlusSquare, FaPlus } from 'react-icons/fa';
  * @param {function} toggleJsonEditor function to close the advanced json editor
  */
 export default function ButtonGroupPanel({ panelStore, toggleJsonEditor }) {
-  const numNodes = Object.keys(panelStore.query_graph.nodes)
-    .filter((id) => !panelStore.query_graph.nodes[id].deleted).length;
+  const numNodes = Object.values(panelStore.query_graph.nodes)
+    .filter((n) => !n.deleted).length;
   return (
     <>
       {numNodes > 0 && (
