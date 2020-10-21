@@ -13,8 +13,8 @@ import shortid from 'shortid';
 import AlertContext from '@/context/alert';
 import API from '@/API';
 
-import entityNameDisplay from '../../../utils/entityNameDisplay';
-import curieUrls from '../../../utils/curieUrls';
+import entityNameDisplay from '@/utils/entityNameDisplay';
+import curieUrls from '@/utils/curieUrls';
 import getNodeTypeColorMap from '../../../utils/colorUtils';
 import NodeProperties from './NodeProperties';
 
@@ -120,6 +120,36 @@ export default function NodePanel({ panelStore }) {
       </div>
     );
   }
+
+  async function fetchConcepts() {
+    const spacesToSnakeCase = (str) => str.replace(' ', '_').toLowerCase();
+    const setify = (name) => `Set of ${name}s`;
+
+    const response = await API.biolink.getModelSpecification();
+    if (response.status === 'error') {
+      displayAlert('error',
+        'Failed to contact server to download biolink model. You will still be able to select curies. Please try again later');
+      return;
+    }
+    const biolink = response;
+    const conceptsFormatted = Object.entries(biolink.classes).map(
+      ([identifier, concept]) => ({
+        type: spacesToSnakeCase(identifier),
+        name: entityNameDisplay(identifier),
+        set: false,
+      }),
+    );
+    const conceptsSetified = conceptsFormatted.map((c) => ({
+      ...c,
+      name: setify(c.name),
+      set: true,
+    }));
+    node.setConcepts(
+      [...conceptsFormatted, ...conceptsSetified],
+    );
+  }
+  // When node panel mounts get concepts
+  useEffect(() => { fetchConcepts(); }, []);
 
   async function fetchCuries(newSearchTerm) {
     // Get and update list of curies

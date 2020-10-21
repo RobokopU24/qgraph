@@ -24,6 +24,8 @@ import QuestionBuilder from './questionBuilder/QuestionBuilder';
 import useQuestionStore from './useQuestionStore';
 import config from '../../config.json';
 
+window.API = API;
+
 export default function SimpleQuestion() {
   const user = useContext(UserContext);
   const messageStore = useMessageStore();
