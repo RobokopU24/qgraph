@@ -1,7 +1,8 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useContext } from 'react';
 import _ from 'lodash';
 
 import API from '@/API';
+import AlertContext from '@/context/alert';
 
 import {
   Form, Col, Glyphicon, Badge, Button,
@@ -26,33 +27,50 @@ export default function EdgePanel(props) {
   const { panelStore } = props;
   const { edge } = panelStore;
 
-  async function fetchPredicates() {
+  const displayAlert = useContext(AlertContext);
+
+  async function fetchPredicateList() {
+    const spacesToSnakeCase = (str) => str && str.replaceAll(' ', '_').toLowerCase();
+
+    const response = await API.biolink.getModelSpecification();
+    if (response.status === 'error') {
+      displayAlert('error',
+        'Failed to contact server to download biolink model. You will not be able to select predicates. Please try again later');
+      return;
+    }
+    const biolink = response;
+    const predicatesFormatted = Object.entries(biolink.slots).map(
+      ([identifier, predicate]) => ({
+        name: spacesToSnakeCase(identifier),
+        domain: spacesToSnakeCase(predicate.domain),
+        range: spacesToSnakeCase(predicate.range),
+      }),
+    );
+    edge.updatePredicateList(predicatesFormatted);
+  }
+
+  // When edge panel mounts get predicates
+  useEffect(() => { fetchPredicateList(); }, []);
+
+  function updateFilteredPredicates() {
     if (!edge.sourceId || !edge.targetId) {
       return;
     }
-    const sourceNode =
-      { ...panelStore.query_graph.nodes[edge.sourceId] };
-    const targetNode =
-      { ...panelStore.query_graph.nodes[edge.targetId] };
-      // Including name or empty curie list in the node breaks the API call
-      // So we make a copy and remove it
-    delete sourceNode.name;
-    delete targetNode.name;
-    if (sourceNode.curie && sourceNode.curie.length === 0) delete sourceNode.curie;
-    if (targetNode.curie && targetNode.curie.length === 0) delete targetNode.curie;
-    const response = await API.ranker.predicateLookup(sourceNode, targetNode);
-    if (response.status === 'error') {
-      predicateStatus.setFailure('Failed to contact predicate lookup server. Please try again later');
+    const sourceNode = panelStore.query_graph.nodes[edge.sourceId];
+    const targetNode = panelStore.query_graph.nodes[edge.targetId];
+
+    if (!sourceNode.type || !targetNode.type) {
+      return;
     }
-    edge.updatePredicateList(
-      Object.keys(response).map((name) => ({
-        name,
-        degree: response[name],
-      })),
+
+    edge.setFilteredPredicateList(
+      edge.predicateList.filter(
+        (p) => p.domain === sourceNode.type && p.range === targetNode.type,
+      ),
     );
   }
 
-  useEffect(() => { fetchPredicates(); }, [edge.sourceId, edge.targetId]);
+  useEffect(updateFilteredPredicates, [edge.sourceId, edge.targetId]);
 
   function handleTargetIdUpdate(value) {
     edge.updateTargetId(value.id);
@@ -83,11 +101,11 @@ export default function EdgePanel(props) {
       }),
     ).filter((n) => !n.deleted);
 
+  const disablePredicates = !(edge.sourceId && edge.targetId);
+
   // Determine default message for predicate selection component
   let predicateInputMsg = 'Choose optional predicate(s)...';
-  if (!edge.predicatesReady) {
-    predicateInputMsg = 'Loading...';
-  } else if (edge.disablePredicates) {
+  if (disablePredicates) {
     predicateInputMsg = 'Source and/or Target Nodes need to be specified...';
   }
   const disabledSwitch = edge.sourceId === null || edge.targetId === null;
@@ -144,9 +162,8 @@ export default function EdgePanel(props) {
           <Multiselect
             filter="contains"
             allowCreate={false}
-            readOnly={!edge.predicatesReady || edge.disablePredicates}
-            busy={!edge.predicatesReady}
-            data={edge.predicateList}
+            readOnly={disablePredicates}
+            data={edge.filteredPredicateList}
             itemComponent={listItem}
             busySpinner={<FaSpinner className="icon-spin" />}
             placeholder={predicateInputMsg}

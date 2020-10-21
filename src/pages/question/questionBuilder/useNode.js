@@ -81,7 +81,6 @@ export default function useNodePanels() {
       .filter(
         (concept) => concept.name.includes(value.toLowerCase()),
       );
-    console.log(newFilteredConcepts);
     setFilteredConcepts(newFilteredConcepts);
   }
 

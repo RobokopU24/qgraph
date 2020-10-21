@@ -122,7 +122,7 @@ export default function NodePanel({ panelStore }) {
   }
 
   async function fetchConcepts() {
-    const spacesToSnakeCase = (str) => str.replace(' ', '_').toLowerCase();
+    const spacesToSnakeCase = (str) => str.replaceAll(' ', '_').toLowerCase();
     const setify = (name) => `Set of ${name}s`;
 
     const response = await API.biolink.getModelSpecification();

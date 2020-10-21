@@ -10,37 +10,21 @@ export default function useEdgePanels() {
 
   const [broken, setBroken] = useState(false);
 
-  const [predicatesReady, setPredicatesReady] = useState(false); // True when requesting end-point for predicates for source/target pairing
   const [predicateList, setPredicateList] = useState([]);
+  const [filteredPredicateList, setFilteredPredicateList] = useState([]);
 
   function updateSourceId(newSourceId) {
     setSourceId(newSourceId);
     setTargetId(null);
-    setPredicatesReady(false);
   }
 
   function updateTargetId(newTargetId) {
     setTargetId(newTargetId);
-    setPredicatesReady(false);
   }
 
   function switchSourceTarget() {
     setSourceId(targetId);
     setTargetId(sourceId);
-    setPredicatesReady(false);
-  }
-
-  function updatePredicateList(newPredicateList) {
-    // Reload selected predicates from the list
-    // Useful because when predicate is given as a seed
-    // it will not have all of the info
-    //
-    const reloadedPredicates = predicate.map(
-      (existingPredicate) => newPredicateList.find((p) => p.name === existingPredicate.name),
-    ).filter((v) => !!v);
-    setPredicateList(newPredicateList);
-    setPredicate(reloadedPredicates);
-    setPredicatesReady(true);
   }
 
   function reset() {
@@ -51,8 +35,18 @@ export default function useEdgePanels() {
     setTargetNodeList([]);
     setConnectionsCountReady(false);
     setBroken(false);
-    setPredicatesReady(false);
-    updatePredicateList([]);
+  }
+
+  function updatePredicateList(newPredicateList) {
+    setPredicateList(newPredicateList);
+
+    // Reload selected predicates
+    // Useful because when predicate is given as a seed
+    // it will not have all of the info
+    const reloadedPredicates = predicate.map(
+      (existingPredicate) => newPredicateList.find((p) => p.name === existingPredicate.name),
+    ).filter((v) => !!v);
+    setPredicate(reloadedPredicates);
   }
 
   function initialize(seed) {
@@ -67,21 +61,26 @@ export default function useEdgePanels() {
     }
   }
 
-  const isValidPredicate = predicate.every((p) => predicateList.includes(p));
+  const isValidPredicate = predicate.every((p) => filteredPredicateList.includes(p));
 
   const isValid = sourceId && targetId && isValidPredicate;
 
   return {
     id,
+
     sourceId,
     updateSourceId,
     targetId,
     updateTargetId,
+
     predicateList,
-    predicatesReady,
     updatePredicateList,
+    filteredPredicateList,
+    setFilteredPredicateList,
+
     predicate,
     setPredicate,
+
     isValidPredicate,
     reset,
     initialize,
