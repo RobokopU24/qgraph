@@ -25,7 +25,7 @@ export default function useQuestionStore() {
 
   function resetQuestion() {
     updateQuestionName('');
-    updateQueryGraph(queryGraphUtils.getEmptyQueryGraph());
+    updateQueryGraph(queryGraphUtils.getEmptyGraph());
     updateNotes('');
     // updateGraphState('empty');
     // updatePanelState([]);

@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 function getEmptyGraph() {
   return {
     nodes: {},
@@ -13,11 +15,13 @@ function fromListRepresentation(listRepresentation) {
   const newQueryGraph = getEmptyGraph();
 
   listRepresentation.nodes.forEach((node) => {
-    newQueryGraph.nodes[node.id] = { ...node, id: undefined };
+    newQueryGraph.nodes[node.id] = { ...node };
+    delete newQueryGraph.nodes[node.id].id;
   });
 
   listRepresentation.edges.forEach((edge) => {
-    newQueryGraph.edges[edge.id] = { ...edge, id: undefined };
+    newQueryGraph.edges[edge.id] = { ...edge };
+    delete newQueryGraph.edges[edge.id].id;
   });
 
   return newQueryGraph;
@@ -41,8 +45,24 @@ function toListRepresentation(dictRepresentation = { nodes: {}, edges: {} }) {
   return listRepresentation;
 }
 
+function uploadNodePreprocessor(n) {
+  // Convert curie to array if not given as array
+  if (n.curie && !_.isArray(n.curie)) {
+    n.curie = [n.curie];
+  }
+}
+
+function uploadEdgePreprocessor(e) {
+  // Convert type to array if not given as array
+  if (e.type && !_.isArray(e.type)) {
+    e.type = [e.type];
+  }
+}
+
 export default {
   fromListRepresentation,
   toListRepresentation,
   getEmptyGraph,
+  uploadNodePreprocessor,
+  uploadEdgePreprocessor,
 };

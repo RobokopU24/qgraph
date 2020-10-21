@@ -9,6 +9,7 @@ import {
 } from 'react-bootstrap';
 import _ from 'lodash';
 
+import queryGraphUtils from '@/utils/queryGraph';
 import HelpButton from '@/components/shared/HelpButton';
 import config from '@/config.json';
 
@@ -100,6 +101,14 @@ export default function QuestionBuilder(props) {
       setStep('options');
       return;
     }
+
+    // Run preprocessing function on upload to standardize formatting
+    fileContentObj.query_graph.nodes.forEach(
+      queryGraphUtils.uploadNodePreprocessor,
+    );
+    fileContentObj.query_graph.edges.forEach(
+      queryGraphUtils.uploadEdgePreprocessor,
+    );
 
     questionStore.loadListRepresentation(
       fileContentObj.query_graph,
