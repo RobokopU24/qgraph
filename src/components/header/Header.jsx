@@ -1,4 +1,6 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, {
+  useEffect, useState, useContext, useRef,
+} from 'react';
 import { Link } from 'react-router-dom';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -10,6 +12,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 
 import UserContext from '@/context/user';
+import AlertContext from '@/context/alert';
 
 import googleIcon from '../../../public/images/btn_google_light_normal_ios.svg';
 
@@ -17,13 +20,38 @@ import './header.css';
 
 export default function Header({ setUser }) {
   const [anchorEl, setAnchorEl] = useState(null);
+  const timeoutId = useRef(null);
 
   const user = useContext(UserContext);
+  const displayAlert = useContext(AlertContext);
+
+  /**
+   * Automatically refresh a user token a minute before it expires
+   * This will run in the background and ping google every 30 mins or so
+   * @param {number} timeToRefresh number of seconds before a token is set to expire
+   * @param {object} googleUser google user object
+   */
+  function refreshToken(timeToRefresh, googleUser) {
+    timeoutId.current = setTimeout(async () => {
+      try {
+        const { id_token, expires_in } = await googleUser.reloadAuthResponse();
+        const username = googleUser.getBasicProfile().Ad;
+        setUser({ username, id_token });
+        const newRefreshTime = (expires_in - 60) * 1000;
+        refreshToken(newRefreshTime, googleUser);
+      } catch (err) {
+        displayAlert('error', 'Lost connection to Google. Please sign in again.');
+        setUser(null);
+      }
+    }, timeToRefresh);
+  }
 
   function signInSuccess(googleUser) {
     const username = googleUser.getBasicProfile().Ad;
-    const { id_token } = googleUser.getAuthResponse();
+    const { id_token, expires_in } = googleUser.getAuthResponse();
     setUser({ username, id_token });
+    const timeToRefresh = (expires_in - 60) * 1000;
+    refreshToken(timeToRefresh, googleUser);
   }
 
   function onSignIn() {
@@ -35,8 +63,8 @@ export default function Header({ setUser }) {
       .then((googleUser) => {
         signInSuccess(googleUser);
       })
-      .catch((err) => {
-        console.log('Sign in error:', err.error);
+      .catch(() => {
+        displayAlert('error', 'Sign in failed. Please make sure you are connected to the internet and that you have popups allowed.');
       });
   }
 
@@ -45,6 +73,7 @@ export default function Header({ setUser }) {
     GoogleAuth.signOut()
       .then(() => {
         setUser(null);
+        clearTimeout(timeoutId.current);
         // This disconnect closes the scope to the Robokop google credentials
         GoogleAuth.disconnect();
       });
@@ -68,8 +97,8 @@ export default function Header({ setUser }) {
                 signInSuccess(GoogleAuth.currentUser.get());
               }
             })
-            .catch((err) => {
-              console.log('error', err);
+            .catch(() => {
+              displayAlert('error', 'Failed to automatically sign you in. Please sign in manually.');
             });
         } else if (GoogleAuth.isSignedIn.get()) {
           onSignIn(GoogleAuth.currentUser.get());
