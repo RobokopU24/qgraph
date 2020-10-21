@@ -63,8 +63,8 @@ export default function Header({ setUser }) {
       .then((googleUser) => {
         signInSuccess(googleUser);
       })
-      .catch((err) => {
-        console.log('Sign in error:', err.error);
+      .catch(() => {
+        displayAlert('error', 'Sign in failed. Please make sure you are connected to the internet and that you have popups allowed.');
       });
   }
 
@@ -97,8 +97,8 @@ export default function Header({ setUser }) {
                 signInSuccess(GoogleAuth.currentUser.get());
               }
             })
-            .catch((err) => {
-              console.log('error', err);
+            .catch(() => {
+              displayAlert('error', 'Failed to automatically sign you in. Please sign in manually.');
             });
         } else if (GoogleAuth.isSignedIn.get()) {
           onSignIn(GoogleAuth.currentUser.get());
