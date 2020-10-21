@@ -35,7 +35,6 @@ export default function QuestionBuilder(props) {
   // Questions is for forking
   const [questions, updateQuestions] = useState([]);
   const [questionsReady, setQuestionsReady] = useState(false);
-  const [loading, setLoading] = useState(false);
   // used just for focus
   const questionName = useRef(null);
 
@@ -106,13 +105,11 @@ export default function QuestionBuilder(props) {
       fileContentObj.query_graph,
     );
     setStep('build');
-    setLoading(false);
   }
 
   function onDropFile(acceptedFiles, rejectedFiles) { // eslint-disable-line no-unused-vars
     acceptedFiles.forEach((file) => {
       const fr = new window.FileReader();
-      fr.onloadstart = () => setLoading(true);
       // fr.onloadend = () => this.setState({ graphState: graphStates.fetching });
       fr.onload = (e) => validateAndParseFile(e.target.result);
       fr.onerror = () => {
