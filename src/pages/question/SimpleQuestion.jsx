@@ -16,6 +16,7 @@ import AnswersetView from '@/components/shared/answersetView/AnswersetView';
 import parseMessage from '@/utils/parseMessage';
 import useMessageStore from '@/stores/useMessageStore';
 import usePageStatus from '@/utils/usePageStatus';
+import queryGraphUtils from '@/utils/queryGraph';
 
 import './newQuestion.css';
 import QuestionBuilder from './questionBuilder/QuestionBuilder';
@@ -32,7 +33,9 @@ export default function SimpleQuestion() {
   const [submittedQuestion, toggleSubmittedQuestion] = useState(false);
 
   function onDownloadQuestion() {
-    const query_graph = questionStore.getListRepresentation();
+    const query_graph = queryGraphUtils.convert.internalToReasoner(
+      questionStore.query_graph,
+    );
     const data = { query_graph };
 
     // Transform the data into a json blob and give it a url
@@ -80,7 +83,9 @@ export default function SimpleQuestion() {
     toggleSubmittedQuestion(true);
     answersetStatus.setLoading();
 
-    const query_graph = questionStore.getListRepresentation();
+    const query_graph = queryGraphUtils.convert.internalToReasoner(
+      questionStore.query_graph,
+    );
     const response = await API.ara.getAnswer(query_graph);
     if (response.status === 'error') {
       answersetStatus.setFailure(response.message);

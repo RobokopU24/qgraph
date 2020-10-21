@@ -102,16 +102,8 @@ export default function QuestionBuilder(props) {
       return;
     }
 
-    // Run preprocessing function on upload to standardize formatting
-    fileContentObj.query_graph.nodes.forEach(
-      queryGraphUtils.uploadNodePreprocessor,
-    );
-    fileContentObj.query_graph.edges.forEach(
-      queryGraphUtils.uploadEdgePreprocessor,
-    );
-
-    questionStore.loadListRepresentation(
-      fileContentObj.query_graph,
+    questionStore.updateQueryGraph(
+      queryGraphUtils.convert.reasonerToInternal(fileContentObj.query_graph),
     );
     setStep('build');
   }

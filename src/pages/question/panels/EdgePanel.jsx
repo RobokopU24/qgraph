@@ -38,8 +38,8 @@ export default function EdgePanel(props) {
       // So we make a copy and remove it
     delete sourceNode.name;
     delete targetNode.name;
-    if (sourceNode.curie.length === 0) delete sourceNode.curie;
-    if (targetNode.curie.length === 0) delete targetNode.curie;
+    if (sourceNode.curie && sourceNode.curie.length === 0) delete sourceNode.curie;
+    if (targetNode.curie && targetNode.curie.length === 0) delete targetNode.curie;
     const response = await API.ranker.predicateLookup(sourceNode, targetNode);
     if (response.status === 'error') {
       predicateStatus.setFailure('Failed to contact predicate lookup server. Please try again later');

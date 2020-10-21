@@ -88,7 +88,7 @@ export default function QuestionGraphViewContainer(props) {
   }, [questionStore.query_graph]);
 
   const query_graph_list_format = useMemo(
-    () => queryGraphUtils.toListRepresentation(panelStore.query_graph),
+    () => queryGraphUtils.convert.internalToReasoner(panelStore.query_graph),
     [panelStore.query_graph],
   );
 

@@ -99,15 +99,6 @@ export default function useQuestionStore() {
     });
   }
 
-  function loadListRepresentation(input) {
-    const dictRepresentation = queryGraphUtils.fromListRepresentation(input);
-    updateQueryGraph(dictRepresentation);
-  }
-
-  function getListRepresentation() {
-    return queryGraphUtils.toListRepresentation(query_graph);
-  }
-
   return {
     question_name,
     query_graph,
@@ -123,8 +114,6 @@ export default function useQuestionStore() {
     // openQuestionPanel,
     // togglePanelModal,
     // savePanel,
-    loadListRepresentation,
-    getListRepresentation,
     updateQueryGraph,
   };
 }
