@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {
+  useState, useEffect, useRef, useContext,
+} from 'react';
 import Dropzone from 'react-dropzone';
 import { FaUpload, FaFolder } from 'react-icons/fa';
 import { GoRepoForked } from 'react-icons/go';
@@ -7,14 +9,16 @@ import {
 } from 'react-bootstrap';
 import _ from 'lodash';
 
-import HelpButton from '../../../components/shared/HelpButton';
+import queryGraphUtils from '@/utils/queryGraph';
+import HelpButton from '@/components/shared/HelpButton';
+import config from '@/config.json';
+
+import AlertContext from '@/context/alert';
 import NewQuestionButtons from './NewQuestionButtons';
 import QuestionGraphViewContainer from './QuestionGraphViewContainer';
 import QuestionTemplateModal from './QuestionTemplate';
 import QuestionListModal from './QuestionListModal';
-// import questionTemplates from '../../../../../queries/index';
 
-import config from '../../../config.json';
 /**
  * Main Question Builder component
  * @param {object} questionStore new question custom hook
@@ -29,11 +33,13 @@ export default function QuestionBuilder(props) {
   } = props;
   const [showModal, toggleModal] = useState(false);
   const [step, setStep] = useState('options');
+  // Questions is for forking
   const [questions, updateQuestions] = useState([]);
   const [questionsReady, setQuestionsReady] = useState(false);
-  const [loading, setLoading] = useState(false);
   // used just for focus
   const questionName = useRef(null);
+
+  const displayAlert = useContext(AlertContext);
 
   useEffect(() => {
     if (questionStore.question_name) {
@@ -70,30 +76,46 @@ export default function QuestionBuilder(props) {
     toggleModal(false);
   }
 
+  function validateAndParseFile(fileContents) {
+    let fileContentObj;
+    try {
+      fileContentObj = JSON.parse(fileContents);
+    } catch (err) {
+      displayAlert('error',
+        'The provided file is not valid JSON. Please fix and try again.');
+      setStep('options');
+      return;
+    }
+
+    if (!('query_graph' in fileContentObj)) {
+      displayAlert('error',
+        'The provided file does not have a query_graph object. Please ensure that the file format adheres to the Reasoner Standard API Query Schema.');
+      setStep('options');
+      return;
+    }
+
+    if (!_.isArray(fileContentObj.query_graph.nodes) ||
+       !_.isArray(fileContentObj.query_graph.edges)) {
+      displayAlert('error',
+        'The provided file does not have an array of nodes or edges. Please ensure that the file format adheres to the Reasoner Standard API Query Schema.');
+      setStep('options');
+      return;
+    }
+
+    questionStore.updateQueryGraph(
+      queryGraphUtils.convert.reasonerToInternal(fileContentObj.query_graph),
+    );
+    setStep('build');
+  }
+
   function onDropFile(acceptedFiles, rejectedFiles) { // eslint-disable-line no-unused-vars
     acceptedFiles.forEach((file) => {
       const fr = new window.FileReader();
-      fr.onloadstart = () => setLoading(true);
       // fr.onloadend = () => this.setState({ graphState: graphStates.fetching });
-      fr.onload = (e) => {
-        const fileContents = e.target.result;
-        try {
-          const fileContentObj = JSON.parse(fileContents);
-          questionStore.questionSpecToPanelState(fileContentObj);
-          setStep('build');
-          setLoading(false);
-        } catch (err) {
-          console.error(err);
-          // window.alert('Failed to read this Question template. Are you sure this is valid?');
-          // questionStore.setGraphState(graphStates.error);
-          setLoading(false);
-        }
-      };
+      fr.onload = (e) => validateAndParseFile(e.target.result);
       fr.onerror = () => {
-        window.alert('Sorry but there was a problem uploading the file. The file may be invalid JSON.');
-        questionStore.resetQuestion();
-        setLoading(false);
-        // questionStore.setGraphState(graphStates.error);
+        displayAlert('error', 'Sorry but there was a problem uploading the file. Please try again.');
+        setStep('options');
       };
       fr.readAsText(file);
     });

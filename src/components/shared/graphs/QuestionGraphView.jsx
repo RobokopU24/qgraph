@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
-import shortid from 'shortid';
+import React, {
+  useEffect, useRef, useMemo,
+} from 'react';
 import _ from 'lodash';
 
 import getNodeTypeColorMap from '../../../utils/colorUtils';
@@ -122,8 +123,6 @@ export default function QuestionGraphView(props) {
     graphClickCallback, nodePreProcFn = defaultNodePreProc, edgePreProcFn = defaultEdgePreProc,
     interactable = true,
   } = props;
-  const [displayGraph, setDisplayGraph] = useState(null);
-  const [displayOptions, updateDisplayOptions] = useState({});
   const network = useRef(null);
 
   // Bind network fit callbacks to resize graph and cancel fit callbacks on start of zoom/pan
@@ -135,8 +134,8 @@ export default function QuestionGraphView(props) {
   }
 
   /* eslint-disable no-param-reassign */
-  function getDisplayGraph(rawGraph) {
-    const graph = _.cloneDeep(rawGraph);
+  function getDisplayGraph() {
+    const graph = _.cloneDeep(question);
 
     // Adds vis.js specific tags to manage colors in graph
     const nodeTypeColorMap = getNodeTypeColorMap(config.concepts);
@@ -156,7 +155,11 @@ export default function QuestionGraphView(props) {
     return graph;
   }
 
-  function getDisplayOptions(graph) {
+  function getDisplayOptions() {
+    if (!question || !question.nodes || !question.edges) {
+      return null;
+    }
+    const graph = _.cloneDeep(question);
     // potential change display depending on size/shape of graph
     let actualHeight = height;
     if (!(typeof actualHeight === 'string' || actualHeight instanceof String)) {
@@ -245,28 +248,16 @@ export default function QuestionGraphView(props) {
     });
   }
 
-  function getGraphOptions() {
-    let graph = _.cloneDeep(question);
-
-    const isValid = !(graph == null) && (Object.prototype.hasOwnProperty.call(graph, 'nodes')) && (Object.prototype.hasOwnProperty.call(graph, 'edges'));
-    if (isValid) {
-      graph = getDisplayGraph(graph);
-    }
-    const graphOptions = getDisplayOptions(graph);
-
-    setDisplayGraph(graph);
-    updateDisplayOptions(graphOptions);
-  }
-
-  useEffect(() => {
-    getGraphOptions();
-  }, [question]);
-
   useEffect(() => {
     if (selectable && network.current) {
       setNetworkCallbacks();
     }
   }, [network.current]);
+
+  const displayGraphDependencies = [question, nodePreProcFn, edgePreProcFn, graphClickCallback];
+  const displayGraph = useMemo(getDisplayGraph, displayGraphDependencies);
+  const displayOptions = useMemo(getDisplayOptions,
+    displayGraphDependencies.concat([selectable, height, width, interactable]));
 
   return (
     <>

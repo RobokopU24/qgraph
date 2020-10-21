@@ -7,6 +7,7 @@ import Help from '@/pages/Help';
 import Guide from '@/pages/Guide';
 import TermsofService from '@/pages/TermsofService';
 import SimpleViewer from '@/pages/SimpleViewer';
+import SimpleQuestion from '@/pages/question/SimpleQuestion';
 
 import Neighborhood from '@/pages/neighborhood/Neighborhood';
 import QuestionList from '@/pages/questionList/QuestionList';
@@ -69,6 +70,9 @@ export default function App() {
                   <SimpleViewer
                     user={user}
                   />
+                </Route>
+                <Route path="/simple/question">
+                  <SimpleQuestion />
                 </Route>
                 <Route path="/">
                   <Landing isSignedIn={isSignedIn} />

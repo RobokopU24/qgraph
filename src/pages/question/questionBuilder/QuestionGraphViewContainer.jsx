@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, {
+  useState, useEffect, useMemo, useCallback,
+} from 'react';
 import { FaSpinner, FaPlusSquare } from 'react-icons/fa';
 import { Modal, Button } from 'react-bootstrap';
+import queryGraphUtils from '@/utils/queryGraph';
 
 import QuestionGraphView from '../../../components/shared/graphs/QuestionGraphView';
 import NewQuestionPanelModal from '../panels/NewQuestionPanelModal';
@@ -32,7 +35,6 @@ function getHeight() {
 export default function QuestionGraphViewContainer(props) {
   const { questionStore, height = getHeight(), width = '100%' } = props;
   const [showJsonEditor, toggleJsonEditor] = useState(false);
-  const [showGraph, toggleGraph] = useState(false);
   const panelStore = useNewQuestionPanel();
 
   function graphClickCallback(data) {
@@ -48,6 +50,7 @@ export default function QuestionGraphViewContainer(props) {
       // panelStore.loadEdge(clickedEdge);
     }
   }
+  const graphClickCallbackMemo = useMemo(() => graphClickCallback, []);
 
   /**
    * Save the value from the json editor
@@ -60,9 +63,8 @@ export default function QuestionGraphViewContainer(props) {
    */
   function saveJsonEditor(question) {
     try {
-      questionStore.questionSpecToPanelState(question);
+      questionStore.fromListRepresentation(question);
       toggleJsonEditor(!showJsonEditor);
-      toggleGraph(true);
     } catch (err) {
       console.error(err);
       // TODO: what did this used to be?
@@ -77,31 +79,31 @@ export default function QuestionGraphViewContainer(props) {
     }
   }
 
+  const numNodes = Object.keys(panelStore.query_graph.nodes).length;
+  const numEdges = Object.keys(panelStore.query_graph.edges).length;
+
+  // Update panelStore when questionStore changes
   useEffect(() => {
-    if (questionStore.query_graph) {
-      panelStore.load(questionStore.query_graph);
-      toggleGraph(true);
-    }
+    panelStore.load(questionStore.query_graph);
   }, [questionStore.query_graph]);
 
-  // const showFetching = questionStore.graphState === graphStates.fetching;
-  // const notInitialized = questionStore.graphState === graphStates.empty;
-  const numNodes = panelStore.query_graph.nodes.length;
-  const numEdges = panelStore.query_graph.edges.length;
-  // const error = questionStore.graphState === graphStates.error;
+  const query_graph_list_format = useMemo(
+    () => queryGraphUtils.convert.internalToReasoner(panelStore.query_graph),
+    [panelStore.query_graph],
+  );
 
   return (
     <div id="QuestionGraphViewContainer">
       <ButtonGroupPanel panelStore={panelStore} toggleJsonEditor={() => toggleJsonEditor(!showJsonEditor)} />
-      {showGraph ? (
+      {(numNodes || numEdges) ? (
         <QuestionGraphView
           height={height}
           width={width}
-          question={panelStore.query_graph}
+          question={query_graph_list_format}
           concepts={config.concepts}
           graphState={questionStore.graphState}
           selectable
-          graphClickCallback={graphClickCallback}
+          graphClickCallback={graphClickCallbackMemo}
         />
       ) : (
         <div
@@ -138,6 +140,7 @@ export default function QuestionGraphViewContainer(props) {
         </div>
       )}
       <NewQuestionPanelModal
+        onQuestionUpdated={(updated_q) => questionStore.updateQueryGraph(updated_q)}
         panelStore={panelStore}
       />
       <Modal

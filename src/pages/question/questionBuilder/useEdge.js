@@ -1,6 +1,4 @@
-import { useState, useRef } from 'react';
-
-const _publicFields = ['id', 'source_id', 'target_id', 'predicate'];
+import { useState, useEffect } from 'react';
 
 export default function useEdgePanels() {
   const [id, setId] = useState(null);
@@ -13,11 +11,37 @@ export default function useEdgePanels() {
   const [broken, setBroken] = useState(false);
 
   const [predicatesReady, setPredicatesReady] = useState(false); // True when requesting end-point for predicates for source/target pairing
-  const [predicateList, updatePredicateList] = useState([]);
-  const [disablePredicates, setDisablePredicates] = useState(false);
+  const [predicateList, setPredicateList] = useState([]);
 
-  const connectionsCancel = useRef(null);
-  const predicatesCancel = useRef(null);
+  function updateSourceId(newSourceId) {
+    setSourceId(newSourceId);
+    setTargetId(null);
+    setPredicatesReady(false);
+  }
+
+  function updateTargetId(newTargetId) {
+    setTargetId(newTargetId);
+    setPredicatesReady(false);
+  }
+
+  function switchSourceTarget() {
+    setSourceId(targetId);
+    setTargetId(sourceId);
+    setPredicatesReady(false);
+  }
+
+  function updatePredicateList(newPredicateList) {
+    // Reload selected predicates from the list
+    // Useful because when predicate is given as a seed
+    // it will not have all of the info
+    //
+    const reloadedPredicates = predicate.map(
+      (existingPredicate) => newPredicateList.find((p) => p.name === existingPredicate.name),
+    ).filter((v) => !!v);
+    setPredicateList(newPredicateList);
+    setPredicate(reloadedPredicates);
+    setPredicatesReady(true);
+  }
 
   function reset() {
     setId(null);
@@ -29,21 +53,40 @@ export default function useEdgePanels() {
     setBroken(false);
     setPredicatesReady(false);
     updatePredicateList([]);
-    setDisablePredicates(false);
   }
 
   function initialize(seed) {
-    console.log(seed);
     reset();
-    setId(seed.id || '');
+    setId(seed.id || null);
     setSourceId(seed.source_id || null);
+    setTargetId(seed.target_id || null);
+    if (seed.type) {
+      setPredicate(seed.type.map(
+        (p_name) => ({ name: p_name }),
+      ));
+    }
   }
+
+  const isValidPredicate = predicate.every((p) => predicateList.includes(p));
+
+  const isValid = sourceId && targetId && isValidPredicate;
 
   return {
     id,
     sourceId,
+    updateSourceId,
     targetId,
+    updateTargetId,
+    predicateList,
+    predicatesReady,
+    updatePredicateList,
+    predicate,
+    setPredicate,
+    isValidPredicate,
     reset,
     initialize,
+    targetNodeList,
+    isValid,
+    switchSourceTarget,
   };
 }

@@ -1,9 +1,17 @@
-import React, { useEffect, useRef } from 'react';
+import React, {
+  useEffect, useRef, useCallback, useContext,
+} from 'react';
 import {
   FormControl, Button, Badge, InputGroup, Glyphicon,
 } from 'react-bootstrap';
+
+import _ from 'lodash';
+
 import { AutoSizer, List } from 'react-virtualized';
 import shortid from 'shortid';
+
+import AlertContext from '@/context/alert';
+import API from '@/API';
 
 import entityNameDisplay from '../../../utils/entityNameDisplay';
 import curieUrls from '../../../utils/curieUrls';
@@ -18,9 +26,16 @@ export default function NodePanel({ panelStore }) {
   const input = useRef(null);
   const { node } = panelStore;
 
+  const displayAlert = useContext(AlertContext);
+
   useEffect(() => {
     input.current.focus();
   }, []);
+
+  function handleSelect(entry) {
+    panelStore.toggleUnsavedChanges(true);
+    panelStore.node.select(entry);
+  }
 
   function rowRenderer({
     index,
@@ -38,22 +53,23 @@ export default function NodePanel({ panelStore }) {
     let colorStripes = [];
     let typeColor = '';
     if (isConcept) {
-      name = filteredConcepts[index].label;
+      name = filteredConcepts[index].name;
       entry = filteredConcepts[index];
       ({ type } = filteredConcepts[index]); // this is a string
       const typeColorMap = getNodeTypeColorMap();
       typeColor = typeColorMap(type);
     } else {
       const i = index - filteredConcepts.length;
-      name = curies[i].label;
       entry = curies[i];
-      ({ degree, type } = curies[i]); // destructuring magic, type is array
-      curie = curies[i].value;
+
+      ({
+        degree, type, name, curie,
+      } = entry);
       const urls = curieUrls(curie);
       links = (
         <span>
           {urls.map((u) => (
-            <a target="_blank" rel="noreferrer" href={u.url} alt={u.label} key={shortid.generate()} style={{ paddingRight: '3px' }}><img src={u.iconUrl} alt={u.label} height={16} width={16} /></a>
+            <a target="_blank" rel="noreferrer" href={u.url} alt={u.name} key={shortid.generate()} style={{ paddingRight: '3px' }}><img src={u.iconUrl} alt={u.name} height={16} width={16} /></a>
           ))}
         </span>
       );
@@ -96,13 +112,45 @@ export default function NodePanel({ panelStore }) {
           <Badge>{degree}</Badge>
           {links}
           <Button
-            onClick={() => panelStore.node.select(entry)}
+            onClick={() => handleSelect(entry)}
           >
             Select
           </Button>
         </div>
       </div>
     );
+  }
+
+  async function fetchCuries(newSearchTerm) {
+    // Get and update list of curies
+    const response = await API.ranker.entityLookup(newSearchTerm);
+    if (response.status === 'error' || !_.isArray(response)) {
+      displayAlert('error',
+        'Failed to contact server to search curies. You will still be able to select generic types. Please try again later');
+    } else {
+      node.updateCuries(response);
+    }
+    node.setLoading(false);
+  }
+
+  // Create a debounced version that persists on renders
+  const fetchCuriesDebounced = useCallback(
+    _.debounce(fetchCuries, 500),
+    [],
+  );
+
+  async function updateSearchTerm(value) {
+    // Clear existing selection
+    node.clearSelection();
+    // Clear existing curies
+    node.updateCuries([]);
+    // Update list of concepts
+    node.updateFilteredConcepts(value);
+    // Update search term
+    node.setSearchTerm(value);
+
+    node.setLoading(true);
+    fetchCuriesDebounced(value);
   }
 
   const showOptions = node.searchTerm && !node.type;
@@ -124,7 +172,7 @@ export default function NodePanel({ panelStore }) {
             placeholder="Start typing to search."
             value={node.searchTerm}
             inputRef={(ref) => { input.current = ref; }}
-            onChange={(e) => node.updateSearchTerm(e.target.value)}
+            onChange={(e) => updateSearchTerm(e.target.value)}
           />
           {!showOptions && node.curie.length > 0 && (
             <InputGroup.Addon>

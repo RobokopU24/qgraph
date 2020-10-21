@@ -1,14 +1,15 @@
 import { useState } from 'react';
+
 import _ from 'lodash';
 
-import entityNameDisplay from '../../../utils/entityNameDisplay';
-import config from '../../../config.json';
+import config from '@/config.json';
+import entityNameDisplay from '@/utils/entityNameDisplay';
 
 const setify = (type) => `set of ${type}s`;
 const conceptsWithSets = [];
 config.concepts.forEach((concept) => {
-  conceptsWithSets.push({ label: concept, type: concept, set: false });
-  conceptsWithSets.push({ label: setify(concept), type: concept, set: true });
+  conceptsWithSets.push({ name: concept, type: concept, set: false });
+  conceptsWithSets.push({ name: setify(concept), type: concept, set: true });
 });
 
 export default function useNodePanels() {
@@ -21,8 +22,8 @@ export default function useNodePanels() {
   const [curieEnabled, setCurieEnabled] = useState(false);
   const [set, setSet] = useState(false);
   const [regular, setRegular] = useState(false);
-  const [conceptsWithSets, setConceptsWithSets] = useState([]);
-  const [filteredConcepts, updateFilteredConcepts] = useState([]);
+  // const [conceptsWithSets, setConceptsWithSets] = useState([]);
+  const [filteredConcepts, setFilteredConcepts] = useState([]);
   const [curies, updateCuries] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -36,15 +37,14 @@ export default function useNodePanels() {
     setCurieEnabled(false);
     setSet(false);
     setRegular(false);
-    setConceptsWithSets([]);
-    updateFilteredConcepts([]);
+    // setConceptsWithSets([]);
+    setFilteredConcepts([]);
     updateCuries([]);
     setLoading(false);
   }
 
   function initialize(seed) {
     reset();
-    console.log('seed', seed);
     setId(seed.id || null);
     setType(seed.type || '');
     setName(seed.name || seed.type || '');
@@ -53,21 +53,51 @@ export default function useNodePanels() {
     setCurie(seed.curie || []);
   }
 
-  function select(entry) {
-    console.log('entry', entry);
+  /*
+   * Convert a list of types to a single type
+   * by picking the first one in the list (that is not named_thing)
+  */
+  function conceptListToString(curieTypes) {
+    const specificConcepts = config.concepts.filter((t) => t !== 'named_thing');
+    const curieType = specificConcepts.find((concept) => curieTypes.includes(concept));
+    return curieType || '';
   }
 
-  function updateSearchTerm(value) {
-    setSearchTerm(value);
-    if (curie.length) {
-      setCurie([]);
+  function select(entry) {
+    setSearchTerm(entityNameDisplay(entry.name));
+    setName(entityNameDisplay(entry.name));
+    if (entry.curie) {
+      setCurie([entry.curie]);
     }
-    if (type) {
-      setType('');
+    if (entry.set) {
+      setSet(true);
     }
+    setType(conceptListToString(entry.type));
   }
+
+  function clearSelection() {
+    setType('');
+    setName('');
+    setCurie([]);
+  }
+
+  function updateFilteredConcepts(value) {
+    const newFilteredConcepts = conceptsWithSets.filter(
+      (concept) => concept.name.includes(value.toLowerCase()),
+    );
+    setFilteredConcepts(newFilteredConcepts);
+  }
+
+  const isValid = !!id || !!type;
 
   return {
+    name,
+    clearSelection,
+    updateCuries,
+    updateFilteredConcepts,
+    setLoading,
+    setSearchTerm,
+    id,
     filteredConcepts,
     curie,
     curies,
@@ -78,6 +108,7 @@ export default function useNodePanels() {
     initialize,
     reset,
     select,
-    updateSearchTerm,
+    loading,
+    isValid,
   };
 }
