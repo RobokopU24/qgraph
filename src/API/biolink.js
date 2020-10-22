@@ -3,11 +3,16 @@ import yaml from 'js-yaml';
 
 import handleAxiosError from './utils';
 
+const cachedBiolink = null;
+
 const routes = {
   /**
    * Get biolink model specification
    */
   async getModelSpecification() {
+    // Use cache if we have it
+    if (cachedBiolink) return cachedBiolink;
+
     const config = {
       url: 'https://raw.githubusercontent.com/biolink/biolink-model/master/biolink-model.yaml',
       method: 'GET',

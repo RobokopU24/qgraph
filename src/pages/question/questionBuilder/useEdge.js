@@ -5,13 +5,9 @@ export default function useEdgePanels() {
   const [sourceId, setSourceId] = useState(null);
   const [targetId, setTargetId] = useState(null);
   const [predicate, setPredicate] = useState([]);
-  const [targetNodeList, setTargetNodeList] = useState([]);
   const [connectionsCountReady, setConnectionsCountReady] = useState(false);
 
   const [broken, setBroken] = useState(false);
-
-  const [predicateList, setPredicateList] = useState([]);
-  const [filteredPredicateList, setFilteredPredicateList] = useState([]);
 
   function updateSourceId(newSourceId) {
     setSourceId(newSourceId);
@@ -32,21 +28,8 @@ export default function useEdgePanels() {
     setSourceId(null);
     setTargetId(null);
     setPredicate([]);
-    setTargetNodeList([]);
     setConnectionsCountReady(false);
     setBroken(false);
-  }
-
-  function updatePredicateList(newPredicateList) {
-    setPredicateList(newPredicateList);
-
-    // Reload selected predicates
-    // Useful because when predicate is given as a seed
-    // it will not have all of the info
-    const reloadedPredicates = predicate.map(
-      (existingPredicate) => newPredicateList.find((p) => p.name === existingPredicate.name),
-    ).filter((v) => !!v);
-    setPredicate(reloadedPredicates);
   }
 
   function initialize(seed) {
@@ -61,10 +44,6 @@ export default function useEdgePanels() {
     }
   }
 
-  const isValidPredicate = predicate.every((p) => filteredPredicateList.includes(p));
-
-  const isValid = sourceId && targetId && isValidPredicate;
-
   return {
     id,
 
@@ -73,18 +52,12 @@ export default function useEdgePanels() {
     targetId,
     updateTargetId,
 
-    predicateList,
-    updatePredicateList,
-    filteredPredicateList,
-    setFilteredPredicateList,
-
     predicate,
     setPredicate,
 
     isValidPredicate,
     reset,
     initialize,
-    targetNodeList,
     isValid,
     switchSourceTarget,
   };
