@@ -1,11 +1,15 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, {
+  useState, useEffect, useCallback, useContext,
+} from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import _ from 'lodash';
 
-import entityNameDisplay from '../../../../utils/entityNameDisplay';
-import getNodeTypeColorMap from '../../../../utils/colorUtils';
+import AlertContext from '@/context/alert';
+
+import entityNameDisplay from '@/utils/entityNameDisplay';
+import getNodeTypeColorMap from '@/utils/colorUtils';
 import Table from './Table';
 
 import './resultsTable.css';
@@ -14,11 +18,13 @@ export default function AnswerTable(props) {
   const { messageStore, concepts } = props;
   const [columns, setColumns] = useState([]);
 
+  const displayAlert = useContext(AlertContext);
+
   const onExpand = useCallback((row) => {
     row.toggleRowExpanded(!row.isExpanded);
   }, []);
 
-  function getReactTableColumnSpec(columnHeaders, data) {
+  function getReactTableColumnSpec(columnHeaders) {
     const bgColorMap = getNodeTypeColorMap(concepts);
     // Take columnHeaders from store and update it as needed
     const colHeaders = columnHeaders.map((col) => {
@@ -103,20 +109,18 @@ export default function AnswerTable(props) {
     return colHeaders;
   }
 
-  function initializeState(columnHeaders, answers) {
-    const columnSpec = getReactTableColumnSpec(columnHeaders, answers);
+  function initializeState(columnHeaders) {
+    const columnSpec = getReactTableColumnSpec(columnHeaders);
     setColumns(columnSpec);
   }
 
   useEffect(() => {
-    if (!columns.length) {
-      if (messageStore.unknownNodes) {
-        window.alert('We were able to retrieve the answers to this question. However, it seems there was an error retrieving some of the nodes. If you would like complete answers, please try asking this question again.');
-      }
-      const { columnHeaders, answers } = messageStore.answerSetTableData();
-      initializeState(columnHeaders, answers);
+    const { columnHeaders, unknownNodes } = messageStore.answerSetTableData();
+    if (unknownNodes) {
+      displayAlert('warning', 'There was an error retrieving some of the nodes in this answer. If you would like a complete answer, please try asking this question again.');
     }
-  }, []);
+    initializeState(columnHeaders);
+  }, [messageStore.message]);
 
   return (
     <>

@@ -66,19 +66,14 @@ export default function App() {
                 <Route path="/termsofservice">
                   <TermsofService />
                 </Route>
-                <Route
-                  path="/simple"
-                  render={({ match: { url } }) => (
-                    <>
-                      <Route path={`${url}/view`} exact>
-                        <SimpleViewer />
-                      </Route>
-                      <Route path={`${url}/question`} exact>
-                        <SimpleQuestion />
-                      </Route>
-                    </>
-                  )}
-                />
+                <Route path="/simple/view">
+                  <SimpleViewer
+                    user={user}
+                  />
+                </Route>
+                <Route path="/simple/question">
+                  <SimpleQuestion />
+                </Route>
                 <Route path="/">
                   <Landing isSignedIn={isSignedIn} />
                 </Route>

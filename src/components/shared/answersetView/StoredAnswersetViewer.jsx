@@ -1,9 +1,5 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 
-import Box from '@material-ui/core/Box';
-import Alert from '@material-ui/lab/Alert';
-
-import Loading from '@/components/loading/Loading';
 import useMessageStore from '@/stores/useMessageStore';
 import config from '@/config.json';
 import parseMessage from '@/utils/parseMessage';
@@ -47,7 +43,7 @@ export default function StoredAnswersetView({ question_id, answer_id }) {
       messageStore.initializeMessage(parsedMessage);
       pageStatus.setSuccess();
     } catch (err) {
-      pageStatus.setFailure('Unable to parse message. Please ensure that the question you submitted is a valid JSON object.');
+      pageStatus.setFailure('Failed to parse this message.');
     }
   }
 
