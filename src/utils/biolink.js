@@ -2,8 +2,6 @@ import _ from 'lodash';
 
 const standardizeCase = (str) => str && str.replaceAll(' ', '_').toLowerCase();
 
-const baseClass = 'biological_entity';
-
 function getHierarchy(biolink, className) {
   const standardizedClassDictionary = _.transform(biolink.classes,
     (result, value, key) => { result[standardizeCase(key)] = value; });
@@ -21,7 +19,18 @@ function getHierarchy(biolink, className) {
   return hierarchy;
 }
 
+const baseClass = 'biological_entity';
+
+/*
+ * Filter out concepts that are not derived classes of biological_entity
+*/
+function getValidConcepts(biolink) {
+  return _.pickBy(biolink.classes,
+    (value, identifier) => getHierarchy(biolink, identifier).includes(baseClass));
+}
+
 export default {
   standardizeCase,
   getHierarchy,
+  getValidConcepts,
 };

@@ -65,7 +65,6 @@ export default function useNodePanels() {
     if (entry.set) {
       setSet(true);
     }
-    console.log(entry);
     setType(conceptListToString(entry.type));
   }
 

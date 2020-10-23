@@ -15,6 +15,7 @@ import API from '@/API';
 
 import entityNameDisplay from '@/utils/entityNameDisplay';
 import curieUrls from '@/utils/curieUrls';
+import biolinkUtils from '@/utils/biolink';
 import getNodeTypeColorMap from '../../../utils/colorUtils';
 import NodeProperties from './NodeProperties';
 
@@ -132,7 +133,8 @@ export default function NodePanel({ panelStore }) {
       return;
     }
     const biolink = response;
-    const conceptsFormatted = Object.entries(biolink.classes).map(
+    const validConcepts = biolinkUtils.getValidConcepts(biolink);
+    const conceptsFormatted = Object.entries(validConcepts).map(
       ([identifier, concept]) => ({
         type: spacesToSnakeCase(identifier),
         name: entityNameDisplay(identifier),
