@@ -19,14 +19,10 @@ import usePageStatus from '@/utils/usePageStatus';
 import queryGraphUtils from '@/utils/queryGraph';
 
 import './newQuestion.css';
-import biolinkUtils from '@/utils/biolink';
 import QuestionBuilder from './questionBuilder/QuestionBuilder';
 
 import useQuestionStore from './useQuestionStore';
 import config from '../../config.json';
-
-window.API = API;
-window.biolinkUtils = biolinkUtils;
 
 export default function SimpleQuestion() {
   const user = useContext(UserContext);

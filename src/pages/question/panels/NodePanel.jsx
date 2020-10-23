@@ -1,5 +1,5 @@
 import React, {
-  useEffect, useRef, useCallback, useContext,
+  useEffect, useRef, useCallback, useContext, useState,
 } from 'react';
 import {
   FormControl, Button, Badge, InputGroup, Glyphicon,
@@ -26,6 +26,7 @@ import NodeProperties from './NodeProperties';
 export default function NodePanel({ panelStore }) {
   const input = useRef(null);
   const { node } = panelStore;
+  const [biolink, setBiolink] = useState(null);
 
   const displayAlert = useContext(AlertContext);
 
@@ -122,17 +123,24 @@ export default function NodePanel({ panelStore }) {
     );
   }
 
-  async function fetchConcepts() {
-    const spacesToSnakeCase = (str) => str.replaceAll(' ', '_').toLowerCase();
-    const setify = (name) => `Set of ${name}s`;
-
+  async function fetchBiolink() {
     const response = await API.biolink.getModelSpecification();
     if (response.status === 'error') {
       displayAlert('error',
-        'Failed to contact server to download biolink model. You will still be able to select curies. Please try again later');
+        'Failed to contact server to download biolink model. You will not be able to select concepts. Please try again later');
       return;
     }
-    const biolink = response;
+    setBiolink(response);
+  }
+  useEffect(() => { fetchBiolink(); }, []);
+
+  function updateConceptList() {
+    const spacesToSnakeCase = (str) => str.replaceAll(' ', '_').toLowerCase();
+    const setify = (name) => `Set of ${name}s`;
+
+    if (!biolink) {
+      return;
+    }
     const validConcepts = biolinkUtils.getValidConcepts(biolink);
     const conceptsFormatted = Object.entries(validConcepts).map(
       ([identifier, concept]) => ({
@@ -151,7 +159,7 @@ export default function NodePanel({ panelStore }) {
     );
   }
   // When node panel mounts get concepts
-  useEffect(() => { fetchConcepts(); }, []);
+  useEffect(() => { updateConceptList(); }, []);
 
   async function fetchCuries(newSearchTerm) {
     // Get and update list of curies
