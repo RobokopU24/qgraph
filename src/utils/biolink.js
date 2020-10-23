@@ -2,6 +2,8 @@ import _ from 'lodash';
 
 const standardizeCase = (str) => str && str.replaceAll(' ', '_').toLowerCase();
 
+const baseClass = 'biological_entity';
+
 function getHierarchy(biolink, className) {
   const standardizedClassDictionary = _.transform(biolink.classes,
     (result, value, key) => { result[standardizeCase(key)] = value; });

@@ -41,7 +41,7 @@ export default function EdgePanel(props) {
     }
     setBiolink(response);
   }
-  useEffect(() => { fetchBiolink(); });
+  useEffect(() => { fetchBiolink(); }, []);
 
   // Build a list of formatted predicates
   function getPredicateList() {
@@ -120,11 +120,21 @@ export default function EdgePanel(props) {
     predicateInputMsg = 'Source and/or Target Nodes need to be specified...';
   }
 
-  const isValidPredicate = edge.predicate.every((p) => filteredPredicateList.includes(p));
+  // Every predicate selected must match at least one
+  // predicate in the filteredPredicateList
+  const isValidPredicate = edge.predicate.every(
+    (p) => filteredPredicateList.some((fp) => p.name === fp.name),
+  );
 
   const isValid = edge.sourceId && edge.targetId && isValidPredicate;
 
   const disabledSwitch = edge.sourceId === null || edge.targetId === null;
+
+  useEffect(() => {
+  // Update edge in panelStore
+    edge.setIsValid(isValid);
+    edge.setIsValidPredicate(isValidPredicate);
+  }, [edge.sourceId, edge.targetId, edge.predicate]);
 
   return (
     <Form horizontal>

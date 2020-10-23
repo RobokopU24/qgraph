@@ -5,9 +5,9 @@ export default function useEdgePanels() {
   const [sourceId, setSourceId] = useState(null);
   const [targetId, setTargetId] = useState(null);
   const [predicate, setPredicate] = useState([]);
-  const [connectionsCountReady, setConnectionsCountReady] = useState(false);
 
-  const [broken, setBroken] = useState(false);
+  const [isValidPredicate, setIsValidPredicate] = useState(false);
+  const [isValid, setIsValid] = useState(false);
 
   function updateSourceId(newSourceId) {
     setSourceId(newSourceId);
@@ -28,8 +28,6 @@ export default function useEdgePanels() {
     setSourceId(null);
     setTargetId(null);
     setPredicate([]);
-    setConnectionsCountReady(false);
-    setBroken(false);
   }
 
   function initialize(seed) {
@@ -55,10 +53,13 @@ export default function useEdgePanels() {
     predicate,
     setPredicate,
 
+    isValid,
+    setIsValid,
     isValidPredicate,
+    setIsValidPredicate,
+
     reset,
     initialize,
-    isValid,
     switchSourceTarget,
   };
 }
