@@ -4,6 +4,9 @@
  * will only grab the first item in array
  */
 export default function entityNameDisplay(arg) {
+  if (!arg) {
+    return '';
+  }
   let label = arg;
   if (Array.isArray(label)) {
     [label] = label;
