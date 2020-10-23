@@ -1,15 +1,13 @@
 const axios = require('axios');
 const handleAxiosError = require('./utils');
 
-const protocol = 'http';
-const host = process.env.ROBOKACHE_HOST || 'lvh.me';
-const port = 8080;
+let base_url;
 
-/**
- * URL Maker
- * @param {string} ext extension to append to url
- */
-const base_url = `${protocol}://${host}:${port}/api/`;
+if (process.env.NODE_ENV === 'development') {
+  base_url = 'http://lvh.me:8080/api/';
+} else {
+  base_url = `${window.location.origin}/api/robokache/`;
+}
 
 // Base request method for all endpoints
 async function baseRequest(path, method, body, token) {
