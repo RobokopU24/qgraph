@@ -1,5 +1,5 @@
 import React, {
-  useState, useEffect, useMemo, useCallback,
+  useState, useEffect, useMemo,
 } from 'react';
 import { FaSpinner, FaPlusSquare } from 'react-icons/fa';
 import { Modal, Button } from 'react-bootstrap';
@@ -8,7 +8,7 @@ import queryGraphUtils from '@/utils/queryGraph';
 import QuestionGraphView from '../../../components/shared/graphs/QuestionGraphView';
 import NewQuestionPanelModal from '../panels/NewQuestionPanelModal';
 import ButtonGroupPanel from '../subComponents/ButtonGroupPanel';
-import QuestionJsonEditor from './QuestionJsonEditor';
+import QueryJsonEditor from './QueryJsonEditor';
 
 import useNewQuestionPanel from './useNewQuestionPanel';
 
@@ -143,21 +143,13 @@ export default function QuestionGraphViewContainer(props) {
         onQuestionUpdated={(updated_q) => questionStore.updateQueryGraph(updated_q)}
         panelStore={panelStore}
       />
-      <Modal
-        bsSize="large"
-        aria-labelledby="contained-modal-title-lg"
+      <QueryJsonEditor
         show={showJsonEditor}
-        dialogClassName="question-editor-modal"
-      >
-        <Modal.Body>
-          <QuestionJsonEditor
-            height={700}
-            questionStore={questionStore}
-            callbackSave={saveJsonEditor}
-            callbackCancel={() => toggleJsonEditor(!showJsonEditor)}
-          />
-        </Modal.Body>
-      </Modal>
+        height={500}
+        questionStore={questionStore}
+        callbackSave={saveJsonEditor}
+        close={() => toggleJsonEditor(!showJsonEditor)}
+      />
     </div>
   );
 }
