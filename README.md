@@ -4,22 +4,46 @@
 A friendly interface for users to create, upload, ask, and view biomedical questions and answers.
 
 ## Development
+
+### Setup
+
+1. Clone this repository locally.
+1. Install the following dependencies.
+    * [Docker](https://docs.docker.com/get-docker/)
+    * [Docker Compose](https://docs.docker.com/compose/install/)
+    * [Python 3](https://www.python.org/downloads/)
+    * Click library - Run `pip install click` once you have Python set up
+1. Github Container Registry (where the Robokache image is stored) requires an access token to pull images. Create a [Github Access Token](https://github.com/settings/tokens). This token only needs the `read:packages` permission.
+1. Use the `docker login` command to register that token on your local machine: 
+		```bash
+		echo "<token>" | docker login docker.pkg.github.com --username <github_username> --password-stdin
+		```
+
+### Run
+
+The recommended way to run a local development environment is using the `manage.py` script: 
 ```bash
-npm install
-npm start
+python3 manage.py dev
 ```
-You must also run [Robokache](https://github.com/NCATS-Gamma/robokache)
 
-Then just open http://lvh.me/
+You may also directly invoke docker-compose with the following command:
 
-*Note: localhost will not work, due to CORS browser issues.*
+```bash
+docker-compose -f docker-compose.base.yml -f docker-compose.dev.yml up --build
+```
 
 ## Deployment
-All services are run in Docker Containers
+
+Deploy using the following command (recommended):
 ```bash
-docker-compose up
+docker-compose -f docker-compose.base.yml -f docker-compose.prod.yml up --build --renew-anon-volumes --abort-on-container-exit
 ```
-*See DEPLOYMENT.md for instructions pertaining to Robokache deployment.*
+
+You may also use the management script (not recommended for actual deployment but may be useful for local testing of the production environment):
+
+```bash
+python3 manage.py local-prod
+```
 
 ## Contributing
 
