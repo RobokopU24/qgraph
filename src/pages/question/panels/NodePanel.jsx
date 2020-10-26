@@ -159,7 +159,7 @@ export default function NodePanel({ panelStore }) {
     );
   }
   // When node panel mounts get concepts
-  useEffect(() => { updateConceptList(); }, []);
+  useEffect(() => { updateConceptList(); }, [biolink]);
 
   async function fetchCuries(newSearchTerm) {
     // Get and update list of curies
