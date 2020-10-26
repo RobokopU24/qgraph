@@ -14,4 +14,4 @@ RUN npm install
 COPY . .
 
 # Set the server to hot reload on code changes
-CMD npm run hot-reload
+CMD npm run start
