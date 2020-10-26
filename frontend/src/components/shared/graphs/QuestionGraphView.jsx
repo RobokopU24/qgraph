@@ -141,7 +141,12 @@ export default function QuestionGraphView(props) {
     const nodeTypeColorMap = getNodeTypeColorMap(config.concepts);
 
     graph.nodes.forEach((n) => {
-      const backgroundColor = nodeTypeColorMap(n.type);
+      let backgroundColor;
+      if (Array.isArray(n.type)) {
+        backgroundColor = nodeTypeColorMap(n.type[0]);
+      } else {
+        backgroundColor = nodeTypeColorMap(n.type);
+      }
       n.color = {
         border: '#000000',
         background: backgroundColor,
