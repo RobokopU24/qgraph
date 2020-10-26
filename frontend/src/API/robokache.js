@@ -1,13 +1,7 @@
 const axios = require('axios');
 const handleAxiosError = require('./utils');
 
-let base_url;
-
-if (process.env.NODE_ENV === 'development') {
-  base_url = 'http://lvh.me:8080/api/';
-} else {
-  base_url = `${window.location.origin}/api/robokache/`;
-}
+let base_url = `${window.location.origin}/api/robokache/`;
 
 // Base request method for all endpoints
 async function baseRequest(path, method, body, token) {
