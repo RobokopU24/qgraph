@@ -11,8 +11,10 @@ A friendly interface for users to create, upload, ask, and view biomedical quest
 1. Install the following dependencies.
     * [Docker](https://docs.docker.com/get-docker/)
     * [Docker Compose](https://docs.docker.com/compose/install/)
-    * [Python 3](https://www.python.org/downloads/)
-    * Click library - Run `pip install click` once you have Python set up
+    * Optional to use management script:
+		* Install [Node.js](https://nodejs.org/)
+		* Run `npm install`
+
 1. Github Container Registry (where the Robokache image is stored) requires an access token to pull images. Create a [Github Access Token](https://github.com/settings/tokens). This token only needs the `read:packages` permission.
 1. Use the `docker login` command to register that token on your local machine: 
 		```bash
@@ -21,9 +23,9 @@ A friendly interface for users to create, upload, ask, and view biomedical quest
 
 ### Run
 
-The recommended way to run a local development environment is using the `manage.py` script: 
+The recommended way to run a local development environment is using the `manage.js` script: 
 ```bash
-python3 manage.py dev
+node manage.js dev
 ```
 
 You may also directly invoke docker-compose with the following command:
@@ -42,7 +44,7 @@ docker-compose -f docker-compose.base.yml -f docker-compose.prod.yml up --build 
 You may also use the management script (not recommended for actual deployment but may be useful for local testing of the production environment):
 
 ```bash
-python3 manage.py local-prod
+node manage.js local-prod
 ```
 
 ## Contributing
