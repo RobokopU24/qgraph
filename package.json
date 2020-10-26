@@ -1,0 +1,25 @@
+{
+  "name": "manage",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Management script for automating robokop dev commands",
+  "main": "manage.js",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "yargs": "^16.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NCATS-Gamma/robokop-rewrite.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NCATS-Gamma/robokop-rewrite/issues"
+  },
+  "homepage": "https://github.com/NCATS-Gamma/robokop-rewrite#readme"
+}
