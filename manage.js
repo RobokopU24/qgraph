@@ -54,6 +54,17 @@ yargs(hideBin(process.argv))
     },
   })
 
+  .command({
+    command: 'test',
+    describe: 'Runs tests through docker-compose and exits',
+    handler: () => {
+      runCommand(`
+        ${baseCommand} -f docker-compose.test.yml
+        up --build --renew-anon-volumes --abort-on-container-exit
+      `);
+    },
+  })
+
   .showHelpOnFail()
   .demandCommand()
   .strict()
