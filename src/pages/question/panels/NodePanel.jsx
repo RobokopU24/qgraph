@@ -123,7 +123,6 @@ export default function NodePanel({ panelStore, biolink }) {
   }
 
   function updateConceptList() {
-    const spacesToSnakeCase = (str) => str.replaceAll(' ', '_').toLowerCase();
     const setify = (name) => `Set of ${name}s`;
 
     if (!biolink) {
@@ -132,7 +131,7 @@ export default function NodePanel({ panelStore, biolink }) {
     const validConcepts = biolinkUtils.getValidConcepts(biolink);
     const conceptsFormatted = Object.keys(validConcepts).map(
       (identifier) => ({
-        type: spacesToSnakeCase(identifier),
+        type: biolinkUtils.snakeCase(identifier),
         name: entityNameDisplay(identifier),
         set: false,
       }),

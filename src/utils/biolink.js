@@ -1,17 +1,29 @@
 import _ from 'lodash';
 
-const standardizeCase = (str) => str && str.replaceAll(' ', '_').toLowerCase();
+/*
+ * Convert string to snake case by lowercase-ing and replacing
+ * spaces with underscores.
+*/
+const snakeCase = (str) => str && str.replaceAll(' ', '_').toLowerCase();
 
+/*
+ * Given a biolink class build a list of parent classes
+ * Ex: Given 'gene' as an input this function will return: 
+ *
+ * [ "gene", "gene_or_gene_product", "macromolecular_machine",
+ *   "genomic_entity", "molecular_entity", "biological_entity", 
+ *   "named_thing" ]
+*/
 function getHierarchy(biolink, className) {
   const standardizedClassDictionary = _.transform(biolink.classes,
-    (result, value, key) => { result[standardizeCase(key)] = value; });
+    (result, value, key) => { result[snakeCase(key)] = value; });
 
-  const hierarchy = [standardizeCase(className)];
+  const hierarchy = [snakeCase(className)];
   // Repeat until we hit the bottom of the hierarchy
   while (standardizedClassDictionary[hierarchy[hierarchy.length - 1]] &&
     standardizedClassDictionary[hierarchy[hierarchy.length - 1]].is_a) {
     hierarchy.push(
-      standardizeCase(
+      snakeCase(
         standardizedClassDictionary[hierarchy[hierarchy.length - 1]].is_a,
       ),
     );
@@ -30,7 +42,7 @@ function getValidConcepts(biolink) {
 }
 
 export default {
-  standardizeCase,
+  snakeCase,
   getHierarchy,
   getValidConcepts,
 };

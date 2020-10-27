@@ -32,9 +32,9 @@ export default function EdgePanel(props) {
     }
     return Object.entries(biolink.slots).map(
       ([identifier, predicate]) => ({
-        name: biolinkUtils.standardizeCase(identifier),
-        domain: biolinkUtils.standardizeCase(predicate.domain),
-        range: biolinkUtils.standardizeCase(predicate.range),
+        name: biolinkUtils.snakeCase(identifier),
+        domain: biolinkUtils.snakeCase(predicate.domain),
+        range: biolinkUtils.snakeCase(predicate.range),
       }),
     );
   }
