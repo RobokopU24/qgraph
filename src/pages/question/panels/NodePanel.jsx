@@ -1,5 +1,5 @@
 import React, {
-  useEffect, useRef, useCallback, useContext, useState,
+  useEffect, useRef, useCallback, useContext
 } from 'react';
 import {
   FormControl, Button, Badge, InputGroup, Glyphicon,
@@ -23,10 +23,9 @@ import NodeProperties from './NodeProperties';
  * Node Panel
  * @param {Object} panelStore panel custom hook
  */
-export default function NodePanel({ panelStore }) {
+export default function NodePanel({ panelStore, biolink }) {
   const input = useRef(null);
   const { node } = panelStore;
-  const [biolink, setBiolink] = useState(null);
 
   const displayAlert = useContext(AlertContext);
 
@@ -122,17 +121,6 @@ export default function NodePanel({ panelStore }) {
       </div>
     );
   }
-
-  async function fetchBiolink() {
-    const response = await API.biolink.getModelSpecification();
-    if (response.status === 'error') {
-      displayAlert('error',
-        'Failed to contact server to download biolink model. You will not be able to select concepts. Please try again later');
-      return;
-    }
-    setBiolink(response);
-  }
-  useEffect(() => { fetchBiolink(); }, []);
 
   function updateConceptList() {
     const spacesToSnakeCase = (str) => str.replaceAll(' ', '_').toLowerCase();

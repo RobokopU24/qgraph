@@ -1,8 +1,5 @@
-import React, { useEffect, useMemo, useState, useContext } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import _ from 'lodash';
-
-import API from '@/API';
-import AlertContext from '@/context/alert';
 
 import {
   Form, Col, Glyphicon, Badge, Button,
@@ -25,23 +22,8 @@ const listItem = ({ item }) => (
 
 export default function EdgePanel(props) {
   const predicateStatus = usePageStatus(false);
-  const { panelStore } = props;
+  const { panelStore, biolink } = props;
   const { edge } = panelStore;
-
-  const [biolink, setBiolink] = useState(null);
-
-  const displayAlert = useContext(AlertContext);
-
-  async function fetchBiolink() {
-    const response = await API.biolink.getModelSpecification();
-    if (response.status === 'error') {
-      displayAlert('error',
-        'Failed to contact server to download biolink model. You will not be able to select predicates. Please try again later');
-      return;
-    }
-    setBiolink(response);
-  }
-  useEffect(() => { fetchBiolink(); }, []);
 
   // Build a list of formatted predicates
   function getPredicateList() {

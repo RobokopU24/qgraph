@@ -1,9 +1,12 @@
 import React, {
-  useState, useEffect, useMemo, useCallback,
+  useState, useEffect, useMemo, useContext
 } from 'react';
 import { FaSpinner, FaPlusSquare } from 'react-icons/fa';
 import { Modal, Button } from 'react-bootstrap';
+
 import queryGraphUtils from '@/utils/queryGraph';
+import API from '@/API';
+import AlertContext from '@/context/alert';
 
 import QuestionGraphView from '../../../components/shared/graphs/QuestionGraphView';
 import NewQuestionPanelModal from '../panels/NewQuestionPanelModal';
@@ -36,6 +39,21 @@ export default function QuestionGraphViewContainer(props) {
   const { questionStore, height = getHeight(), width = '100%' } = props;
   const [showJsonEditor, toggleJsonEditor] = useState(false);
   const panelStore = useNewQuestionPanel();
+  const [biolink, setBiolink] = useState(null);
+
+  // Load biolink when this component renders
+  const displayAlert = useContext(AlertContext);
+  async function fetchBiolink() {
+    const response = await API.biolink.getModelSpecification();
+    if (response.status === 'error') {
+      displayAlert('error',
+        'Failed to contact server to download biolink model. You will not be able to select predicates. Please try again later');
+      return;
+    }
+    setBiolink(response);
+  }
+  useEffect(() => { fetchBiolink(); }, []);
+
 
   function graphClickCallback(data) {
     if (data.nodes.length > 0) {
@@ -142,6 +160,7 @@ export default function QuestionGraphViewContainer(props) {
       <NewQuestionPanelModal
         onQuestionUpdated={(updated_q) => questionStore.updateQueryGraph(updated_q)}
         panelStore={panelStore}
+        biolink={biolink}
       />
       <Modal
         bsSize="large"
