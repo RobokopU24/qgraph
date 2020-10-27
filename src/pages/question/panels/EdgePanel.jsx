@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useMemo, useState, useContext } from 'react';
 import _ from 'lodash';
 
 import API from '@/API';
@@ -56,7 +56,8 @@ export default function EdgePanel(props) {
       }),
     );
   }
-  const predicateList = getPredicateList() || [];
+
+  const predicateList = useMemo(getPredicateList, [biolink]) || [];
 
   // Filter predicates by the nodes given
   function getFilteredPredicateList() {
