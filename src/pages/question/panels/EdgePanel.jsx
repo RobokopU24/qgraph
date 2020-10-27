@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useContext } from 'react';
 import _ from 'lodash';
 
 import {
@@ -10,6 +10,7 @@ import { Multiselect, DropdownList } from 'react-widgets';
 import entityNameDisplay from '@/utils/entityNameDisplay';
 import usePageStatus from '@/utils/usePageStatus';
 import biolinkUtils from '@/utils/biolink';
+import BiolinkContext from '@/context/biolink';
 
 const listItem = ({ item }) => (
   <div className="listItem">
@@ -22,8 +23,10 @@ const listItem = ({ item }) => (
 
 export default function EdgePanel(props) {
   const predicateStatus = usePageStatus(false);
-  const { panelStore, biolink } = props;
+  const { panelStore } = props;
   const { edge } = panelStore;
+
+  const biolink = useContext(BiolinkContext);
 
   // Build a list of formatted predicates
   function getPredicateList() {

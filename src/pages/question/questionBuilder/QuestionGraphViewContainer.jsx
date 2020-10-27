@@ -39,22 +39,6 @@ export default function QuestionGraphViewContainer(props) {
   const { questionStore, height = getHeight(), width = '100%' } = props;
   const [showJsonEditor, toggleJsonEditor] = useState(false);
   const panelStore = useNewQuestionPanel();
-  const [biolink, setBiolink] = useState(null);
-
-  // Load biolink when this component renders
-  const displayAlert = useContext(AlertContext);
-  async function fetchBiolink() {
-    const response = await API.biolink.getModelSpecification();
-    if (response.status === 'error') {
-      displayAlert('error',
-        'Failed to contact server to download biolink model. You will not be able to select predicates. Please try again later');
-      return;
-    }
-    setBiolink(response);
-  }
-  useEffect(() => { fetchBiolink(); }, []);
-
-
   function graphClickCallback(data) {
     if (data.nodes.length > 0) {
       // const clickedNode = questionStore.getNode(data.nodes[0]);
@@ -160,7 +144,6 @@ export default function QuestionGraphViewContainer(props) {
       <NewQuestionPanelModal
         onQuestionUpdated={(updated_q) => questionStore.updateQueryGraph(updated_q)}
         panelStore={panelStore}
-        biolink={biolink}
       />
       <Modal
         bsSize="large"

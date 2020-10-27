@@ -19,13 +19,17 @@ import biolinkUtils from '@/utils/biolink';
 import getNodeTypeColorMap from '../../../utils/colorUtils';
 import NodeProperties from './NodeProperties';
 
+import BiolinkContext from '@/context/biolink';
+
 /**
  * Node Panel
  * @param {Object} panelStore panel custom hook
  */
-export default function NodePanel({ panelStore, biolink }) {
+export default function NodePanel({ panelStore }) {
   const input = useRef(null);
   const { node } = panelStore;
+
+  const biolink = useContext(BiolinkContext);
 
   const displayAlert = useContext(AlertContext);
 

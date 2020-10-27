@@ -16,7 +16,7 @@ import config from '../../../config.json';
  * Modal for creation of a new node or edge
  * @param {Object} panelStore new question panel custom hook
  */
-export default function NewQuestionPanelModal({ panelStore, onQuestionUpdated, biolink }) {
+export default function NewQuestionPanelModal({ panelStore, onQuestionUpdated }) {
   /**
    * Get the panel background color
    * @param {Boolean} isNodePanel is panel of type node
@@ -63,9 +63,9 @@ export default function NewQuestionPanelModal({ panelStore, onQuestionUpdated, b
       </Modal.Header>
       <Modal.Body style={{ minHeight: 300 }}>
         {isNodePanel ? (
-          <NodePanel biolink={biolink} panelStore={panelStore} />
+          <NodePanel panelStore={panelStore} />
         ) : (
-          <EdgePanel biolink={biolink} panelStore={panelStore} />
+          <EdgePanel panelStore={panelStore} />
         )}
       </Modal.Body>
       <Modal.Footer>
