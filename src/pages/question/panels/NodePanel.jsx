@@ -130,8 +130,8 @@ export default function NodePanel({ panelStore, biolink }) {
       return;
     }
     const validConcepts = biolinkUtils.getValidConcepts(biolink);
-    const conceptsFormatted = Object.entries(validConcepts).map(
-      ([identifier, concept]) => ({
+    const conceptsFormatted = Object.keys(validConcepts).map(
+      (identifier) => ({
         type: spacesToSnakeCase(identifier),
         name: entityNameDisplay(identifier),
         set: false,

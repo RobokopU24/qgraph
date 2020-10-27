@@ -77,9 +77,8 @@ export default function useNodePanels() {
   function updateFilteredConcepts(value) {
     // Convert name to lowercase before searching
     const newFilteredConcepts = concepts
-      .map((c) => ({ ...c, name: c.name.toLowerCase() }))
       .filter(
-        (concept) => concept.name.includes(value.toLowerCase()),
+        (concept) => concept.name.toLowerCase().includes(value.toLowerCase()),
       );
     setFilteredConcepts(newFilteredConcepts);
   }
