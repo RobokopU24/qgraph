@@ -5,8 +5,6 @@ import { FaSpinner, FaPlusSquare } from 'react-icons/fa';
 import { Modal, Button } from 'react-bootstrap';
 
 import queryGraphUtils from '@/utils/queryGraph';
-import API from '@/API';
-import AlertContext from '@/context/alert';
 
 import QuestionGraphView from '../../../components/shared/graphs/QuestionGraphView';
 import NewQuestionPanelModal from '../panels/NewQuestionPanelModal';

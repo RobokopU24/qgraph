@@ -1,5 +1,5 @@
 import React, {
-  useEffect, useRef, useCallback, useContext
+  useEffect, useRef, useCallback, useContext,
 } from 'react';
 import {
   FormControl, Button, Badge, InputGroup, Glyphicon,
@@ -13,13 +13,14 @@ import shortid from 'shortid';
 import AlertContext from '@/context/alert';
 import API from '@/API';
 
+import BiolinkContext from '@/context/biolink';
 import entityNameDisplay from '@/utils/entityNameDisplay';
 import curieUrls from '@/utils/curieUrls';
 import biolinkUtils from '@/utils/biolink';
-import getNodeTypeColorMap from '../../../utils/colorUtils';
+import getNodeTypeColorMap from '@/utils/colorUtils';
+
 import NodeProperties from './NodeProperties';
 
-import BiolinkContext from '@/context/biolink';
 
 /**
  * Node Panel
@@ -147,10 +148,10 @@ export default function NodePanel({ panelStore }) {
     }));
 
     // Merge concepts with sets interleaved
-    // so that they show up in the list in the 
+    // so that they show up in the list in the
     // right order
     const combinedConcepts = conceptsFormatted.map(
-      (c, i) => [c, conceptsSetified[i]] ).flat();
+      (c, i) => [c, conceptsSetified[i]]).flat();
 
     node.setConcepts(combinedConcepts);
   }
