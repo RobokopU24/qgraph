@@ -142,9 +142,14 @@ export default function NodePanel({ panelStore, biolink }) {
       name: setify(c.name),
       set: true,
     }));
-    node.setConcepts(
-      [...conceptsFormatted, ...conceptsSetified],
-    );
+
+    // Merge concepts with sets interleaved
+    // so that they show up in the list in the 
+    // right order
+    const combinedConcepts = conceptsFormatted.map(
+      (c, i) => [c, conceptsSetified[i]] ).flat();
+
+    node.setConcepts(combinedConcepts);
   }
   // When node panel mounts get concepts
   useEffect(() => { updateConceptList(); }, [biolink]);
