@@ -159,15 +159,35 @@ export default function NodePanel({ panelStore }) {
   useEffect(() => { updateConceptList(); }, [biolink]);
 
   async function fetchCuries(newSearchTerm) {
-    // Get and update list of curies
-    const response = await API.ranker.entityLookup(newSearchTerm);
-    if (response.status === 'error' || !_.isArray(response)) {
+    // Get list of curies that match this search term
+    let response = await API.nameResolver.entityLookup(newSearchTerm, 1000);
+    if (response.status === 'error') {
       displayAlert('error',
-        'Failed to contact server to search curies. You will still be able to select generic types. Please try again later');
-    } else {
-      node.updateCuries(response);
+        'Failed to contact name resolver to search curies. You will still be able to select generic types. Please try again later');
+      node.setLoading(false);
+      return;
     }
-    node.setLoading(false);
+    const curies = Object.keys(response);
+
+    // Pass curies to nodeNormalizer to get type information and 
+    // a better curie identifier
+    response = await API.nodeNormalization.getNormalizedNodes(curies);
+    if (response.status === 'error') {
+      displayAlert('error',
+        'Failed to contact node normalizer to search curies. You will still be able to select generic types. Please try again later');
+      node.setLoading(false);
+      return;
+    }
+    const curiesWithInfo = response;
+
+    node.updateCuries(
+      Object.values(curiesWithInfo).map( (c) => ({
+          name: c.id.label,
+          type: c.type[0],
+          curie: c.id.identifier,
+        })
+      )
+    );
   }
 
   // Create a debounced version that persists on renders
