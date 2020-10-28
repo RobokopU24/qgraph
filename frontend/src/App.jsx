@@ -20,6 +20,7 @@ import AlertWrapper from '@/components/AlertWrapper';
 import { ThemeProvider } from '@material-ui/core/styles';
 import theme from '@/theme';
 import API from '@/API';
+window.API = API;
 
 import UserContext from '@/context/user';
 import AlertContext from '@/context/alert';
