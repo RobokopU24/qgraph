@@ -13,10 +13,14 @@ import shortid from 'shortid';
 import AlertContext from '@/context/alert';
 import API from '@/API';
 
-import entityNameDisplay from '../../../utils/entityNameDisplay';
-import curieUrls from '../../../utils/curieUrls';
-import getNodeTypeColorMap from '../../../utils/colorUtils';
+import BiolinkContext from '@/context/biolink';
+import entityNameDisplay from '@/utils/entityNameDisplay';
+import curieUrls from '@/utils/curieUrls';
+import biolinkUtils from '@/utils/biolink';
+import getNodeTypeColorMap from '@/utils/colorUtils';
+
 import NodeProperties from './NodeProperties';
+
 
 /**
  * Node Panel
@@ -25,6 +29,8 @@ import NodeProperties from './NodeProperties';
 export default function NodePanel({ panelStore }) {
   const input = useRef(null);
   const { node } = panelStore;
+
+  const biolink = useContext(BiolinkContext);
 
   const displayAlert = useContext(AlertContext);
 
@@ -120,6 +126,37 @@ export default function NodePanel({ panelStore }) {
       </div>
     );
   }
+
+  function updateConceptList() {
+    const setify = (name) => `Set of ${name}s`;
+
+    if (!biolink) {
+      return;
+    }
+    const validConcepts = biolinkUtils.getValidConcepts(biolink);
+    const conceptsFormatted = Object.keys(validConcepts).map(
+      (identifier) => ({
+        type: biolinkUtils.snakeCase(identifier),
+        name: entityNameDisplay(identifier),
+        set: false,
+      }),
+    );
+    const conceptsSetified = conceptsFormatted.map((c) => ({
+      ...c,
+      name: setify(c.name),
+      set: true,
+    }));
+
+    // Merge concepts with sets interleaved
+    // so that they show up in the list in the
+    // right order
+    const combinedConcepts = conceptsFormatted.map(
+      (c, i) => [c, conceptsSetified[i]]).flat();
+
+    node.setConcepts(combinedConcepts);
+  }
+  // When node panel mounts get concepts
+  useEffect(() => { updateConceptList(); }, [biolink]);
 
   async function fetchCuries(newSearchTerm) {
     // Get and update list of curies

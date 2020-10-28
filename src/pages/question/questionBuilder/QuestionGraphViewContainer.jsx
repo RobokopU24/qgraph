@@ -1,8 +1,9 @@
 import React, {
-  useState, useEffect, useMemo, useCallback,
+  useState, useEffect, useMemo, useContext
 } from 'react';
 import { FaSpinner, FaPlusSquare } from 'react-icons/fa';
 import { Modal, Button } from 'react-bootstrap';
+
 import queryGraphUtils from '@/utils/queryGraph';
 
 import QuestionGraphView from '../../../components/shared/graphs/QuestionGraphView';
@@ -36,7 +37,6 @@ export default function QuestionGraphViewContainer(props) {
   const { questionStore, height = getHeight(), width = '100%' } = props;
   const [showJsonEditor, toggleJsonEditor] = useState(false);
   const panelStore = useNewQuestionPanel();
-
   function graphClickCallback(data) {
     if (data.nodes.length > 0) {
       // const clickedNode = questionStore.getNode(data.nodes[0]);
