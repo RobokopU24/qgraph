@@ -21,7 +21,6 @@ import getNodeTypeColorMap from '@/utils/colorUtils';
 
 import NodeProperties from './NodeProperties';
 
-
 /**
  * Node Panel
  * @param {Object} panelStore panel custom hook
@@ -151,7 +150,8 @@ export default function NodePanel({ panelStore }) {
     // so that they show up in the list in the
     // right order
     const combinedConcepts = conceptsFormatted.map(
-      (c, i) => [c, conceptsSetified[i]]).flat();
+      (c, i) => [c, conceptsSetified[i]],
+    ).flat();
 
     node.setConcepts(combinedConcepts);
   }
@@ -160,7 +160,7 @@ export default function NodePanel({ panelStore }) {
 
   async function fetchCuries(newSearchTerm) {
     // Get list of curies that match this search term
-    let response = await API.nameResolver.entityLookup(newSearchTerm, 1000);
+    const response = await API.nameResolver.entityLookup(newSearchTerm, 1000);
     if (response.status === 'error') {
       displayAlert('error',
         'Failed to contact name resolver to search curies. You will still be able to select generic types. Please try again later');
@@ -169,25 +169,50 @@ export default function NodePanel({ panelStore }) {
     }
     const curies = Object.keys(response);
 
-    // Pass curies to nodeNormalizer to get type information and 
+    // Pass curies to nodeNormalizer to get type information and
     // a better curie identifier
-    response = await API.nodeNormalization.getNormalizedNodes(curies);
-    if (response.status === 'error') {
+    //
+    // Right now curies are in the URL so we need to split it so we don't
+    // hit maximum URL length
+    //
+    // Assume curies are 20 characters pessimistically so we don't hit limits
+    // Split curies into chunks of 50
+    // 50 curies * (20 char + 7 extra) = 1350 characters
+    // 1350 is well under the recommended maxmium length of URLs
+
+    const chunkSize = 50;
+    const curiesChunked = _.chunk(curies, chunkSize);
+
+    const normalizationAPICallResponses = await Promise.all(
+      curiesChunked.map((cs) => API.nodeNormalization.getNormalizedNodes(cs)),
+    );
+
+    // Fail if there are any errors
+    let nodeNormalizerError = null;
+    normalizationAPICallResponses.forEach((r) => {
+      if (r.status === 'error') {
+        nodeNormalizerError = r;
+      }
+    });
+
+    if (nodeNormalizerError === 'error') {
       displayAlert('error',
         'Failed to contact node normalizer to search curies. You will still be able to select generic types. Please try again later');
       node.setLoading(false);
       return;
     }
-    const curiesWithInfo = response;
+
+    const curiesWithInfo = {};
+    normalizationAPICallResponses.forEach((r) => Object.assign(curiesWithInfo, r));
 
     node.updateCuries(
-      Object.values(curiesWithInfo).map( (c) => ({
-          name: c.id.label,
-          type: c.type[0],
-          curie: c.id.identifier,
-        })
-      )
+      Object.values(curiesWithInfo).filter((c) => c).map((c) => ({
+        name: c.id.label || c.id.identifier,
+        type: c.type[0],
+        curie: c.id.identifier,
+      })),
     );
+    node.setLoading(false);
   }
 
   // Create a debounced version that persists on renders

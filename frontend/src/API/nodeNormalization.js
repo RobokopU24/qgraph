@@ -12,7 +12,7 @@ const baseRoutes = {
     // which is not supported by axios
     // so we build this with URLSearchParams
     const params = new URLSearchParams();
-    curies.forEach((c) => params.append('curie', c))
+    curies.forEach((c) => params.append('curie', c));
 
     const config = {
       url: `${baseUrl}/get_normalized_nodes`,
