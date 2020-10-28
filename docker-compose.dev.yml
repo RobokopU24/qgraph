@@ -1,0 +1,12 @@
+version: '3.5'
+
+services:
+  frontend:
+    build:
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./frontend:/app
+      # Mount this in an anonymous volume so that the locally available node_modules
+      # doesn't conflict with the one in the container
+      - /app/node_modules
+    command: $FRONTEND_COMMAND
