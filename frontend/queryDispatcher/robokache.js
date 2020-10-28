@@ -1,14 +1,12 @@
 const axios = require('axios');
 const handleAxiosError = require('./utils');
 
-const protocol = 'http';
-const host = process.env.ROBOKACHE_HOST || 'lvh.me';
-const port = 8080;
-
-const base_url = `${protocol}://${host}:${port}/api/`;
+const base_url = `http://robokache/api/`;
 
 const baseRoutes = {
   async getDocumentData(doc_id, token) {
+    console.log("Getting doc data");
+    console.log(`${base_url}document/${doc_id}/data`)
     const config = {
       url: `${base_url}document/${doc_id}/data`,
       method: 'GET',
@@ -22,6 +20,7 @@ const baseRoutes = {
       const response = await axios(config);
       return response.data;
     } catch (error) {
+	  console.log(error);
       return handleAxiosError(error);
     }
   },
