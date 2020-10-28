@@ -173,15 +173,24 @@ export default function NodePanel({ panelStore }) {
     // a better curie identifier
     //
     // Right now curies are in the URL so we need to split it so we don't
-    // hit maximum URL length
-    //
-    // Assume curies are 20 characters pessimistically so we don't hit limits
-    // Split curies into chunks of 50
-    // 50 curies * (20 char + 7 extra) = 1350 characters
-    // 1350 is well under the recommended maxmium length of URLs
+    // hit maximum URL length of the server
 
-    const chunkSize = 50;
-    const curiesChunked = _.chunk(curies, chunkSize);
+    // Based on experimentation, the max URL length is around 7000 characters
+    // Higher values are faster, so we want to set this as high as possible
+    const maxUrlLength = 7000;
+
+    // Iterate over each curie chunking based on the length that the URL will be
+    const curiesChunked = [[]];
+    curies.forEach((c) => {
+      const existingArray = curiesChunked[curiesChunked.length - 1];
+      const existingLength = existingArray.join('&curie=').length;
+      const newLength = existingLength + c.length + '&curie='.length;
+      if (newLength < maxUrlLength) {
+        existingArray.push(c);
+      } else {
+        curiesChunked.push([c]);
+      }
+    });
 
     const normalizationAPICallResponses = await Promise.all(
       curiesChunked.map((cs) => API.nodeNormalization.getNormalizedNodes(cs)),
