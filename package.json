@@ -12,7 +12,9 @@
     "yargs": "^16.1.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+	  "dev"  : "node manage.js dev",
+	  "prod" : "node manage.js local-prod",
+	  "test" : "node manage.js test"
   },
   "repository": {
     "type": "git",
