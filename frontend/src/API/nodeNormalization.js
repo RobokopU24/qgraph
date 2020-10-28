@@ -1,7 +1,7 @@
 import axios from 'axios';
 import handleAxiosError from './utils';
 
-const baseUrl = 'https://nodenormalization-sri.renci.org';
+const baseUrl = `${window.location.origin}/api/external/nodeNormalization`;
 
 const baseRoutes = {
   /**
