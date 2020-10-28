@@ -1,14 +1,7 @@
 module.exports = {
   presets: [
-    "@babel/preset-react",
-    ['@babel/preset-env', {
-      targets: {
-        node: 'current',
-        esmodules: false,
-      },
-      modules: 'commonjs',
-      debug: true,
-    }],
+    '@babel/preset-env',
+    '@babel/preset-react',
   ],
   plugins: [
     ["@babel/plugin-proposal-decorators", { "legacy": true }],

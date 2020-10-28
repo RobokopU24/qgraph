@@ -84,22 +84,10 @@
     "build": "webpack --watch --config webpack.dev.js",
     "hot-reload": "HOT_RELOAD=true node server.js",
     "webpackProd": "webpack --mode=production --config webpack.prod.js",
-    "test": "jest --debug"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/ncats-gamma/robokop.git"
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "jsx"
-    ],
-    "moduleDirectories": [
-      "node_modules"
-    ],
-    "moduleNameMapper": {
-      "^@": "<rootDir>/src"
-    }
   }
 }
