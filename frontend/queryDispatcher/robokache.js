@@ -5,8 +5,6 @@ const base_url = `http://robokache/api/`;
 
 const baseRoutes = {
   async getDocumentData(doc_id, token) {
-    console.log("Getting doc data");
-    console.log(`${base_url}document/${doc_id}/data`)
     const config = {
       url: `${base_url}document/${doc_id}/data`,
       method: 'GET',
