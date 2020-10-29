@@ -35,8 +35,12 @@ export default function StoredAnswersetView({ question_id, answer_id }) {
       return;
     }
 
+    const questionResponseJSON = JSON.parse(questionResponse);
+    const answerResponseJSON = JSON.parse(answerResponse);
+
     const message =
-      { ...questionResponse, ...answerResponse };
+      { ...questionResponseJSON, ...answerResponseJSON };
+    console.log(message);
 
     try {
       const parsedMessage = parseMessage(message);
