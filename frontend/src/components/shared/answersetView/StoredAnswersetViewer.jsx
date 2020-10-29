@@ -36,7 +36,7 @@ export default function StoredAnswersetView({ question_id, answer_id }) {
     }
 
     const message =
-      { ...answerResponse, query_graph: questionResponse };
+      { ...questionResponse, ...answerResponse };
 
     try {
       const parsedMessage = parseMessage(message);

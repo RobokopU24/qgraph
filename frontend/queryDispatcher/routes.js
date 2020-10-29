@@ -15,14 +15,12 @@ router.route('/answer')
         console.log('Unable to get query graph.');
         return res.send(response);
       }
-      const query_graph = response;
+      const message = response;
       const config = {
         method: 'POST',
         url: `${messenger}/answer`,
         data: {
-          message: {
-            query_graph,
-          },
+          message,
         },
         // don't parse the response
         transformResponse: [(data) => data],
