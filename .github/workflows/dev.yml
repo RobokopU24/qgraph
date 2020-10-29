@@ -1,0 +1,26 @@
+name: 'Pull Request Feedback'
+
+on: pull_request
+
+jobs:
+    eslint:
+        name: Frontend ESLint
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout the repository
+              uses: actions/checkout@v2
+
+            - name: Build
+              run: (cd frontend/ && docker build -t frontend -f Dockerfile.dev .)
+
+            - name: Run ESLint and get summary
+              run: |
+                echo ::set-env name=ESLINT_SUMMARY::$(docker run frontend npm run --silent lint-summary)
+
+            - name: Report ESLint information as comment on pull request
+              uses: mshick/add-pr-comment@v1
+              with:
+                message: ${{ env.ESLINT_SUMMARY }}
+                repo-token: ${{ secrets.GITHUB_TOKEN }}
+                repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
+                allow-repeats: false # This is the default
