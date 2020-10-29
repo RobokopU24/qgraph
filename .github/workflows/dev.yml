@@ -16,7 +16,7 @@ jobs:
       - name: Run ESLint and get summary
         run: |
           echo 'ESLINT_SUMMARY<<EOF' >> $GITHUB_ENV
-          docker run frontend npm run --silent lint-summary >> $GITHUB_ENV
+          echo 'testing' >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
 
       - name: Report ESLint information as comment on pull request
