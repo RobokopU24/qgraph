@@ -16,9 +16,11 @@ jobs:
       - name: Run ESLint and get summary
         id: run_eslint
         run: |
-          echo 'ESLINT_SUMMARY<<CUSTOM_EOF' >> $GITHUB_ENV
-          docker run frontend npm run --silent lint >> $GITHUB_ENV
-          echo 'CUSTOM_EOF' >> $GITHUB_ENV
+          OUTPUT="$(docker run frontend npm run --silent lint)"
+          OUTPUT="${OUTPUT//'%'/'%25'}"
+          OUTPUT="${OUTPUT//$'\n'/'%0A'}"
+          OUTPUT="${OUTPUT//$'\r'/'%0D'}"
+          echo ::set-env ESLINT_SUMMARY=${OUTPUT}
 
       - name: Report ESLint information as comment on pull request
         uses: mshick/add-pr-comment@v1
