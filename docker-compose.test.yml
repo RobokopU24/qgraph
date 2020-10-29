@@ -3,5 +3,5 @@ version: '3.5'
 services:
   frontend:
     build:
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile.test
     command: npm run test
