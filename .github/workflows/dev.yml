@@ -14,6 +14,7 @@ jobs:
         run: (cd frontend/ && docker build -t frontend -f Dockerfile.dev .)
 
       - name: Run ESLint and get summary
+        id: run_eslint
         run: |
           echo 'ESLINT_SUMMARY<<CUSTOM_EOF' >> $GITHUB_ENV
           docker run frontend npm run --silent lint >> $GITHUB_ENV
