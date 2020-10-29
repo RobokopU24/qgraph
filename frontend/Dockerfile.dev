@@ -1,8 +1,12 @@
 # Build in the node.js image
 FROM node:latest as build-stage
 
-# Set locale 
+# Set locale
+RUN apt-get update
+RUN apt-get install -y locales locales-all
+ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
 
 # Create a folder to add the code to
 WORKDIR /app
