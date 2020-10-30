@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import _ from 'lodash';
 import queryGraphUtils from '@/utils/queryGraph';
 
 function getEmptyQueryGraph() {
@@ -13,7 +12,6 @@ export default function useQuestionStore() {
   // const [concepts, setConcepts] = useState([]);
   const [question_name, updateQuestionName] = useState('');
   const [query_graph, updateQueryGraph] = useState(queryGraphUtils.getEmptyGraph());
-  const [notes, updateNotes] = useState('');
   // const [graphState, updateGraphState] = useState(graphStates.empty);
   // const [graphState, updateGraphState] = useState('empty');
   // const [panelState, updatePanelState] = useState([]);
@@ -26,7 +24,6 @@ export default function useQuestionStore() {
   function resetQuestion() {
     updateQuestionName('');
     updateQueryGraph(queryGraphUtils.getEmptyGraph());
-    updateNotes('');
     // updateGraphState('empty');
     // updatePanelState([]);
     // setActivePanelInd(null);
