@@ -197,14 +197,11 @@ export default function NodePanel({ panelStore }) {
     );
 
     // Fail if there are any errors
-    let nodeNormalizerError = null;
-    normalizationAPICallResponses.forEach((r) => {
-      if (r.status === 'error') {
-        nodeNormalizerError = r;
-      }
-    });
+    const nodeNormalizerError = normalizationAPICallResponses.find(
+      (r) => !_.isObject(r) || r.status === 'error',
+    );
 
-    if (nodeNormalizerError === 'error') {
+    if (nodeNormalizerError) {
       displayAlert('error',
         'Failed to contact node normalizer to search curies. You will still be able to select generic types. Please try again later');
       node.setLoading(false);
@@ -214,6 +211,8 @@ export default function NodePanel({ panelStore }) {
     const curiesWithInfo = {};
     normalizationAPICallResponses.forEach((r) => Object.assign(curiesWithInfo, r));
 
+    // Sometimes the nodeNormalizer returns null responses
+    // so we use a filter to remove those
     node.updateCuries(
       Object.values(curiesWithInfo).filter((c) => c).map((c) => ({
         name: c.id.label || c.id.identifier,
