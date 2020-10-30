@@ -34,4 +34,4 @@ jobs:
           allow-repeats: true
 
       - name: Fail job if there are ESLint errors
-        run: [ -z "${{ env.ESLINT_OUTPUT }}" ] && exit 1
+        run: '[ -z "${{ env.ESLINT_OUTPUT }}" ] && exit 1'
