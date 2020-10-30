@@ -10,19 +10,25 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v2
 
+      # Cache docker layers for faster build
+      - uses: satackey/action-docker-layer-caching@v0.0.8
+        # Ignore the failure of a step and avoid terminating the job.
+        continue-on-error: true
+
       - name: Build
         run: (cd frontend/ && docker build -t frontend -f Dockerfile.dev .)
+        
 
-      - name: Run ESLint and get summary
+      - name: Run ESLint and get output
         run: |
-          echo 'ESLINT_SUMMARY<<EOF' >> $GITHUB_ENV
-          echo "$(docker run frontend npm run --silent lint-summary)" >> $GITHUB_ENV
+          echo 'ESLINT_OUTPUT<<EOF' >> $GITHUB_ENV
+          echo "$(docker run frontend npm run --silent lint)" >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
 
       - name: Report ESLint information as comment on pull request
         uses: mshick/add-pr-comment@v1
         with:
-          message: ${{ env.ESLINT_SUMMARY }}
+          message: ${{ env.ESLINT_OUTPUT }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
-          allow-repeats: false # This is the default
+          allow-repeats: true
