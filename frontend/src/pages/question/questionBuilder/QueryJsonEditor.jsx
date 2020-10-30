@@ -80,14 +80,20 @@ export default function QuestionJsonEditor(props) {
       fr.onload = (e) => {
         const fileContents = e.target.result;
         try {
-          let object = JSON.parse(fileContents);
-          // valid whole message
-          validateQueryGraph(object);
-          if (object.query_graph) {
-            object = object.query_graph;
+          let graph = JSON.parse(fileContents);
+
+          if (graph.query_graph) {
+            graph = graph.query_graph;
+          } else if (graph.question_graph) {
+            graph = graph.question_graph;
           }
+          if (graph.nodes && Array.isArray(graph.nodes)) {
+            graph = queryGraphUtils.convert.reasonerToInternal(graph);
+          }
+          console.log(graph);
+          validateQueryGraph(graph);
           // only store query_graph
-          updateQueryGraph(object);
+          updateQueryGraph(graph);
         } catch (err) {
           displayAlert('error', 'Failed to read this query graph. Are you sure this is valid json?');
         }
@@ -104,15 +110,12 @@ export default function QuestionJsonEditor(props) {
     updateQueryGraph(questionStore.query_graph);
   }, [questionStore.query_graph]);
 
-  const query_graph_list_format = useMemo(
-    () => {
-      if (!errorMessages.length) {
-        return queryGraphUtils.convert.internalToReasoner(queryGraph);
-      }
-      return queryGraphUtils.getEmptyGraph();
-    },
-    [queryGraph],
-  );
+  const query_graph_list_format = useMemo(() => {
+    if (!errorMessages.length) {
+      return queryGraphUtils.convert.internalToReasoner(queryGraph);
+    }
+    return queryGraphUtils.getEmptyGraph();
+  }, [queryGraph]);
 
   return (
     <Dialog
@@ -120,7 +123,7 @@ export default function QuestionJsonEditor(props) {
       fullWidth
       maxWidth="lg"
     >
-      <DialogTitle>
+      <DialogTitle style={{ padding: 0 }}>
         <div id="jsonEditorTitle">
           <div>
             <IconButton
@@ -150,15 +153,11 @@ export default function QuestionJsonEditor(props) {
               </IconButton>
             </label>
           </div>
-          <div
-            style={{
-              position: 'relative', color: '#777',
-            }}
-          >
+          <div style={{ color: '#777' }}>
             Query Graph JSON Editor
           </div>
           <IconButton
-            disabled={!errorMessages.length && !thinking}
+            disabled={errorMessages.length > 0 || thinking}
             style={{
               fontSize: '18px',
             }}
@@ -169,46 +168,52 @@ export default function QuestionJsonEditor(props) {
           </IconButton>
         </div>
       </DialogTitle>
-      <DialogContent style={{ minHeight: height, padding: 0 }} dividers>
-        <SplitPane
-          split="vertical"
-          minSize={300}
-          maxSize={-300}
-          defaultSize="50%"
-          style={{ height, borderTop: '1px solid grey' }}
-        >
-          <ReactJson
-            name={false}
-            theme="rjv-default"
-            collapseStringsAfterLength={15}
-            indentWidth={2}
-            iconStyle="triangle"
-            displayObjectSize={false}
-            displayDataTypes={false}
-            src={queryGraph}
-            onEdit={updateJson}
-            onAdd={updateJson}
-            onDelete={updateJson}
-          />
-          <>
-            {!errorMessages.length ? (
-              <QuestionGraphView
-                height={height}
-                concepts={config.concepts}
-                question={query_graph_list_format}
+      <DialogContent style={{ padding: 0 }}>
+        <div style={{ height, borderTop: '1px solid grey' }}>
+          <SplitPane
+            split="vertical"
+            minSize={300}
+            maxSize={-300}
+            defaultSize="50%"
+          >
+            <div style={{ overflowY: 'auto' }}>
+              <ReactJson
+                name={false}
+                theme="rjv-default"
+                collapseStringsAfterLength={15}
+                indentWidth={2}
+                iconStyle="triangle"
+                displayObjectSize={false}
+                displayDataTypes={false}
+                src={queryGraph}
+                onEdit={updateJson}
+                onAdd={updateJson}
+                onDelete={updateJson}
               />
-            ) : (
-              <>
-                <h4>
-                  This query graph is not valid.
-                </h4>
-                {errorMessages.map((err, i) => (
-                  <p key={i}>{err}</p>
-                ))}
-              </>
-            )}
-          </>
-        </SplitPane>
+            </div>
+            <>
+              {!errorMessages.length ? (
+                <QuestionGraphView
+                  height={height}
+                  concepts={config.concepts}
+                  question={query_graph_list_format}
+                  selectable
+                  interactable={false}
+                  graphClickCallback={() => {}}
+                />
+              ) : (
+                <>
+                  <h4>
+                    This query graph is not valid.
+                  </h4>
+                  {errorMessages.map((err, i) => (
+                    <p key={i}>{err}</p>
+                  ))}
+                </>
+              )}
+            </>
+          </SplitPane>
+        </div>
       </DialogContent>
     </Dialog>
   );
