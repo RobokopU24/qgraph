@@ -24,6 +24,8 @@ jobs:
           echo 'ESLINT_OUTPUT<<EOF' >> $GITHUB_ENV
           echo "$(docker run frontend npm run --silent lint)" >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
+          [ $(cat testing.txt | wc -l) -ne 3 ] && exit 1
+        continue-on-error: true
 
       - name: Report ESLint information as comment on pull request
         uses: mshick/add-pr-comment@v1
