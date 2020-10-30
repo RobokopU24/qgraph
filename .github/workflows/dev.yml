@@ -16,16 +16,16 @@ jobs:
       - name: Run ESLint and get summary
         id: run_eslint
         run: |
-          OUTPUT="$(docker run frontend npm run --silent lint)"
-          OUTPUT="${OUTPUT//'%'/'%25'}"
-          OUTPUT="${OUTPUT//$'\n'/'%0A'}"
-          OUTPUT="${OUTPUT//$'\r'/'%0D'}"
-          echo ::set-env ESLINT_SUMMARY=${OUTPUT}
+          docker run frontend npm run --silent lint >> eslint-output.txt
+
+          echo 'ESLINT_OUTPUT=EOF' >> $GITHUB_ENV
+          cat eslint-output.txt >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
 
       - name: Report ESLint information as comment on pull request
         uses: mshick/add-pr-comment@v1
         with:
-          message: ${{ env.ESLINT_SUMMARY }}
+          message: ${{ cat eslint-output.txt }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
           allow-repeats: false # This is the default
