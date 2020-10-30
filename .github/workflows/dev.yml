@@ -24,8 +24,6 @@ jobs:
           echo 'ESLINT_OUTPUT<<EOF' >> $GITHUB_ENV
           echo "$(docker run frontend npm run --silent lint)" >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
-          [ $(cat $GITHUB_ENV | wc -l) -ne 3 ] && exit 1
-        continue-on-error: true
 
       - name: Report ESLint information as comment on pull request
         uses: mshick/add-pr-comment@v1
@@ -34,3 +32,6 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
           allow-repeats: true
+
+      - name: Fail job if there are ESLint errors
+        run: [ -z "${{ env.ESLINT_OUTPUT }}" ] && exit 1
