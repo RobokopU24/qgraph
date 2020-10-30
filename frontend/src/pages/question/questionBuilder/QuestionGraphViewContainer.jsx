@@ -54,16 +54,13 @@ export default function QuestionGraphViewContainer(props) {
 
   /**
    * Save the value from the json editor
-   * @param {object} question json object of format
-   * @param {string} question.question_name name of the question
-   * @param {Object} question.query_graph consisting of nodes and edges
-   * @param {Array} question.query_graph.nodes an array of nodes
-   * @param {Array} question.query_graph.edges an array of edges
-   * @param {Number} question.max_connectivity max connections for question
+   * @param {Object} query json object of format
+   * @param {Object} query.query_graph consisting of nodes and edges
    */
-  function saveJsonEditor(question) {
+  function saveJsonEditor(query) {
     try {
-      questionStore.fromListRepresentation(question);
+      const graph = queryGraphUtils.convert.internalToReasoner(query);
+      questionStore.updateQueryGraph(graph);
       toggleJsonEditor(!showJsonEditor);
     } catch (err) {
       console.error(err);
