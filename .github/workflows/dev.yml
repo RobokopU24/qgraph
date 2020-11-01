@@ -36,4 +36,4 @@ jobs:
       - name: Fail job if there are ESLint errors
         run: |
           echo '${{ env.ESLINT_OUTPUT }}' >> eslint_output.txt
-          if grep -c -E '[0-9]* problem' eslint_output.txt; then exit 1; fi"
+          if grep -c -E '[0-9]* problem' eslint_output.txt; then exit 1; fi
