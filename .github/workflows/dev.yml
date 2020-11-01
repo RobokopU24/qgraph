@@ -34,4 +34,6 @@ jobs:
           allow-repeats: true
 
       - name: Fail job if there are ESLint errors
-        run: "if grep -c -E '[0-9]* problem' $GITHUB_ENV; then exit 1; fi"
+        run: |
+          echo '${{ env.ESLINT_OUTPUT }}' >> eslint_output.txt
+          if grep -c -E '[0-9]* problem' eslint_output.txt; then exit 1; fi"
