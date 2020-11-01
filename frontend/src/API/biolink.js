@@ -3,7 +3,7 @@ import yaml from 'js-yaml';
 
 import handleAxiosError from './utils';
 
-const routes = { 
+const routes = {
   /**
    * Get biolink model specification
    */
