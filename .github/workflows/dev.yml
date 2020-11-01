@@ -34,4 +34,4 @@ jobs:
           allow-repeats: true
 
       - name: Fail job if there are ESLint errors
-        run: "[[ '${{ env.ESLINT_OUTPUT }}' =~ [0-9]*[[:space:]]problem ]] && exit 1"
+        run: "ESLINT_OUTPUT='${{ env.ESLINT_OUTPUT }}'; [[ $ESLINT_OUTPUT =~ [0-9]*[[:space:]]problem ]] && exit 1"
