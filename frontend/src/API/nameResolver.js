@@ -18,7 +18,7 @@ const baseRoutes = {
         string: search_string,
         limit,
         offset,
-      }
+      },
     };
     try {
       const response = await axios(config);
