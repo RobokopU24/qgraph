@@ -80,7 +80,10 @@ const convert = {
     const internalRepresentation = {};
     internalRepresentation.nodes = listWithIdsToDict(q.nodes);
     internalRepresentation.edges = listWithIdsToDict(q.edges);
+
     Object.values(internalRepresentation.nodes).forEach(standardizeCuries);
+    Object.values(internalRepresentation.nodes).forEach(standardizeType);
+
     Object.values(internalRepresentation.edges).forEach(standardizeType);
     return internalRepresentation;
   },
@@ -88,7 +91,10 @@ const convert = {
     const reasonerRepresentation = {};
     reasonerRepresentation.nodes = dictToListWithIds(q.nodes);
     reasonerRepresentation.edges = dictToListWithIds(q.edges);
+
     reasonerRepresentation.nodes.forEach(pruneCuries);
+    reasonerRepresentation.nodes.forEach(pruneTypes);
+
     reasonerRepresentation.edges.forEach(pruneTypes);
     return reasonerRepresentation;
   },

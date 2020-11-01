@@ -59,19 +59,12 @@ export default function EdgePanel(props) {
       return null;
     }
 
-    // For each type listed in the node get the type hierarchy
-    const sourceNodeTypeHierarchies = sourceNode.type.map(
-      (t) => biolinkUtils.getHierarchy(biolink, t),
-    );
-    const targetNodeTypeHierarchies = targetNode.type.map(
-      (t) => biolinkUtils.getHierarchy(biolink, t),
-    );
+    const sourceNodeTypeHierarchy = biolinkUtils.getHierarchy(biolink, sourceNode.type[0]);
+    const targetNodeTypeHierarchy = biolinkUtils.getHierarchy(biolink, targetNode.type[0]);
 
-    // Show all predicates where the domain matches any type in the source node,
-    // and where the range matches any type in the target node
     return predicateList.filter(
-      (p) => sourceNodeTypeHierarchies.some((h) => h.includes(p.domain)) &&
-             targetNodeTypeHierarchies.some((h) => h.includes(p.range)),
+      (p) => sourceNodeTypeHierarchy.includes(p.domain) &&
+               targetNodeTypeHierarchy.includes(p.range),
     );
   }
 
