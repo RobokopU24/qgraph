@@ -8,14 +8,14 @@
  *    a custom Cell renderer is used for a column and the accessorPostProcFn logic would
  *    mimic the custom Cell renderer logic closely to get identical length cell strings.
  */
-export default function getColumnWidth(data, accessor, headerText, accessorPostProcFn = x => x) {
+export default function getColumnWidth(data, accessor, headerText, accessorPostProcFn = (x) => x) {
   if (typeof accessor === 'string' || accessor instanceof String) {
-    accessor = d => d[accessor]; // eslint-disable-line no-param-reassign
+    accessor = (d) => d[accessor]; // eslint-disable-line no-param-reassign
   }
   const maxWidth = 600;
   const magicSpacing = 9;
   const cellLength = Math.max(
-    ...data.map(row => (`${accessorPostProcFn(accessor(row))}` || '').length),
+    ...data.map((row) => (`${accessorPostProcFn(accessor(row))}` || '').length),
     headerText.length,
   ) + 4;
   return Math.min(maxWidth, cellLength * magicSpacing);

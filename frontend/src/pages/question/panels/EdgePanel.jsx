@@ -59,8 +59,9 @@ export default function EdgePanel(props) {
       return null;
     }
 
-    const sourceNodeTypeHierarchy = biolinkUtils.getHierarchy(biolink, sourceNode.type);
-    const targetNodeTypeHierarchy = biolinkUtils.getHierarchy(biolink, targetNode.type);
+    const sourceNodeTypeHierarchy = biolinkUtils.getHierarchy(biolink, sourceNode.type[0]);
+    const targetNodeTypeHierarchy = biolinkUtils.getHierarchy(biolink, targetNode.type[0]);
+
     return predicateList.filter(
       (p) => sourceNodeTypeHierarchy.includes(p.domain) &&
                targetNodeTypeHierarchy.includes(p.range),

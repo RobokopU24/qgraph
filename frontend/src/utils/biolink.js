@@ -8,10 +8,10 @@ const snakeCase = (str) => str && str.replaceAll(' ', '_').toLowerCase();
 
 /*
  * Given a biolink class build a list of parent classes
- * Ex: Given 'gene' as an input this function will return: 
+ * Ex: Given 'gene' as an input this function will return:
  *
  * [ "gene", "gene_or_gene_product", "macromolecular_machine",
- *   "genomic_entity", "molecular_entity", "biological_entity", 
+ *   "genomic_entity", "molecular_entity", "biological_entity",
  *   "named_thing" ]
 */
 function getHierarchy(biolink, className) {
