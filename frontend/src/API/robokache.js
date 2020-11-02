@@ -1,7 +1,7 @@
 const axios = require('axios');
 const handleAxiosError = require('./utils');
 
-let base_url = `${window.location.origin}/api/robokache/`;
+const base_url = `${window.location.origin}/api/robokache/`;
 
 // Base request method for all endpoints
 async function baseRequest(path, method, body, token) {
