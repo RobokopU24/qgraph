@@ -53,7 +53,12 @@ export default function useNewQuestionPanel() {
   function initializeNodeOrEdge() {
     if (panelInfo.type === 'node') {
       if (panelInfo.id) { // load node from query graph
-        const nodeSeed = query_graph.nodes[panelInfo.id];
+        const nodeSeed = { ...query_graph.nodes[panelInfo.id] };
+        // Convert array of types to string before seeding
+        // panel
+        if (Array.isArray(nodeSeed.type)) {
+          [nodeSeed.type] = nodeSeed.type;
+        }
         setName(panelInfo.id);
         node.initialize(nodeSeed);
       } else { // new node
@@ -138,6 +143,11 @@ export default function useNewQuestionPanel() {
       const new_node = {
         type: node.type,
       };
+      // If node type isn't an array, convert to one
+      if (new_node.type && !Array.isArray(new_node.type)) {
+        new_node.type = [new_node.type];
+      }
+
       if (node.curie) {
         new_node.curie = node.curie;
       }
