@@ -84,7 +84,6 @@ export default function SimpleViewer(props) {
 
     // Upload question data
     const questionData = JSON.stringify({ query_graph: messageStore.message.query_graph }, null, 2);
-    console.log(questionData);
     response = await API.cache.setQuestionData(questionId, questionData, user.id_token);
     if (response.status === 'error') {
       displayAlert('error', response.message);

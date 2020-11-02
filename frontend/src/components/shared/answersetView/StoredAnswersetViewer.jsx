@@ -40,7 +40,6 @@ export default function StoredAnswersetView({ question_id, answer_id }) {
 
     const message =
       { ...questionResponseJSON, ...answerResponseJSON };
-    console.log(message);
 
     try {
       const parsedMessage = parseMessage(message);
