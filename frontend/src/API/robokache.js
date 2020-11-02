@@ -45,6 +45,7 @@ const baseRoutes = {
       method: 'GET',
       withCredentials: true,
       headers: {},
+      transformResponse: (res) => res,
     };
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;

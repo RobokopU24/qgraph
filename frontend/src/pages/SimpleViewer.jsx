@@ -39,7 +39,7 @@ export default function SimpleViewer(props) {
 
     const questionId = response.id;
     // Upload question data
-    const questionData = JSON.stringify(messageStore.message.query_graph);
+    const questionData = JSON.stringify({ query_graph: messageStore.message.query_graph }, null, 2);
     response = await API.cache.setQuestionData(questionId, questionData, user.id_token);
     if (response.status === 'error') {
       displayAlert('error', response.message);
@@ -83,7 +83,7 @@ export default function SimpleViewer(props) {
     const questionId = response.id;
 
     // Upload question data
-    const questionData = JSON.stringify(messageStore.message.query_graph);
+    const questionData = JSON.stringify({ query_graph: messageStore.message.query_graph }, null, 2);
     response = await API.cache.setQuestionData(questionId, questionData, user.id_token);
     if (response.status === 'error') {
       displayAlert('error', response.message);
@@ -101,7 +101,7 @@ export default function SimpleViewer(props) {
     const answerData = JSON.stringify({
       knowledge_graph: messageStore.message.knowledge_graph,
       results: messageStore.message.results,
-    });
+    }, null, 2);
     // Upload answer data
     response = await API.cache.setAnswerData(answerId, answerData, user.id_token);
     if (response.status === 'error') {
