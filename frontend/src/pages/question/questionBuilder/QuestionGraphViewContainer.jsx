@@ -58,22 +58,8 @@ export default function QuestionGraphViewContainer(props) {
    * @param {Object} query.query_graph consisting of nodes and edges
    */
   function saveJsonEditor(query) {
-    try {
-      const graph = queryGraphUtils.convert.internalToReasoner(query);
-      questionStore.updateQueryGraph(graph);
-      toggleJsonEditor(!showJsonEditor);
-    } catch (err) {
-      console.error(err);
-      // TODO: what did this used to be?
-      // dialogMessage({
-      //   title: 'Trouble Parsing Manually edited JSON',
-      //   text: 'We ran in to problems parsing the user provided JSON. Please ensure that it is a valid MachineQuestion spec JSON file',
-      //   buttonText: 'OK',
-      //   buttonAction: () => {},
-      // });
-      // window.alert('Failed to load m Question template. Are you sure this is valid?');
-      // questionStore.setGraphState(graphStates.error);
-    }
+    questionStore.updateQueryGraph(query);
+    toggleJsonEditor(!showJsonEditor);
   }
 
   const numNodes = Object.keys(panelStore.query_graph.nodes).length;
@@ -142,7 +128,6 @@ export default function QuestionGraphViewContainer(props) {
       />
       <QueryJsonEditor
         show={showJsonEditor}
-        height={500}
         questionStore={questionStore}
         callbackSave={saveJsonEditor}
         close={() => toggleJsonEditor(!showJsonEditor)}

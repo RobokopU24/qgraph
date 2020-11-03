@@ -51,4 +51,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 5px;
+}
+#uploadIconLabel {
+  margin-bottom: 0;
+}
+#jsonEditorSplitter {
+  min-height: 500px;
+  overflow-y: auto;
+  position: relative;
 }
