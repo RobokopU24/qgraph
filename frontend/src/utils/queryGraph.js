@@ -47,7 +47,7 @@ function standardizeCuries(n) {
   }
 }
 
-/** 
+/**
  * Convert type to array if not given as array
  * @param {object} e edge object with a type property
  */
