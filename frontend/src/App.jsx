@@ -34,7 +34,6 @@ export default function App() {
     setAlert({ severity, msg });
   }
 
-
   // Load biolink on page load
   const [biolink, setBiolink] = useState(null);
   async function fetchBiolink() {

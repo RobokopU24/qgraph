@@ -1,7 +1,7 @@
 import React, {
-  useState, useEffect, useMemo, useContext
+  useState, useEffect, useMemo,
 } from 'react';
-import { FaSpinner, FaPlusSquare } from 'react-icons/fa';
+import { FaPlusSquare } from 'react-icons/fa';
 import { Modal, Button } from 'react-bootstrap';
 
 import queryGraphUtils from '@/utils/queryGraph';

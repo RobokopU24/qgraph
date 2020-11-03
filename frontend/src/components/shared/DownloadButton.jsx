@@ -22,7 +22,7 @@ class DownloadButton extends React.Component {
     }
 
     // get the keys from the first answer, dropping any that start with an underscore
-    const answerKeys = Object.keys(answers[0]).filter(ans => !ans.startsWith('_') && ans !== 'id');
+    const answerKeys = Object.keys(answers[0]).filter((ans) => !ans.startsWith('_') && ans !== 'id');
 
     const csv = answers.map((row, i) => {
       const fieldList = answerKeys.map((ansKey) => {
@@ -31,13 +31,13 @@ class DownloadButton extends React.Component {
         }
         // if the field is a set
         if (!Array.isArray(row[ansKey])) {
-          row = row._original;
+          row = row.original;
         }
-        return row[ansKey].map(set => `${set.name.replace(/,/g, '')} (${set.id})`).join(' | ');
+        return row[ansKey].map((set) => `${set.name.replace(/,/g, '')} (${set.id})`).join(' | ');
       });
       return [i + 1, ...fieldList].join(',');
     });
-    columnHeaders = columnHeaders.map(header => header.Header);
+    columnHeaders = columnHeaders.map((header) => header.Header);
     // add row to the front of the headers, add score
     const headers = ['row', ...columnHeaders, 'score'].join(',');
     csv.unshift(headers);
@@ -62,9 +62,9 @@ class DownloadButton extends React.Component {
     if (results.filteredAnswers.length) {
       answers = results.filteredAnswers;
     }
-    if (answers[0]._original) {
+    if (answers[0].original) {
       // the json we want is nested, so we need to dig into it.
-      answers = answers.map(ans => ans._original);
+      answers = answers.map((ans) => ans.original);
     }
     const json = JSON.stringify(answers);
     const blob = new Blob([json], { type: 'application/json' });
@@ -90,7 +90,7 @@ class DownloadButton extends React.Component {
     } else {
       fields = Object.keys(results[0]);
       csv = results.map((row, i) => {
-        const fieldList = fields.map(field => row[field]);
+        const fieldList = fields.map((field) => row[field]);
         return [i + 1, ...fieldList].join(',');
       });
     }
@@ -152,7 +152,7 @@ class DownloadButton extends React.Component {
     );
     return (
       <OverlayTrigger trigger={['click']} placement="bottom" rootClose overlay={downloadOptions}>
-        <Button style={style} >Download <FaBars /></Button>
+        <Button style={style}>Download <FaBars /></Button>
       </OverlayTrigger>
     );
   }

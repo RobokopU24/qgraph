@@ -26,8 +26,7 @@ class QuestionNew extends React.Component {
     this.onDownloadQuestion = this.onDownloadQuestion.bind(this);
     this.onSubmitQuestion = this.onSubmitQuestion.bind(this);
     this.getNlpParsedQuestion = this.getNlpParsedQuestion.bind(this);
-  }
-
+  } 
   componentDidMount() {
     this.props.store.getQuestionData(this.props.initializationId);
   }

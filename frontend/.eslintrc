@@ -13,6 +13,9 @@
       }
     }
   },
+  "overrides" : [{
+    "files" : [ "*.jsx", "*.js" ]
+  }],
   "rules": {
     "indent": ["error", 2],
     "max-len": "off",

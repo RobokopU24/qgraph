@@ -99,7 +99,7 @@ export default function QuestionJsonEditor(props) {
     updateQuestionGraph(data);
   }
 
-  function onDrop(acceptedFiles, rejectedFiles) {
+  function onDrop(acceptedFiles) {
     acceptedFiles.forEach((file) => {
       const fr = new window.FileReader();
       fr.onloadstart = () => setThinking(true);

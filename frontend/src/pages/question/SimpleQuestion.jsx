@@ -1,9 +1,7 @@
 import React, { useState, useContext } from 'react';
 import {
-  Grid, Row, Tabs, Tab,
+  Grid, Row,
 } from 'react-bootstrap';
-
-import _ from 'lodash';
 
 import { FaDownload } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
@@ -99,11 +97,6 @@ export default function SimpleQuestion() {
       return;
     }
     answersetStatus.setSuccess();
-  }
-
-  function resetQuestion() {
-    setFail(false);
-    setErrorMessage('');
   }
 
   return (

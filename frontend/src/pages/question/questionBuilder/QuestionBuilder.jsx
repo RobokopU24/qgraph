@@ -34,7 +34,7 @@ export default function QuestionBuilder(props) {
   const [showModal, toggleModal] = useState(false);
   const [step, setStep] = useState('options');
   // Questions is for forking
-  const [questions, updateQuestions] = useState([]);
+  // const [questions, updateQuestions] = useState([]);
   const [questionsReady, setQuestionsReady] = useState(false);
   // used just for focus
   const questionName = useRef(null);
@@ -288,7 +288,7 @@ export default function QuestionBuilder(props) {
       <QuestionListModal
         show={questionsReady}
         close={() => setQuestionsReady(false)}
-        questions={questions}
+        questions={[]}
         questionSelected={questionSelected}
       />
     </div>

@@ -1,8 +1,8 @@
 import React from 'react';
 import { GoQuestion } from 'react-icons/go';
 
-const HelpButton = (props) => (
-  <a href={`/help#${props.link}`} target="_blank" style={{ color: 'black' }}>
+const HelpButton = ({ link }) => (
+  <a href={`/help#${link}`} rel="noreferrer" target="_blank" style={{ color: 'black' }}>
     <GoQuestion />
   </a>
 );

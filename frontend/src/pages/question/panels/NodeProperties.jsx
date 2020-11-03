@@ -16,7 +16,7 @@ export default function NodeProperties(props) {
             <tr>
               <th className="nodePropertiesHeader">CONSTRAINT</th>
               <th className="nodePropertiesHeader">VALUE</th>
-              <th />
+              <th>DELETE</th>
             </tr>
           </thead>
           <tbody>

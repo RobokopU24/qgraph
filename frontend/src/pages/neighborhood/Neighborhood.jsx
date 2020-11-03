@@ -1,3 +1,4 @@
+/* eslint-disable react/destructuring-assignment */
 import React, { useState, useEffect } from 'react';
 import { AutoSizer } from 'react-virtualized';
 import {
@@ -13,7 +14,7 @@ import './neighborhood.css';
 import config from '../../config.json';
 
 export default function Neighborhood(props) {
-  const { identifier } = props;
+  const { appConfig, identifier } = props;
   const [term, updateTerm] = useState('');
   const [curie, updateCurie] = useState('');
   const [detailsLoading, setDetailsLoading] = useState(false);
@@ -25,14 +26,14 @@ export default function Neighborhood(props) {
   const [neighborhoodReady, setNeighborhoodReady] = useState(false);
 
   function onSearch(input, type) {
-    return this.props.appConfig.questionNewSearch(input, type);
+    return appConfig.questionNewSearch(input, type);
   }
 
-  function getDetails(curie) {
+  function getDetails(selectedCurie) {
     setDetailsLoading(true);
     setDetailsReady(false);
-    this.props.appConfig.details(
-      curie,
+    appConfig.details(
+      selectedCurie,
       (res) => {
         setDetailsLoading(false);
         setDetailsReady(true);
@@ -50,7 +51,7 @@ export default function Neighborhood(props) {
   function getNeighborhood(curie) {
     setNeighborhoodLoading(true);
     setNeighborhoodReady(false);
-    this.props.appConfig.neighborhood(
+    appConfig.neighborhood(
       curie,
       (res) => {
         setNeighborhoodLoading(false);
@@ -65,14 +66,14 @@ export default function Neighborhood(props) {
     );
   }
 
-  function handleCurieChange(type, term, curie) {
-    if (curie || !term) {
-      updateCurie(curie);
-      updateTerm(term);
+  function handleCurieChange(type, newTerm, newCurie) {
+    if (newCurie || !newTerm) {
+      updateCurie(newCurie);
+      updateTerm(newTerm);
     }
-    if (curie) {
-      getDetails(curie);
-      getNeighborhood(curie);
+    if (newCurie) {
+      getDetails(newCurie);
+      getNeighborhood(newCurie);
     }
   }
 

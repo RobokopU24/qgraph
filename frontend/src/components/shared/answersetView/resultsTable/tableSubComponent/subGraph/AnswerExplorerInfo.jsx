@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import { FaDownload } from 'react-icons/fa';
 import shortid from 'shortid';
 
 import SubGraphViewer from '../../../../graphs/SubGraphViewer';
@@ -30,7 +29,6 @@ export default function AnswerExplorerInfo(props) {
   const [selectedNodeId, setSelectedNodeId] = useState(null);
   const [subgraph, setSubgraph] = useState({ nodes: [], edges: [] });
   const [disableGraphClick, setDisableGraphClick] = useState(false);
-  const [downloadingPubs, setDownloadingPubs] = useState(false);
 
   function syncPropsAndState() {
     const nodes = graph.nodes.filter((n) => ((n.id === selectedEdge.source_id) || (n.id === selectedEdge.target_id)));

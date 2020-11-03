@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Modal, ButtonGroup, Button } from 'react-bootstrap';
 import { FaSave, FaTrash, FaUndo } from 'react-icons/fa';
 import _ from 'lodash';
@@ -44,7 +44,6 @@ export default function NewQuestionPanelModal({ panelStore, onQuestionUpdated })
   }
 
   const isNodePanel = panelStore.panelType === 'node';
-  const unsavedChanges = false;
   const isNewPanel = panelStore.activePanelId == null;
   const backgroundColor = getBackgroundColor(isNodePanel);
   return (
