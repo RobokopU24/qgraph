@@ -1,10 +1,9 @@
 module.exports = {
-
   moduleFileExtensions: [
-    "js",
-    "jsx"
+    'js',
+    'jsx',
   ],
   moduleNameMapper: {
-    "^@": "<rootDir>/src"
-  }
-}
+    '^@': '<rootDir>/src',
+  },
+};

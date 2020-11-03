@@ -1,13 +1,11 @@
 import React from 'react';
-import renderer from 'react-test-renderer';
-
 import { render, fireEvent, waitFor, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
-import Landing from '@/src/pages/Landing';
+import App from '../src/App';
 
-it('loads page and shows welcome', async () => {
-  render(<Landing />);
+test('loads page and shows welcome', async () => {
+  render(<App />);
 
   await waitFor(() => screen.getByRole('heading'));
 

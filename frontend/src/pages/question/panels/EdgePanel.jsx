@@ -1,7 +1,5 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useMemo, useContext } from 'react';
 import _ from 'lodash';
-
-import API from '@/API';
 
 import {
   Form, Col, Glyphicon, Badge, Button,
@@ -11,6 +9,8 @@ import { Multiselect, DropdownList } from 'react-widgets';
 
 import entityNameDisplay from '@/utils/entityNameDisplay';
 import usePageStatus from '@/utils/usePageStatus';
+import biolinkUtils from '@/utils/biolink';
+import BiolinkContext from '@/context/biolink';
 
 const listItem = ({ item }) => (
   <div className="listItem">
@@ -26,33 +26,48 @@ export default function EdgePanel(props) {
   const { panelStore } = props;
   const { edge } = panelStore;
 
-  async function fetchPredicates() {
-    if (!edge.sourceId || !edge.targetId) {
-      return;
+  const biolink = useContext(BiolinkContext);
+
+  // Build a list of formatted predicates
+  function getPredicateList() {
+    if (!biolink) {
+      return null;
     }
-    const sourceNode =
-      { ...panelStore.query_graph.nodes[edge.sourceId] };
-    const targetNode =
-      { ...panelStore.query_graph.nodes[edge.targetId] };
-      // Including name or empty curie list in the node breaks the API call
-      // So we make a copy and remove it
-    delete sourceNode.name;
-    delete targetNode.name;
-    if (sourceNode.curie && sourceNode.curie.length === 0) delete sourceNode.curie;
-    if (targetNode.curie && targetNode.curie.length === 0) delete targetNode.curie;
-    const response = await API.ranker.predicateLookup(sourceNode, targetNode);
-    if (response.status === 'error') {
-      predicateStatus.setFailure('Failed to contact predicate lookup server. Please try again later');
-    }
-    edge.updatePredicateList(
-      Object.keys(response).map((name) => ({
-        name,
-        degree: response[name],
-      })),
+    return Object.entries(biolink.slots).map(
+      ([identifier, predicate]) => ({
+        name: biolinkUtils.snakeCase(identifier),
+        domain: biolinkUtils.snakeCase(predicate.domain),
+        range: biolinkUtils.snakeCase(predicate.range),
+      }),
     );
   }
 
-  useEffect(() => { fetchPredicates(); }, [edge.sourceId, edge.targetId]);
+  const predicateList = useMemo(getPredicateList, [biolink]) || [];
+
+  // Filter predicates by the nodes given
+  function getFilteredPredicateList() {
+    if (!biolink) {
+      return null;
+    }
+    if (!edge.sourceId || !edge.targetId) {
+      return null;
+    }
+    const sourceNode = panelStore.query_graph.nodes[edge.sourceId];
+    const targetNode = panelStore.query_graph.nodes[edge.targetId];
+
+    if (!sourceNode.type || !targetNode.type) {
+      return null;
+    }
+
+    const sourceNodeTypeHierarchy = biolinkUtils.getHierarchy(biolink, sourceNode.type);
+    const targetNodeTypeHierarchy = biolinkUtils.getHierarchy(biolink, targetNode.type);
+    return predicateList.filter(
+      (p) => sourceNodeTypeHierarchy.includes(p.domain) &&
+               targetNodeTypeHierarchy.includes(p.range),
+    );
+  }
+
+  const filteredPredicateList = getFilteredPredicateList() || [];
 
   function handleTargetIdUpdate(value) {
     edge.updateTargetId(value.id);
@@ -83,14 +98,29 @@ export default function EdgePanel(props) {
       }),
     ).filter((n) => !n.deleted);
 
+  const disablePredicates = !(edge.sourceId && edge.targetId);
+
   // Determine default message for predicate selection component
   let predicateInputMsg = 'Choose optional predicate(s)...';
-  if (!edge.predicatesReady) {
-    predicateInputMsg = 'Loading...';
-  } else if (edge.disablePredicates) {
+  if (disablePredicates) {
     predicateInputMsg = 'Source and/or Target Nodes need to be specified...';
   }
+
+  // Every predicate selected must match at least one
+  // predicate in the filteredPredicateList
+  const isValidPredicate = edge.predicate.every(
+    (p) => filteredPredicateList.some((fp) => p.name === fp.name),
+  );
+
+  const isValid = edge.sourceId && edge.targetId && isValidPredicate;
+
   const disabledSwitch = edge.sourceId === null || edge.targetId === null;
+
+  useEffect(() => {
+  // Update edge in panelStore
+    edge.setIsValid(isValid);
+    edge.setIsValidPredicate(isValidPredicate);
+  }, [edge.sourceId, edge.targetId, edge.predicate]);
 
   return (
     <Form horizontal>
@@ -144,9 +174,8 @@ export default function EdgePanel(props) {
           <Multiselect
             filter="contains"
             allowCreate={false}
-            readOnly={!edge.predicatesReady || edge.disablePredicates}
-            busy={!edge.predicatesReady}
-            data={edge.predicateList}
+            readOnly={disablePredicates}
+            data={filteredPredicateList}
             itemComponent={listItem}
             busySpinner={<FaSpinner className="icon-spin" />}
             placeholder={predicateInputMsg}
@@ -154,7 +183,7 @@ export default function EdgePanel(props) {
             value={edge.predicate}
             valueField={(value) => value.name || value}
             onChange={handlePredicateUpdate}
-            containerClassName={edge.isValidPredicate ? 'valid' : 'invalid'}
+            containerClassName={isValidPredicate ? 'valid' : 'invalid'}
             messages={{
               emptyList: 'No predicates were found',
             }}

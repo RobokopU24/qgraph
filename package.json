@@ -6,11 +6,16 @@
   "main": "manage.js",
   "dependencies": {
     "colors": "^1.4.0",
+    "eslint": "^7.12.1",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.1",
     "yargs": "^16.1.0"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+	  "dev"  : "node manage.js dev",
+	  "prod" : "node manage.js local-prod",
+	  "test" : "node manage.js test"
   },
   "repository": {
     "type": "git",

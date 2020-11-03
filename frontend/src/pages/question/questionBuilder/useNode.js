@@ -5,13 +5,6 @@ import _ from 'lodash';
 import config from '@/config.json';
 import entityNameDisplay from '@/utils/entityNameDisplay';
 
-const setify = (type) => `set of ${type}s`;
-const conceptsWithSets = [];
-config.concepts.forEach((concept) => {
-  conceptsWithSets.push({ name: concept, type: concept, set: false });
-  conceptsWithSets.push({ name: setify(concept), type: concept, set: true });
-});
-
 export default function useNodePanels() {
   const [id, setId] = useState(null);
   const [type, setType] = useState('');
@@ -22,7 +15,7 @@ export default function useNodePanels() {
   const [curieEnabled, setCurieEnabled] = useState(false);
   const [set, setSet] = useState(false);
   const [regular, setRegular] = useState(false);
-  // const [conceptsWithSets, setConceptsWithSets] = useState([]);
+  const [concepts, setConcepts] = useState([]);
   const [filteredConcepts, setFilteredConcepts] = useState([]);
   const [curies, updateCuries] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -82,9 +75,11 @@ export default function useNodePanels() {
   }
 
   function updateFilteredConcepts(value) {
-    const newFilteredConcepts = conceptsWithSets.filter(
-      (concept) => concept.name.includes(value.toLowerCase()),
-    );
+    // Convert name to lowercase before searching
+    const newFilteredConcepts = concepts
+      .filter(
+        (concept) => concept.name.toLowerCase().includes(value.toLowerCase()),
+      );
     setFilteredConcepts(newFilteredConcepts);
   }
 
@@ -95,6 +90,7 @@ export default function useNodePanels() {
     clearSelection,
     updateCuries,
     updateFilteredConcepts,
+    setConcepts,
     setLoading,
     setSearchTerm,
     id,
