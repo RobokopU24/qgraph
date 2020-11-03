@@ -82,10 +82,12 @@ export default function QuestionJsonEditor(props) {
     updateQueryGraph(data);
   }
 
-  function onUpload(acceptedFiles) {
-    acceptedFiles.forEach((file) => {
+  function onUpload(event) {
+    const { files } = event.target;
+    files.forEach((file) => {
       const fr = new window.FileReader();
       fr.onloadstart = () => pageStatus.setLoading('Loading Query Graph');
+      fr.onloadend = () => pageStatus.setSuccess();
       fr.onload = (e) => {
         const fileContents = e.target.result;
         try {
@@ -98,15 +100,14 @@ export default function QuestionJsonEditor(props) {
           } else if (graph.question_graph) {
             graph = graph.question_graph;
           }
-          if (graph.nodes && Array.isArray(graph.nodes)) {
+          if (graph.nodes && Array.isArray(graph.nodes) && Array.isArray(graph.edges)) {
             graph = queryGraphUtils.convert.reasonerToInternal(graph);
           }
           validateQueryGraph(graph);
           updateQueryGraph(graph);
           initialQueryGraph.current = questionStore.query_graph;
-          pageStatus.setSuccess();
         } catch (err) {
-          pageStatus.setFailure('Failed to read this query graph. Are you sure this is valid json?');
+          displayAlert('error', 'Failed to read this query graph. Are you sure this is valid json?');
         }
       };
       fr.onerror = () => {
@@ -114,6 +115,8 @@ export default function QuestionJsonEditor(props) {
       };
       fr.readAsText(file);
     });
+    // This clears out the input value so you can upload a second time
+    event.target.value = '';
   }
 
   useEffect(() => {
@@ -155,7 +158,7 @@ export default function QuestionJsonEditor(props) {
                 style={{ display: 'none' }}
                 type="file"
                 id="jsonEditorUpload"
-                onChange={(e) => onUpload(e.target.files)}
+                onChange={(e) => onUpload(e)}
                 disabled={!pageStatus.displayPage}
               />
               <IconButton
