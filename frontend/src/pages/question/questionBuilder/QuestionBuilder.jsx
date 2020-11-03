@@ -280,8 +280,6 @@ export default function QuestionBuilder(props) {
       <QuestionTemplateModal
         showModal={showModal}
         close={() => toggleModal(false)}
-        // questions={_.cloneDeep(questionTemplates)}
-        questions={[]}
         selectQuestion={onQuestionTemplate}
         concepts={config.concepts}
       />

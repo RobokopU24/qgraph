@@ -5,8 +5,9 @@ import {
 import shortid from 'shortid';
 import _ from 'lodash';
 
-import CurieSelectorContainer from '../../../components/shared/curies/CurieSelectorContainer';
-import config from '../../../config.json';
+import questionTemplates from '@/questionTemplates';
+import CurieSelectorContainer from '@/components/shared/curies/CurieSelectorContainer';
+import config from '@/config.json';
 
 function extractDetails(questionTemplate) {
   const newTypes = [];
@@ -45,7 +46,7 @@ function displayQuestion(questionName) {
 
 export default function QuestionTemplateModal(props) {
   const {
-    selectQuestion, showModal, questions, concepts, close,
+    selectQuestion, showModal, concepts, close,
   } = props;
   const [questionTemplate, setQuestionTemplate] = useState({});
   const [questionName, updateQuestionName] = useState([]);
@@ -206,7 +207,7 @@ export default function QuestionTemplateModal(props) {
             key={1}
             id="questionTemplateDropdown"
           >
-            {questions.map((question) => (
+            {questionTemplates.map((question) => (
               <MenuItem
                 key={shortid.generate()}
                 eventKey={question}
