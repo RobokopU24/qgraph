@@ -3,6 +3,8 @@ import queryDispatcher from './queryDispatcher';
 import ara from './ara';
 import ranker from './ranker';
 import biolink from './biolink';
+import nameResolver from './nameResolver';
+import nodeNormalization from './nodeNormalization';
 
 export default {
   cache,
@@ -10,4 +12,6 @@ export default {
   ara,
   ranker,
   biolink,
+  nameResolver,
+  nodeNormalization,
 };
