@@ -6,8 +6,12 @@ import shortid from 'shortid';
 import _ from 'lodash';
 
 import questionTemplates from '@/questionTemplates';
-import CurieSelectorContainer from '@/components/shared/curies/CurieSelectorContainer';
 import config from '@/config.json';
+
+import API from '@/API';
+import AlertContext from '@/context/alert';
+
+import CurieConceptSelector from '@/components/shared/curies/CurieConceptSelector';
 
 function extractDetails(questionTemplate) {
   const newTypes = [];
@@ -56,6 +60,40 @@ export default function QuestionTemplateModal(props) {
   const [labels, setLabels] = useState([]);
   const [curies, setCuries] = useState([]);
   const curieSelector = useRef({});
+
+  const displayAlert = useContext(AlertContext);
+
+  async function fetchCuries(newSearchTerm) {
+    // Get and update list of curies
+    const response = await API.ranker.entityLookup(newSearchTerm);
+    if (response.status === 'error' || !_.isArray(response)) {
+      displayAlert('error',
+        'Failed to contact server to search curies. You will still be able to select generic types. Please try again later');
+    } else {
+      node.updateCuries(response);
+    }
+    node.setLoading(false);
+  }
+
+  // Create a debounced version that persists on renders
+  const fetchCuriesDebounced = useCallback(
+    _.debounce(fetchCuries, 500),
+    [],
+  );
+
+  async function updateSearchTerm(value) {
+    // Clear existing selection
+    node.clearSelection();
+    // Clear existing curies
+    node.updateCuries([]);
+    // Update list of concepts
+    node.updateFilteredConcepts(value);
+    // Update search term
+    node.setSearchTerm(value);
+
+    node.setLoading(true);
+    fetchCuriesDebounced(value);
+  }
 
   function setFocus(num) {
     curieSelector.current[`curie${num}`].curieSelector.input.focus();
@@ -231,10 +269,10 @@ export default function QuestionTemplateModal(props) {
           </div>
         )}
         {nameList.map((name, i) => (
-          <CurieSelectorContainer
-            key={['curieSelector', i].join('_')}
-            ref={(type) => { curieSelector.current[`curie${i}`] = type; }}
-            concepts={concepts}
+          <CurieConceptSelector
+            curies={curies}
+            concepts={[]}
+            selection={}
             onChangeHook={(ty, te, cu) => handleCurieChange(i, ty, te, cu)}
             initialInputs={{ curie: curies[i], term: labels[i], type: types[i] }}
             disableType

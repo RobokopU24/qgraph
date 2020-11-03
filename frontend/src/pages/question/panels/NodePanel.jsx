@@ -24,6 +24,8 @@ import CurieConceptSelector from '@/components/shared/curies/CurieConceptSelecto
 export default function NodePanel({ panelStore }) {
   const { node } = panelStore;
 
+  blah;
+
   const biolink = useContext(BiolinkContext);
 
   const displayAlert = useContext(AlertContext);

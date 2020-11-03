@@ -1,0 +1,69 @@
+{
+  "natural_question": "COP for $name1$ ($identifier1$) and $name2$ ($identifier2$)?",
+  "machine_question": {
+    "nodes": [
+      {
+        "id": "node0",
+        "type": "chemical_substance",
+        "set": false,
+        "curie": [
+          "$identifier1$"
+        ]
+      },
+      {
+        "id": "node1",
+        "type": "gene",
+        "set": false
+      },
+      {
+        "id": "node2",
+        "type": "biological_process_or_activity",
+        "set": true
+      },
+      {
+        "id": "node3",
+        "type": "cell",
+        "set": false
+      },
+      {
+        "id": "node4",
+        "type": "anatomical_entity",
+        "set": false
+      },
+      {
+        "id": "node5",
+        "type": "phenotypic_feature",
+        "curie": [
+          "$identifier2$"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "id": "edge01",
+        "source_id": "node0",
+        "target_id": "node1"
+      },
+      {
+        "id": "edge12",
+        "source_id": "node1",
+        "target_id": "node2"
+      },
+      {
+        "id": "edge23",
+        "source_id": "node2",
+        "target_id": "node3"
+      },
+      {
+        "id": "edge34",
+        "source_id": "node3",
+        "target_id": "node4"
+      },
+      {
+        "id": "edge45",
+        "source_id": "node4",
+        "target_id": "node5"
+      }
+    ]
+  }
+}
