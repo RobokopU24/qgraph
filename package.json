@@ -14,7 +14,9 @@
   "scripts": {
 	  "dev"  : "node manage.js dev",
 	  "prod" : "node manage.js local-prod",
-	  "test" : "node manage.js test"
+	  "test" : "node manage.js test",
+	  "frontend-lint" : "node manage.js frontend lint",
+	  "frontend-lint-summary" : "node manage.js frontend lint-summary"
   },
   "repository": {
     "type": "git",
