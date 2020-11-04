@@ -1,19 +1,10 @@
 import { useState } from 'react';
-import _ from 'lodash';
 import queryGraphUtils from '@/utils/queryGraph';
-
-function getEmptyQueryGraph() {
-  return {
-    nodes: [], // { id, name?, type, curie? }
-    edges: [], // { id, source_id, target_id, predicate? }
-  };
-}
 
 export default function useQuestionStore() {
   // const [concepts, setConcepts] = useState([]);
   const [question_name, updateQuestionName] = useState('');
   const [query_graph, updateQueryGraph] = useState(queryGraphUtils.getEmptyGraph());
-  const [notes, updateNotes] = useState('');
   // const [graphState, updateGraphState] = useState(graphStates.empty);
   // const [graphState, updateGraphState] = useState('empty');
   // const [panelState, updatePanelState] = useState([]);
@@ -26,40 +17,10 @@ export default function useQuestionStore() {
   function resetQuestion() {
     updateQuestionName('');
     updateQueryGraph(queryGraphUtils.getEmptyGraph());
-    updateNotes('');
     // updateGraphState('empty');
     // updatePanelState([]);
     // setActivePanelInd(null);
     // updateActivePanelState({});
-  }
-
-  /**
-   * Returns a full question
-   */
-  function makeQuestion() {
-    const newQueryGraph = getEmptyQueryGraph();
-    const nodeIdMap = new Map(); // Mapping between internal integer ids to string ids for external consumption
-    panelState.forEach((panel) => {
-      if (isNode(panel)) {
-        nodeIdMap.set(panel.id, `n${panel.id}`); // Convert integer id back to string for export
-      }
-    });
-    panelState.forEach((panel) => {
-      if (isNode(panel)) {
-        const { deleted, curieEnabled, ...panelJson } = panel.toJsonObj();
-        panelJson.id = nodeIdMap.get(panelJson.id);
-        newQueryGraph.nodes.push(panelJson);
-      }
-      if (isEdge(panel)) {
-        const { predicate, ...panelJson } = panel.toJsonObj();
-        const typeObj = predicate ? { type: predicate } : {}; // Remap internal `predicate` field to `type` field
-        panelJson.id = `e${panelJson.id}`; // Convert integer id back to string for export
-        panelJson.source_id = nodeIdMap.get(panelJson.source_id);
-        panelJson.target_id = nodeIdMap.get(panelJson.target_id);
-        newQueryGraph.edges.push({ ...typeObj, panelJson });
-      }
-    });
-    return { question_name, query_graph: newQueryGraph };
   }
 
   /**
@@ -109,7 +70,6 @@ export default function useQuestionStore() {
     // showPanelModal,
     // newQuestionPanel,
     updateQuestionName,
-    makeQuestion,
     resetQuestion,
     // openQuestionPanel,
     // togglePanelModal,

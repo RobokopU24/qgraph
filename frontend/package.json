@@ -21,6 +21,7 @@
     "css-loader": "^3.6.0",
     "eslint": "^7.5.0",
     "eslint-config-airbnb": "^18.2.0",
+    "eslint-formatter-summary": "^1.0.5",
     "eslint-import-resolver-webpack": "^0.13.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-jsx-a11y": "^6.3.1",
@@ -84,7 +85,9 @@
     "build": "webpack --watch --config webpack.dev.js",
     "hot-reload": "HOT_RELOAD=true node server.js",
     "webpackProd": "webpack --mode=production --config webpack.prod.js",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint src/",
+    "lint-summary": "eslint -f summary src/"
   },
   "repository": {
     "type": "git",
