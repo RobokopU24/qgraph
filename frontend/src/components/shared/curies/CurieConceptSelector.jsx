@@ -1,6 +1,8 @@
 import React, {
-  useEffect, useRef, useCallback, useContext,
+  useEffect, useRef, useCallback, useContext, useImperativeHandle, forwardRef,
 } from 'react';
+
+import ReactDOM from 'react-dom';
 
 import {
   FormControl, Button, Badge, InputGroup,
@@ -13,15 +15,27 @@ import entityNameDisplay from '@/utils/entityNameDisplay';
 import getNodeTypeColorMap from '@/utils/colorUtils';
 import curieUrls from '@/utils/curieUrls';
 
-export default function CurieConceptSelector({
+function CurieConceptSelector({
   concepts,
   curies,
   selection, handleSelect,
   searchTerm, updateSearchTerm,
   loading,
   rightButtonFunction, rightButtonContents,
-}) {
-  const input = useRef(null);
+}, ref) {
+  // Allow parent to access input element as ref
+  // Useful for being able to call focus method
+  const inputRef = useRef(null);
+  useImperativeHandle(ref, () => ({
+    focus: () => {
+      // We have to use the deprecated find-dom-node method
+      // because react-bootstrap doesn't expose an alternative interface
+
+      // eslint-disable-next-line react/no-find-dom-node
+      const node = ReactDOM.findDOMNode(inputRef.current);
+      node.focus();
+    },
+  }));
 
   function rowRenderer({
     index,
@@ -122,7 +136,7 @@ export default function CurieConceptSelector({
             className="curieSelectorInput"
             placeholder="Start typing to search."
             value={searchTerm}
-            inputRef={(ref) => { input.current = ref; }}
+            ref={inputRef}
             onChange={(e) => updateSearchTerm(e.target.value)}
           />
           {!showOptions && selection.curie.length > 0 && (
@@ -173,3 +187,5 @@ export default function CurieConceptSelector({
     </>
   );
 }
+
+export default forwardRef(CurieConceptSelector);

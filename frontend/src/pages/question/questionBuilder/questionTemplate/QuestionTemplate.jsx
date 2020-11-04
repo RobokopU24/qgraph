@@ -8,12 +8,8 @@ import shortid from 'shortid';
 import _ from 'lodash';
 
 import questionTemplates from '@/questionTemplates';
-import config from '@/config.json';
 
-import API from '@/API';
-import AlertContext from '@/context/alert';
-
-import CurieConceptSelector from '@/components/shared/curies/CurieConceptSelector';
+import FillIdentifier from './subComponents/FillIdentifier';
 
 function extractDetails(questionTemplate) {
   const newTypes = [];
@@ -61,44 +57,16 @@ export default function QuestionTemplateModal(props) {
   const [types, setTypes] = useState([]);
   const [labels, setLabels] = useState([]);
   const [curies, setCuries] = useState([]);
-  const curieSelector = useRef({});
 
-  const displayAlert = useContext(AlertContext);
+  // Using a ref here ensures that we have an up-to-date nameList value
+  // in the setFocus method
+  const nameListRef = useRef(null);
+  nameListRef.current = nameList;
 
-  async function fetchCuries(newSearchTerm) {
-    // Get and update list of curies
-    const response = await API.ranker.entityLookup(newSearchTerm);
-    if (response.status === 'error' || !_.isArray(response)) {
-      displayAlert('error',
-        'Failed to contact server to search curies. You will still be able to select generic types. Please try again later');
-    } else {
-      node.updateCuries(response);
-    }
-    node.setLoading(false);
-  }
+  function setFocus(i) {
+    if (nameListRef.current.length === 0) return;
 
-  // Create a debounced version that persists on renders
-  const fetchCuriesDebounced = useCallback(
-    _.debounce(fetchCuries, 500),
-    [],
-  );
-
-  async function updateSearchTerm(value) {
-    // Clear existing selection
-    node.clearSelection();
-    // Clear existing curies
-    node.updateCuries([]);
-    // Update list of concepts
-    node.updateFilteredConcepts(value);
-    // Update search term
-    node.setSearchTerm(value);
-
-    node.setLoading(true);
-    fetchCuriesDebounced(value);
-  }
-
-  function setFocus(num) {
-    curieSelector.current[`curie${num}`].curieSelector.input.focus();
+    nameListRef.current[i].ref.current.focus();
   }
 
   function replaceName(qName, newTypes) {
@@ -110,7 +78,6 @@ export default function QuestionTemplateModal(props) {
       const nameRegex = `$name${num}$`;
       const idRegex = `($identifier${num}$)`;
       if (question[i] === nameRegex) {
-        // onClick=this[curie${num - 1}].refs.curieSelector.refs.input.focus()
         const refNum = num - 1;
         question[i] = (
           <button
@@ -125,7 +92,7 @@ export default function QuestionTemplateModal(props) {
           </button>
         );
         newNameList.push({
-          nameIndex: i, name: '', id: '', ider: refNum,
+          nameIndex: i, name: '', id: '', ider: refNum, ref: { current: null },
         });
         for (let j = i; j < question.length; j += 1) {
           if (question[j] === idRegex) {
@@ -173,50 +140,51 @@ export default function QuestionTemplateModal(props) {
     setDisableSubmit(false);
   }
 
-  function handleCurieChange(index, type, label, curie) {
+  function handleIdentifierChange(index, value) {
+    const { curie, name: label } = value;
+
+    // Values that we update during this function
+    const newQuestionName = [...questionName];
+    const newNameList = [...nameList];
+    const newLabels = [...labels];
+    const newCuries = [...curies];
+
     nameList.forEach((name, i) => {
       if (name.ider === index && label && curie) {
-        questionName[name.nameIndex] = `${label} (${curie})`;
-        nameList[i].name = label;
-        nameList[i].id = curie;
-        labels[index] = label;
-        curies[index] = curie;
-        this.setState({
-          questionName, nameList, labels, curies,
-        }, () => {
-          // check to see if all entries in nameList have a label and curie and update question template if they do.
-          const update = nameList.every((nameObj) => nameObj.name && nameObj.id);
-          if (update) {
-            updateQuestionTemplate();
-          }
-        });
+        newQuestionName[name.nameIndex] = `${label} (${curie})`;
+        newNameList[i].name = label;
+        newNameList[i].id = curie;
+        newLabels[index] = label;
+        newCuries[index] = curie;
+        // check to see if all entries in nameList have a label and curie and update question template if they do.
+        const update = newNameList.every((nameObj) => nameObj.name && nameObj.id);
+        if (update) {
+          updateQuestionTemplate();
+        }
       } else if (name.ider === index && !label && !curie) {
         // we delete whatever was there before. Disable the submit button.
-        questionName[name.nameIndex] = (
+        newQuestionName[name.nameIndex] = (
           <button
             type="button"
             style={{
               textDecoration: 'underline', color: 'grey', border: 'none', backgroundColor: 'white',
             }}
-            onClick={() => setFocus(name.ider)}
+            onClick={() => setFocus(i)}
             key={shortid.generate()}
           >
             {types[name.ider]}
           </button>
         );
-        labels[name.ider] = '';
-        curies[name.ider] = '';
+        newLabels[name.ider] = '';
+        newCuries[name.ider] = '';
         setDisableSubmit(true);
       }
-      updateQuestionName([...questionName]);
-      updateNameList([...nameList]);
-      setLabels([...labels]);
-      setCuries([...curies]);
-    });
-  }
 
-  function handleCurieSearch(input, type) {
-    return this.appConfig.questionNewSearch(input, type);
+      updateQuestionName(newQuestionName);
+      updateNameList(newNameList);
+      setLabels(newLabels);
+      setCuries(newCuries);
+    });
   }
 
   function submitTemplate() {
@@ -265,13 +233,17 @@ export default function QuestionTemplateModal(props) {
                 display: 'block', width: '100%', margin: '20px 0px', height: '45px', fontSize: '20px', textAlign: 'center', cursor: 'default',
               }}
             >
-              {displayQuestion(_.cloneDeep(questionName))}
+              {displayQuestion(questionName)}
             </h4>
             <p>Choose curies below to fill out the template.</p>
           </div>
         )}
         {nameList.map((name, i) => (
-          <></>
+          <FillIdentifier
+            key={i}
+            onSelect={(v) => handleIdentifierChange(i, v)}
+            ref={name.ref}
+          />
         ))}
       </Modal.Body>
       <Modal.Footer>
