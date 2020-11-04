@@ -1,7 +1,7 @@
 {
-    "name": "WF2 Module 1d - $name1$ ($identifier1$)",
-    "natural_question": "WF2 Module 1a : $name1$ ($identifier1$) to genes to disease-related-chemical-similar genes.",
-    "query_graph": {
+    "name": "WF2 Module 1a - $name1$ ($identifier1$)",
+    "natural_question": "WF2 Module 1a : $name1$ ($identifier1$) to genes to disease-related-process-similar genes.",
+    "machine_question": {
       "nodes": [
             {
                 "id": "n0",
@@ -16,7 +16,7 @@
             },
             {
                 "id": "n2",
-                "type": "chemical_substance",
+                "type": "biological_process_or_activity",
 		"set": true
             },
             {

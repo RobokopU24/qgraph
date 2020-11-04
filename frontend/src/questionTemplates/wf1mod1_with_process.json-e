@@ -1,27 +1,26 @@
 {
-    "name": "WF2 Module 1d - $name1$ ($identifier1$)",
-    "natural_question": "WF2 Module 1a : $name1$ ($identifier1$) to genes to disease-related-chemical-similar genes.",
-    "query_graph": {
-      "nodes": [
+    "name": "WF1 Module 1 (version 2) - $name1$ ($identifier1$)",
+    "natural_question": "WF1 Module 1 (version 2): $name1$ ($identifier1$) to phenotype feature to genetic condition with shared biological process.",
+    "machine_question": {
+        "nodes": [
             {
                 "id": "n0",
                 "type": "disease",
-                "curie": [
-                  "$identifier1$"
-                ]
+                "curie": "$identifier1$"
             },
             {
                 "id": "n1",
-                "type": "gene"
+                "type": "phenotypic_feature",
+                "set": true
             },
             {
                 "id": "n2",
-                "type": "chemical_substance",
-		"set": true
+                "type": "genetic_condition"
             },
             {
                 "id": "n3",
-                "type": "gene"
+                "type": "biological_process_or_activity",
+                "set": true
             }
         ],
         "edges": [
@@ -37,15 +36,14 @@
             },
             {
                 "id": "e2",
-                "source_id": "n3",
-                "target_id": "n2"
+                "source_id": "n0",
+                "target_id": "n3"
             },
             {
                 "id": "e3",
-                "source_id": "n0",
+                "source_id": "n3",
                 "target_id": "n2"
             }
-
         ]
     }
 }

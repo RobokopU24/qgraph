@@ -1,7 +1,7 @@
 {
     "name": "WF1 Module 1 - $name1$ ($identifier1$)",
     "natural_question": "WF1 Module 1 : $name1$ ($identifier1$) to phenotypes to genetic condition.",
-    "query_graph": {
+    "machine_question": {
       "nodes": [
             {
                 "id": "n0",

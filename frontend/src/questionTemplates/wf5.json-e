@@ -1,11 +1,10 @@
 {
-  "name": "WF4 - $name1$ ($identifier1$)",
-  "natural_question": "WF4: $name1$ ($identifier1$) to gene to biological process or activity to gene to chemical substance.",
-  "query_graph": {
-    "nodes": [
-      {
+  "name": "WF5 - $name1$ ($identifier1$)",
+  "natural_question": "WF5 - $name1$ ($identifier1$) to gene to biological process or activity to phenotypic feature",
+  "machine_question": {
+    "nodes": [{
         "id": "n0",
-        "type": "phenotypic_feature",
+        "type": "chemical_substance",
         "curie": [
           "$identifier1$"
         ]
@@ -16,16 +15,11 @@
       },
       {
         "id": "n2",
-        "type": "biological_process_or_activity",
-        "set": true
+        "type": "biological_process_or_activity"
       },
       {
         "id": "n3",
-        "type": "gene"
-      },
-      {
-        "id": "n4",
-        "type": "chemical_substance"
+        "type": "phenotypic_feature"
       }
     ],
     "edges": [{
@@ -42,11 +36,6 @@
         "id": "e2",
         "source_id": "n2",
         "target_id": "n3"
-      },
-      {
-        "id": "e3",
-        "source_id": "n3",
-        "target_id": "n4"
       }
     ]
   }

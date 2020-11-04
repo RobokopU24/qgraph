@@ -1,7 +1,7 @@
 {
     "name": "Repurposing by Gene - $name1$ ($identifier1$)",
     "natural_question": "Find a drug to treat $name1$ ($identifier1$) by finding treatable diseases sharing genetics.",
-    "machine_question": {
+    "query_graph": {
       "nodes": [
             {
                 "id": "n0",

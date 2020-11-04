@@ -1,7 +1,7 @@
 {
   "name": "WF4 - $name1$ ($identifier1$)",
   "natural_question": "WF4: $name1$ ($identifier1$) to gene to biological process or activity to gene to chemical substance.",
-  "query_graph": {
+  "machine_question": {
     "nodes": [
       {
         "id": "n0",

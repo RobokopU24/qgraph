@@ -1,7 +1,7 @@
 {
-    "name": "WF2 Module 1d - $name1$ ($identifier1$)",
-    "natural_question": "WF2 Module 1a : $name1$ ($identifier1$) to genes to disease-related-chemical-similar genes.",
-    "query_graph": {
+    "name": "Repurposing by Gene - $name1$ ($identifier1$)",
+    "natural_question": "Find a drug to treat $name1$ ($identifier1$) by finding treatable diseases sharing genetics.",
+    "machine_question": {
       "nodes": [
             {
                 "id": "n0",
@@ -16,12 +16,11 @@
             },
             {
                 "id": "n2",
-                "type": "chemical_substance",
-		"set": true
+                "type": "disease"
             },
             {
                 "id": "n3",
-                "type": "gene"
+                "type": "chemical_substance"
             }
         ],
         "edges": [
@@ -37,13 +36,14 @@
             },
             {
                 "id": "e2",
-                "source_id": "n3",
-                "target_id": "n2"
+                "source_id": "n1",
+                "target_id": "n3"
             },
             {
                 "id": "e3",
-                "source_id": "n0",
-                "target_id": "n2"
+                "source_id": "n3",
+                "target_id": "n2",
+                "type": "treats"
             }
 
         ]

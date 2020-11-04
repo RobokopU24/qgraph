@@ -1,7 +1,7 @@
 {
     "name": "Expand - $name1$ ($identifier1$) to $type2$",
     "natural_question": "What $type2$s are associated with $name1$ ($identifier1$)?",
-    "query_graph": {
+    "machine_question": {
       "nodes": [
             {
                 "id": "n0",

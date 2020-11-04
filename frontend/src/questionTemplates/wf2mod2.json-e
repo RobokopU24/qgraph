@@ -1,6 +1,6 @@
 {
   "natural_question": "WF2mod2 property $identifier2$ and disease $name1$ ($identifier1$)?",
-  "query_graph": {
+  "machine_question": {
     "nodes": [
       {
         "id": "n0",

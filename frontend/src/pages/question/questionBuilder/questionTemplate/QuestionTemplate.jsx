@@ -15,7 +15,7 @@ function extractDetails(questionTemplate) {
   const newTypes = [];
   const newLabels = [];
   const newCuries = [];
-  questionTemplate.machine_question.nodes.forEach((node) => {
+  questionTemplate.query_graph.nodes.forEach((node) => {
     if (node.curie) {
       // we're going to grab the number of the identifier from the curie and add that node's type to the list of types in its correct spot.
       if (Array.isArray(node.curie)) {
@@ -121,18 +121,18 @@ export default function QuestionTemplateModal(props) {
   function updateQuestionTemplate() {
     questionTemplate.natural_question = questionName.join(' ');
     let num = 0;
-    questionTemplate.machine_question.nodes.forEach((node, index) => {
+    questionTemplate.query_graph.nodes.forEach((node, index) => {
       if (node.curie) {
         if (Array.isArray(node.curie)) {
           node.curie.forEach((curie, i) => {
             // TODO: num only works if there's only one curie in the array. So far, that's the only case.
-            questionTemplate.machine_question.nodes[index].curie[i] = nameList[num].id;
-            questionTemplate.machine_question.nodes[index].name = nameList[num].name;
+            questionTemplate.query_graph.nodes[index].curie[i] = nameList[num].id;
+            questionTemplate.query_graph.nodes[index].name = nameList[num].name;
             num += 1;
           });
         } else {
-          questionTemplate.machine_question.nodes[index].curie = nameList[0].id;
-          questionTemplate.machine_question.nodes[index].name = nameList[0].name;
+          questionTemplate.query_graph.nodes[index].curie = nameList[0].id;
+          questionTemplate.query_graph.nodes[index].name = nameList[0].name;
         }
       }
     });

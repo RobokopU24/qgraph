@@ -1,7 +1,7 @@
 {
   "name": "WF1 Module 3 (version 2) - $name1$ ($identifier1$)",
   "natural_question": "WF1 Module 3 (version 2) - $name1$ ($identifier1$) to chemical_substance to gene to chemical_substance",
-  "machine_question": {
+  "query_graph": {
     "nodes": [{
         "id": "n0",
         "type": "disease",

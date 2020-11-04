@@ -1,6 +1,6 @@
 {
   "natural_question": "COP for $name1$ ($identifier1$) and $name2$ ($identifier2$)?",
-  "machine_question": {
+  "query_graph": {
     "nodes": [
       {
         "id": "node0",
