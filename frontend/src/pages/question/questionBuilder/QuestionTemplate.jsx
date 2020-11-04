@@ -109,6 +109,7 @@ export default function QuestionTemplateModal(props) {
     setLabels(newLabels);
   }
 
+  /*
   function updateQuestionTemplate() {
     questionTemplate.natural_question = questionName.join(' ');
     let num = 0;
@@ -130,6 +131,7 @@ export default function QuestionTemplateModal(props) {
     setQuestionTemplate({ ...questionTemplate });
     setDisableSubmit(false);
   }
+  */
 
   function handleCurieChange(index, type, label, curie) {
     nameList.forEach((name, i) => {

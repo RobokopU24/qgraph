@@ -190,7 +190,7 @@ class BionamesBrowser extends React.Component {
     );
   }
 
-  renderThinking() {
+  static renderThinking() {
     return (
       <div
         style={{

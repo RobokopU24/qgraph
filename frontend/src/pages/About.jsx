@@ -5,7 +5,7 @@ import {
 } from 'react-bootstrap';
 
 export default function About() {
-  const [licenses, updateLicenses] = useState([]);
+  const [licenses] = useState([]);
 
   useEffect(() => {
     // this.appConfig.licenses(

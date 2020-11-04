@@ -1,7 +1,6 @@
 import React from 'react';
 import { Modal, ButtonGroup, Button } from 'react-bootstrap';
 import { FaSave, FaTrash, FaUndo } from 'react-icons/fa';
-import _ from 'lodash';
 
 // import { panelTypes } from '../../../stores/newQuestionStore';
 import HelpButton from '../../../components/shared/HelpButton';

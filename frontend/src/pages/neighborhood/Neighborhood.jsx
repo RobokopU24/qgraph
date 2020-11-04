@@ -48,11 +48,11 @@ export default function Neighborhood(props) {
     );
   }
 
-  function getNeighborhood(curie) {
+  function getNeighborhood(givenCurie) {
     setNeighborhoodLoading(true);
     setNeighborhoodReady(false);
     appConfig.neighborhood(
-      curie,
+      givenCurie,
       (res) => {
         setNeighborhoodLoading(false);
         setNeighborhoodReady(true);
