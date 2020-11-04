@@ -233,7 +233,7 @@ export default function QuestionTemplateModal(props) {
                 display: 'block', width: '100%', margin: '20px 0px', height: '45px', fontSize: '20px', textAlign: 'center', cursor: 'default',
               }}
             >
-              {displayQuestion(questionName)}
+              {displayQuestion(_.cloneDeep(questionName))}
             </h4>
             <p>Choose curies below to fill out the template.</p>
           </div>
@@ -243,6 +243,7 @@ export default function QuestionTemplateModal(props) {
             key={i}
             onSelect={(v) => handleIdentifierChange(i, v)}
             ref={name.ref}
+            type={types[i]}
           />
         ))}
       </Modal.Body>

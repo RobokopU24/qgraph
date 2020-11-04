@@ -11,7 +11,7 @@ import CurieConceptSelector from '@/components/shared/curies/CurieConceptSelecto
 
 import AlertContext from '@/context/alert';
 
-function FillIdentifier({ onSelect }, ref) {
+function FillIdentifier({ onSelect, type }, ref) {
   const displayAlert = useContext(AlertContext);
 
   const [curies, updateCuries] = useState([]);
@@ -36,7 +36,10 @@ function FillIdentifier({ onSelect }, ref) {
       displayAlert('error',
         'Failed to contact server to search curies. You will still be able to select generic types. Please try again later');
     } else {
-      updateCuries(response);
+      // Filter out curies based on type
+      updateCuries(
+        response.filter((c) => c.type.includes(type)),
+      );
     }
     setLoading(false);
   }
@@ -62,6 +65,7 @@ function FillIdentifier({ onSelect }, ref) {
   function handleSelect(value) {
     value.curie = [value.curie];
     updateSelection(value);
+    setSearchTerm(value.name);
     onSelect(value);
   }
 
