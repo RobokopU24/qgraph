@@ -37,3 +37,37 @@ jobs:
         run: |
           echo '${{ env.ESLINT_OUTPUT }}' >> eslint_output.txt
           if grep -c -E '[0-9]* problem' eslint_output.txt; then exit 1; fi
+  test:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
+      # Cache docker layers for faster build
+      - uses: satackey/action-docker-layer-caching@v0.0.8
+        # Ignore the failure of a step and avoid terminating the job.
+        continue-on-error: true
+
+      - name: Build
+        run: (cd frontend/ && docker build -t frontend -f Dockerfile.dev .)
+        
+
+      - name: Run Jest and get output
+        run: |
+          echo 'TEST_OUTPUT<<EOF' >> $GITHUB_ENV
+          echo "$(docker run frontend npm run test)" >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
+
+      - name: Report Test information as comment on pull request
+        uses: mshick/add-pr-comment@v1
+        with:
+          message: ${{ env.TEST_OUTPUT }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
+          allow-repeats: true
+
+      - name: Fail job if there are Test errors
+        run: |
+          echo '${{ env.TEST_OUTPUT }}' >> test_output.txt
+          if grep -c -E '[0-9]* problem' test_output.txt; then exit 1; fi
