@@ -16,7 +16,7 @@ import config from '@/config.json';
 import AlertContext from '@/context/alert';
 import NewQuestionButtons from './NewQuestionButtons';
 import QuestionGraphViewContainer from './QuestionGraphViewContainer';
-import QuestionTemplateModal from './QuestionTemplate';
+import QuestionTemplateModal from './questionTemplate/QuestionTemplate';
 import QuestionListModal from './QuestionListModal';
 
 /**

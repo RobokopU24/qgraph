@@ -1,4 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, {
+  useState, useRef, useContext, useCallback,
+} from 'react';
 import {
   Modal, DropdownButton, MenuItem, Button,
 } from 'react-bootstrap';
@@ -269,15 +271,7 @@ export default function QuestionTemplateModal(props) {
           </div>
         )}
         {nameList.map((name, i) => (
-          <CurieConceptSelector
-            curies={curies}
-            concepts={[]}
-            selection={}
-            onChangeHook={(ty, te, cu) => handleCurieChange(i, ty, te, cu)}
-            initialInputs={{ curie: curies[i], term: labels[i], type: types[i] }}
-            disableType
-            search={handleCurieSearch}
-          />
+          <></>
         ))}
       </Modal.Body>
       <Modal.Footer>
