@@ -74,9 +74,6 @@ export default function useMessageStore() {
   function getNumQgNodes() {
     return getNumNodes('query_graph');
   }
-  function getGraphNode(graph, nodeId) {
-    return graph.nodes.find((node) => node.id === nodeId);
-  }
   function getGraphEdge(graph, edgeId) {
     return graph.edges.find((edge) => edge.id === edgeId);
   }
@@ -197,14 +194,14 @@ export default function useMessageStore() {
     }
 
     // Now sort for each qNode, by aggScore and retain a max of Nj nodes for each qNodeId
-    let extraNumNodes = 0; // Increment if any qNodeId utilizes less than Nj nodes
+    // let extraNumNodes = 0; // Increment if any qNodeId utilizes less than Nj nodes
     let unselectedScoreObjArrMap = []; // Array of { scoreVector, aggScore, kGNodeId } objects that were not selected
     Object.keys(rankedQgNodeMap).forEach((qGraphNodeId) => {
       rankedQgNodeMap[qGraphNodeId] = _.uniqBy(rankedQgNodeMap[qGraphNodeId], (el) => el.id); // Remove dup nodes
       rankedQgNodeMap[qGraphNodeId] = _.reverse(_.sortBy(rankedQgNodeMap[qGraphNodeId], (el) => el.aggScore || el.count));
       const numQGraphNodes = rankedQgNodeMap[qGraphNodeId].length;
       if (numQGraphNodes < Nj) {
-        extraNumNodes += Nj - numQGraphNodes;
+      //  extraNumNodes += Nj - numQGraphNodes;
       } else {
         unselectedScoreObjArrMap = unselectedScoreObjArrMap.concat(rankedQgNodeMap[qGraphNodeId].slice(Nj));
         rankedQgNodeMap[qGraphNodeId] = rankedQgNodeMap[qGraphNodeId].slice(0, Nj);

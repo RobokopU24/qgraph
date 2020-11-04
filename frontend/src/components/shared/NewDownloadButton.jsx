@@ -16,7 +16,7 @@ export default function NewDownloadButton({ displayText, getData, fileName }) {
     if (response.status === 'error') {
       displayAlert('error', response.message);
     } else {
-      const blob = new Blob([JSON.stringify(response)], { type: 'application/json' });
+      const blob = new Blob([response], { type: 'application/json' });
       const a = document.createElement('a');
       a.download = fileName();
       a.href = window.URL.createObjectURL(blob);

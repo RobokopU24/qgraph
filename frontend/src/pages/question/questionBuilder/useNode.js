@@ -1,7 +1,5 @@
 import { useState } from 'react';
 
-import _ from 'lodash';
-
 import config from '@/config.json';
 import entityNameDisplay from '@/utils/entityNameDisplay';
 
@@ -11,8 +9,6 @@ export default function useNodePanels() {
   const [name, setName] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [curie, setCurie] = useState([]);
-  const [properties, setProperties] = useState([]);
-  const [curieEnabled, setCurieEnabled] = useState(false);
   const [set, setSet] = useState(false);
   const [regular, setRegular] = useState(false);
   const [concepts, setConcepts] = useState([]);
@@ -26,8 +22,6 @@ export default function useNodePanels() {
     setName('');
     setSearchTerm('');
     setCurie([]);
-    setProperties([]);
-    setCurieEnabled(false);
     setSet(false);
     setRegular(false);
     // setConceptsWithSets([]);
