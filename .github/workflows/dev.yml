@@ -53,10 +53,10 @@ jobs:
         run: (cd frontend/ && docker build -t frontend -f Dockerfile.test .)
 
 
-      - name: Run Jest and get output
+      - name: Run Jest and get output coverage
         uses: mattallty/jest-github-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           # this is just an example, this could be any command that will trigger jest
-          test-command: "docker run frontend npm test"
+          test-command: "docker run frontend npm run test:cov"
