@@ -58,7 +58,7 @@ jobs:
           docker cp frontend:/app/jest.results.json .
 
       - name: Report Jest results
-        uses: wildone/jest-github-action
+        uses: wildone/jest-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
