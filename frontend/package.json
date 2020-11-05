@@ -87,7 +87,7 @@
     "lint": "eslint src/",
     "lint-summary": "eslint -f summary src/",
     "test": "jest",
-    "test:cov": "jest --coverage"
+    "test:cov": "jest --coverage --json --outputFile='jest.results.json'"
   },
   "repository": {
     "type": "git",
