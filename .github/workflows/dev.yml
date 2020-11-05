@@ -52,15 +52,24 @@ jobs:
       - name: Build
         run: (cd frontend/ && docker build -t frontend -f Dockerfile.test .)
 
-      - name: Run Jest and copy output from container
-        run: |
-          docker run --name frontend frontend npm run test -- --coverage --json --outputFile='jest.results.json'
-          docker cp frontend:/app/jest.results.json .
+      - name: Run tests
+          echo 'JEST_OUTPUT<<EOF' >> $GITHUB_ENV
+          echo "$(docker run --name frontend frontend npm run test)" >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
 
-      - name: Report Jest results
-        uses: wildone/jest-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Report tests results
+        uses: mshick/add-pr-comment@v1
         with:
-          test-command: true || n
-          results-file: "jest.results.json"
+          message: ${{ env.JEST_OUTPUT }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
+
+      - name: Copy coverage output from container
+        run: |
+          docker cp frontend:/app/coverage/lcov.info .
+
+      - name: Report coverage results
+        uses: romeovs/lcov-reporter-action@v0.2.16
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          lcov-file: ./lcov.info

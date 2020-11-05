@@ -1,4 +1,6 @@
 module.exports = {
+  collectCoverage: true,
+  coverageReporters: ['lcov', 'text-summary'],
   setupFilesAfterEnv: [
     '<rootDir>/test_config/setupTests.js',
   ],
@@ -12,3 +14,4 @@ module.exports = {
     '\\.(css|less)$': '<rootDir>/test_config/assetsTransformer.js',
   },
 };
+
