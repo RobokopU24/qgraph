@@ -56,11 +56,13 @@ jobs:
         run: |
           docker run --name frontend frontend npm run test -- --coverage --json --outputFile='jest.results.json'
           docker cp frontend:/app/jest.results.json .
+          echo 'JEST_OUTPUT<<EOF' >> $GITHUB_ENV
+          echo "$(cat jest.results.json)" >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
 
       - name: Report Jest results
-        uses: wildone/jest-github-action@v1
+        uses: mattallty/jest-github-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          process-only: true
-          results-file: "jest.results.json"
+          test-command: echo "${{ env.JEST_OUTPUT }}" >> jest.results.json; true || n
