@@ -1,6 +1,6 @@
 module.exports = {
   collectCoverage: true,
-  coverageReporters: ['lcov', 'text-summary'],
+  coverageReporters: ['lcov'],
   setupFilesAfterEnv: [
     '<rootDir>/test_config/setupTests.js',
   ],
