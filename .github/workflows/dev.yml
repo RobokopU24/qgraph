@@ -70,7 +70,7 @@ jobs:
           docker cp frontend:/app/coverage/lcov.info .
 
       - name: Report coverage results
-        uses: risetechnologies/lcov-reporter-action@v1.0.4
+        uses: risetechnologies/lcov-reporter-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           lcov-file: ./lcov.info
