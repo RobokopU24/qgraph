@@ -70,7 +70,7 @@ jobs:
           docker cp frontend:/app/coverage/lcov.info .
 
       - name: Report coverage results
-        uses: romeovs/lcov-reporter-action@v0.2.16
+        uses: mszlgr/lcov-reporter-action@v0.2.27
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           lcov-file: ./lcov.info
