@@ -48,7 +48,7 @@ function displayQuestion(questionName) {
 
 export default function QuestionTemplateModal(props) {
   const {
-    selectQuestion, showModal, concepts, close,
+    selectQuestion, showModal, close,
   } = props;
   const [questionTemplate, setQuestionTemplate] = useState({});
   const [questionName, updateQuestionName] = useState([]);
@@ -200,6 +200,7 @@ export default function QuestionTemplateModal(props) {
 
   return (
     <Modal
+      style={{ marginTop: '5%' }}
       show={showModal}
       backdrop
       onHide={close}
@@ -240,7 +241,7 @@ export default function QuestionTemplateModal(props) {
         )}
         {nameList.map((name, i) => (
           <FillIdentifier
-            key={i}
+            key={types[i] + i}
             onSelect={(v) => handleIdentifierChange(i, v)}
             ref={name.ref}
             type={types[i]}
