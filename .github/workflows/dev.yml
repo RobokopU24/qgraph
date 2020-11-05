@@ -62,5 +62,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          process-only: true
+          test-command: true || n
           results-file: "jest.results.json"
