@@ -1,6 +1,8 @@
 module.exports = {
-  collectCoverage: true,
-  coverageReporters: ['lcov'],
+  collectCoverageFrom: [
+    "src/**",
+    "queryDispatcher/**",
+  ],
   setupFilesAfterEnv: [
     '<rootDir>/test_config/setupTests.js',
   ],

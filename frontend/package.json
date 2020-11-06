@@ -86,7 +86,9 @@
     "webpackProd": "webpack --mode=production --config webpack.prod.js",
     "lint": "eslint src/",
     "lint-summary": "eslint -f summary src/",
-    "test": "jest"
+    "test": "jest",
+    "test:cov": "jest --coverage",
+    "test:pr": "jest --coverage --coverageReporters='lcov'"
   },
   "repository": {
     "type": "git",
