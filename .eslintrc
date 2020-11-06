@@ -1,7 +1,7 @@
 {
   "extends": "airbnb-base",
   "env": {
-    "node": true,
+    "node": true
   },
   "rules": {
     "indent": ["error", 2],
@@ -9,6 +9,6 @@
     "camelcase": "off",
     "no-return-assign": ["error", "except-parens"],
     "no-param-reassign": ["error", { "props": false }],
-    "operator-linebreak": "off",
+    "operator-linebreak": "off"
   }
 }
