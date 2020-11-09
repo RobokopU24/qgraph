@@ -5,13 +5,14 @@ import {
 } from 'react-bootstrap';
 
 export default function About() {
-  const [licenses] = useState([]);
+  const [licenses, updateLicenses] = useState([]);
 
   useEffect(() => {
     // this.appConfig.licenses(
     //   licenses => this.setState({ licenses }),
     //   err => console.log('Failed to retrieve license information. This may indicate a connection issue.', err),
     // );
+    updateLicenses([]);
   }, []);
 
   return (

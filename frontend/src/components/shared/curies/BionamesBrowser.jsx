@@ -37,10 +37,8 @@ class BionamesBrowser extends React.Component {
     style,
   }) {
     const d = this.props.data[index];
-    const curie = d.value;
-    const name = d.label;
+    const { degree, value: curie, label: name } = d;
     const types = d.type.slice();
-    const { degree } = d;
 
     // types is a list of all the types for this node.
     // We want to assign a set of color stripes to the row in the search table corresponding to these types
@@ -143,19 +141,21 @@ class BionamesBrowser extends React.Component {
         >
           {name}
         </div>
-        <div style={{
-          display: 'table-cell',
-          width: '150px',
-          verticalAlign: 'middle',
-        }}
+        <div
+          style={{
+            display: 'table-cell',
+            width: '150px',
+            verticalAlign: 'middle',
+          }}
         >
           {curie}
         </div>
-        <div style={{
-          display: 'table-cell',
-          width: '50px',
-          verticalAlign: 'middle',
-        }}
+        <div
+          style={{
+            display: 'table-cell',
+            width: '50px',
+            verticalAlign: 'middle',
+          }}
         >
           <span
             title={`${degree} known connections`}

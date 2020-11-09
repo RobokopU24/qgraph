@@ -87,9 +87,9 @@ class PubmedEntry extends React.Component {
               <p style={{ margin: '2px' }}>{authorFrag}</p>
             </Media.Body>
           </div>
-        )
-          :
-          'Loading...'}
+        ) : (
+          'Loading...'
+        )}
       </Media>
     );
   }
