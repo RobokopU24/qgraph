@@ -1,7 +1,7 @@
 module.exports = {
   collectCoverageFrom: [
-    "src/**",
-    "queryDispatcher/**",
+    'src/**',
+    'queryDispatcher/**',
   ],
   setupFilesAfterEnv: [
     '<rootDir>/test_config/setupTests.js',
@@ -16,4 +16,3 @@ module.exports = {
     '\\.(css|less)$': '<rootDir>/test_config/assetsTransformer.js',
   },
 };
-

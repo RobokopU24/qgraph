@@ -12,6 +12,7 @@ export default function About() {
     //   licenses => this.setState({ licenses }),
     //   err => console.log('Failed to retrieve license information. This may indicate a connection issue.', err),
     // );
+    updateLicenses([]);
   }, []);
 
   return (

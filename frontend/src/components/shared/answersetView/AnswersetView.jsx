@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import {
-  Row, Col, Grid, Tabs, Tab,
+  Grid, Tabs, Tab,
 } from 'react-bootstrap';
 
 import KnowledgeGraph from '../graphs/KnowledgeGraph';
@@ -35,25 +35,6 @@ export default function AnswersetView(props) {
     messageStore, concepts, style,
   } = props;
   const [tabKey, setTabKey] = useState(answerSetTabEnum.answerTable);
-
-  function onDownload() {
-    const data = messageStore.message;
-
-    // Transform the data into a json blob and give it a url
-    const json = JSON.stringify(data);
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-
-    // This doesn't use Blob() might also work
-    // var url = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
-
-    // Create a link with that URL and click it.
-    const a = document.createElement('a');
-    a.download = 'answerset.json';
-    a.href = url;
-    a.click();
-    a.remove();
-  }
 
   const hasResults = messageStore.message && messageStore.message.results && Array.isArray(messageStore.message.results) && messageStore.message.results.length > 0;
   return (
