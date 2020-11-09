@@ -2,14 +2,12 @@ import React from 'react';
 import { Modal, ButtonGroup, Button } from 'react-bootstrap';
 import { FaSave, FaTrash, FaUndo } from 'react-icons/fa';
 
-// import { panelTypes } from '../../../stores/newQuestionStore';
-import HelpButton from '../../../components/shared/HelpButton';
-import getNodeTypeColorMap from '../../../utils/colorUtils';
+import config from '@/config.json';
+import HelpButton from '@/components/shared/HelpButton';
+import getNodeTypeColorMap from '@/utils/colorUtils';
 import EdgePanel from './EdgePanel';
 import NodePanel from './NodePanel';
 import './panels.css';
-
-import config from '../../../config.json';
 
 /**
  * Modal for creation of a new node or edge
