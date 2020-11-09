@@ -165,6 +165,7 @@ export default function useNewQuestionPanel() {
     q_graph.nodes[panelInfo.id].deleted = true;
     const trimmedQueryGraph = trimFloatingNodes(q_graph);
     updateQueryGraph(trimmedQueryGraph);
+    return trimmedQueryGraph;
   }
 
   /**
@@ -175,6 +176,7 @@ export default function useNewQuestionPanel() {
     delete q_graph.edges[panelInfo.id];
     const trimmedQueryGraph = trimFloatingNodes(q_graph);
     updateQueryGraph(trimmedQueryGraph);
+    return trimmedQueryGraph;
   }
 
   function saveActivePanel() {

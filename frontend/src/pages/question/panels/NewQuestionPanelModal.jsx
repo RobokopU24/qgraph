@@ -73,9 +73,13 @@ export default function NewQuestionPanelModal({ panelStore, onQuestionUpdated })
               onClick={() => {
                 if (!isNewPanel) {
                   if (isNodePanel) {
-                    panelStore.removeNode();
+                    const updatedQueryGraph = panelStore.removeNode();
+                    // propogate node removal to query graph
+                    onQuestionUpdated(updatedQueryGraph);
                   } else {
-                    panelStore.removeEdge();
+                    const updatedQueryGraph = panelStore.removeEdge();
+                    // propogate edge removal to query graph
+                    onQuestionUpdated(updatedQueryGraph);
                   }
                 }
                 panelStore.togglePanel(false);
