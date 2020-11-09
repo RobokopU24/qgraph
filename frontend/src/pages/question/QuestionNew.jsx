@@ -84,11 +84,18 @@ export default function QuestionNew() {
     history.push(`/question/${questionId}`);
     displayAlert('info', "Fetching answer, we will let you know when it's ready.");
 
-    response = await API.queryDispatcher.getAnswer(questionId, user.id_token);
+    // Start the process of displaying an answer and display to user when done
+    getAnswerAndDisplayAlert(questionId);
+  }
+
+  async function getAnswerAndDisplayAlert(questionId) {
+    let response = await API.queryDispatcher.getAnswer(questionId, user.id_token);
     if (response.status === 'error') {
       displayAlert('error', response.message);
       return;
     }
+    const newAnswerId = response.id;
+
     response = await API.cache.getQuestion(questionId, user.id_token);
     if (response.status === 'error') {
       displayAlert('error', response.message);
@@ -105,9 +112,11 @@ export default function QuestionNew() {
     displayAlert(
       'success',
       <>
-        <h4>A new answer is ready!</h4>
+        <h4>An answer is ready!</h4>
         <Button
-          onClick={() => history.replace(`/question/${questionId}/answer/${response.id}`)}
+          onClick={() => {
+            history.push(`/question/${questionId}/answer/${newAnswerId}`);
+          }}
           variant="contained"
         >
           View new answer
