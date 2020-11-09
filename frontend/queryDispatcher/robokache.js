@@ -1,7 +1,7 @@
 const axios = require('axios');
 const handleAxiosError = require('./utils');
 
-const base_url = `http://robokache/api/`;
+const base_url = 'http://robokache/api/';
 
 const baseRoutes = {
   async getDocumentData(doc_id, token) {
