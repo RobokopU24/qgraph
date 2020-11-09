@@ -25,7 +25,7 @@ function defaultNodePreProc(n) {
       y: -10,
     };
   }
-  if (n.curieEnabled) {
+  if ((Array.isArray(n.curie) && n.curie.length) || (n.curie && typeof n.curie === 'string')) {
     n.borderWidth = 2;
   }
   if (n.deleted) { // Set this node as hidden since it is flagged for deletion
