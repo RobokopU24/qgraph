@@ -1,4 +1,7 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext } from 'react';
+import {
+  Grid, Row,
+} from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 
 import UserContext from '@/context/user';
@@ -8,14 +11,11 @@ import API from '@/API';
 
 import Button from '@material-ui/core/Button';
 
-import AnswersetView from '@/components/shared/answersetView/AnswersetView';
-import parseMessage from '@/utils/parseMessage';
-import useMessageStore from '@/stores/useMessageStore';
-import usePageStatus from '@/utils/usePageStatus';
+import './newQuestion.css';
+
 import queryGraphUtils from '@/utils/queryGraph';
 import { useVisibility } from '@/utils/cache';
 
-import './newQuestion.css';
 import QuestionBuilder from './questionBuilder/QuestionBuilder';
 
 import useQuestionStore from './useQuestionStore';
@@ -47,45 +47,7 @@ export default function QuestionNew() {
   }
 
   function onResetQuestion() {
-    if (window.confirm('Are you sure you want to reset this question? This action cannot be undone.')) {
-      const emptyGraph = { nodes: [], edges: [] };
-      questionStore.resetQuestion();
-    }
-  }
-
-  async function onSubmit() {
-    const defaultQuestion = {
-      parent: '',
-      visibility: visibility.toInt('Private'),
-      metadata: { name: questionStore.question_name || 'New Question' },
-    };
-    let response;
-
-    response = await API.cache.createQuestion(defaultQuestion, user.id_token);
-    if (response.status === 'error') {
-      displayAlert('error', response.message);
-      return;
-    }
-    const questionId = response.id;
-
-    // Convert to reasoner representation
-    const query_graph = queryGraphUtils.convert.internalToReasoner(
-      questionStore.query_graph,
-    );
-    // Upload question data
-    const questionData = JSON.stringify({ query_graph }, null, 2);
-    response = await API.cache.setQuestionData(questionId, questionData, user.id_token);
-    if (response.status === 'error') {
-      displayAlert('error', response.message);
-      return;
-    }
-
-    // Redirect to created question
-    history.push(`/question/${questionId}`);
-    displayAlert('info', "Fetching answer, we will let you know when it's ready.");
-
-    // Start the process of displaying an answer and display to user when done
-    getAnswerAndDisplayAlert(questionId);
+    questionStore.resetQuestion();
   }
 
   async function getAnswerAndDisplayAlert(questionId) {
@@ -125,18 +87,57 @@ export default function QuestionNew() {
     );
   }
 
+  async function onSubmit() {
+    const defaultQuestion = {
+      parent: '',
+      visibility: visibility.toInt('Private'),
+      metadata: { name: questionStore.question_name || 'New Question' },
+    };
+    let response;
+
+    response = await API.cache.createQuestion(defaultQuestion, user.id_token);
+    if (response.status === 'error') {
+      displayAlert('error', response.message);
+      return;
+    }
+    const questionId = response.id;
+
+    // Convert to reasoner representation
+    const query_graph = queryGraphUtils.convert.internalToReasoner(
+      questionStore.query_graph,
+    );
+    // Upload question data
+    const questionData = JSON.stringify({ query_graph }, null, 2);
+    response = await API.cache.setQuestionData(questionId, questionData, user.id_token);
+    if (response.status === 'error') {
+      displayAlert('error', response.message);
+      return;
+    }
+
+    // Redirect to created question
+    history.push(`/question/${questionId}`);
+    displayAlert('info', "Fetching answer, we will let you know when it's ready.");
+
+    // Start the process of getting an answer and display to user when done
+    getAnswerAndDisplayAlert(questionId);
+  }
+
   return (
     <>
-      <h1 className="robokopApp">
-        Ask a Question
-        <br />
-      </h1>
-      <QuestionBuilder
-        questionStore={questionStore}
-        download={onDownloadQuestion}
-        reset={onResetQuestion}
-        submit={onSubmit}
-      />
+      <Grid>
+        <Row>
+          <h1 className="robokopApp">
+            Ask a Question
+            <br />
+          </h1>
+          <QuestionBuilder
+            questionStore={questionStore}
+            download={onDownloadQuestion}
+            reset={onResetQuestion}
+            submit={onSubmit}
+          />
+        </Row>
+      </Grid>
     </>
   );
 }

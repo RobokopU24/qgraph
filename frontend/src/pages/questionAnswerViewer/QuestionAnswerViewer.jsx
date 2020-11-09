@@ -81,7 +81,6 @@ export default function QuestionAnswerViewer() {
     const newAnswers = response;
     updateAnswers(newAnswers);
 
-    console.log(answer_id);
     if (!answer_id && newAnswers.length > 0) {
       // Set default answer to first
       history.replace(`/question/${question_id}/answer/${newAnswers[0].id}`);
