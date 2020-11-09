@@ -37,3 +37,41 @@ jobs:
         run: |
           echo '${{ env.ESLINT_OUTPUT }}' >> eslint_output.txt
           if grep -c -E '[0-9]*[1-9][0-9]* error' eslint_output.txt; then exit 1; fi
+  test:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
+      # Cache docker layers for faster build
+      - uses: satackey/action-docker-layer-caching@v0.0.8
+        # Ignore the failure of a step and avoid terminating the job.
+        continue-on-error: true
+
+      - name: Build
+        run: (cd frontend/ && docker build -t frontend -f Dockerfile.test .)
+
+      - name: Run tests
+        run: |
+          echo 'JEST_OUTPUT<<EOF' >> $GITHUB_ENV
+          echo "$(docker run --name frontend frontend npm run --silent test:pr)" >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
+
+      - name: Report tests results
+        uses: mshick/add-pr-comment@v1
+        with:
+          message: ${{ env.JEST_OUTPUT }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
+          allow-repeats: true
+
+      - name: Copy coverage output from container
+        run: |
+          docker cp frontend:/app/coverage/lcov.info .
+
+      - name: Report coverage results
+        uses: mszlgr/lcov-reporter-action@v0.2.23
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          lcov-file: ./lcov.info

@@ -9,7 +9,7 @@ import queryGraphUtils from '@/utils/queryGraph';
 import QuestionGraphView from '../../../components/shared/graphs/QuestionGraphView';
 import NewQuestionPanelModal from '../panels/NewQuestionPanelModal';
 import ButtonGroupPanel from '../subComponents/ButtonGroupPanel';
-import QuestionJsonEditor from './QuestionJsonEditor';
+import QueryJsonEditor from './QueryJsonEditor';
 
 import useNewQuestionPanel from './useNewQuestionPanel';
 
@@ -54,29 +54,12 @@ export default function QuestionGraphViewContainer(props) {
 
   /**
    * Save the value from the json editor
-   * @param {object} question json object of format
-   * @param {string} question.question_name name of the question
-   * @param {Object} question.query_graph consisting of nodes and edges
-   * @param {Array} question.query_graph.nodes an array of nodes
-   * @param {Array} question.query_graph.edges an array of edges
-   * @param {Number} question.max_connectivity max connections for question
+   * @param {Object} query json object of format
+   * @param {Object} query.query_graph consisting of nodes and edges
    */
-  function saveJsonEditor(question) {
-    try {
-      questionStore.fromListRepresentation(question);
-      toggleJsonEditor(!showJsonEditor);
-    } catch (err) {
-      console.error(err);
-      // TODO: what did this used to be?
-      // dialogMessage({
-      //   title: 'Trouble Parsing Manually edited JSON',
-      //   text: 'We ran in to problems parsing the user provided JSON. Please ensure that it is a valid MachineQuestion spec JSON file',
-      //   buttonText: 'OK',
-      //   buttonAction: () => {},
-      // });
-      // window.alert('Failed to load m Question template. Are you sure this is valid?');
-      // questionStore.setGraphState(graphStates.error);
-    }
+  function saveJsonEditor(query) {
+    questionStore.updateQueryGraph(query);
+    toggleJsonEditor(!showJsonEditor);
   }
 
   const numNodes = Object.keys(panelStore.query_graph.nodes).length;
@@ -143,21 +126,12 @@ export default function QuestionGraphViewContainer(props) {
         onQuestionUpdated={(updated_q) => questionStore.updateQueryGraph(updated_q)}
         panelStore={panelStore}
       />
-      <Modal
-        bsSize="large"
-        aria-labelledby="contained-modal-title-lg"
+      <QueryJsonEditor
         show={showJsonEditor}
-        dialogClassName="question-editor-modal"
-      >
-        <Modal.Body>
-          <QuestionJsonEditor
-            height={700}
-            questionStore={questionStore}
-            callbackSave={saveJsonEditor}
-            callbackCancel={() => toggleJsonEditor(!showJsonEditor)}
-          />
-        </Modal.Body>
-      </Modal>
+        questionStore={questionStore}
+        callbackSave={saveJsonEditor}
+        close={() => toggleJsonEditor(!showJsonEditor)}
+      />
     </div>
   );
 }

@@ -12,8 +12,10 @@ function runCommand(cmd) {
   // eslint-disable-next-line no-console
   console.log(colors.green(cmdStripped));
 
+  try {
   // Execute command with io attached to stdio
-  execSync(cmdStripped, { stdio: 'inherit' });
+    execSync(cmdStripped, { stdio: 'inherit' });
+  } catch (e) { /* continue regardless of error */ }
 }
 
 const baseCommand = 'docker-compose -f docker-compose.base.yml ';
@@ -51,6 +53,32 @@ yargs(hideBin(process.argv))
          ${baseCommand} -f docker-compose.prod.yml
          up --build --renew-anon-volumes --abort-on-container-exit
       `);
+    },
+  })
+
+  .command({
+    command: 'test',
+    describe: 'Runs tests through docker-compose and exits',
+    handler: () => {
+      runCommand(`
+        ${baseCommand} -f docker-compose.test.yml
+        up --build --renew-anon-volumes --abort-on-container-exit
+      `);
+    },
+  })
+
+  .command({
+    command: 'frontend <command>',
+    describe: 'Run an npm script defined in the frontend service',
+    handler: (argv) => {
+      // Build container
+      runCommand(`
+        (cd frontend/ && docker build -t frontend -f Dockerfile.dev .)
+      `);
+      // Run command
+      runCommand(`
+         docker run frontend npm run ${argv.command}
+        `);
     },
   })
 

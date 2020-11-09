@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
 import Landing from '@/pages/Landing';
 import About from '@/pages/About';
@@ -49,56 +49,58 @@ export default function App() {
 
   return (
     <div id="pageContainer">
-      <AlertContext.Provider value={simpleSetAlert}>
-        <UserContext.Provider value={user}>
-          <BiolinkContext.Provider value={biolink}>
-            <ThemeProvider theme={theme}>
-              <AlertWrapper
-                alert={alert}
-                onClose={() => simpleSetAlert(alert.severity, '')}
-              />
-              <Header user={user} setUser={setUser} />
-              <div id="contentContainer">
-                <Switch>
-                  <Route path="/about">
-                    <About />
-                  </Route>
-                  <Route path="/help">
-                    <Help />
-                  </Route>
-                  <Route path="/guide">
-                    <Guide isSignedIn={isSignedIn} />
-                  </Route>
-                  <Route path="/neighborhood">
-                    <Neighborhood />
-                  </Route>
-                  <Route path="/questions">
-                    <QuestionList />
-                  </Route>
-                  <Route path="/question/:question_id">
-                    <QuestionAnswerViewer />
-                  </Route>
-                  <Route path="/termsofservice">
-                    <TermsofService />
-                  </Route>
-                  <Route path="/simple/view">
-                    <SimpleViewer
-                      user={user}
-                    />
-                  </Route>
-                  <Route path="/simple/question">
-                    <SimpleQuestion />
-                  </Route>
-                  <Route path="/">
-                    <Landing isSignedIn={isSignedIn} />
-                  </Route>
-                </Switch>
-              </div>
-              <Footer />
-            </ThemeProvider>
-          </BiolinkContext.Provider>
-        </UserContext.Provider>
-      </AlertContext.Provider>
+      <BrowserRouter>
+        <AlertContext.Provider value={simpleSetAlert}>
+          <UserContext.Provider value={user}>
+            <BiolinkContext.Provider value={biolink}>
+              <ThemeProvider theme={theme}>
+                <AlertWrapper
+                  alert={alert}
+                  onClose={() => simpleSetAlert(alert.severity, '')}
+                />
+                <Header user={user} setUser={setUser} />
+                <div id="contentContainer">
+                  <Switch>
+                    <Route path="/about">
+                      <About />
+                    </Route>
+                    <Route path="/help">
+                      <Help />
+                    </Route>
+                    <Route path="/guide">
+                      <Guide isSignedIn={isSignedIn} />
+                    </Route>
+                    <Route path="/neighborhood">
+                      <Neighborhood />
+                    </Route>
+                    <Route path="/questions">
+                      <QuestionList />
+                    </Route>
+                    <Route path="/question/:question_id">
+                      <QuestionAnswerViewer />
+                    </Route>
+                    <Route path="/termsofservice">
+                      <TermsofService />
+                    </Route>
+                    <Route path="/simple/view">
+                      <SimpleViewer
+                        user={user}
+                      />
+                    </Route>
+                    <Route path="/simple/question">
+                      <SimpleQuestion />
+                    </Route>
+                    <Route path="/">
+                      <Landing isSignedIn={isSignedIn} />
+                    </Route>
+                  </Switch>
+                </div>
+                <Footer />
+              </ThemeProvider>
+            </BiolinkContext.Provider>
+          </UserContext.Provider>
+        </AlertContext.Provider>
+      </BrowserRouter>
     </div>
   );
 }
