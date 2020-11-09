@@ -2,7 +2,7 @@ import React, {
   useState, useEffect, useMemo,
 } from 'react';
 import { FaPlusSquare } from 'react-icons/fa';
-import { Modal, Button } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 
 import queryGraphUtils from '@/utils/queryGraph';
 

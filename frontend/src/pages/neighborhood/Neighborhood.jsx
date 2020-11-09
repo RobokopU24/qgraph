@@ -40,8 +40,7 @@ export default function Neighborhood(props) {
         setNodeDetails(res.node_information);
         setNodeSources(res.other_sources);
       },
-      (err) => {
-        console.log('Node Details error', err);
+      () => {
         setDetailsLoading(false);
         setDetailsReady(false);
       },
@@ -58,8 +57,7 @@ export default function Neighborhood(props) {
         setNeighborhoodReady(true);
         setNeighborhood(res);
       },
-      (err) => {
-        console.log('Neighborhood error', err);
+      () => {
         setNeighborhoodLoading(false);
         setNeighborhoodReady(false);
       },

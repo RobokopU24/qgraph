@@ -122,7 +122,6 @@ export default function QuestionBuilder(props) {
   }
 
   function getQuestions() {
-    console.log('get questions');
     setQuestionsReady(true);
     // this.appConfig.questionList(
     //   (data) => {
@@ -140,25 +139,24 @@ export default function QuestionBuilder(props) {
    * Load the selected question by ID
    * @param {String} qid Unique ID of a question in the db
    */
-  function questionSelected(qid) {
-    console.log('question selected', qid);
-    // this will go get the question from the db
-    // this.appConfig.questionData(
-    //   qid,
-    //   (data) => {
-    //     questionStore.questionSpecToPanelState(data.data.question);
-    //     setStep('build');
-    //     setQuestionsReady(false);
-    //   },
-    //   (err) => {
-    //     console.log(err);
-    //     questionStore.resetQuestion();
-    //     questionStore.setGraphState(graphStates.error);
-    //     setStep('options');
-    //     setQuestionsReady(false);
-    //   },
-    // );
-  }
+  // function questionSelected(qid) {
+  //   // this will go get the question from the db
+  //   this.appConfig.questionData(
+  //     qid,
+  //     (data) => {
+  //       questionStore.questionSpecToPanelState(data.data.question);
+  //       setStep('build');
+  //       setQuestionsReady(false);
+  //     },
+  //     (err) => {
+  //       console.log(err);
+  //       questionStore.resetQuestion();
+  //       questionStore.setGraphState(graphStates.error);
+  //       setStep('options');
+  //       setQuestionsReady(false);
+  //     },
+  //   );
+  // }
 
   function resetSteps() {
     reset();
@@ -289,7 +287,7 @@ export default function QuestionBuilder(props) {
         show={questionsReady}
         close={() => setQuestionsReady(false)}
         questions={[]}
-        questionSelected={questionSelected}
+        questionSelected={() => {}}
       />
     </div>
   );

@@ -162,7 +162,6 @@ export default function AnswerExplorerInfo(props) {
         edge = subgraph.edges.find((e) => e.edgeIdFromKG === selectedEdgeId);
       }
       if (typeof edge === 'undefined') {
-        console.log('Couldn\'t find this edge', selectedEdgeId, subgraph.edges);
         return (
           <div>
             <h4 style={{ marginTop: '15px' }}>
