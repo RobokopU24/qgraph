@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import _ from 'lodash';
 
 import queryGraphUtils from '@/utils/queryGraph';
+import entityNameDisplay from '@/utils/entityNameDisplay';
 
 import useNode from './useNode';
 import useEdge from './useEdge';
@@ -26,7 +27,7 @@ export default function useNewQuestionPanel() {
     updateQueryGraph(_.cloneDeep(qGraph));
   }
 
-  /*
+  /**
    * Get the next unused Node ID in the query_graph for insertion
    */
   function getNextNodeID() {
@@ -37,7 +38,7 @@ export default function useNewQuestionPanel() {
     return `n${index}`;
   }
 
-  /*
+  /**
    * Get the next unused Edge ID in the query_graph for insertion
    */
   function getNextEdgeID() {
@@ -48,8 +49,27 @@ export default function useNewQuestionPanel() {
     return `e${index}`;
   }
 
-  // Initialize node or edge
-  // based on given id and type
+  /**
+   * Create a readable edge label
+   * @param {string} sourceId an edge source id
+   * @param {string} targetId an edge target id
+   */
+  function getEdgeLabel(sourceId, targetId) {
+    let sourceLabel = '';
+    if (sourceId) {
+      sourceLabel = query_graph.nodes[sourceId].name || entityNameDisplay(query_graph.nodes[sourceId].type);
+    }
+    let targetLabel = '';
+    if (targetId) {
+      targetLabel = query_graph.nodes[targetId].name || entityNameDisplay(query_graph.nodes[targetId].type);
+    }
+    return `${sourceId} ${sourceLabel} → ${targetId} ${targetLabel}`;
+  }
+
+  /**
+   * Initialize a node or edge
+   * based on given id and type
+   */
   function initializeNodeOrEdge() {
     if (panelInfo.type === 'node') {
       if (panelInfo.id) { // load node from query graph
@@ -68,11 +88,20 @@ export default function useNewQuestionPanel() {
     } else if (panelInfo.type === 'edge') {
       if (panelInfo.id) { // load edge from query graph
         const edgeSeed = query_graph.edges[panelInfo.id];
-        setName(panelInfo.id);
-        edge.initialize(edgeSeed);
+        const label = getEdgeLabel(edgeSeed.source_id, edgeSeed.target_id);
+        setName(`${panelInfo.id}: ${label}`);
+        edge.initialize({ id: panelInfo.id, ...edgeSeed });
       } else { // new edge
-        edge.reset();
-        setName(getNextEdgeID());
+        const newId = getNextEdgeID();
+        // grab the last two nodes to prefill edge
+        const [source_id, target_id] = Object.keys(query_graph.nodes).slice(-2);
+        edge.initialize({
+          id: newId,
+          source_id,
+          target_id,
+        });
+        const label = getEdgeLabel(source_id, target_id);
+        setName(`${newId}: ${label}`);
       }
     }
   }
@@ -80,7 +109,18 @@ export default function useNewQuestionPanel() {
   useEffect(initializeNodeOrEdge, [panelInfo]);
 
   /**
-   * Open a node/edpe panel either fresh or with a seed id
+   * Update the edge panel header
+   * @param {string} source edge source id
+   * @param {string} target edge target id
+   * @param {string} id edge id
+   */
+  function updateEdgePanelHeader(source, target, id) {
+    const label = getEdgeLabel(source, target, id);
+    setName(`${id}: ${label}`);
+  }
+
+  /**
+   * Open a node/edge panel either fresh or with a seed id
    * @param {string} type either node or edge
    * @param {string} id unique id of node or edge. i.e. n0, n1, e0...
    */
@@ -210,5 +250,6 @@ export default function useNewQuestionPanel() {
     revertActivePanel,
     removeNode,
     removeEdge,
+    updateEdgePanelHeader,
   };
 }

@@ -36,6 +36,7 @@ export default function QuestionGraphViewContainer(props) {
   const { questionStore, height = getHeight(), width = '100%' } = props;
   const [showJsonEditor, toggleJsonEditor] = useState(false);
   const panelStore = useNewQuestionPanel();
+
   function graphClickCallback(data) {
     if (data.nodes.length > 0) {
       // const clickedNode = questionStore.getNode(data.nodes[0]);
@@ -49,6 +50,7 @@ export default function QuestionGraphViewContainer(props) {
       // panelStore.loadEdge(clickedEdge);
     }
   }
+
   const graphClickCallbackMemo = useMemo(() => graphClickCallback, []);
 
   /**

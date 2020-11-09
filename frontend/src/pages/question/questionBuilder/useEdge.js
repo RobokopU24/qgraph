@@ -21,6 +21,7 @@ export default function useEdgePanels() {
   function switchSourceTarget() {
     setSourceId(targetId);
     setTargetId(sourceId);
+    return { source: targetId, target: sourceId, id };
   }
 
   function reset() {
