@@ -25,7 +25,7 @@ export default function NeightborhoodViewer(props) {
       show = true;
     }
     return show;
-  };
+  }
 
   function getReactTableColumnSpec(columnHeaders, data) {
     const bgColorMap = getNodeTypeColorMap(config.concepts);
@@ -59,10 +59,10 @@ export default function NeightborhoodViewer(props) {
     return colHeaders;
   }
 
-  function initializeState(columnHeaders, answers) {
-    const columns = getReactTableColumnSpec(columnHeaders, answers);
-    setAnswers(answers);
-    setColumns(columns);
+  function initializeState(columnHeaders, newAnswers) {
+    const newColumns = getReactTableColumnSpec(columnHeaders, newAnswers);
+    setAnswers(newAnswers);
+    setColumns(newColumns);
   }
 
   function openNewNodePage(id) {
@@ -76,8 +76,8 @@ export default function NeightborhoodViewer(props) {
 
   useEffect(() => {
     messageStore.setMessage(props.data);
-    const { columnHeaders, answers } = messageStore.getAlphaTable(config.concepts);
-    initializeState(columnHeaders, answers);
+    const { columnHeaders, answers: newAnswers } = messageStore.getAlphaTable(config.concepts);
+    initializeState(columnHeaders, newAnswers);
   }, []);
 
   const column = [{

@@ -6,7 +6,6 @@ import shortid from 'shortid';
 import _ from 'lodash';
 
 import CurieSelectorContainer from '../../../components/shared/curies/CurieSelectorContainer';
-import config from '../../../config.json';
 
 function extractDetails(questionTemplate) {
   const newTypes = [];
@@ -110,6 +109,7 @@ export default function QuestionTemplateModal(props) {
     setLabels(newLabels);
   }
 
+  /*
   function updateQuestionTemplate() {
     questionTemplate.natural_question = questionName.join(' ');
     let num = 0;
@@ -131,6 +131,7 @@ export default function QuestionTemplateModal(props) {
     setQuestionTemplate({ ...questionTemplate });
     setDisableSubmit(false);
   }
+  */
 
   function handleCurieChange(index, type, label, curie) {
     nameList.forEach((name, i) => {
@@ -140,6 +141,7 @@ export default function QuestionTemplateModal(props) {
         nameList[i].id = curie;
         labels[index] = label;
         curies[index] = curie;
+        /*
         this.setState({
           questionName, nameList, labels, curies,
         }, () => {
@@ -149,6 +151,7 @@ export default function QuestionTemplateModal(props) {
             updateQuestionTemplate();
           }
         });
+        */
       } else if (name.ider === index && !label && !curie) {
         // we delete whatever was there before. Disable the submit button.
         questionName[name.nameIndex] = (
@@ -172,10 +175,6 @@ export default function QuestionTemplateModal(props) {
       setLabels([...labels]);
       setCuries([...curies]);
     });
-  }
-
-  function handleCurieSearch(input, type) {
-    return this.appConfig.questionNewSearch(input, type);
   }
 
   function submitTemplate() {
@@ -237,7 +236,7 @@ export default function QuestionTemplateModal(props) {
             onChangeHook={(ty, te, cu) => handleCurieChange(i, ty, te, cu)}
             initialInputs={{ curie: curies[i], term: labels[i], type: types[i] }}
             disableType
-            search={handleCurieSearch}
+            search={() => {}}
           />
         ))}
       </Modal.Body>

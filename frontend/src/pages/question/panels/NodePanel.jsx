@@ -19,8 +19,6 @@ import curieUrls from '@/utils/curieUrls';
 import biolinkUtils from '@/utils/biolink';
 import getNodeTypeColorMap from '@/utils/colorUtils';
 
-import NodeProperties from './NodeProperties';
-
 /**
  * Node Panel
  * @param {Object} panelStore panel custom hook
@@ -244,7 +242,7 @@ export default function NodePanel({ panelStore }) {
   }
 
   const showOptions = node.searchTerm && !node.type;
-  const showConstraints = node.regular || node.set;
+  // const showConstraints = node.regular || node.set;
   const rightButtonContents = showOptions ? (<Glyphicon glyph="remove" />) : (<Glyphicon glyph="triangle-bottom" />);
   const rightButtonFunction = showOptions ? node.reset : node.reSearch;
   const rowHeight = 50;

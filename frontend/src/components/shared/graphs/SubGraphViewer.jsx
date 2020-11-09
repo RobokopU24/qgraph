@@ -1,10 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {
+  useState, useEffect, useRef, useContext,
+} from 'react';
 import Graph from 'react-graph-vis';
 import shortid from 'shortid';
 import _ from 'lodash';
 
-import getNodeTypeColorMap from '../../../utils/colorUtils';
-import entityNameDisplay from '../../../utils/entityNameDisplay';
+import getNodeTypeColorMap from '@/utils/colorUtils';
+import entityNameDisplay from '@/utils/entityNameDisplay';
+import AlertContext from '@/context/alert';
 
 const keyBlocklist = ['isSet', 'labels', 'label', 'equivalent_identifiers', 'type', 'id', 'degree', 'name', 'title', 'color', 'binding', 'scoreVector', 'aggScore', 'level'];
 
@@ -89,6 +92,7 @@ export default function SubGraphViewer(props) {
   const [displayGraph, updateDisplayGraph] = useState(null);
   const [displayGraphOptions, updateGraphOptions] = useState(defaultGraphOptions);
   const network = useRef(null);
+  const displayAlert = useContext(AlertContext);
 
   // Bind network fit callbacks to resize graph and cancel fit callbacks on start of zoom/pan
   function setNetworkCallbacks() {
@@ -120,7 +124,7 @@ export default function SubGraphViewer(props) {
       network.current.on('dragEnd', () => { setTimeout(stopLayout, 5); });
       // network.current.on('stabilizationIterationsDone', () => { setTimeout(() => network.current.stopSimulation(), 5); });
     } catch (err) {
-      console.log(err);
+      displayAlert('warning', 'Failed to enable graph resizing.');
     }
   }
 

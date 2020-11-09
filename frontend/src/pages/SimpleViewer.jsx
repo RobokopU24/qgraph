@@ -127,7 +127,6 @@ export default function SimpleViewer(props) {
           setMessageSaved(true);
           pageStatus.setSuccess();
         } catch (err) {
-          console.log(err);
           pageStatus.setFailure('There was the problem loading the file. Is this valid JSON?');
         }
       };
