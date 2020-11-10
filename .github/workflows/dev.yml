@@ -60,6 +60,7 @@ jobs:
 
       - name: Report tests results
         uses: mshick/add-pr-comment@v1
+        if: ${{ env.JEST_OUTPUT }}
         with:
           message: ${{ env.JEST_OUTPUT }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
