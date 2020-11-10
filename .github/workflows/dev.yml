@@ -58,6 +58,17 @@ jobs:
           echo "$(docker run --name frontend frontend npm run --silent test:pr)" >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
 
+      - name: Debug Action
+        uses: hmarr/debug-action@v1.0.0
+
+      - name: Report tests results
+        uses: mshick/add-pr-comment@v1
+        with:
+          message: ${{ env.JEST_OUTPUT }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
+          allow-repeats: true
+
       - name: Copy coverage output from container
         run: |
           docker cp frontend:/app/coverage/lcov.info .
