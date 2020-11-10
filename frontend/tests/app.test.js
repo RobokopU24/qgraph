@@ -8,6 +8,6 @@ import App from '../src/App';
 describe('<App />', () => {
   it('loads page and shows welcome', async () => {
     const { getByText } = render(<App />);
-    expect(getByText('Robokop Aps')).toBeTruthy();
+    expect(getByText('Robokop Apps')).toBeTruthy();
   });
 });

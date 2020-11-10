@@ -55,16 +55,13 @@ jobs:
       - name: Run tests
         run: |
           echo 'JEST_OUTPUT<<EOF' >> $GITHUB_ENV
-          echo "$(docker run --name frontend frontend npm run --silent test:pr)" >> $GITHUB_ENV
+          echo "$(docker run --name frontend frontend npm run --silent test:pr 2>&1)" >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
-
-      - name: Debug Action
-        uses: hmarr/debug-action@v1.0.0
 
       - name: Report tests results
         uses: mshick/add-pr-comment@v1
         with:
-          message: ${{ JEST_OUTPUT }}
+          message: ${{ env.JEST_OUTPUT }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
           allow-repeats: true
