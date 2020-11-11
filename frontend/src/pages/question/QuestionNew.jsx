@@ -3,13 +3,12 @@ import {
   Grid, Row,
 } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
+import slugify from 'slugify';
 
 import UserContext from '@/context/user';
 import AlertContext from '@/context/alert';
 
 import API from '@/API';
-
-import Button from '@material-ui/core/Button';
 
 import './newQuestion.css';
 
@@ -41,9 +40,12 @@ export default function QuestionNew() {
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
 
+    const question_name = questionStore.question_name || 'Robokop Question';
+    const question_name_slug = slugify(question_name.toLowerCase(), '_', { strict: true });
+
     // Create a link with that URL and click it.
     const a = document.createElement('a');
-    a.download = 'robokopMachineQuestion.json';
+    a.download = `${question_name_slug}.json`;
     a.href = url;
     a.click();
     a.remove();
