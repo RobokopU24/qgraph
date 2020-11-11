@@ -102,6 +102,13 @@ export default function QuestionBuilder(props) {
       return;
     }
 
+    // TODO: this is pretty hacky
+    fileContentObj.query_graph.nodes.forEach((node) => {
+      if (!node.label) {
+        node.label = `${node.id}: ${node.name || node.curie || node.type}`;
+      }
+    });
+
     questionStore.updateQueryGraph(
       queryGraphUtils.convert.reasonerToInternal(fileContentObj.query_graph),
     );
