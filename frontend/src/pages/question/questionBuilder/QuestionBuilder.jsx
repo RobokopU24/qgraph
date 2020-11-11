@@ -184,6 +184,7 @@ export default function QuestionBuilder(props) {
           <Button
             className="optionsButton"
             onClick={() => selectOption('template')}
+            disabled
           >
             <h3>Template <span style={{ fontSize: '22px' }}><FaFolder style={{ cursor: 'pointer' }} /></span></h3>
             <p className="optionButtonDesc">Choose a question template to start with a preconstructed question.</p>
@@ -210,6 +211,7 @@ export default function QuestionBuilder(props) {
           <Button
             className="optionsButton"
             onClick={getQuestions}
+            disabled
           >
             <h3>Fork <span style={{ fontSize: '22px' }}><GoRepoForked style={{ cursor: 'pointer' }} /></span></h3>
             <p className="optionButtonDesc">Load from a previously asked question.</p>
