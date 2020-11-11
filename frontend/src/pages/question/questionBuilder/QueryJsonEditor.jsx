@@ -101,6 +101,11 @@ export default function QuestionJsonEditor(props) {
             graph = graph.question_graph;
           }
           if (graph.nodes && Array.isArray(graph.nodes) && Array.isArray(graph.edges)) {
+            graph.nodes.forEach((node) => {
+              if (!node.label) {
+                node.label = `${node.id}: ${node.name || node.curie || node.type}`;
+              }
+            });
             graph = queryGraphUtils.convert.reasonerToInternal(graph);
           }
           validateQueryGraph(graph);
