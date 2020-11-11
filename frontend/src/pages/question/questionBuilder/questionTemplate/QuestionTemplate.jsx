@@ -1,5 +1,5 @@
 import React, {
-  useState, useRef, useContext, useCallback,
+  useState, useRef,
 } from 'react';
 import {
   Modal, DropdownButton, MenuItem, Button,

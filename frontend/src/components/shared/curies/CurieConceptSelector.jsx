@@ -1,5 +1,5 @@
 import React, {
-  useEffect, useRef, useCallback, useContext, useImperativeHandle, forwardRef,
+  useRef, useImperativeHandle, forwardRef,
 } from 'react';
 
 import ReactDOM from 'react-dom';

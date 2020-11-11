@@ -2,6 +2,8 @@ import React, {
   useContext, useRef, useState, useCallback, useImperativeHandle, forwardRef,
 } from 'react';
 
+import _ from 'lodash';
+
 import {
   Glyphicon,
 } from 'react-bootstrap';
