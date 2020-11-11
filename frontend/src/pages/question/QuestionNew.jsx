@@ -3,7 +3,6 @@ import {
   Grid, Row,
 } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
-import slugify from 'slugify';
 
 import UserContext from '@/context/user';
 import AlertContext from '@/context/alert';
@@ -29,30 +28,10 @@ export default function QuestionNew() {
 
   const pageStatus = usePageStatus(false);
 
-  function onDownloadQuestion() {
-    const query_graph = queryGraphUtils.convert.internalToReasoner(
-      questionStore.query_graph,
-    );
-    const data = { query_graph };
-
-    // Transform the data into a json blob and give it a url
-    const json = JSON.stringify(data, null, 2);
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-
-    const question_name = questionStore.question_name || 'Robokop Question';
-    const question_name_slug = slugify(question_name.toLowerCase(), '_', { strict: true });
-
-    // Create a link with that URL and click it.
-    const a = document.createElement('a');
-    a.download = `${question_name_slug}.json`;
-    a.href = url;
-    a.click();
-    a.remove();
-  }
-
   function onResetQuestion() {
-    questionStore.resetQuestion();
+    if (window.confirm('Are you sure you want to reset this question? This action cannot be undone.')) {
+      questionStore.resetQuestion();
+    }
   }
 
   const failedToAnswer = 'Please try fetching a new answer later.';
@@ -131,7 +110,6 @@ export default function QuestionNew() {
             </h1>
             <QuestionBuilder
               questionStore={questionStore}
-              download={onDownloadQuestion}
               reset={onResetQuestion}
               submit={onSubmit}
             />
