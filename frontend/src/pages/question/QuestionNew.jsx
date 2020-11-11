@@ -53,16 +53,18 @@ export default function QuestionNew() {
     questionStore.resetQuestion();
   }
 
+  const failedToAnswer = 'Please try fetching a new answer later.';
+
   async function fetchAnswer(questionId) {
     let response = await API.queryDispatcher.getAnswer(questionId, user.id_token);
     if (response.status === 'error') {
-      displayAlert('error', response.message);
+      displayAlert('error', `${response.message}. ${failedToAnswer}`);
       return;
     }
 
     response = await API.cache.getQuestion(questionId, user.id_token);
     if (response.status === 'error') {
-      displayAlert('error', response.message);
+      displayAlert('error', `${response.message}. ${failedToAnswer}`);
       return;
     }
 
@@ -71,8 +73,11 @@ export default function QuestionNew() {
     questionMeta.metadata.hasAnswers = true;
     response = await API.cache.updateQuestion(questionMeta, user.id_token);
     if (response.status === 'error') {
-      displayAlert('error', response.message);
+      displayAlert('error', `${response.message}. ${failedToAnswer}`);
+      return;
     }
+
+    displayAlert('success', 'Your answer is ready!');
   }
 
   async function onSubmit() {
