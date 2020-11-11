@@ -55,7 +55,7 @@ jobs:
       - name: Run tests
         run: |
           echo 'JEST_OUTPUT<<EOF' >> $GITHUB_ENV
-          echo "$(docker run --name frontend frontend npm run --silent test:pr)" >> $GITHUB_ENV
+          echo "$(docker run --name frontend frontend npm run --silent test:pr 2>&1)" >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
 
       - name: Report tests results
