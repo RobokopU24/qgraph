@@ -36,6 +36,7 @@ export default function QuestionGraphViewContainer(props) {
   const { questionStore, height = getHeight(), width = '100%' } = props;
   const [showJsonEditor, toggleJsonEditor] = useState(false);
   const panelStore = useNewQuestionPanel();
+
   function graphClickCallback(data) {
     if (data.nodes.length > 0) {
       // const clickedNode = questionStore.getNode(data.nodes[0]);
@@ -49,6 +50,7 @@ export default function QuestionGraphViewContainer(props) {
       // panelStore.loadEdge(clickedEdge);
     }
   }
+
   const graphClickCallbackMemo = useMemo(() => graphClickCallback, []);
 
   /**
@@ -94,23 +96,11 @@ export default function QuestionGraphViewContainer(props) {
           }}
         >
           <div style={{ display: 'table-cell', verticalAlign: 'middle', textAlign: 'center' }}>
-            {/* {showFetching && (
-              <div>
-                <FaSpinner className="icon-spin" style={{ marginRight: '10px', verticalAlign: 'text-top' }} />
-                Graph update in progress... Please wait.
-              </div>
-            )} */}
-            {/* {notInitialized && ( */}
             {numNodes === 0 && (
               <Button bsSize="large" onClick={() => panelStore.openPanel('node')}>
                 <FaPlusSquare style={{ verticalAlign: 'text-top' }} />{' Add Node'}
               </Button>
             )}
-            {/* {error && (
-              <span>
-                There was an error with the query graph specification
-              </span>
-            )} */}
           </div>
         </div>
       )}

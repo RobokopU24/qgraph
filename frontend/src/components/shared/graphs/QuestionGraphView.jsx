@@ -2,6 +2,7 @@ import React, {
   useEffect, useRef, useMemo,
 } from 'react';
 import _ from 'lodash';
+import shortid from 'shortid';
 
 import getNodeTypeColorMap from '../../../utils/colorUtils';
 import entityNameDisplay from '../../../utils/entityNameDisplay';
@@ -25,7 +26,7 @@ function defaultNodePreProc(n) {
       y: -10,
     };
   }
-  if (n.curieEnabled) {
+  if ((Array.isArray(n.curie) && n.curie.length)) {
     n.borderWidth = 2;
   }
   if (n.deleted) { // Set this node as hidden since it is flagged for deletion
@@ -132,6 +133,12 @@ export default function QuestionGraphView(props) {
     network.current.on('zoom', () => network.current.off('afterDrawing'));
     network.current.on('dragStart', () => network.current.off('afterDrawing'));
   }
+
+  useEffect(() => {
+    if (selectable && network.current) {
+      setNetworkCallbacks();
+    }
+  }, [network.current]);
 
   /* eslint-disable no-param-reassign */
   function getDisplayGraph() {
@@ -253,12 +260,6 @@ export default function QuestionGraphView(props) {
     });
   }
 
-  useEffect(() => {
-    if (selectable && network.current) {
-      setNetworkCallbacks();
-    }
-  }, [network.current]);
-
   const displayGraphDependencies = [question, nodePreProcFn, edgePreProcFn, graphClickCallback];
   const displayGraph = useMemo(getDisplayGraph, displayGraphDependencies);
   const displayOptions = useMemo(getDisplayOptions,
@@ -268,7 +269,9 @@ export default function QuestionGraphView(props) {
     <>
       {displayGraph !== null && (
         <Graph
-          // key={shortid.generate()}
+          // TODO: this random key rerenders every time.
+          // we want to do this better.
+          key={shortid.generate()}
           graph={displayGraph}
           options={displayOptions}
           events={{ click: graphClickCallback }}
