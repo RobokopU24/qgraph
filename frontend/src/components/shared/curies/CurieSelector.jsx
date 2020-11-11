@@ -1,3 +1,4 @@
+/* eslint-disable react/destructuring-assignment */
 import React from 'react';
 import {
   FormGroup, FormControl, InputGroup, Glyphicon,
@@ -66,6 +67,7 @@ class CurieSelector extends React.Component {
     const curie = value.value;
     this.props.onSelect(this.props.type, term, curie);
   }
+
   handleSearch(input, nodeType) {
     this.wrapSearch(input, nodeType).catch(() => this.setState({ options: [] }))
       .then((data) => {
@@ -74,6 +76,7 @@ class CurieSelector extends React.Component {
         }
       });
   }
+
   wrapSearch(input, nodeType) {
     if (!input || (input.length < 3)) {
       return Promise.resolve({ options: null });
@@ -81,14 +84,17 @@ class CurieSelector extends React.Component {
     const searchNodeType = this.props.disableTypeFilter ? '' : nodeType;
     return this.props.search(input, searchNodeType);
   }
+
   handleTermChange(event) {
     this.props.onTermChange(event);
   }
+
   handleTypeChange(type) {
     this.input.focus();
     this.setState({ options: [] }, () => this.props.onTypeChange(type));
     // this.setState({ type }, () => this.handleTermChange({ target: { value: this.state.term } }));
   }
+
   handleReopen() {
     this.props.onReopen();
     this.input.focus();
@@ -98,7 +104,7 @@ class CurieSelector extends React.Component {
     const {
       concepts, size, curie, type, term, onClear, disableType,
     } = this.props;
-    const dropDownObjList = concepts.map(c => ({ text: entityNameDisplay(c), value: c }));
+    const dropDownObjList = concepts.map((c) => ({ text: entityNameDisplay(c), value: c }));
     const showOptions = curie === '';
 
     const rightButtonCallback = showOptions ? () => { onClear(); this.input.focus(); } : this.handleReopen;
@@ -121,7 +127,7 @@ class CurieSelector extends React.Component {
         <div>
           <FormGroup style={{ marginBottom: 0 }}>
             <InputGroup>
-              {!disableType &&
+              {!disableType && (
                 <DropdownList
                   filter
                   disabled={disableType}
@@ -130,9 +136,9 @@ class CurieSelector extends React.Component {
                   textField="text"
                   valueField="value"
                   value={type}
-                  onChange={value => this.handleTypeChange(value.value)}
+                  onChange={(value) => this.handleTypeChange(value.value)}
                 />
-              }
+              )}
               <FormControl
                 type="text"
                 className="curieSelectorInput"
@@ -146,13 +152,13 @@ class CurieSelector extends React.Component {
                 }}
                 onChange={this.handleTermChange}
               />
-              {!showOptions &&
+              {!showOptions && (
                 <InputGroup.Addon
                   style={{ background: '#fff' }}
                 >
                   {curie}
                 </InputGroup.Addon>
-              }
+              )}
               <InputGroup.Addon
                 onClick={rightButtonCallback}
                 style={{ background: '#fff', cursor: 'pointer' }}
@@ -162,7 +168,7 @@ class CurieSelector extends React.Component {
             </InputGroup>
           </FormGroup>
         </div>
-        {showOptions &&
+        {showOptions && (
           <div
             style={{
               position: 'absolute',
@@ -191,7 +197,7 @@ class CurieSelector extends React.Component {
               type={type}
             />
           </div>
-        }
+        )}
       </div>
     );
   }

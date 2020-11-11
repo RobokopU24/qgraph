@@ -1,3 +1,4 @@
+/* eslint-disable react/destructuring-assignment */
 import React from 'react';
 import _ from 'lodash';
 
@@ -36,7 +37,7 @@ class CurieSelectorContainter extends React.Component {
     // this.input.focus();
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     // console.log('in componentWillReceiveProps', nextProps.initialInputs, this.props.initialInputs);
     if (!_.isEqual(nextProps.initialInputs, this.props.initialInputs)) {
       const { type, term, curie } = nextProps.initialInputs;

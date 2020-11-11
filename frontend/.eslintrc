@@ -1,5 +1,6 @@
 {
   "extends": "airbnb",
+  "root": true,
   "plugins": ["react", "jsx-a11y", "import", "react-hooks"],
   "env": {
     "browser": true,
@@ -13,6 +14,9 @@
       }
     }
   },
+  "overrides" : [{
+    "files" : [ "*.jsx", "*.js" ]
+  }],
   "rules": {
     "indent": ["error", 2],
     "max-len": "off",

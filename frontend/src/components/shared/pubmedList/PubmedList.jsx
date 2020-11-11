@@ -1,16 +1,24 @@
+/* eslint-disable react/destructuring-assignment */
 import React from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { AutoSizer, List } from 'react-virtualized';
 import PubmedEntry from './PubmedEntry';
 
-import AppConfig from '../../../AppConfig';
-import config from '../../../config.json';
-
 class PubmedList extends React.Component {
+  static noRowsRenderer() {
+    return (
+      <Row>
+        <Col md={12}>
+          <h5 style={{ padding: '15px' }}>
+            No Publications Found
+          </h5>
+        </Col>
+      </Row>
+    );
+  }
+
   constructor(props) {
     super(props);
-
-    this.appConfig = new AppConfig(config);
 
     this.styles = {
       list: {
@@ -54,7 +62,8 @@ class PubmedList extends React.Component {
     if (this.state.pubs[index]) {
       publication = <PubmedEntry pub={this.state.pubs[index]} />;
     } else if (!isScrolling) {
-      this.appConfig.getPubmedPublications(
+      /*
+       this.appConfig.getPubmedPublications(
         pmid,
         (pub) => {
           const { pubs } = this.state;
@@ -68,6 +77,7 @@ class PubmedList extends React.Component {
           }
         },
       );
+      */
     }
     return (
       <div
@@ -76,17 +86,6 @@ class PubmedList extends React.Component {
       >
         {publication}
       </div>
-    );
-  }
-  noRowsRenderer() {
-    return (
-      <Row>
-        <Col md={12}>
-          <h5 style={{ padding: '15px' }}>
-            {'No Publications Found'}
-          </h5>
-        </Col>
-      </Row>
     );
   }
 

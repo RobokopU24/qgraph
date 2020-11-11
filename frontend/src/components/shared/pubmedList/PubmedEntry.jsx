@@ -3,16 +3,11 @@ import { Media, Button } from 'react-bootstrap';
 
 import { FaExternalLinkAlt } from 'react-icons/fa';
 
-import AppConfig from '../../../AppConfig';
-import config from '../../../config.json';
-
 const shortid = require('shortid');
 
 class PubmedEntry extends React.Component {
   constructor(props) {
     super(props);
-
-    this.appConfig = new AppConfig(config);
 
     this.defaultFailureInfo = {
       id: '',
@@ -77,7 +72,7 @@ class PubmedEntry extends React.Component {
     } = this.getPubmedInfo();
     return (
       <Media>
-        {info.id ?
+        {info.id ? (
           <div>
             <Media.Left>
               <Button disabled={linkDisable} onClick={() => window.open(linkUrl, '_blank')}>
@@ -92,9 +87,9 @@ class PubmedEntry extends React.Component {
               <p style={{ margin: '2px' }}>{authorFrag}</p>
             </Media.Body>
           </div>
-          :
+        ) : (
           'Loading...'
-        }
+        )}
       </Media>
     );
   }

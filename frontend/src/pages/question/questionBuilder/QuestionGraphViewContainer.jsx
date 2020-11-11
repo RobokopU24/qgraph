@@ -1,19 +1,18 @@
 import React, {
-  useState, useEffect, useMemo, useContext
+  useState, useEffect, useMemo,
 } from 'react';
-import { FaSpinner, FaPlusSquare } from 'react-icons/fa';
-import { Modal, Button } from 'react-bootstrap';
+import { FaPlusSquare } from 'react-icons/fa';
+import { Button } from 'react-bootstrap';
 
+import config from '@/config.json';
 import queryGraphUtils from '@/utils/queryGraph';
 
-import QuestionGraphView from '../../../components/shared/graphs/QuestionGraphView';
+import QuestionGraphView from '@/components/shared/graphs/QuestionGraphView';
 import NewQuestionPanelModal from '../panels/NewQuestionPanelModal';
 import ButtonGroupPanel from '../subComponents/ButtonGroupPanel';
 import QueryJsonEditor from './QueryJsonEditor';
 
 import useNewQuestionPanel from './useNewQuestionPanel';
-
-import config from '../../../config.json';
 
 // const graphStates = {
 //   fetching: 'fetching',

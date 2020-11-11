@@ -36,7 +36,7 @@ jobs:
       - name: Fail job if there are ESLint errors
         run: |
           echo '${{ env.ESLINT_OUTPUT }}' >> eslint_output.txt
-          if grep -c -E '[0-9]* problem' eslint_output.txt; then exit 1; fi
+          if grep -c -E '[0-9]*[1-9][0-9]* error' eslint_output.txt; then exit 1; fi
   test:
     name: Frontend Tests
     runs-on: ubuntu-latest
@@ -55,7 +55,7 @@ jobs:
       - name: Run tests
         run: |
           echo 'JEST_OUTPUT<<EOF' >> $GITHUB_ENV
-          echo "$(docker run --name frontend frontend npm run --silent test:pr)" >> $GITHUB_ENV
+          echo "$(docker run --name frontend frontend npm run --silent test:pr 2>&1)" >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
 
       - name: Report tests results

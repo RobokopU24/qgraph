@@ -1,3 +1,4 @@
+/* eslint-disable react/destructuring-assignment */
 import React from 'react';
 
 import { Button, Badge } from 'react-bootstrap';
@@ -36,10 +37,8 @@ class BionamesBrowser extends React.Component {
     style,
   }) {
     const d = this.props.data[index];
-    const curie = d.value;
-    const name = d.label;
+    const { degree, value: curie, label: name } = d;
     const types = d.type.slice();
-    const degree = d.degree;
 
     // types is a list of all the types for this node.
     // We want to assign a set of color stripes to the row in the search table corresponding to these types
@@ -108,8 +107,8 @@ class BionamesBrowser extends React.Component {
     const urls = curieUrls(curie);
     const links = (
       <span>
-        {urls.map(u => (
-          <a target="_blank" href={u.url} alt={u.label} key={shortid.generate()} style={{ paddingRight: '3px' }}><img src={u.iconUrl} alt={u.label} height={16} width={16} /></a>
+        {urls.map((u) => (
+          <a target="_blank" rel="noreferrer" href={u.url} alt={u.label} key={shortid.generate()} style={{ paddingRight: '3px' }}><img src={u.iconUrl} alt={u.label} height={16} width={16} /></a>
         ))}
       </span>
     );
@@ -142,18 +141,20 @@ class BionamesBrowser extends React.Component {
         >
           {name}
         </div>
-        <div style={{
-          display: 'table-cell',
-          width: '150px',
-          verticalAlign: 'middle',
+        <div
+          style={{
+            display: 'table-cell',
+            width: '150px',
+            verticalAlign: 'middle',
           }}
         >
           {curie}
         </div>
-        <div style={{
-          display: 'table-cell',
-          width: '50px',
-          verticalAlign: 'middle',
+        <div
+          style={{
+            display: 'table-cell',
+            width: '50px',
+            verticalAlign: 'middle',
           }}
         >
           <span
@@ -189,7 +190,7 @@ class BionamesBrowser extends React.Component {
     );
   }
 
-  renderThinking() {
+  static renderThinking() {
     return (
       <div
         style={{
@@ -201,11 +202,12 @@ class BionamesBrowser extends React.Component {
       </div>
     );
   }
+
   renderEmpty() {
     const hasData = Array.isArray(this.props.data);
     return (
       <div>
-        {hasData &&
+        {hasData && (
           <div
             style={{
               color: '#ccc',
@@ -216,10 +218,11 @@ class BionamesBrowser extends React.Component {
               No results found.
             </span>
           </div>
-        }
+        )}
       </div>
     );
   }
+
   renderOptions() {
     const rowHeight = 50;
     const nRows = this.props.data.length;
@@ -244,6 +247,7 @@ class BionamesBrowser extends React.Component {
       </AutoSizer>
     );
   }
+
   render() {
     const hasData = Array.isArray(this.props.data) && this.props.data.length > 0;
     return (

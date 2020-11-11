@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useContext } from 'react';
-import _ from 'lodash';
 
 import {
   Form, Col, Glyphicon, Badge, Button,
