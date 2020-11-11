@@ -21,6 +21,7 @@ export default function QuestionListModal(props) {
 
   return (
     <Modal
+      style={{ marginTop: '5%' }}
       show={show}
       onHide={close}
     >
@@ -33,14 +34,13 @@ export default function QuestionListModal(props) {
             columnDefs={[
               {
                 headerName: 'Questions',
-                field: 'naturalQuestion',
+                field: 'displayText',
                 suppressMenu: true,
                 sortable: false,
                 width: 500,
               },
             ]}
             rowData={questions}
-
             suppressMovableColumns
             suppressCellSelection
             defaultColDef={{ width: 100, headerComponentParams: { template: '' } }}
