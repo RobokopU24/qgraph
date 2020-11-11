@@ -30,25 +30,6 @@ export default function SimpleQuestion() {
 
   const [submittedQuestion, toggleSubmittedQuestion] = useState(false);
 
-  function onDownloadQuestion() {
-    const query_graph = queryGraphUtils.convert.internalToReasoner(
-      questionStore.query_graph,
-    );
-    const data = { query_graph };
-
-    // Transform the data into a json blob and give it a url
-    const json = JSON.stringify(data, null, 2);
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-
-    // Create a link with that URL and click it.
-    const a = document.createElement('a');
-    a.download = 'robokopMachineQuestion.json';
-    a.href = url;
-    a.click();
-    a.remove();
-  }
-
   function onDownloadAnswer() {
     const data = messageStore.message;
 
@@ -120,7 +101,6 @@ export default function SimpleQuestion() {
             </h1>
             <QuestionBuilder
               questionStore={questionStore}
-              download={onDownloadQuestion}
               reset={onResetQuestion}
               submit={onSubmit}
             />
