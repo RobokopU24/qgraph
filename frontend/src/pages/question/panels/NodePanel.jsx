@@ -28,6 +28,13 @@ export default function NodePanel({ panelStore }) {
 
   const displayAlert = useContext(AlertContext);
 
+  const inputRef = useRef(null);
+
+  // Focus selector text box on load
+  useEffect(() => {
+    inputRef.current.focus();
+  });
+
   function handleSelect(entry) {
     panelStore.toggleUnsavedChanges(true);
     panelStore.node.select(entry);
@@ -166,6 +173,7 @@ export default function NodePanel({ panelStore }) {
         rightButtonFunction={rightButtonFunction}
         rightButtonContents={rightButtonContents}
         loading={node.loading}
+        ref={inputRef}
       />
       {/* {showConstraints && (
         <>

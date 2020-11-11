@@ -8,7 +8,8 @@ import shortid from 'shortid';
 import _ from 'lodash';
 
 import questionTemplates from '@/questionTemplates';
-import CurieSelectorContainer from '../../../components/shared/curies/CurieSelectorContainer';
+
+import FillIdentifier from './subComponents/FillIdentifier';
 
 function extractDetails(questionTemplate) {
   const newTypes = [];
@@ -117,7 +118,6 @@ export default function QuestionTemplateModal(props) {
     setLabels(newLabels);
   }
 
-  /*
   function updateQuestionTemplate() {
     questionTemplate.natural_question = questionName.join(' ');
     let num = 0;
@@ -139,7 +139,6 @@ export default function QuestionTemplateModal(props) {
     setQuestionTemplate({ ...questionTemplate });
     setDisableSubmit(false);
   }
-  */
 
   function handleIdentifierChange(index, value) {
     const { curie, name: label } = value;
@@ -241,14 +240,11 @@ export default function QuestionTemplateModal(props) {
           </div>
         )}
         {nameList.map((name, i) => (
-          <CurieSelectorContainer
-            key={['curieSelector', i].join('_')}
-            ref={(type) => { curieSelector.current[`curie${i}`] = type; }}
-            concepts={concepts}
-            onChangeHook={(ty, te, cu) => handleCurieChange(i, ty, te, cu)}
-            initialInputs={{ curie: curies[i], term: labels[i], type: types[i] }}
-            disableType
-            search={() => {}}
+          <FillIdentifier
+            key={types[i] + i}
+            onSelect={(v) => handleIdentifierChange(i, v)}
+            ref={name.ref}
+            type={types[i]}
           />
         ))}
       </Modal.Body>
