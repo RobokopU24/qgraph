@@ -15,6 +15,7 @@ import './newQuestion.css';
 
 import queryGraphUtils from '@/utils/queryGraph';
 import { useVisibility } from '@/utils/cache';
+import usePageStatus from '@/utils/usePageStatus';
 
 import QuestionBuilder from './questionBuilder/QuestionBuilder';
 
@@ -26,6 +27,8 @@ export default function QuestionNew() {
   const user = useContext(UserContext);
   const questionStore = useQuestionStore();
   const displayAlert = useContext(AlertContext);
+
+  const pageStatus = usePageStatus(false);
 
   function onDownloadQuestion() {
     const query_graph = queryGraphUtils.convert.internalToReasoner(
@@ -50,41 +53,26 @@ export default function QuestionNew() {
     questionStore.resetQuestion();
   }
 
-  async function getAnswerAndDisplayAlert(questionId) {
+  async function fetchAnswer(questionId) {
     let response = await API.queryDispatcher.getAnswer(questionId, user.id_token);
     if (response.status === 'error') {
       displayAlert('error', response.message);
       return;
     }
-    const newAnswerId = response.id;
 
     response = await API.cache.getQuestion(questionId, user.id_token);
     if (response.status === 'error') {
       displayAlert('error', response.message);
       return;
     }
+
+    // Set hasAnswers in metadata to true
     const questionMeta = response;
     questionMeta.metadata.hasAnswers = true;
     response = await API.cache.updateQuestion(questionMeta, user.id_token);
     if (response.status === 'error') {
       displayAlert('error', response.message);
-      return;
     }
-
-    displayAlert(
-      'success',
-      <>
-        <h4>An answer is ready!</h4>
-        <Button
-          onClick={() => {
-            history.push(`/question/${questionId}/answer/${newAnswerId}`);
-          }}
-          variant="contained"
-        >
-          View new answer
-        </Button>
-      </>,
-    );
   }
 
   async function onSubmit() {
@@ -114,30 +102,35 @@ export default function QuestionNew() {
       return;
     }
 
-    // Redirect to created question
-    history.push(`/question/${questionId}`);
-    displayAlert('info', "Fetching answer, we will let you know when it's ready.");
+    pageStatus.setLoading('Fetching answer, this may take a while');
 
     // Start the process of getting an answer and display to user when done
-    getAnswerAndDisplayAlert(questionId);
+    await fetchAnswer(questionId);
+
+    // Redirect to created question
+    history.push(`/question/${questionId}`);
   }
 
   return (
     <>
-      <Grid>
-        <Row>
-          <h1 className="robokopApp">
-            Ask a Question
-            <br />
-          </h1>
-          <QuestionBuilder
-            questionStore={questionStore}
-            download={onDownloadQuestion}
-            reset={onResetQuestion}
-            submit={onSubmit}
-          />
-        </Row>
-      </Grid>
+      <pageStatus.Display />
+
+      { pageStatus.displayPage && (
+        <Grid>
+          <Row>
+            <h1 className="robokopApp">
+              Ask a Question
+              <br />
+            </h1>
+            <QuestionBuilder
+              questionStore={questionStore}
+              download={onDownloadQuestion}
+              reset={onResetQuestion}
+              submit={onSubmit}
+            />
+          </Row>
+        </Grid>
+      )}
     </>
   );
 }
