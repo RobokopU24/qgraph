@@ -9,6 +9,8 @@ import {
 } from 'react-bootstrap';
 import _ from 'lodash';
 
+import API from '@/API';
+
 import queryGraphUtils from '@/utils/queryGraph';
 import HelpButton from '@/components/shared/HelpButton';
 import config from '@/config.json';
@@ -33,8 +35,9 @@ export default function QuestionBuilder(props) {
   } = props;
   const [showModal, toggleModal] = useState(false);
   const [step, setStep] = useState('options');
-  // Questions is for forking
-  // const [questions, updateQuestions] = useState([]);
+
+  const [forkQuestions, updateForkQuestions] = useState([]);
+
   const [questionsReady, setQuestionsReady] = useState(false);
   // used just for focus
   const questionName = useRef(null);
@@ -121,18 +124,14 @@ export default function QuestionBuilder(props) {
     });
   }
 
-  function getQuestions() {
+  async function getQuestions() {
+    const response = await API.robokache.getQuestions();
+    if (response.status === 'error') {
+      displayAlert('error', response.message);
+      return;
+    }
+    updateForkQuestions(response);
     setQuestionsReady(true);
-    // this.appConfig.questionList(
-    //   (data) => {
-    //     updateQuestions(data.data.questions);
-    //     setQuestionsReady(true);
-    //   },
-    //   (err) => {
-    //     console.log(err);
-    //     setQuestionsReady(false);
-    //   },
-    // );
   }
 
   /**
@@ -286,7 +285,7 @@ export default function QuestionBuilder(props) {
       <QuestionListModal
         show={questionsReady}
         close={() => setQuestionsReady(false)}
-        questions={[]}
+        questions={forkQuestions}
         questionSelected={() => {}}
       />
     </div>
