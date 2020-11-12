@@ -72,7 +72,6 @@ export default function QuestionBuilder(props) {
    * @param {Number} question.max_connectivity max connections for question
    */
   function onQuestionTemplate(question) {
-    console.log(question);
     questionStore.updateQueryGraph(
       queryGraphUtils.convert.reasonerToInternal(question.query_graph),
     );

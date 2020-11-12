@@ -1,5 +1,5 @@
 import React, {
-  useState, useRef,
+  useState, useRef, useEffect,
 } from 'react';
 import {
   Modal, DropdownButton, MenuItem, Button,
@@ -118,24 +118,27 @@ export default function QuestionTemplateModal(props) {
   }
 
   function updateQuestionTemplate() {
-    questionTemplate.natural_question = questionName.join(' ');
+    if (!questionTemplate || !questionTemplate.query_graph) return;
+
+    const newQuestionTemplate = { ...questionTemplate };
+    newQuestionTemplate.natural_question = questionName.join(' ');
     let num = 0;
-    questionTemplate.query_graph.nodes.forEach((node, index) => {
+    newQuestionTemplate.query_graph.nodes.forEach((node, index) => {
       if (node.curie) {
         if (Array.isArray(node.curie)) {
           node.curie.forEach((curie, i) => {
             // TODO: num only works if there's only one curie in the array. So far, that's the only case.
-            questionTemplate.query_graph.nodes[index].curie[i] = nameList[num].id;
-            questionTemplate.query_graph.nodes[index].name = nameList[num].name;
+            newQuestionTemplate.query_graph.nodes[index].curie[i] = nameList[num].id;
+            newQuestionTemplate.query_graph.nodes[index].name = nameList[num].name;
             num += 1;
           });
         } else {
-          questionTemplate.query_graph.nodes[index].curie = nameList[0].id;
-          questionTemplate.query_graph.nodes[index].name = nameList[0].name;
+          newQuestionTemplate.query_graph.nodes[index].curie = nameList[0].id;
+          newQuestionTemplate.query_graph.nodes[index].name = nameList[0].name;
         }
       }
     });
-    setQuestionTemplate({ ...questionTemplate });
+    setQuestionTemplate(newQuestionTemplate);
   }
 
   function handleIdentifierChange(index, value) {
@@ -154,12 +157,6 @@ export default function QuestionTemplateModal(props) {
         newNameList[i].id = curie;
         newLabels[index] = label;
         newCuries[index] = curie;
-        // check to see if all entries in nameList have a label and curie and update question template if they do.
-        console.log(newNameList);
-        const update = newNameList.every((nameObj) => nameObj.name && nameObj.id);
-        if (update) {
-          updateQuestionTemplate();
-        }
       } else if (name.ider === index && !label && !curie) {
         // we delete whatever was there before. Disable the submit button.
         newQuestionName[name.nameIndex] = (
@@ -198,6 +195,9 @@ export default function QuestionTemplateModal(props) {
   // Disable if there are still questionName pieces that are not
   // filled in
   const disable = !questionName.every((n) => _.isString(n));
+
+  // Update question template if questionName or nameList changes
+  useEffect(updateQuestionTemplate, [questionName, nameList]);
 
   return (
     <Modal
