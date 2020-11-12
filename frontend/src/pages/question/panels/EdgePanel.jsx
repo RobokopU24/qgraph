@@ -67,7 +67,7 @@ export default function EdgePanel(props) {
     );
   }
 
-  const filteredPredicateList = getFilteredPredicateList() || [];
+  const filteredPredicateList = useMemo(getFilteredPredicateList, [edge.sourceId, edge.targetId, biolink, predicateList]) || [];
 
   function handleTargetIdUpdate(value) {
     edge.updateTargetId(value.id);

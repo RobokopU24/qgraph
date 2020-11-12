@@ -2,14 +2,12 @@ import React from 'react';
 import { Modal, ButtonGroup, Button } from 'react-bootstrap';
 import { FaSave, FaTrash, FaUndo } from 'react-icons/fa';
 
-// import { panelTypes } from '../../../stores/newQuestionStore';
-import HelpButton from '../../../components/shared/HelpButton';
-import getNodeTypeColorMap from '../../../utils/colorUtils';
+import config from '@/config.json';
+import HelpButton from '@/components/shared/HelpButton';
+import getNodeTypeColorMap from '@/utils/colorUtils';
 import EdgePanel from './EdgePanel';
 import NodePanel from './NodePanel';
 import './panels.css';
-
-import config from '../../../config.json';
 
 /**
  * Modal for creation of a new node or edge
@@ -73,9 +71,13 @@ export default function NewQuestionPanelModal({ panelStore, onQuestionUpdated })
               onClick={() => {
                 if (!isNewPanel) {
                   if (isNodePanel) {
-                    panelStore.removeNode();
+                    const updatedQueryGraph = panelStore.removeNode();
+                    // propogate node removal to query graph
+                    onQuestionUpdated(updatedQueryGraph);
                   } else {
-                    panelStore.removeEdge();
+                    const updatedQueryGraph = panelStore.removeEdge();
+                    // propogate edge removal to query graph
+                    onQuestionUpdated(updatedQueryGraph);
                   }
                 }
                 panelStore.togglePanel(false);

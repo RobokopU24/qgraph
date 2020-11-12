@@ -165,6 +165,7 @@ export default function useNewQuestionPanel() {
     q_graph.nodes[panelInfo.id].deleted = true;
     const trimmedQueryGraph = trimFloatingNodes(q_graph);
     updateQueryGraph(trimmedQueryGraph);
+    return trimmedQueryGraph;
   }
 
   /**
@@ -175,6 +176,7 @@ export default function useNewQuestionPanel() {
     delete q_graph.edges[panelInfo.id];
     const trimmedQueryGraph = trimFloatingNodes(q_graph);
     updateQueryGraph(trimmedQueryGraph);
+    return trimmedQueryGraph;
   }
 
   function saveActivePanel() {
@@ -197,12 +199,10 @@ export default function useNewQuestionPanel() {
       if (node.set) {
         new_node.set = node.set;
       }
+      const node_id = panelInfo.id || getNextNodeID();
+      new_node.label = node.label || `${node_id}: ${entityNameDisplay(new_node.name || new_node.curie || new_node.type)}`;
 
-      if (!panelInfo.id) {
-        q_graph.nodes[getNextNodeID()] = new_node;
-      } else {
-        q_graph.nodes[panelInfo.id] = new_node;
-      }
+      q_graph.nodes[node_id] = new_node;
     } else {
       const new_edge = {
         source_id: edge.sourceId,

@@ -96,23 +96,11 @@ export default function QuestionGraphViewContainer(props) {
           }}
         >
           <div style={{ display: 'table-cell', verticalAlign: 'middle', textAlign: 'center' }}>
-            {/* {showFetching && (
-              <div>
-                <FaSpinner className="icon-spin" style={{ marginRight: '10px', verticalAlign: 'text-top' }} />
-                Graph update in progress... Please wait.
-              </div>
-            )} */}
-            {/* {notInitialized && ( */}
             {numNodes === 0 && (
               <Button bsSize="large" onClick={() => panelStore.openPanel('node')}>
                 <FaPlusSquare style={{ verticalAlign: 'text-top' }} />{' Add Node'}
               </Button>
             )}
-            {/* {error && (
-              <span>
-                There was an error with the query graph specification
-              </span>
-            )} */}
           </div>
         </div>
       )}
