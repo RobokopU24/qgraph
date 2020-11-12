@@ -38,6 +38,16 @@ function dictToListWithIds(dict) {
 }
 
 /**
+ * Remove internal label property
+ * @param {object} n a query graph node
+ */
+function removeLabel(n) {
+  if (n.label) {
+    delete n.label;
+  }
+}
+
+/**
  * Convert curie to array if not given as array
  * @param {object} n node object with a curie property
  */
@@ -114,6 +124,7 @@ const convert = {
     reasonerRepresentation.nodes.forEach(pruneCuries);
     reasonerRepresentation.nodes.forEach(pruneTypes);
 
+    reasonerRepresentation.nodes.forEach(removeLabel);
     reasonerRepresentation.edges.forEach(pruneTypes);
     return reasonerRepresentation;
   },
