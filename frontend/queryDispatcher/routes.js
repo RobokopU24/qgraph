@@ -26,7 +26,6 @@ router.route('/answer')
         // don't parse the response
         transformResponse: [(data) => data],
       };
-      console.log(config);
       // Go ask Messenger for an answer
       response = await axios(config);
       const answer = response.data;
