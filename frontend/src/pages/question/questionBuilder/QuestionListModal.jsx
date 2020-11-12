@@ -16,7 +16,7 @@ export default function QuestionListModal(props) {
   }
 
   function onClick(event) {
-    questionSelected(event.data.id);
+    questionSelected(event.data.id, event.data.metadata.name);
   }
 
   return (

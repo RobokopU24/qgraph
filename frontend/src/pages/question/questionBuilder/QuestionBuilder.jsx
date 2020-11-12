@@ -152,7 +152,7 @@ export default function QuestionBuilder(props) {
   /**
    * Load the forked question from robokache
    */
-  async function onQuestionFork(qid) {
+  async function onQuestionFork(qid, name) {
     // Get question from db
     const response = await API.cache.getQuestionData(qid, user && user.id_token);
     if (response.status === 'error') {
@@ -164,7 +164,11 @@ export default function QuestionBuilder(props) {
     questionStore.updateQueryGraph(
       queryGraphUtils.convert.reasonerToInternal(query_graph),
     );
+    questionStore.updateQuestionName(name);
+
     setStep('build');
+    // Close panel
+    setQuestionsReady(false);
   }
 
   function resetSteps() {
@@ -235,7 +239,6 @@ export default function QuestionBuilder(props) {
           <Button
             className="optionsButton"
             onClick={getQuestions}
-            disabled
           >
             <h3>Fork <span style={{ fontSize: '22px' }}><GoRepoForked style={{ cursor: 'pointer' }} /></span></h3>
             <p className="optionButtonDesc">Load from a previously asked question.</p>
