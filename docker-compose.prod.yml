@@ -4,3 +4,10 @@ services:
   frontend:
     build:
       dockerfile: Dockerfile.prod
+    environment:
+      MESSENGER_HOST: http://messenger:4868
+
+networks:
+  default:
+    external:
+      name: robokop_default    
