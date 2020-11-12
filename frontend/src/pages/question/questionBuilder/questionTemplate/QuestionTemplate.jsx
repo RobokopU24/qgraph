@@ -52,7 +52,6 @@ export default function QuestionTemplateModal(props) {
   } = props;
   const [questionTemplate, setQuestionTemplate] = useState({});
   const [questionName, updateQuestionName] = useState([]);
-  const [disableSubmit, setDisableSubmit] = useState(true);
   const [nameList, updateNameList] = useState([]);
   const [types, setTypes] = useState([]);
   const [labels, setLabels] = useState([]);
@@ -137,7 +136,6 @@ export default function QuestionTemplateModal(props) {
       }
     });
     setQuestionTemplate({ ...questionTemplate });
-    setDisableSubmit(false);
   }
 
   function handleIdentifierChange(index, value) {
@@ -157,6 +155,7 @@ export default function QuestionTemplateModal(props) {
         newLabels[index] = label;
         newCuries[index] = curie;
         // check to see if all entries in nameList have a label and curie and update question template if they do.
+        console.log(newNameList);
         const update = newNameList.every((nameObj) => nameObj.name && nameObj.id);
         if (update) {
           updateQuestionTemplate();
@@ -177,7 +176,6 @@ export default function QuestionTemplateModal(props) {
         );
         newLabels[name.ider] = '';
         newCuries[name.ider] = '';
-        setDisableSubmit(true);
       }
 
       updateQuestionName(newQuestionName);
@@ -191,12 +189,15 @@ export default function QuestionTemplateModal(props) {
     selectQuestion(questionTemplate);
     setQuestionTemplate({});
     updateQuestionName([]);
-    setDisableSubmit(true);
     updateNameList([]);
     setTypes([]);
     setLabels([]);
     setCuries([]);
   }
+
+  // Disable if there are still questionName pieces that are not
+  // filled in
+  const disable = !questionName.every((n) => _.isString(n));
 
   return (
     <Modal
@@ -249,7 +250,7 @@ export default function QuestionTemplateModal(props) {
         ))}
       </Modal.Body>
       <Modal.Footer>
-        <Button id="questionTempButton" onClick={submitTemplate} disabled={disableSubmit}>Load Question</Button>
+        <Button id="questionTempButton" onClick={submitTemplate} disabled={disable}>Load Question</Button>
       </Modal.Footer>
     </Modal>
   );
