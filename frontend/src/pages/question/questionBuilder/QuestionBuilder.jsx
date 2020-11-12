@@ -8,6 +8,7 @@ import {
   Col, Form, FormGroup, FormControl, Panel, Jumbotron, Button,
 } from 'react-bootstrap';
 import _ from 'lodash';
+import slugify from 'slugify';
 
 import queryGraphUtils from '@/utils/queryGraph';
 import HelpButton from '@/components/shared/HelpButton';
@@ -29,7 +30,7 @@ import QuestionListModal from './QuestionListModal';
  */
 export default function QuestionBuilder(props) {
   const {
-    questionStore, reset, download, submit, width,
+    questionStore, reset, submit, width,
   } = props;
   const [showModal, toggleModal] = useState(false);
   const [step, setStep] = useState('options');
@@ -104,6 +105,13 @@ export default function QuestionBuilder(props) {
       return;
     }
 
+    // TODO: this is pretty hacky
+    fileContentObj.query_graph.nodes.forEach((node) => {
+      if (!node.label) {
+        node.label = `${node.id}: ${node.name || node.curie || node.type}`;
+      }
+    });
+
     questionStore.updateQueryGraph(
       queryGraphUtils.convert.reasonerToInternal(fileContentObj.query_graph),
     );
@@ -165,6 +173,28 @@ export default function QuestionBuilder(props) {
     setStep('options');
   }
 
+  function onDownloadQuestion() {
+    const query_graph = queryGraphUtils.convert.internalToReasoner(
+      questionStore.query_graph,
+    );
+    const data = { query_graph };
+
+    // Transform the data into a json blob and give it a url
+    const json = JSON.stringify(data, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    const question_name = questionStore.question_name || 'Robokop Question';
+    const question_name_slug = slugify(question_name.toLowerCase(), '_', { strict: true });
+
+    // Create a link with that URL and click it.
+    const a = document.createElement('a');
+    a.download = `${question_name_slug}.json`;
+    a.href = url;
+    a.click();
+    a.remove();
+  }
+
   return (
     <div id="questionBuilder">
       {step === 'options' && (
@@ -179,6 +209,7 @@ export default function QuestionBuilder(props) {
           <Button
             className="optionsButton"
             onClick={() => selectOption('template')}
+            disabled
           >
             <h3>Template <span style={{ fontSize: '22px' }}><FaFolder style={{ cursor: 'pointer' }} /></span></h3>
             <p className="optionButtonDesc">Choose a question template to start with a preconstructed question.</p>
@@ -205,6 +236,7 @@ export default function QuestionBuilder(props) {
           <Button
             className="optionsButton"
             onClick={getQuestions}
+            disabled
           >
             <h3>Fork <span style={{ fontSize: '22px' }}><GoRepoForked style={{ cursor: 'pointer' }} /></span></h3>
             <p className="optionButtonDesc">Load from a previously asked question.</p>
@@ -269,7 +301,7 @@ export default function QuestionBuilder(props) {
           </Col>
           <Col md={12}>
             <NewQuestionButtons
-              onDownloadQuestion={download}
+              onDownloadQuestion={onDownloadQuestion}
               onResetQuestion={resetSteps}
               onSubmitQuestion={submit}
               validQuestion={questionStore.isValidQuestion()}

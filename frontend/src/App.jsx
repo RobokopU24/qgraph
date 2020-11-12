@@ -8,6 +8,7 @@ import Guide from '@/pages/Guide';
 import TermsofService from '@/pages/TermsofService';
 import SimpleViewer from '@/pages/SimpleViewer';
 import SimpleQuestion from '@/pages/question/SimpleQuestion';
+import QuestionNew from '@/pages/question/QuestionNew';
 
 import Neighborhood from '@/pages/neighborhood/Neighborhood';
 import QuestionList from '@/pages/questionList/QuestionList';
@@ -89,6 +90,9 @@ export default function App() {
                     </Route>
                     <Route path="/simple/question">
                       <SimpleQuestion />
+                    </Route>
+                    <Route path="/q/new">
+                      <QuestionNew />
                     </Route>
                     <Route path="/">
                       <Landing isSignedIn={isSignedIn} />

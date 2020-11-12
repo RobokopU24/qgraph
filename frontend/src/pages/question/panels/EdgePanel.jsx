@@ -67,7 +67,7 @@ export default function EdgePanel(props) {
     );
   }
 
-  const filteredPredicateList = getFilteredPredicateList() || [];
+  const filteredPredicateList = useMemo(getFilteredPredicateList, [edge.sourceId, edge.targetId, biolink, predicateList]) || [];
 
   function handleTargetIdUpdate(value) {
     edge.updateTargetId(value.id);
@@ -85,7 +85,9 @@ export default function EdgePanel(props) {
   }
 
   function handleSwitchSourceTarget() {
-    edge.switchSourceTarget();
+    // TODO: do this less hacky
+    const { source, target, id } = edge.switchSourceTarget();
+    panelStore.updateEdgePanelHeader(source, target, id);
     panelStore.toggleUnsavedChanges(true);
   }
 
@@ -93,7 +95,7 @@ export default function EdgePanel(props) {
     Object.entries(panelStore.query_graph.nodes).map(
       ([id, node]) => ({
         ...node,
-        name: node.name || entityNameDisplay(node.type),
+        name: `${id}: ${node.name || entityNameDisplay(node.type)}`,
         id,
       }),
     ).filter((n) => !n.deleted);

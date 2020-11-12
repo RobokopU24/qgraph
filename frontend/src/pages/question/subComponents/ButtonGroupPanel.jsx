@@ -13,9 +13,10 @@ import { FaPlusSquare, FaPlus } from 'react-icons/fa';
 export default function ButtonGroupPanel({ panelStore, toggleJsonEditor }) {
   const numNodes = Object.values(panelStore.query_graph.nodes)
     .filter((n) => !n.deleted).length;
+  const numEdges = Object.keys(panelStore.query_graph.edges).length;
   return (
     <>
-      {numNodes > 0 && (
+      {numNodes + numEdges > 0 && (
         <div
           style={{
             position: 'absolute', left: '30px', top: '60px', zIndex: 99,
