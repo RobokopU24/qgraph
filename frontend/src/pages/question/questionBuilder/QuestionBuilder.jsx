@@ -10,11 +10,15 @@ import {
 import _ from 'lodash';
 import slugify from 'slugify';
 
+import API from '@/API';
+
 import queryGraphUtils from '@/utils/queryGraph';
+import { formatDateTimeShort } from '@/utils/cache';
 import HelpButton from '@/components/shared/HelpButton';
 import config from '@/config.json';
 
 import AlertContext from '@/context/alert';
+import UserContext from '@/context/user';
 import NewQuestionButtons from './NewQuestionButtons';
 import QuestionGraphViewContainer from './QuestionGraphViewContainer';
 import QuestionTemplateModal from './QuestionTemplate';
@@ -34,12 +38,14 @@ export default function QuestionBuilder(props) {
   } = props;
   const [showModal, toggleModal] = useState(false);
   const [step, setStep] = useState('options');
-  // Questions is for forking
-  // const [questions, updateQuestions] = useState([]);
+
+  const [forkQuestions, updateForkQuestions] = useState([]);
+
   const [questionsReady, setQuestionsReady] = useState(false);
   // used just for focus
   const questionName = useRef(null);
 
+  const user = useContext(UserContext);
   const displayAlert = useContext(AlertContext);
 
   useEffect(() => {
@@ -129,42 +135,41 @@ export default function QuestionBuilder(props) {
     });
   }
 
-  function getQuestions() {
+  async function getQuestions() {
+    const response = await API.cache.getQuestions(user && user.id_token);
+    if (response.status === 'error') {
+      displayAlert('error', response.message);
+      return;
+    }
+
+    updateForkQuestions(response.map((q) => ({
+      ...q,
+      displayText: `${q.metadata.name} - ${formatDateTimeShort(q.created_at)}`,
+    })));
     setQuestionsReady(true);
-    // this.appConfig.questionList(
-    //   (data) => {
-    //     updateQuestions(data.data.questions);
-    //     setQuestionsReady(true);
-    //   },
-    //   (err) => {
-    //     console.log(err);
-    //     setQuestionsReady(false);
-    //   },
-    // );
   }
 
   /**
-   * Load the selected question by ID
-   * @param {String} qid Unique ID of a question in the db
+   * Load the forked question from robokache
    */
-  // function questionSelected(qid) {
-  //   // this will go get the question from the db
-  //   this.appConfig.questionData(
-  //     qid,
-  //     (data) => {
-  //       questionStore.questionSpecToPanelState(data.data.question);
-  //       setStep('build');
-  //       setQuestionsReady(false);
-  //     },
-  //     (err) => {
-  //       console.log(err);
-  //       questionStore.resetQuestion();
-  //       questionStore.setGraphState(graphStates.error);
-  //       setStep('options');
-  //       setQuestionsReady(false);
-  //     },
-  //   );
-  // }
+  async function onQuestionFork(qid, name) {
+    // Get question from db
+    const response = await API.cache.getQuestionData(qid, user && user.id_token);
+    if (response.status === 'error') {
+      displayAlert('error', response.message);
+      setStep('options');
+    }
+    const { query_graph } = JSON.parse(response);
+
+    questionStore.updateQueryGraph(
+      queryGraphUtils.convert.reasonerToInternal(query_graph),
+    );
+    questionStore.updateQuestionName(name);
+
+    setStep('build');
+    // Close panel
+    setQuestionsReady(false);
+  }
 
   function resetSteps() {
     reset();
@@ -234,7 +239,6 @@ export default function QuestionBuilder(props) {
           <Button
             className="optionsButton"
             onClick={getQuestions}
-            disabled
           >
             <h3>Fork <span style={{ fontSize: '22px' }}><GoRepoForked style={{ cursor: 'pointer' }} /></span></h3>
             <p className="optionButtonDesc">Load from a previously asked question.</p>
@@ -318,8 +322,8 @@ export default function QuestionBuilder(props) {
       <QuestionListModal
         show={questionsReady}
         close={() => setQuestionsReady(false)}
-        questions={[]}
-        questionSelected={() => {}}
+        questions={forkQuestions}
+        questionSelected={onQuestionFork}
       />
     </div>
   );
