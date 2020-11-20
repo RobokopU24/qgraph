@@ -1,6 +1,4 @@
-import React, {
-  useRef, useImperativeHandle, forwardRef,
-} from 'react';
+import React, { useRef, useEffect } from 'react';
 
 import ReactDOM from 'react-dom';
 
@@ -15,27 +13,29 @@ import entityNameDisplay from '@/utils/entityNameDisplay';
 import getNodeTypeColorMap from '@/utils/colorUtils';
 import curieUrls from '@/utils/curieUrls';
 
-function CurieConceptSelector({
+export default function CurieConceptSelector({
   concepts,
   curies,
   selection, handleSelect,
   searchTerm, updateSearchTerm,
   loading,
   rightButtonFunction, rightButtonContents,
-}, ref) {
-  // Allow parent to access input element as ref
-  // Useful for being able to call focus method
+  focus, clearFocus,
+}) {
+  // Reference to the input element used for setting focus
   const inputRef = useRef(null);
-  useImperativeHandle(ref, () => ({
-    focus: () => {
-      // We have to use the deprecated find-dom-node method
-      // because react-bootstrap doesn't expose an alternative interface
+  useEffect(() => {
+    if (!focus) return;
+    // We have to use the deprecated find-dom-node method
+    // because react-bootstrap doesn't expose an alternative interface
 
-      // eslint-disable-next-line react/no-find-dom-node
-      const node = ReactDOM.findDOMNode(inputRef.current);
-      node.focus();
-    },
-  }));
+    // eslint-disable-next-line react/no-find-dom-node
+    const node = ReactDOM.findDOMNode(inputRef.current);
+    node.focus();
+  }, [focus]);
+
+  // After we have set focus, clear the variable so we can set it again
+  useEffect(() => { if (focus && clearFocus) clearFocus(); }, [focus]);
 
   function rowRenderer({
     index,
@@ -187,5 +187,3 @@ function CurieConceptSelector({
     </>
   );
 }
-
-export default forwardRef(CurieConceptSelector);

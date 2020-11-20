@@ -1,5 +1,5 @@
 import React, {
-  useState, useRef, useEffect,
+  useState, useEffect,
 } from 'react';
 import {
   Modal, DropdownButton, MenuItem, Button,
@@ -57,15 +57,17 @@ export default function QuestionTemplateModal(props) {
   const [labels, setLabels] = useState([]);
   const [curies, setCuries] = useState([]);
 
-  // Using a ref here ensures that we have an up-to-date nameList value
-  // in the setFocus method
-  const nameListRef = useRef(null);
-  nameListRef.current = nameList;
-
-  function setFocus(i) {
-    if (nameListRef.current.length === 0) return;
-
-    nameListRef.current[i].ref.current.focus();
+  // We use the name.focus property as a signal that the
+  // underlying component needs to execute the focus method.
+  //
+  // After it is set to true, the component will clear it
+  // once the focus operation is done
+  function setFocus(i, value) {
+    updateNameList((oldNameList) => {
+      const newNameList = [...oldNameList];
+      newNameList[i].focus = value;
+      return newNameList;
+    });
   }
 
   function replaceName(qName, newTypes) {
@@ -84,7 +86,7 @@ export default function QuestionTemplateModal(props) {
             style={{
               textDecoration: 'underline', color: 'grey', border: 'none', backgroundColor: 'white',
             }}
-            onClick={() => setFocus(refNum)}
+            onClick={() => setFocus(refNum, true)}
             key={shortid.generate()}
           >
             {newTypes[refNum]}
@@ -165,7 +167,7 @@ export default function QuestionTemplateModal(props) {
             style={{
               textDecoration: 'underline', color: 'grey', border: 'none', backgroundColor: 'white',
             }}
-            onClick={() => setFocus(i)}
+            onClick={() => setFocus(i, true)}
             key={shortid.generate()}
           >
             {types[name.ider]}
@@ -240,11 +242,12 @@ export default function QuestionTemplateModal(props) {
             <p>Choose curies below to fill out the template.</p>
           </div>
         )}
-        {nameList.map((name, i) => (
+        {nameList.map((n, i) => (
           <FillIdentifier
             key={types[i] + i}
             onSelect={(v) => handleIdentifierChange(i, v)}
-            ref={name.ref}
+            focus={n.focus}
+            clearFocus={() => setFocus(i, false)}
             type={types[i]}
           />
         ))}

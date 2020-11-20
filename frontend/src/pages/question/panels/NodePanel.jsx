@@ -1,5 +1,5 @@
 import React, {
-  useEffect, useRef, useCallback, useContext,
+  useEffect, useCallback, useContext,
 } from 'react';
 
 import {
@@ -27,13 +27,6 @@ export default function NodePanel({ panelStore }) {
   const biolink = useContext(BiolinkContext);
 
   const displayAlert = useContext(AlertContext);
-
-  const inputRef = useRef(null);
-
-  // Focus selector text box on load
-  useEffect(() => {
-    inputRef.current.focus();
-  });
 
   function handleSelect(entry) {
     panelStore.toggleUnsavedChanges(true);
@@ -173,7 +166,7 @@ export default function NodePanel({ panelStore }) {
         rightButtonFunction={rightButtonFunction}
         rightButtonContents={rightButtonContents}
         loading={node.loading}
-        ref={inputRef}
+        focus
       />
       {/* {showConstraints && (
         <>

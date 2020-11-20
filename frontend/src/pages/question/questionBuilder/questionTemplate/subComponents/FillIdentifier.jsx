@@ -1,5 +1,5 @@
 import React, {
-  useContext, useRef, useState, useCallback, useImperativeHandle, forwardRef,
+  useContext, useState, useCallback,
 } from 'react';
 
 import _ from 'lodash';
@@ -13,7 +13,9 @@ import CurieConceptSelector from '@/components/shared/curies/CurieConceptSelecto
 
 import AlertContext from '@/context/alert';
 
-function FillIdentifier({ onSelect, type }, ref) {
+export default function FillIdentifier({
+  onSelect, type, focus, clearFocus,
+}) {
   const displayAlert = useContext(AlertContext);
 
   const [curies, updateCuries] = useState([]);
@@ -21,15 +23,6 @@ function FillIdentifier({ onSelect, type }, ref) {
   const [loading, setLoading] = useState(false);
 
   const [selection, updateSelection] = useState({ curie: [] });
-
-  // Allow parent to access input element as ref
-  // Useful for being able to call focus method
-  const inputRef = useRef();
-  useImperativeHandle(ref, () => ({
-    focus: () => {
-      inputRef.current.focus();
-    },
-  }));
 
   async function fetchCuries(newSearchTerm) {
     // Get and update list of curies
@@ -81,7 +74,8 @@ function FillIdentifier({ onSelect, type }, ref) {
 
   return (
     <CurieConceptSelector
-      ref={inputRef}
+      focus={focus}
+      clearFocus={clearFocus}
       concepts={[]}
       curies={curies}
       selection={selection}
@@ -94,5 +88,3 @@ function FillIdentifier({ onSelect, type }, ref) {
     />
   );
 }
-
-export default forwardRef(FillIdentifier);
