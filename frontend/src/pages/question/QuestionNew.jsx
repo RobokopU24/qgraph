@@ -3,6 +3,7 @@ import {
   Grid, Row,
 } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
+import Button from '@material-ui/core/Button';
 
 import UserContext from '@/context/user';
 import AlertContext from '@/context/alert';
@@ -34,19 +35,16 @@ export default function QuestionNew() {
     }
   }
 
-  const failedToAnswer = 'Please try fetching a new answer later.';
-
   async function fetchAnswer(questionId) {
     let response = await API.queryDispatcher.getAnswer(questionId, user.id_token);
     if (response.status === 'error') {
-      displayAlert('error', `${response.message}. ${failedToAnswer}`);
-      return;
+      return response;
     }
+    const answerId = response.id;
 
     response = await API.cache.getQuestion(questionId, user.id_token);
     if (response.status === 'error') {
-      displayAlert('error', `${response.message}. ${failedToAnswer}`);
-      return;
+      return response;
     }
 
     // Set hasAnswers in metadata to true
@@ -54,11 +52,10 @@ export default function QuestionNew() {
     questionMeta.metadata.hasAnswers = true;
     response = await API.cache.updateQuestion(questionMeta, user.id_token);
     if (response.status === 'error') {
-      displayAlert('error', `${response.message}. ${failedToAnswer}`);
-      return;
+      return response;
     }
 
-    displayAlert('success', 'Your answer is ready!');
+    return { status: 'success', answerId };
   }
 
   async function onSubmit() {
@@ -91,10 +88,35 @@ export default function QuestionNew() {
     pageStatus.setLoading('Fetching answer, this may take a while');
 
     // Start the process of getting an answer and display to user when done
-    await fetchAnswer(questionId);
+    response = await fetchAnswer(questionId);
 
-    // Redirect to created question
-    history.push(`/question/${questionId}`);
+    let alertText;
+    if (response.status === 'error') {
+      const failedToAnswer = 'Please try fetching a new answer later.';
+      alertText = `${response.message}. ${failedToAnswer}`;
+    } else {
+      alertText = 'Your answer is ready!';
+    }
+
+    // User has navigated away, display a button to go to the question
+    if (history.location.pathname !== '/q/new') {
+      displayAlert(
+        response.status,
+        <>
+          <h4>{alertText}</h4>
+          <Button
+            onClick={() => history.push(`/question/${questionId}`)}
+            variant="contained"
+          >
+            View {response.status === 'error' ? 'Question' : 'Answer'}
+          </Button>
+        </>,
+      );
+    } else {
+      displayAlert(response.status, alertText);
+      // Redirect to created question
+      history.push(`/question/${questionId}`);
+    }
   }
 
   return (

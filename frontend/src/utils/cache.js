@@ -33,3 +33,13 @@ export function formatDateTimeNicely(dateString) {
   };
   return Intl.DateTimeFormat('en-US', options).format(jsDate);
 }
+
+export function formatDateTimeShort(dateString) {
+  const jsDate = new Date(dateString);
+  const options = {
+    dateStyle: 'short',
+    timeStyle: 'short',
+    hour12: true,
+  };
+  return Intl.DateTimeFormat('en-US', options).format(jsDate);
+}
