@@ -15,12 +15,6 @@ A friendly interface for users to create, upload, ask, and view biomedical quest
 		* Install [Node.js](https://nodejs.org/)
 		* Run `npm install`
 
-1. Github Container Registry (where the Robokache image is stored) requires an access token to pull images. Create a [Github Access Token](https://github.com/settings/tokens). This token only needs the `read:packages` permission.
-1. Use the `docker login` command to register that token on your local machine: 
-		```bash
-		echo "<token>" | docker login docker.pkg.github.com --username <github_username> --password-stdin
-		```
-
 ### Run
 
 The recommended way to run a local development environment is using the `manage.js` script: 
