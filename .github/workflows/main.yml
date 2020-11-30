@@ -8,7 +8,7 @@ on:
 
 jobs:
     push_frontend:
-        name: Push Docker image to GitHub Container Registry.
+        name: Push frontend image to GitHub Container Registry.
         runs-on: ubuntu-latest
         steps:
             - name: Check out the repo
@@ -23,7 +23,7 @@ jobs:
                   registry: ghcr.io
                   tags: frontend:latest
     push_proxy:
-        name: Push proxy Docker image to GitHub Container Registry.
+        name: Push proxy image to GitHub Container Registry.
         runs-on: ubuntu-latest
         steps:
             - name: Check out the repo
