@@ -144,7 +144,8 @@ export default function QuestionTemplateModal(props) {
   }
 
   function handleIdentifierChange(index, value) {
-    const { curie, name: label } = value;
+    const { name: label } = value;
+    const curie = value.curie[0];
 
     // Values that we update during this function
     const newQuestionName = [...questionName];
