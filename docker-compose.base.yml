@@ -8,6 +8,6 @@ services:
   frontend:
     build: frontend/
   robokache:
-    image: ghcr.io/ncats-gamma/robokache:v4.1.3
+    image: ghcr.io/ncats-gamma/robokache:v4.1.4
     volumes:
       - ./robokache-data:/app/data
