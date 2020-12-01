@@ -1,7 +1,5 @@
 import React, { useRef, useEffect } from 'react';
 
-import ReactDOM from 'react-dom';
-
 import {
   FormControl, Button, Badge, InputGroup,
 } from 'react-bootstrap';
@@ -26,16 +24,13 @@ export default function CurieConceptSelector({
   const inputRef = useRef(null);
   useEffect(() => {
     if (!focus) return;
-    // We have to use the deprecated find-dom-node method
-    // because react-bootstrap doesn't expose an alternative interface
 
-    // eslint-disable-next-line react/no-find-dom-node
-    const node = ReactDOM.findDOMNode(inputRef.current);
-    node.focus();
+    // Set focus
+    inputRef.current.focus();
+
+    // After we have set focus, clear the variable so we can set it again
+    if (clearFocus) clearFocus();
   }, [focus]);
-
-  // After we have set focus, clear the variable so we can set it again
-  useEffect(() => { if (focus && clearFocus) clearFocus(); }, [focus]);
 
   function rowRenderer({
     index,
@@ -136,7 +131,7 @@ export default function CurieConceptSelector({
             className="curieSelectorInput"
             placeholder="Start typing to search."
             value={searchTerm}
-            ref={inputRef}
+            inputRef={(ref) => { inputRef.current = ref; }}
             onChange={(e) => updateSearchTerm(e.target.value)}
           />
           {!showOptions && selection.curie.length > 0 && (
