@@ -107,6 +107,7 @@ export default function Landing({ isSignedIn }) {
               href="/simple/view"
             />
           </Row>
+          {/*
           <Row>
             <CustomComponent
               glyph="screenshot"
@@ -115,6 +116,7 @@ export default function Landing({ isSignedIn }) {
               href="/neighborhood"
             />
           </Row>
+          */}
         </ListGroup>
       </Jumbotron>
     </Grid>

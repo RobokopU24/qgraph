@@ -21,7 +21,7 @@ import AlertContext from '@/context/alert';
 import UserContext from '@/context/user';
 import NewQuestionButtons from './NewQuestionButtons';
 import QuestionGraphViewContainer from './QuestionGraphViewContainer';
-import QuestionTemplateModal from './QuestionTemplate';
+import QuestionTemplateModal from './questionTemplate/QuestionTemplate';
 import QuestionListModal from './QuestionListModal';
 
 /**
@@ -78,7 +78,10 @@ export default function QuestionBuilder(props) {
    * @param {Number} question.max_connectivity max connections for question
    */
   function onQuestionTemplate(question) {
-    questionStore.questionSpecToPanelState(question);
+    questionStore.updateQueryGraph(
+      queryGraphUtils.convert.reasonerToInternal(question.query_graph),
+    );
+    questionStore.updateQuestionName(question.natural_question);
     setStep('build');
     toggleModal(false);
   }
@@ -212,7 +215,6 @@ export default function QuestionBuilder(props) {
           <Button
             className="optionsButton"
             onClick={() => selectOption('template')}
-            disabled
           >
             <h3>Template <span style={{ fontSize: '22px' }}><FaFolder style={{ cursor: 'pointer' }} /></span></h3>
             <p className="optionButtonDesc">Choose a question template to start with a preconstructed question.</p>
@@ -314,8 +316,6 @@ export default function QuestionBuilder(props) {
       <QuestionTemplateModal
         showModal={showModal}
         close={() => toggleModal(false)}
-        // questions={_.cloneDeep(questionTemplates)}
-        questions={[]}
         selectQuestion={onQuestionTemplate}
         concepts={config.concepts}
       />
