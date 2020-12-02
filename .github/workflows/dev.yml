@@ -20,23 +20,16 @@ jobs:
         
 
       - name: Run ESLint and get output
-        run: |
-          echo 'ESLINT_OUTPUT<<EOF' >> $GITHUB_ENV
-          echo "$(docker run frontend npm run --silent lint)" >> $GITHUB_ENV
-          echo 'EOF' >> $GITHUB_ENV
+        run: docker run --name frontend frontend npm run --silent lint:pr
 
-      - name: Report ESLint information as comment on pull request
-        uses: mshick/add-pr-comment@v1
+      - name: Copy output from container
+        run: docker cp frontend:/app/lint lint
+
+      - name: Upload lint results
+        uses: actions/upload-artifact@v2
         with:
-          message: ${{ env.ESLINT_OUTPUT }}
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
-          allow-repeats: true
-
-      - name: Fail job if there are ESLint errors
-        run: |
-          echo '${{ env.ESLINT_OUTPUT }}' >> eslint_output.txt
-          if grep -c -E '[0-9]*[1-9][0-9]* error' eslint_output.txt; then exit 1; fi
+          name: lint
+          path: lint/
   test:
     name: Frontend Tests
     runs-on: ubuntu-latest
