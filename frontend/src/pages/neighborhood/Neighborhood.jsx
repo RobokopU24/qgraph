@@ -6,7 +6,6 @@ import {
 } from 'react-bootstrap';
 
 import Loading from '../../components/loading/Loading';
-import CurieSelectorContainer from '../../components/shared/curies/CurieSelectorContainer';
 import NeighborhoodViewer from './NeighborhoodViewer';
 import NodeDetails from './NodeDetails';
 
@@ -95,10 +94,11 @@ export default function Neighborhood(props) {
         <Row>
           <Col sm={12}>
             <AutoSizer disableHeight>
-              {({ width }) => (
+              {() => (
                 <div
                   style={{ padding: '5px 0px' }}
                 >
+                  {/*
                   <CurieSelectorContainer
                     concepts={config.concepts}
                     search={onSearch}
@@ -108,6 +108,7 @@ export default function Neighborhood(props) {
                     disableType
                     disableTypeFilter
                   />
+                  */}
                 </div>
               )}
             </AutoSizer>
