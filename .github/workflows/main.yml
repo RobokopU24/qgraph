@@ -16,8 +16,8 @@ jobs:
             - name: Push Frontend
               uses: docker/build-push-action@v1
               with:
-                  context: ./frontend
-                  file: Dockerfile.prod
+                  path: ./frontend
+                  dockerfile: Dockerfile.prod
                   username: ${{ github.actor }}
                   password: ${{ secrets.CR_PAT }}
                   registry: ghcr.io
@@ -31,7 +31,7 @@ jobs:
             - name: Push Frontend
               uses: docker/build-push-action@v1
               with:
-                  context: ./proxy
+                  path: ./proxy
                   username: ${{ github.actor }}
                   password: ${{ secrets.CR_PAT }}
                   registry: ghcr.io
