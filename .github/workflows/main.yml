@@ -1,0 +1,38 @@
+name: 'Push to Github Container Registry'
+
+on:
+    pull_request:
+        types: closed
+        branches:
+            - main
+
+jobs:
+    push_frontend:
+        name: Push frontend image to GitHub Container Registry.
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check out the repo
+              uses: actions/checkout@v2
+            - name: Push Frontend
+              uses: docker/build-push-action@v1
+              with:
+                  context: ./frontend
+                  file: Dockerfile.prod
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.CR_PAT }}
+                  registry: ghcr.io
+                  tags: frontend:latest
+    push_proxy:
+        name: Push proxy image to GitHub Container Registry.
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check out the repo
+              uses: actions/checkout@v2
+            - name: Push Frontend
+              uses: docker/build-push-action@v1
+              with:
+                  context: ./proxy
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.CR_PAT }}
+                  registry: ghcr.io
+                  tags: proxy:latest
