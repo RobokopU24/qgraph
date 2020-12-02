@@ -6,7 +6,6 @@ import {
 } from 'react-bootstrap';
 
 import Loading from '../../components/loading/Loading';
-import CurieSelectorContainer from '../../components/shared/curies/CurieSelectorContainer';
 import NeighborhoodViewer from './NeighborhoodViewer';
 import NodeDetails from './NodeDetails';
 
@@ -16,7 +15,7 @@ import config from '../../config.json';
 export default function Neighborhood(props) {
   const { appConfig, identifier } = props;
   const [term, updateTerm] = useState('');
-  const [curie, updateCurie] = useState('');
+  // const [curie, updateCurie] = useState('');
   const [detailsLoading, setDetailsLoading] = useState(false);
   const [detailsReady, setDetailsReady] = useState(false);
   const [nodeSources, setNodeSources] = useState([]);
@@ -25,9 +24,11 @@ export default function Neighborhood(props) {
   const [neighborhoodLoading, setNeighborhoodLoading] = useState(false);
   const [neighborhoodReady, setNeighborhoodReady] = useState(false);
 
+  /*
   function onSearch(input, type) {
     return appConfig.questionNewSearch(input, type);
   }
+  */
 
   function getDetails(selectedCurie) {
     setDetailsLoading(true);
@@ -66,7 +67,7 @@ export default function Neighborhood(props) {
 
   function handleCurieChange(type, newTerm, newCurie) {
     if (newCurie || !newTerm) {
-      updateCurie(newCurie);
+      // updateCurie(newCurie);
       updateTerm(newTerm);
     }
     if (newCurie) {
@@ -95,10 +96,11 @@ export default function Neighborhood(props) {
         <Row>
           <Col sm={12}>
             <AutoSizer disableHeight>
-              {({ width }) => (
+              {() => (
                 <div
                   style={{ padding: '5px 0px' }}
                 >
+                  {/*
                   <CurieSelectorContainer
                     concepts={config.concepts}
                     search={onSearch}
@@ -108,6 +110,7 @@ export default function Neighborhood(props) {
                     disableType
                     disableTypeFilter
                   />
+                  */}
                 </div>
               )}
             </AutoSizer>

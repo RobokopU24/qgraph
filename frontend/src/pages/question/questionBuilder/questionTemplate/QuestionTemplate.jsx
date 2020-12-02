@@ -1,17 +1,21 @@
-import React, { useState, useRef } from 'react';
+import React, {
+  useState, useEffect,
+} from 'react';
 import {
   Modal, DropdownButton, MenuItem, Button,
 } from 'react-bootstrap';
 import shortid from 'shortid';
 import _ from 'lodash';
 
-import CurieSelectorContainer from '../../../components/shared/curies/CurieSelectorContainer';
+import questionTemplates from '@/questionTemplates';
+
+import FillIdentifier from './subComponents/FillIdentifier';
 
 function extractDetails(questionTemplate) {
   const newTypes = [];
   const newLabels = [];
   const newCuries = [];
-  questionTemplate.machine_question.nodes.forEach((node) => {
+  questionTemplate.query_graph.nodes.forEach((node) => {
     if (node.curie) {
       // we're going to grab the number of the identifier from the curie and add that node's type to the list of types in its correct spot.
       if (Array.isArray(node.curie)) {
@@ -44,19 +48,26 @@ function displayQuestion(questionName) {
 
 export default function QuestionTemplateModal(props) {
   const {
-    selectQuestion, showModal, questions, concepts, close,
+    selectQuestion, showModal, close,
   } = props;
   const [questionTemplate, setQuestionTemplate] = useState({});
   const [questionName, updateQuestionName] = useState([]);
-  const [disableSubmit, setDisableSubmit] = useState(true);
   const [nameList, updateNameList] = useState([]);
   const [types, setTypes] = useState([]);
   const [labels, setLabels] = useState([]);
   const [curies, setCuries] = useState([]);
-  const curieSelector = useRef({});
 
-  function setFocus(num) {
-    curieSelector.current[`curie${num}`].curieSelector.input.focus();
+  // We use the name.focus property as a signal that the
+  // underlying component needs to execute the focus method.
+  //
+  // After it is set to true, the component will clear it
+  // once the focus operation is done
+  function setFocus(i, value) {
+    updateNameList((oldNameList) => {
+      const newNameList = [...oldNameList];
+      newNameList[i].focus = value;
+      return newNameList;
+    });
   }
 
   function replaceName(qName, newTypes) {
@@ -68,7 +79,6 @@ export default function QuestionTemplateModal(props) {
       const nameRegex = `$name${num}$`;
       const idRegex = `($identifier${num}$)`;
       if (question[i] === nameRegex) {
-        // onClick=this[curie${num - 1}].refs.curieSelector.refs.input.focus()
         const refNum = num - 1;
         question[i] = (
           <button
@@ -76,14 +86,14 @@ export default function QuestionTemplateModal(props) {
             style={{
               textDecoration: 'underline', color: 'grey', border: 'none', backgroundColor: 'white',
             }}
-            onClick={() => setFocus(refNum)}
+            onClick={() => setFocus(refNum, true)}
             key={shortid.generate()}
           >
             {newTypes[refNum]}
           </button>
         );
         newNameList.push({
-          nameIndex: i, name: '', id: '', ider: refNum,
+          nameIndex: i, name: '', id: '', ider: refNum, ref: { current: null },
         });
         for (let j = i; j < question.length; j += 1) {
           if (question[j] === idRegex) {
@@ -109,71 +119,69 @@ export default function QuestionTemplateModal(props) {
     setLabels(newLabels);
   }
 
-  /*
   function updateQuestionTemplate() {
-    questionTemplate.natural_question = questionName.join(' ');
+    if (!questionTemplate || !questionTemplate.query_graph) return;
+
+    const newQuestionTemplate = { ...questionTemplate };
+    newQuestionTemplate.natural_question = questionName.join(' ');
     let num = 0;
-    questionTemplate.machine_question.nodes.forEach((node, index) => {
+    newQuestionTemplate.query_graph.nodes.forEach((node, index) => {
       if (node.curie) {
         if (Array.isArray(node.curie)) {
           node.curie.forEach((curie, i) => {
             // TODO: num only works if there's only one curie in the array. So far, that's the only case.
-            questionTemplate.machine_question.nodes[index].curie[i] = nameList[num].id;
-            questionTemplate.machine_question.nodes[index].name = nameList[num].name;
+            newQuestionTemplate.query_graph.nodes[index].curie[i] = nameList[num].id;
+            newQuestionTemplate.query_graph.nodes[index].name = nameList[num].name;
             num += 1;
           });
         } else {
-          questionTemplate.machine_question.nodes[index].curie = nameList[0].id;
-          questionTemplate.machine_question.nodes[index].name = nameList[0].name;
+          newQuestionTemplate.query_graph.nodes[index].curie = nameList[0].id;
+          newQuestionTemplate.query_graph.nodes[index].name = nameList[0].name;
         }
       }
     });
-    setQuestionTemplate({ ...questionTemplate });
-    setDisableSubmit(false);
+    setQuestionTemplate(newQuestionTemplate);
   }
-  */
 
-  function handleCurieChange(index, type, label, curie) {
+  function handleIdentifierChange(index, value) {
+    const { name: label } = value;
+    const curie = value.curie && value.curie[0];
+
+    // Values that we update during this function
+    const newQuestionName = [...questionName];
+    const newNameList = [...nameList];
+    const newLabels = [...labels];
+    const newCuries = [...curies];
+
     nameList.forEach((name, i) => {
       if (name.ider === index && label && curie) {
-        questionName[name.nameIndex] = `${label} (${curie})`;
-        nameList[i].name = label;
-        nameList[i].id = curie;
-        labels[index] = label;
-        curies[index] = curie;
-        /*
-        this.setState({
-          questionName, nameList, labels, curies,
-        }, () => {
-          // check to see if all entries in nameList have a label and curie and update question template if they do.
-          const update = nameList.every((nameObj) => nameObj.name && nameObj.id);
-          if (update) {
-            updateQuestionTemplate();
-          }
-        });
-        */
+        newQuestionName[name.nameIndex] = `${label} (${curie})`;
+        newNameList[i].name = label;
+        newNameList[i].id = curie;
+        newLabels[index] = label;
+        newCuries[index] = curie;
       } else if (name.ider === index && !label && !curie) {
         // we delete whatever was there before. Disable the submit button.
-        questionName[name.nameIndex] = (
+        newQuestionName[name.nameIndex] = (
           <button
             type="button"
             style={{
               textDecoration: 'underline', color: 'grey', border: 'none', backgroundColor: 'white',
             }}
-            onClick={() => setFocus(name.ider)}
+            onClick={() => setFocus(i, true)}
             key={shortid.generate()}
           >
             {types[name.ider]}
           </button>
         );
-        labels[name.ider] = '';
-        curies[name.ider] = '';
-        setDisableSubmit(true);
+        newLabels[name.ider] = '';
+        newCuries[name.ider] = '';
       }
-      updateQuestionName([...questionName]);
-      updateNameList([...nameList]);
-      setLabels([...labels]);
-      setCuries([...curies]);
+
+      updateQuestionName(newQuestionName);
+      updateNameList(newNameList);
+      setLabels(newLabels);
+      setCuries(newCuries);
     });
   }
 
@@ -181,15 +189,22 @@ export default function QuestionTemplateModal(props) {
     selectQuestion(questionTemplate);
     setQuestionTemplate({});
     updateQuestionName([]);
-    setDisableSubmit(true);
     updateNameList([]);
     setTypes([]);
     setLabels([]);
     setCuries([]);
   }
 
+  // Disable if there are still questionName pieces that are not
+  // filled in
+  const disable = !questionName.every((n) => _.isString(n));
+
+  // Update question template if questionName or nameList changes
+  useEffect(updateQuestionTemplate, [questionName, nameList]);
+
   return (
     <Modal
+      style={{ marginTop: '5%' }}
       show={showModal}
       backdrop
       onHide={close}
@@ -205,7 +220,7 @@ export default function QuestionTemplateModal(props) {
             key={1}
             id="questionTemplateDropdown"
           >
-            {questions.map((question) => (
+            {questionTemplates.map((question) => (
               <MenuItem
                 key={shortid.generate()}
                 eventKey={question}
@@ -228,20 +243,18 @@ export default function QuestionTemplateModal(props) {
             <p>Choose curies below to fill out the template.</p>
           </div>
         )}
-        {nameList.map((name, i) => (
-          <CurieSelectorContainer
-            key={['curieSelector', i].join('_')}
-            ref={(type) => { curieSelector.current[`curie${i}`] = type; }}
-            concepts={concepts}
-            onChangeHook={(ty, te, cu) => handleCurieChange(i, ty, te, cu)}
-            initialInputs={{ curie: curies[i], term: labels[i], type: types[i] }}
-            disableType
-            search={() => {}}
+        {nameList.map((n, i) => (
+          <FillIdentifier
+            key={types[i] + i}
+            onSelect={(v) => handleIdentifierChange(i, v)}
+            focus={n.focus}
+            clearFocus={() => setFocus(i, false)}
+            type={types[i]}
           />
         ))}
       </Modal.Body>
       <Modal.Footer>
-        <Button id="questionTempButton" onClick={submitTemplate} disabled={disableSubmit}>Load Question</Button>
+        <Button id="questionTempButton" onClick={submitTemplate} disabled={disable}>Load Question</Button>
       </Modal.Footer>
     </Modal>
   );
