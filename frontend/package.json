@@ -87,7 +87,7 @@
     "hot-reload": "HOT_RELOAD=true node server.js",
     "webpackProd": "webpack --mode=production --config webpack.prod.js",
     "lint": "eslint src/",
-    "lint:pr" : "eslint -f html -o lint/index.hmtl src/",
+    "lint:pr" : "eslint -f html -o lint/index.html src/",
     "lint-summary": "eslint -f summary src/",
     "test": "jest",
     "test:cov": "jest --coverage",
