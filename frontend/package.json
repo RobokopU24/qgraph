@@ -29,6 +29,7 @@
     "file-loader": "^6.0.0",
     "html-webpack-plugin": "^4.3.0",
     "jest": "^26.6.3",
+    "jest-stare": "^2.2.0",
     "nodemon": "^2.0.4",
     "react-refresh": "^0.8.3",
     "style-loader": "^1.2.1",
@@ -89,7 +90,7 @@
     "lint-summary": "eslint -f summary src/",
     "test": "jest",
     "test:cov": "jest --coverage",
-    "test:pr": "jest --coverage --coverageReporters='lcov'"
+    "test:pr": "jest --reporters jest-stare --coverage --coverageReporters='html'"
   },
   "repository": {
     "type": "git",

@@ -53,25 +53,20 @@ jobs:
         run: (cd frontend/ && docker build -t frontend -f Dockerfile.test .)
 
       - name: Run tests
-        run: |
-          echo 'JEST_OUTPUT<<EOF' >> $GITHUB_ENV
-          echo "$(docker run --name frontend frontend npm run --silent test:pr 2>&1)" >> $GITHUB_ENV
-          echo 'EOF' >> $GITHUB_ENV
+        run: docker run --name frontend frontend npm run --silent test:pr
 
-      - name: Report tests results
-        uses: mshick/add-pr-comment@v1
-        with:
-          message: ${{ env.JEST_OUTPUT }}
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
-          allow-repeats: true
-
+      - name: Copy test output from container
+        run: docker cp frontend:/app/jest-stare test-results
       - name: Copy coverage output from container
-        run: |
-          docker cp frontend:/app/coverage/lcov.info .
+        run: docker cp frontend:/app/coverage coverage
 
-      - name: Report coverage results
-        uses: mszlgr/lcov-reporter-action@v0.2.23
+      - name: Upload test results
+        uses: actions/upload-artifact@v2
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          lcov-file: ./lcov.info
+          name: test-results
+          path: test-results/
+      - name: Upload coverage
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage
+          path: coverage/
