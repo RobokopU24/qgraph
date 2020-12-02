@@ -15,7 +15,7 @@ import config from '../../config.json';
 export default function Neighborhood(props) {
   const { appConfig, identifier } = props;
   const [term, updateTerm] = useState('');
-  const [curie, updateCurie] = useState('');
+  // const [curie, updateCurie] = useState('');
   const [detailsLoading, setDetailsLoading] = useState(false);
   const [detailsReady, setDetailsReady] = useState(false);
   const [nodeSources, setNodeSources] = useState([]);
@@ -24,9 +24,11 @@ export default function Neighborhood(props) {
   const [neighborhoodLoading, setNeighborhoodLoading] = useState(false);
   const [neighborhoodReady, setNeighborhoodReady] = useState(false);
 
+  /*
   function onSearch(input, type) {
     return appConfig.questionNewSearch(input, type);
   }
+  */
 
   function getDetails(selectedCurie) {
     setDetailsLoading(true);
@@ -65,7 +67,7 @@ export default function Neighborhood(props) {
 
   function handleCurieChange(type, newTerm, newCurie) {
     if (newCurie || !newTerm) {
-      updateCurie(newCurie);
+      // updateCurie(newCurie);
       updateTerm(newTerm);
     }
     if (newCurie) {
