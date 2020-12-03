@@ -20,7 +20,7 @@ jobs:
         
 
       - name: Run ESLint and get output
-        run: docker run --name frontend frontend npm run --silent lint:pr
+        run: docker run --name frontend frontend npm run --silent lint
 
   test:
     name: Frontend Tests
