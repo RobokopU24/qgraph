@@ -13,6 +13,9 @@ jobs:
         steps:
             - name: Check out the repo
               uses: actions/checkout@v2
+            - name: Lowercase repo name
+              run: |
+                echo REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
             - name: Push Frontend
               uses: docker/build-push-action@v1
               with:
@@ -21,7 +24,7 @@ jobs:
                   username: ${{ github.actor }}
                   password: ${{ secrets.CR_PAT }}
                   registry: ghcr.io
-                  repository: ${{ github.repository }}/frontend
+                  repository: ${{ env.REPOSITORY }}/frontend
                   tags: latest
     push_proxy:
         name: Push proxy image to GitHub Container Registry.
@@ -29,6 +32,9 @@ jobs:
         steps:
             - name: Check out the repo
               uses: actions/checkout@v2
+            - name: Lowercase repo name
+              run: |
+                echo REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
             - name: Push Frontend
               uses: docker/build-push-action@v1
               with:
@@ -36,5 +42,5 @@ jobs:
                   username: ${{ github.actor }}
                   password: ${{ secrets.CR_PAT }}
                   registry: ghcr.io
-                  repository: ${{ github.repository }}/proxy
+                  repository: ${{ env.REPOSITORY }}/proxy
                   tags: latest
