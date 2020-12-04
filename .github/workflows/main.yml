@@ -21,7 +21,7 @@ jobs:
                   username: ${{ github.actor }}
                   password: ${{ secrets.CR_PAT }}
                   registry: ghcr.io
-                  repository: ${{ github.repository_owner }}/${{ github.repository }}/frontend
+                  repository: ${{ github.repository }}/frontend
                   tags: latest
     push_proxy:
         name: Push proxy image to GitHub Container Registry.
@@ -36,5 +36,5 @@ jobs:
                   username: ${{ github.actor }}
                   password: ${{ secrets.CR_PAT }}
                   registry: ghcr.io
-                  repository: ${{ github.repository_owner }}/${{ github.repository }}/proxy
+                  repository: ${{ github.repository }}/proxy
                   tags: latest
