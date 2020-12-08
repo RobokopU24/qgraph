@@ -20,7 +20,7 @@ jobs:
               uses: docker/build-push-action@v1
               with:
                   path: ./frontend
-                  dockerfile: Dockerfile.prod
+                  dockerfile: frontend/Dockerfile.prod
                   username: ${{ github.actor }}
                   password: ${{ secrets.CR_PAT }}
                   registry: ghcr.io
