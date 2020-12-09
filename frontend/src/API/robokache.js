@@ -110,4 +110,4 @@ const routes = {
   getAnswersByQuestion: baseRoutes.getChildrenByDocument,
 };
 
-module.exports = routes;
+export default routes;
