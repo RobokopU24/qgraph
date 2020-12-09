@@ -1,5 +1,5 @@
 import axios from 'axios';
-import handleAxiosError from './utils';
+import utils from './utils';
 
 const ranker = 'http://robokop.renci.org:6011/api';
 
@@ -20,7 +20,7 @@ const baseRoutes = {
       const response = await axios(config);
       return response.data;
     } catch (error) {
-      return handleAxiosError(error);
+      return utils.handleAxiosError(error);
     }
   },
   /**
@@ -36,7 +36,7 @@ const baseRoutes = {
       const response = await axios(config);
       return response.data;
     } catch (error) {
-      return handleAxiosError(error);
+      return utils.handleAxiosError(error);
     }
   },
 };

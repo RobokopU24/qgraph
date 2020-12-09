@@ -17,4 +17,6 @@ function handleAxiosError(error) {
   return errorResponse;
 }
 
-module.exports = handleAxiosError;
+module.exports = {
+  handleAxiosError,
+};
