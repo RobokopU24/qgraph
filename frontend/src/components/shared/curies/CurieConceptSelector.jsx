@@ -116,7 +116,10 @@ export default function CurieConceptSelector({
   }
 
   const nRows = concepts.length + curies.length;
-  const showOptions = searchTerm && !selection.type;
+
+  // Show options if there is no curie or type (valid selection) AND we have a search term
+  const showOptions = searchTerm && !selection.type && !selection.curie.length;
+
   const isEmpty = nRows === 0;
 
   const rowHeight = 50;
@@ -134,7 +137,7 @@ export default function CurieConceptSelector({
             inputRef={(ref) => { inputRef.current = ref; }}
             onChange={(e) => updateSearchTerm(e.target.value)}
           />
-          {!showOptions && selection.curie.length > 0 && (
+          {!!selection.curie.length && (
             <InputGroup.Addon>
               {selection.curie[0]}
             </InputGroup.Addon>
