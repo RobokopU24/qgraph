@@ -80,7 +80,7 @@
   },
   "scripts": {
     "dev": "webpack-dev-server --watch --config webpack.dev.js",
-    "hot-reload": "webpack-dev-server --hot --watch --config webpack.dev.js",
+    "hot-reload": "HOT_RELOAD=true webpack-dev-server --watch --config webpack.dev.js",
     "build": "webpack --mode=production --config webpack.prod.js",
     "lint": "eslint src/",
     "lint-summary": "eslint -f summary src/",
