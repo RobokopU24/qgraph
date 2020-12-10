@@ -1,7 +1,7 @@
 import axios from 'axios';
 import yaml from 'js-yaml';
 
-import handleAxiosError from './utils';
+import utils from './utils';
 
 const routes = {
   /**
@@ -16,7 +16,7 @@ const routes = {
     try {
       response = await axios(config);
     } catch (error) {
-      return handleAxiosError(error);
+      return utils.handleAxiosError(error);
     }
     // Parse yaml into JSON
     try {

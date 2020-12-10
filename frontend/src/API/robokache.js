@@ -1,5 +1,6 @@
-const axios = require('axios');
-const handleAxiosError = require('./utils');
+import axios from 'axios';
+
+import utils from './utils';
 
 const base_url = `${window.location.origin}/api/robokache/`;
 
@@ -23,7 +24,7 @@ async function baseRequest(path, method, body, token) {
     const response = await axios(config);
     return response.data;
   } catch (error) {
-    return handleAxiosError(error);
+    return utils.handleAxiosError(error);
   }
 }
 
@@ -54,7 +55,7 @@ const baseRoutes = {
       const response = await axios(config);
       return response.data;
     } catch (error) {
-      return handleAxiosError(error);
+      return utils.handleAxiosError(error);
     }
   },
   async setDocumentData(doc_id, newData, token) {
@@ -70,7 +71,7 @@ const baseRoutes = {
       const response = await axios(config);
       return response.data;
     } catch (error) {
-      return handleAxiosError(error);
+      return utils.handleAxiosError(error);
     }
   },
 
@@ -109,4 +110,4 @@ const routes = {
   getAnswersByQuestion: baseRoutes.getChildrenByDocument,
 };
 
-module.exports = routes;
+export default routes;

@@ -2,7 +2,7 @@ const router = require('express').Router();
 const axios = require('axios');
 
 const robokache = require('./robokache');
-const handleAxiosError = require('./utils');
+const { handleAxiosError } = require('./utils');
 
 const messenger = process.env.MESSENGER_HOST ||
                     'http://robokop.renci.org:4868';

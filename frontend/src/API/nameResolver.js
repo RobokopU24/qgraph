@@ -1,5 +1,5 @@
 import axios from 'axios';
-import handleAxiosError from './utils';
+import utils from './utils';
 
 const baseUrl = 'http://robokop.renci.org:2433';
 
@@ -24,7 +24,7 @@ const baseRoutes = {
       const response = await axios(config);
       return response.data;
     } catch (error) {
-      return handleAxiosError(error);
+      return utils.handleAxiosError(error);
     }
   },
 };

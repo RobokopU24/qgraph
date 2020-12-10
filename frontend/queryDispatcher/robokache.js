@@ -1,5 +1,5 @@
 const axios = require('axios');
-const handleAxiosError = require('./utils');
+const { handleAxiosError } = require('./utils');
 
 const base_url = 'http://robokache/api/';
 
@@ -18,7 +18,6 @@ const baseRoutes = {
       const response = await axios(config);
       return response.data;
     } catch (error) {
-	  console.log(error);
       return handleAxiosError(error);
     }
   },
