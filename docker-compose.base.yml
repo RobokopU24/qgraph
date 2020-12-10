@@ -5,6 +5,9 @@ services:
     build: proxy/
     ports:
       - "80:80"
+    environment:
+      ROBOKACHE_URL: http://robokache
+      FRONTEND_URL: http://frontend
   frontend:
     build: frontend/
   robokache:
