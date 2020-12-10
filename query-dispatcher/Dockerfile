@@ -1,5 +1,4 @@
-# Build in the node.js image
-FROM node:latest as build-stage
+FROM node:latest
 
 # Create a folder to add the code to
 WORKDIR /app
@@ -14,4 +13,4 @@ RUN npm install
 COPY . .
 
 # Set the server to hot reload on code changes
-CMD npm run dev
+CMD npm run prod

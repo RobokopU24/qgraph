@@ -8,9 +8,14 @@ services:
     environment:
       ROBOKACHE_URL: http://robokache
       FRONTEND_URL: http://frontend
+      QUERYDISPATCHER_URL: http://query-dispatcher
   frontend:
     build: frontend/
   robokache:
     image: ghcr.io/ncats-gamma/robokache:v4.1.4
     volumes:
       - ./robokache-data:/app/data
+  query-dispatcher:
+    build: query-dispatcher/
+    environment:
+      ROBOKACHE_URL: http://robokache
