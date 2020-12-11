@@ -29,15 +29,12 @@
     "file-loader": "^6.0.0",
     "html-webpack-plugin": "^4.3.0",
     "jest": "^26.6.3",
-    "nodemon": "^2.0.4",
     "react-refresh": "^0.8.3",
     "style-loader": "^1.2.1",
     "url-loader": "^4.1.0",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.12",
-    "webpack-dev-middleware": "^3.7.2",
     "webpack-dev-server": "^3.11.0",
-    "webpack-hot-middleware": "^2.25.0",
     "webpack-merge": "^5.0.9"
   },
   "dependencies": {
@@ -81,10 +78,9 @@
     "slugify": "^1.4.5"
   },
   "scripts": {
-    "start": "concurrently 'nodemon server.js' 'npm run build'",
-    "build": "webpack --watch --config webpack.dev.js",
-    "hot-reload": "HOT_RELOAD=true node server.js",
-    "webpackProd": "webpack --mode=production --config webpack.prod.js",
+    "dev": "webpack-dev-server --watch --config webpack.dev.js",
+    "hot-reload": "HOT_RELOAD=true webpack-dev-server --watch --config webpack.dev.js",
+    "build": "webpack --mode=production --config webpack.prod.js",
     "lint": "eslint src/",
     "lint-summary": "eslint -f summary src/",
     "test": "jest",

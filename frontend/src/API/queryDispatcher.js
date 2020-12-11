@@ -10,7 +10,7 @@ const baseRoutes = {
    */
   async getAnswer(questionId, token) {
     const config = {
-      url: '/api/answer',
+      url: '/api/queryDispatcher/answer',
       method: 'POST',
       params: {
         questionId,

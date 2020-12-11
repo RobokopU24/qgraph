@@ -5,9 +5,18 @@ services:
     build: proxy/
     ports:
       - "80:80"
+    environment:
+      DNS_SERVER: 127.0.0.11
+      ROBOKACHE_URL: http://robokache
+      FRONTEND_URL: http://frontend
+      QUERYDISPATCHER_URL: http://query-dispatcher
   frontend:
     build: frontend/
   robokache:
     image: ghcr.io/ncats-gamma/robokache:v4.1.4
     volumes:
       - ./robokache-data:/app/data
+  query-dispatcher:
+    build: query-dispatcher/
+    environment:
+      ROBOKACHE_URL: http://robokache
