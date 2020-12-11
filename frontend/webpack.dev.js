@@ -13,6 +13,7 @@ module.exports = merge(common, {
     host: '0.0.0.0',
     port: 80,
     hot: hotReload,
+    inline: hotReload,
   },
   devtool: 'cheap-module-eval-source-map',
   mode: 'development',
