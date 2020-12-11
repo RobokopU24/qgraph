@@ -5,8 +5,7 @@
   "description": "ROBOKOP - A user interface for biomedical knowledge graph construction and reasoning.",
   "author": "ROBOKOP Team",
   "license": "MIT",
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "dependencies": {
     "nodemon": "^2.0.6",
     "axios": "^0.19.2",

@@ -15,5 +15,3 @@ services:
       - ./query-dispatcher:/app
       - /app/node_modules
     command: npm run dev
-    environment:
-      DEBUG: express:*
