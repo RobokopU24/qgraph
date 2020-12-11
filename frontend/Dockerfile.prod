@@ -16,7 +16,10 @@ RUN npm install
 COPY . .
 
 # Build the code and save a production ready copy
-RUN npm run webpackProd
+RUN npm run build
 
-# Set the server to run when executing the docker image
-CMD node server.js
+# Copy files from build stage into nginx image for production
+FROM nginx as production-stage
+WORKDIR /app
+COPY --from=build-stage /app/pack /app
+COPY nginx.conf /etc/nginx/nginx.conf

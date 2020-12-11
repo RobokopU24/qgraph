@@ -1,0 +1,22 @@
+{
+  "name": "robokop",
+  "productName": "ROBOKOP",
+  "version": "0.0.1",
+  "description": "ROBOKOP - A user interface for biomedical knowledge graph construction and reasoning.",
+  "author": "ROBOKOP Team",
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {
+    "nodemon": "^2.0.6",
+    "axios": "^0.19.2",
+    "express": "^4.17.1"
+  },
+  "scripts": {
+    "dev": "nodemon server.js",
+    "prod": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ncats-gamma/robokop.git"
+  }
+}

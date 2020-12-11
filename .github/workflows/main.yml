@@ -26,6 +26,25 @@ jobs:
                   registry: ghcr.io
                   repository: ${{ env.REPOSITORY }}/frontend
                   tags: latest
+    push_querydispatcher:
+        name: Push query dispatcher image to GitHub Container Registry.
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check out the repo
+              uses: actions/checkout@v2
+            - name: Lowercase repo name
+              run: |
+                echo REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
+            - name: Push QueryDispatcher
+              uses: docker/build-push-action@v1
+              with:
+                  path: ./frontend
+                  dockerfile: query-dispatcher/Dockerfile
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.CR_PAT }}
+                  registry: ghcr.io
+                  repository: ${{ env.REPOSITORY }}/query-dispatcher
+                  tags: latest
     push_proxy:
         name: Push proxy image to GitHub Container Registry.
         runs-on: ubuntu-latest
