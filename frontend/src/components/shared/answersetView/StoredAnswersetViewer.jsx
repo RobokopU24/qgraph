@@ -35,8 +35,27 @@ export default function StoredAnswersetView({ question_id, answer_id }) {
       return;
     }
 
-    const questionResponseJSON = JSON.parse(questionResponse);
-    const answerResponseJSON = JSON.parse(answerResponse);
+    let questionResponseJSON;
+    try {
+      questionResponseJSON = JSON.parse(questionResponse);
+    } catch (err) {
+      pageStatus.setFailure('Invalid question JSON');
+      return;
+    }
+
+    let answerResponseJSON;
+    try {
+      answerResponseJSON = JSON.parse(answerResponse);
+    } catch (err) {
+      pageStatus.setFailure('Invalid answer JSON');
+      return;
+    }
+
+    if (answerResponseJSON.status === 'error') {
+      pageStatus.setFailure(
+        `Error during answer processing: ${answerResponseJSON.message}`,
+      );
+    }
 
     const message =
       { ...questionResponseJSON, ...answerResponseJSON };
