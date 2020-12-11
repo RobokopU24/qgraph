@@ -152,7 +152,7 @@ export default function NodePanel({ panelStore }) {
 
   const showOptions = node.searchTerm && !node.type;
   const rightButtonContents = showOptions ? (<Glyphicon glyph="remove" />) : (<Glyphicon glyph="triangle-bottom" />);
-  const rightButtonFunction = showOptions ? node.reset : node.reSearch;
+  const rightButtonFunction = showOptions ? node.reset : () => updateSearchTerm(node.searchTerm);
   return (
     <>
       <h4 style={{ color: '#CCCCCC' }}>NODE TYPE</h4>

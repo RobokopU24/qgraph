@@ -10,7 +10,6 @@ export default function useNodePanels() {
   const [searchTerm, setSearchTerm] = useState('');
   const [curie, setCurie] = useState([]);
   const [set, setSet] = useState(false);
-  const [regular, setRegular] = useState(false);
   const [concepts, setConcepts] = useState([]);
   const [filteredConcepts, setFilteredConcepts] = useState([]);
   const [curies, updateCuries] = useState([]);
@@ -23,8 +22,6 @@ export default function useNodePanels() {
     setSearchTerm('');
     setCurie([]);
     setSet(false);
-    setRegular(false);
-    // setConceptsWithSets([]);
     setFilteredConcepts([]);
     updateCuries([]);
     setLoading(false);
@@ -65,6 +62,7 @@ export default function useNodePanels() {
   function clearSelection() {
     setType('');
     setName('');
+    setSet(false);
     setCurie([]);
   }
 
@@ -93,7 +91,6 @@ export default function useNodePanels() {
     curies,
     searchTerm,
     type,
-    regular,
     set,
     initialize,
     reset,
