@@ -2,7 +2,7 @@ const router = require('express').Router();
 const axios = require('axios');
 
 const robokache = require('./robokache');
-const handleAxiosError = require('./utils');
+const { handleAxiosError } = require('./utils');
 
 const messenger = process.env.MESSENGER_HOST ||
                     'http://robokop.renci.org:4868';
@@ -26,18 +26,24 @@ router.route('/answer')
         // don't parse the response
         transformResponse: [(data) => data],
       };
-      // Go ask Messenger for an answer
-      response = await axios(config);
 
       let answer;
-      // Validate json
       try {
-        answer = JSON.parse(response.data);
-      } catch (error) {
-        answer = {
-          status: 'error',
-          message: 'Recieved unparseable JSON response from Messenger',
-        };
+        // Go ask Messenger for an answer
+        response = await axios(config);
+
+        // Validate json
+        try {
+          answer = JSON.parse(response.data);
+        } catch (error) {
+          answer = {
+            status: 'error',
+            message: 'Recieved unparseable JSON response from Messenger',
+          };
+        }
+      } catch (err) {
+        // Save error in robokache
+        answer = handleAxiosError(err);
       }
 
       // Create a new answer in Robokache

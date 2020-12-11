@@ -55,6 +55,7 @@ export default function StoredAnswersetView({ question_id, answer_id }) {
       pageStatus.setFailure(
         `Error during answer processing: ${answerResponseJSON.message}`,
       );
+      return;
     }
 
     const message =
