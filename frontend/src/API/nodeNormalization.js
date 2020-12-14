@@ -26,10 +26,28 @@ const baseRoutes = {
       return utils.handleAxiosError(error);
     }
   },
+  /**
+   * Use node normalizer post method
+   * @param {object} curies object of array of curies to search for
+   */
+  async getNormalizedNodesPost(curies) {
+    const config = {
+      url: `${baseUrl}/get_normalized_nodes`,
+      method: 'POST',
+      data: curies,
+    };
+    try {
+      const response = await axios(config);
+      return response.data;
+    } catch (error) {
+      return utils.handleAxiosError(error);
+    }
+  },
 };
 
 const routes = {
   getNormalizedNodes: baseRoutes.getNormalizedNodes,
+  getNormalizedNodesPost: baseRoutes.getNormalizedNodesPost,
 };
 
 export default routes;
