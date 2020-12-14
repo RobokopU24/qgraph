@@ -26,9 +26,26 @@ router.route('/answer')
         // don't parse the response
         transformResponse: [(data) => data],
       };
-      // Go ask Messenger for an answer
-      response = await axios(config);
-      const answer = response.data;
+
+      let answer;
+      try {
+        // Go ask Messenger for an answer
+        response = await axios(config);
+
+        // Validate json
+        try {
+          answer = JSON.parse(response.data);
+        } catch (error) {
+          answer = {
+            status: 'error',
+            message: 'Recieved unparseable JSON response from Messenger',
+          };
+        }
+      } catch (err) {
+        // Save error in robokache
+        answer = handleAxiosError(err);
+      }
+
       // Create a new answer in Robokache
       response = await robokache.createAnswer({ parent: questionId, visibility: 1 }, req.headers.authorization);
       if (response.status === 'error') {

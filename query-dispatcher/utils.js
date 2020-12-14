@@ -1,20 +1,28 @@
+const _ = require('lodash');
+
 function handleAxiosError(error) {
-  let errorResponse;
+  const output = {};
   if (error.response) {
-    errorResponse = error.response.data;
-    if (!errorResponse.message) {
-      errorResponse.message = 'Unknown error. This is most likely a problem with the ARA used.';
+    const axiosErrorPrefix = `Error in response with code ${error.response.status}: `;
+    if (error.response.data.message) {
+      // Data object contains a 'message' property
+      // so we assume it includes info and we don't need the prefix
+      output.message = error.response.data.message;
+    } else if (_.isString(error.response.data)) {
+      // Not a JSON response so let's use it as a string
+      output.message = `${axiosErrorPrefix} ${error.response.data}`;
+    } else {
+      // Not sure what to do here, just say it's unparseable.
+      output.message = `${axiosErrorPrefix} Unparseable error response.`;
     }
-    errorResponse.status = 'error';
   } else {
     // This either means the server is unreachable or there was
     // some error setting up the request object
-    errorResponse = {
-      message: 'We were unable to reach the backend server to process your request. Please try again later.',
-      status: 'error',
-    };
+    output.message = 'Unknown axios exception encountered.';
   }
-  return errorResponse;
+
+  output.status = 'error';
+  return output;
 }
 
 module.exports = {
