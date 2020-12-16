@@ -17,7 +17,13 @@ import biolinkUtils from '@/utils/biolink';
 
 import CurieConceptSelector from '@/components/shared/curies/CurieConceptSelector';
 
-function normalizeNodeType(type) {
+/**
+ * Types coming in from node normalizer are formatted like:
+ * 'biolink:Disease' and KGs are going to expect just 'disease' as
+ * the node type, so we need to convert the incoming type
+ * @param {string} type string we want to convert to standard format
+ */
+function ingestNodeType(type) {
   let normalizedType = type;
   if (type.indexOf(':') > -1) {
     [, normalizedType] = type.split(':'); // grab the second item, the type
@@ -108,7 +114,7 @@ export default function NodePanel({ panelStore }) {
     node.updateCuries(
       Object.values(normalizationResponse).filter((c) => c).map((c) => ({
         name: c.id.label || c.id.identifier,
-        type: normalizeNodeType(c.type[0]),
+        type: ingestNodeType(c.type[0]),
         curie: c.id.identifier,
       })),
     );
