@@ -61,12 +61,18 @@ export default function StoredAnswersetView({ question_id, answer_id }) {
     const message =
       { ...questionResponseJSON, ...answerResponseJSON };
 
+    let parsedMessage;
     try {
-      const parsedMessage = parseMessage(message);
+      parsedMessage = parseMessage(message);
+    } catch (err) {
+      pageStatus.setFailure(err.message);
+    }
+
+    try {
       messageStore.initializeMessage(parsedMessage);
       pageStatus.setSuccess();
     } catch (err) {
-      pageStatus.setFailure('Failed to parse this message.');
+      pageStatus.setFailure(`Failed to fully load this message. ${err.message}`);
     }
   }
 
