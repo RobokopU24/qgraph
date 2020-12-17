@@ -38,7 +38,7 @@ jobs:
             - name: Push QueryDispatcher
               uses: docker/build-push-action@v1
               with:
-                  path: ./frontend
+                  path: ./query-dispatcher
                   dockerfile: query-dispatcher/Dockerfile
                   username: ${{ github.actor }}
                   password: ${{ secrets.CR_PAT }}
