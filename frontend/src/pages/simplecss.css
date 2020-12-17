@@ -48,3 +48,8 @@ a .list-group-item-text {
     margin-bottom: 20px;
     cursor: pointer;
 }
+.resetButton {
+    background-color: #f9cbc2 !important;
+    color: darkred !important;
+    margin-left: 20px !important;
+}
