@@ -36,7 +36,7 @@ export default function AnswersetView(props) {
   } = props;
   const [tabKey, setTabKey] = useState(answerSetTabEnum.answerTable);
 
-  const hasResults = messageStore.message && messageStore.message.results && Array.isArray(messageStore.message.results) && messageStore.message.results.length > 0;
+  const hasResults = messageStore.message && messageStore.message.results && Array.isArray(messageStore.message.results);
   return (
     <div>
       {hasResults ? (
@@ -100,7 +100,7 @@ export default function AnswersetView(props) {
       ) : (
         <Grid>
           <h4>
-            No answers were found.
+            Something went wrong. Please try again.
           </h4>
         </Grid>
       )}
