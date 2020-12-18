@@ -18,6 +18,28 @@ import biolinkUtils from '@/utils/biolink';
 import CurieConceptSelector from '@/components/shared/curies/CurieConceptSelector';
 
 /**
+ * Types coming in from node normalizer are formatted like:
+ * 'biolink:Disease' and KGs are going to expect just 'disease' as
+ * the node type, so we need to convert the incoming type
+ * @param {string} type string we want to convert to standard format
+ */
+function ingestNodeType(type) {
+  let normalizedType = type;
+  if (type.indexOf(':') > -1) {
+    [, normalizedType] = type.split(':'); // grab the second item, the type
+    const splitRegex = new RegExp(/(?<=[a-z])[A-Z]|[A-Z](?=[a-z])/g);
+    const splitByCapital = normalizedType.replaceAll(splitRegex, (match, ind) => {
+      if (ind !== 0) {
+        return `_${match.toLowerCase()}`;
+      }
+      return match.toLowerCase();
+    });
+    normalizedType = splitByCapital;
+  }
+  return normalizedType;
+}
+
+/**
  * Node Panel
  * @param {Object} panelStore panel custom hook
  */
@@ -78,52 +100,21 @@ export default function NodePanel({ panelStore }) {
 
     // Pass curies to nodeNormalizer to get type information and
     // a better curie identifier
-    //
-    // Right now curies are in the URL so we need to split it so we don't
-    // hit maximum URL length of the server
+    const normalizationResponse = await API.nodeNormalization.getNormalizedNodesPost({ curies });
 
-    // Based on experimentation, the max URL length is around 7000 characters
-    // Higher values are faster, so we want to set this as high as possible
-    const maxUrlLength = 7000;
-
-    // Iterate over each curie chunking based on the length that the URL will be
-    const curiesChunked = [[]];
-    curies.forEach((c) => {
-      const existingArray = curiesChunked[curiesChunked.length - 1];
-      const existingLength = existingArray.join('&curie=').length;
-      const newLength = existingLength + c.length + '&curie='.length;
-      if (newLength < maxUrlLength) {
-        existingArray.push(c);
-      } else {
-        curiesChunked.push([c]);
-      }
-    });
-
-    const normalizationAPICallResponses = await Promise.all(
-      curiesChunked.map((cs) => API.nodeNormalization.getNormalizedNodes(cs)),
-    );
-
-    // Fail if there are any errors
-    const nodeNormalizerError = normalizationAPICallResponses.find(
-      (r) => !_.isObject(r) || r.status === 'error',
-    );
-
-    if (nodeNormalizerError) {
+    if (normalizationResponse.status === 'error') {
       displayAlert('error',
         'Failed to contact node normalizer to search curies. You will still be able to select generic types. Please try again later');
       node.setLoading(false);
       return;
     }
 
-    const curiesWithInfo = {};
-    normalizationAPICallResponses.forEach((r) => Object.assign(curiesWithInfo, r));
-
     // Sometimes the nodeNormalizer returns null responses
     // so we use a filter to remove those
     node.updateCuries(
-      Object.values(curiesWithInfo).filter((c) => c).map((c) => ({
+      Object.values(normalizationResponse).filter((c) => c).map((c) => ({
         name: c.id.label || c.id.identifier,
-        type: c.type[0],
+        type: ingestNodeType(c.type[0]),
         curie: c.id.identifier,
       })),
     );
