@@ -33,7 +33,7 @@ export default function parseMessage(message) {
     }
     // results can be empty
     if (message.results.length) {
-      if ('node_bindings' in message.results[0]) {
+      if ('node_bindings' in message.results[0] || 'edge_bindings' in message.results[0]) {
         if (!Array.isArray(message.results[0].node_bindings)) {
           // if results isn't in the newer format, we're gonna try and convert it
           message.answers = message.results;
