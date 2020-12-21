@@ -18,7 +18,7 @@ import Header from '@/components/header/Header';
 import Footer from '@/components/footer/Footer';
 import AlertWrapper from '@/components/AlertWrapper';
 
-import { ThemeProvider } from '@material-ui/core/styles';
+import { ThemeProvider, StylesProvider } from '@material-ui/core/styles';
 import theme from '@/theme';
 import API from '@/API';
 
@@ -55,51 +55,53 @@ export default function App() {
           <UserContext.Provider value={user}>
             <BiolinkContext.Provider value={biolink}>
               <ThemeProvider theme={theme}>
-                <AlertWrapper
-                  alert={alert}
-                  onClose={() => simpleSetAlert(alert.severity, '')}
-                />
-                <Header user={user} setUser={setUser} />
-                <div id="contentContainer">
-                  <Switch>
-                    <Route path="/about">
-                      <About />
-                    </Route>
-                    <Route path="/help">
-                      <Help />
-                    </Route>
-                    <Route path="/guide">
-                      <Guide isSignedIn={isSignedIn} />
-                    </Route>
-                    <Route path="/neighborhood">
-                      <Neighborhood />
-                    </Route>
-                    <Route path="/questions">
-                      <QuestionList />
-                    </Route>
-                    <Route path="/question/:question_id">
-                      <QuestionAnswerViewer />
-                    </Route>
-                    <Route path="/termsofservice">
-                      <TermsofService />
-                    </Route>
-                    <Route path="/simple/view">
-                      <SimpleViewer
-                        user={user}
-                      />
-                    </Route>
-                    <Route path="/simple/question">
-                      <SimpleQuestion />
-                    </Route>
-                    <Route path="/q/new">
-                      <QuestionNew />
-                    </Route>
-                    <Route path="/">
-                      <Landing isSignedIn={isSignedIn} />
-                    </Route>
-                  </Switch>
-                </div>
-                <Footer />
+                <StylesProvider injectFirst>
+                  <AlertWrapper
+                    alert={alert}
+                    onClose={() => simpleSetAlert(alert.severity, '')}
+                  />
+                  <Header user={user} setUser={setUser} />
+                  <div id="contentContainer">
+                    <Switch>
+                      <Route path="/about">
+                        <About />
+                      </Route>
+                      <Route path="/help">
+                        <Help />
+                      </Route>
+                      <Route path="/guide">
+                        <Guide isSignedIn={isSignedIn} />
+                      </Route>
+                      <Route path="/neighborhood">
+                        <Neighborhood />
+                      </Route>
+                      <Route path="/questions">
+                        <QuestionList />
+                      </Route>
+                      <Route path="/question/:question_id">
+                        <QuestionAnswerViewer />
+                      </Route>
+                      <Route path="/termsofservice">
+                        <TermsofService />
+                      </Route>
+                      <Route path="/simple/view">
+                        <SimpleViewer
+                          user={user}
+                        />
+                      </Route>
+                      <Route path="/simple/question">
+                        <SimpleQuestion />
+                      </Route>
+                      <Route path="/q/new">
+                        <QuestionNew />
+                      </Route>
+                      <Route path="/">
+                        <Landing isSignedIn={isSignedIn} />
+                      </Route>
+                    </Switch>
+                  </div>
+                  <Footer />
+                </StylesProvider>
               </ThemeProvider>
             </BiolinkContext.Provider>
           </UserContext.Provider>

@@ -13,11 +13,11 @@
  */
 export default function parseMessage(message) {
   if (typeof message !== 'object') {
-    throw SyntaxError("The uploaded message isn't a valid JSON object");
+    throw Error("The uploaded message isn't a valid JSON object.");
   }
 
   if (!('knowledge_graph' in message)) {
-    throw ReferenceError('The uploaded message needs to have a knowledge_graph');
+    throw Error('The uploaded message needs to have a knowledge_graph.');
   }
 
   // This is a simple name change
@@ -28,45 +28,60 @@ export default function parseMessage(message) {
 
   // Result node_bindings should be an array of qg_ids and kg_ids
   if ('results' in message) {
-    if (!Array.isArray(message.results[0].node_bindings)) {
-      message.answers = message.results;
-      delete message.results;
+    if (!Array.isArray(message.results)) {
+      throw Error('Message results should be an array.');
+    }
+    // results can be empty
+    if (message.results.length) {
+      if ('node_bindings' in message.results[0] || 'edge_bindings' in message.results[0]) {
+        if (!Array.isArray(message.results[0].node_bindings)) {
+          // if results isn't in the newer format, we're gonna try and convert it
+          message.answers = message.results;
+          delete message.results;
+        }
+      } else {
+        throw Error('Error parsing message results. Results should have node_bindings and edge_bindings.');
+      }
     }
   }
 
   if ('answers' in message) {
-    message.answers.forEach((answer) => {
-      const convertedEdgeBindings = [];
-      Object.keys(answer.edge_bindings).forEach((qg_id) => {
-        const kg_ids = [];
-        answer.edge_bindings[qg_id].forEach((kg_id) => {
-          kg_ids.push(kg_id);
+    try {
+      message.answers.forEach((answer) => {
+        const convertedEdgeBindings = [];
+        Object.keys(answer.edge_bindings).forEach((qg_id) => {
+          const kg_ids = [];
+          answer.edge_bindings[qg_id].forEach((kg_id) => {
+            kg_ids.push(kg_id);
+          });
+          convertedEdgeBindings.push({
+            qg_id,
+            kg_id: kg_ids,
+          });
         });
-        convertedEdgeBindings.push({
-          qg_id,
-          kg_id: kg_ids,
+        answer.edge_bindings = convertedEdgeBindings;
+        const convertedNodeBindings = [];
+        Object.keys(answer.node_bindings).forEach((qg_id) => {
+          const kg_ids = [];
+          answer.node_bindings[qg_id].forEach((kg_id) => {
+            kg_ids.push(kg_id);
+          });
+          convertedNodeBindings.push({
+            qg_id,
+            kg_id: kg_ids,
+          });
         });
+        answer.node_bindings = convertedNodeBindings;
       });
-      answer.edge_bindings = convertedEdgeBindings;
-      const convertedNodeBindings = [];
-      Object.keys(answer.node_bindings).forEach((qg_id) => {
-        const kg_ids = [];
-        answer.node_bindings[qg_id].forEach((kg_id) => {
-          kg_ids.push(kg_id);
-        });
-        convertedNodeBindings.push({
-          qg_id,
-          kg_id: kg_ids,
-        });
-      });
-      answer.node_bindings = convertedNodeBindings;
-    });
-    message.results = message.answers;
-    delete message.answers;
+      message.results = message.answers;
+      delete message.answers;
+    } catch (err) {
+      throw Error('Error while trying to convert old answer format.');
+    }
   }
 
-  if (!message.results || message.results.length === 0) {
-    throw RangeError('The uploaded message needs to have some results');
+  if (!('results' in message)) {
+    throw Error('The uploaded message needs to have a results or answers property.');
   }
 
   return message;

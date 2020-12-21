@@ -111,6 +111,24 @@ export default function SimpleViewer(props) {
     displayAlert('success', 'Message saved successfully!');
   }
 
+  function showErrorAndReset(err) {
+    pageStatus.setFailure(
+      <>
+        {err}
+        <Button
+          variant="contained"
+          onClick={() => {
+            setMessageSaved(false);
+            pageStatus.setSuccess();
+          }}
+          className="resetButton"
+        >
+          Reset
+        </Button>
+      </>,
+    );
+  }
+
   function onDrop(acceptedFiles) {
     acceptedFiles.forEach((file) => {
       const fr = new window.FileReader();
@@ -120,18 +138,30 @@ export default function SimpleViewer(props) {
       };
       fr.onload = (e) => {
         const fileContents = e.target.result;
+        let message;
         try {
-          const message = JSON.parse(fileContents);
-          const parsedMessage = parseMessage(message);
+          message = JSON.parse(fileContents);
+        } catch (err) {
+          showErrorAndReset('There was the problem parsing the file. Is this valid JSON?');
+          return;
+        }
+        let parsedMessage;
+        try {
+          parsedMessage = parseMessage(message);
+        } catch (err) {
+          showErrorAndReset(err.message);
+          return;
+        }
+        try {
           messageStore.initializeMessage(parsedMessage);
           setMessageSaved(true);
           pageStatus.setSuccess();
         } catch (err) {
-          pageStatus.setFailure('There was the problem loading the file. Is this valid JSON?');
+          showErrorAndReset(err.message);
         }
       };
       fr.onerror = () => {
-        pageStatus.setFailure('There was the problem loading the file. Is this valid JSON?');
+        showErrorAndReset('There was the problem loading the file. Is this valid JSON?');
       };
       fr.readAsText(file);
     });
@@ -163,11 +193,21 @@ export default function SimpleViewer(props) {
                   <Button
                     onClick={askQuestion}
                     variant="contained"
+                    style={{ marginRight: 10 }}
                   >
                     Ask ARA
                   </Button>
                 </>
               )}
+              <Button
+                variant="contained"
+                onClick={() => {
+                  setMessageSaved(false);
+                  pageStatus.setSuccess();
+                }}
+              >
+                Reset
+              </Button>
             </>
           ) : (
             <Row>
