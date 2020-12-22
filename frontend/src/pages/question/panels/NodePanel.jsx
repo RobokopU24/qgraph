@@ -88,6 +88,10 @@ export default function NodePanel({ panelStore }) {
   useEffect(() => { updateConceptList(); }, [biolink]);
 
   async function fetchCuries(newSearchTerm) {
+    if (newSearchTerm.length < 3) {
+      node.setLoading(false);
+      return;
+    }
     // Get list of curies that match this search term
     const response = await API.nameResolver.entityLookup(newSearchTerm, 1000);
     if (response.status === 'error') {

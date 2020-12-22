@@ -47,12 +47,15 @@ export default function FillIdentifier({
   const [selection, updateSelection] = useState({ curie: [] });
 
   async function fetchCuries(newSearchTerm) {
+    if (newSearchTerm.length < 3) {
+      setLoading(false);
+      return;
+    }
     // Get list of curies that match this search term
     const response = await API.nameResolver.entityLookup(newSearchTerm, 1000);
     if (response.status === 'error') {
       displayAlert('error',
         'Failed to contact name resolver to search curies. Please try again later.');
-      updateCuries([]);
       setLoading(false);
       return;
     }
@@ -65,7 +68,6 @@ export default function FillIdentifier({
     if (normalizationResponse.status === 'error') {
       displayAlert('error',
         'Failed to contact node normalizer to search curies. Please try again later.');
-      updateCuries([]);
       setLoading(false);
       return;
     }
