@@ -51,7 +51,6 @@ export default function App() {
     const validConcepts = Object.keys(biolinkUtils.getValidConcepts(response));
     setBiolink(response);
     setConcepts(validConcepts);
-    console.log(validConcepts);
   }
   useEffect(() => { fetchBiolink(); }, []);
 
