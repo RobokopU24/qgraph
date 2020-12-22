@@ -12,20 +12,15 @@ export default function useQuestionStore() {
 
   /**
    * Make sure a question is valid
-   * @param {Object} question
-   * @param {String} question.question_name name of question
-   * @param {Object} question.query_graph contains nodes and edges
+   * @param {Object} query contains nodes and edges
    */
-  function validateQuestion(question) {
-    if (!('query_graph' in question) || question.query_graph === null) {
-      return false;
-    }
-    if (!('nodes' in question.query_graph) || !('edges' in question.query_graph)) {
+  function validateQuestion(query) {
+    if (!('nodes' in query) || !('edges' in query)) {
       return false;
     }
     // catch any deleted nodes
-    const invalidNode = Object.keys(question.query_graph.nodes).find((nodeId) => (
-      question.query_graph.nodes[nodeId].deleted
+    const invalidNode = Object.keys(query.nodes).find((nodeId) => (
+      query.nodes[nodeId].deleted
     ));
     // invalidNode with either be an object or undefined
     if (invalidNode) {
@@ -35,9 +30,7 @@ export default function useQuestionStore() {
   }
 
   function isValidQuestion() {
-    return validateQuestion({
-      query_graph,
-    });
+    return validateQuestion(query_graph);
   }
 
   return {
