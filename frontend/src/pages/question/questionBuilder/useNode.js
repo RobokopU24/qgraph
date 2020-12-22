@@ -4,7 +4,6 @@ import config from '@/config.json';
 import entityNameDisplay from '@/utils/entityNameDisplay';
 
 export default function useNodePanels() {
-  const [id, setId] = useState(null);
   const [type, setType] = useState('');
   const [name, setName] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
@@ -16,7 +15,6 @@ export default function useNodePanels() {
   const [loading, setLoading] = useState(false);
 
   function reset() {
-    setId(null);
     setType('');
     setName('');
     setSearchTerm('');
@@ -29,7 +27,6 @@ export default function useNodePanels() {
 
   function initialize(seed) {
     reset();
-    setId(seed.id || null);
     setType(seed.type || '');
     setName(seed.name || seed.type || '');
     setSearchTerm(seed.name || seed.type || '');
@@ -75,7 +72,7 @@ export default function useNodePanels() {
     setFilteredConcepts(newFilteredConcepts);
   }
 
-  const isValid = !!id || !!type;
+  const isValid = !!type || !!curie.length;
 
   return {
     name,
@@ -85,7 +82,6 @@ export default function useNodePanels() {
     setConcepts,
     setLoading,
     setSearchTerm,
-    id,
     filteredConcepts,
     curie,
     curies,
