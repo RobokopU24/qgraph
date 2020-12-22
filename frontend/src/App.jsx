@@ -25,18 +25,22 @@ import API from '@/API';
 import UserContext from '@/context/user';
 import AlertContext from '@/context/alert';
 import BiolinkContext from '@/context/biolink';
+import ConceptsContext from '@/context/concepts';
+
+import biolinkUtils from '@/utils/biolink';
 
 export default function App() {
   const [user, setUser] = useState(null);
+  const [biolink, setBiolink] = useState(null);
+  const [alert, setAlert] = useState({});
+  const [concepts, setConcepts] = useState([]);
   const isSignedIn = Boolean(user && user.username);
 
-  const [alert, setAlert] = useState({});
   function simpleSetAlert(severity, msg) {
     setAlert({ severity, msg });
   }
 
   // Load biolink on page load
-  const [biolink, setBiolink] = useState(null);
   async function fetchBiolink() {
     const response = await API.biolink.getModelSpecification();
     if (response.status === 'error') {
@@ -44,7 +48,10 @@ export default function App() {
         'Failed to contact server to download biolink model. You will not be able to select predicates. Please try again later');
       return;
     }
+    const validConcepts = Object.keys(biolinkUtils.getValidConcepts(response));
     setBiolink(response);
+    setConcepts(validConcepts);
+    console.log(validConcepts);
   }
   useEffect(() => { fetchBiolink(); }, []);
 
@@ -54,55 +61,57 @@ export default function App() {
         <AlertContext.Provider value={simpleSetAlert}>
           <UserContext.Provider value={user}>
             <BiolinkContext.Provider value={biolink}>
-              <ThemeProvider theme={theme}>
-                <StylesProvider injectFirst>
-                  <AlertWrapper
-                    alert={alert}
-                    onClose={() => simpleSetAlert(alert.severity, '')}
-                  />
-                  <Header user={user} setUser={setUser} />
-                  <div id="contentContainer">
-                    <Switch>
-                      <Route path="/about">
-                        <About />
-                      </Route>
-                      <Route path="/help">
-                        <Help />
-                      </Route>
-                      <Route path="/guide">
-                        <Guide isSignedIn={isSignedIn} />
-                      </Route>
-                      <Route path="/neighborhood">
-                        <Neighborhood />
-                      </Route>
-                      <Route path="/questions">
-                        <QuestionList />
-                      </Route>
-                      <Route path="/question/:question_id">
-                        <QuestionAnswerViewer />
-                      </Route>
-                      <Route path="/termsofservice">
-                        <TermsofService />
-                      </Route>
-                      <Route path="/simple/view">
-                        <SimpleViewer
-                          user={user}
-                        />
-                      </Route>
-                      <Route path="/simple/question">
-                        <SimpleQuestion />
-                      </Route>
-                      <Route path="/q/new">
-                        <QuestionNew />
-                      </Route>
-                      <Route path="/">
-                        <Landing isSignedIn={isSignedIn} />
-                      </Route>
-                    </Switch>
-                  </div>
-                  <Footer />
-                </StylesProvider>
-              </ThemeProvider>
+              <ConceptsContext.Provider value={concepts}>
+                <ThemeProvider theme={theme}>
+                  <StylesProvider injectFirst>
+                    <AlertWrapper
+                      alert={alert}
+                      onClose={() => simpleSetAlert(alert.severity, '')}
+                    />
+                    <Header user={user} setUser={setUser} />
+                    <div id="contentContainer">
+                      <Switch>
+                        <Route path="/about">
+                          <About />
+                        </Route>
+                        <Route path="/help">
+                          <Help />
+                        </Route>
+                        <Route path="/guide">
+                          <Guide isSignedIn={isSignedIn} />
+                        </Route>
+                        <Route path="/neighborhood">
+                          <Neighborhood />
+                        </Route>
+                        <Route path="/questions">
+                          <QuestionList />
+                        </Route>
+                        <Route path="/question/:question_id">
+                          <QuestionAnswerViewer />
+                        </Route>
+                        <Route path="/termsofservice">
+                          <TermsofService />
+                        </Route>
+                        <Route path="/simple/view">
+                          <SimpleViewer
+                            user={user}
+                          />
+                        </Route>
+                        <Route path="/simple/question">
+                          <SimpleQuestion />
+                        </Route>
+                        <Route path="/q/new">
+                          <QuestionNew />
+                        </Route>
+                        <Route path="/">
+                          <Landing isSignedIn={isSignedIn} />
+                        </Route>
+                      </Switch>
+                    </div>
+                    <Footer />
+                  </StylesProvider>
+                </ThemeProvider>
+              </ConceptsContext.Provider>
             </BiolinkContext.Provider>
           </UserContext.Provider>
         </AlertContext.Provider>

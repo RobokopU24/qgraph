@@ -17,7 +17,6 @@ import CloseIcon from '@material-ui/icons/Close';
 
 import QuestionGraphView from '@/components/shared/graphs/QuestionGraphView';
 
-import config from '@/config.json';
 import AlertContext from '@/context/alert';
 import usePageStatus from '@/utils/usePageStatus';
 import queryGraphUtils from '@/utils/queryGraph';
@@ -232,7 +231,6 @@ export default function QuestionJsonEditor(props) {
                     {!errorMessages.length ? (
                       <QuestionGraphView
                         height={height}
-                        concepts={config.concepts}
                         question={query_graph_list_format}
                         selectable
                         interactable={false}

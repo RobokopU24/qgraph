@@ -1,5 +1,5 @@
 import React, {
-  useState, useEffect, useCallback,
+  useState, useEffect, useCallback, useContext,
 } from 'react';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -7,15 +7,14 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import { FaClone } from 'react-icons/fa';
 
-import './metadata.css';
-
-import SubTable from './SubTable';
+import ConceptsContext from '@/context/concepts';
+import getNodeTypeColorMap from '@/utils/colorUtils';
+import entityNameDisplay from '@/utils/entityNameDisplay';
+import getColumnWidth from '@/utils/rtColumnWidth';
 import Cell from './Cell';
-import getNodeTypeColorMap from '../../../../../../utils/colorUtils';
-import entityNameDisplay from '../../../../../../utils/entityNameDisplay';
-import getColumnWidth from '../../../../../../utils/rtColumnWidth';
+import SubTable from './SubTable';
 
-import config from '../../../../../../config.json';
+import './metadata.css';
 
 export default function MetaDataView(props) {
   const { rowData } = props;
@@ -23,7 +22,8 @@ export default function MetaDataView(props) {
   const [dropdownNodes, setDropdownNodes] = useState([]);
   const [columns, setColumns] = useState([]);
   const [metaData, setMetaData] = useState([]);
-  const colorMap = useCallback(getNodeTypeColorMap(config.concepts), [config.concepts]);
+  const concepts = useContext(ConceptsContext);
+  const colorMap = useCallback(getNodeTypeColorMap(concepts), [concepts]);
 
   function makeColumns() {
     const blocklist = ['isSet', 'level'];

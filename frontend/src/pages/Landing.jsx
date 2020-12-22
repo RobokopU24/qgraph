@@ -5,8 +5,6 @@ import {
   ListGroupItem, Glyphicon, Col, Row,
 } from 'react-bootstrap';
 
-import config from '../config.json';
-
 import './simplecss.css';
 
 function CustomComponent({
@@ -42,8 +40,6 @@ function CustomComponent({
  * @param {boolean} isSignedIn is the user signed in
  */
 export default function Landing({ isSignedIn }) {
-  const shownNewQuestion = isSignedIn && config.settings.enableNewQuestions;
-
   return (
     <Grid>
       <Jumbotron>
@@ -71,7 +67,7 @@ export default function Landing({ isSignedIn }) {
               Browse Questions
             </Button>
           </Link>
-          {shownNewQuestion ? (
+          {isSignedIn ? (
             <Link to="/q/new">
               <Button
                 bsSize="large"

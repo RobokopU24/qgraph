@@ -34,10 +34,9 @@ const handle = (props) => {
 
 /**
  * Answerset Graph
- * @param {array} concepts an array of available node types
  * @param {object} messageStore the messageStore custom hook
  */
-export default function AnswersetGraph({ concepts, messageStore }) {
+export default function AnswersetGraph({ messageStore }) {
   const [hierarchical, toggleHierarchical] = useState(false);
   const [subgraph, updateSubGraph] = useState({ nodes: [], edges: [] });
 
@@ -100,7 +99,6 @@ export default function AnswersetGraph({ concepts, messageStore }) {
               </div>
               <SubGraphViewer
                 subgraph={subgraph}
-                concepts={concepts}
                 layoutRandomSeed={Math.floor(Math.random() * 100)}
                 layoutStyle={hierarchical}
                 showSupport={false}

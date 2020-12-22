@@ -13,13 +13,11 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import CloseIcon from '@material-ui/icons/Close';
 
-import './subGraph.css';
-
-import Loading from '../../../../../loading/Loading';
-import SubGraphViewer from '../../../../graphs/SubGraphViewer';
+import Loading from '@/components/loading/Loading';
+import SubGraphViewer from '@/components/shared/graphs/SubGraphViewer';
 import AnswerExplorerInfo from './AnswerExplorerInfo';
 
-import config from '../../../../../../config.json';
+import './subGraph.css';
 
 function SliderLabel(props) {
   const { children, open, value } = props;
@@ -82,7 +80,6 @@ export default function TableSubGraph(props) {
             <>
               <SubGraphViewer
                 subgraph={graph}
-                concepts={config.concepts}
                 layoutRandomSeed={randomSeed}
                 layoutStyle={hierarchical ? 'hierarchical' : ''}
                 callbackOnGraphClick={onGraphClick}
