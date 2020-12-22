@@ -13,6 +13,28 @@ import CurieConceptSelector from '@/components/shared/curies/CurieConceptSelecto
 
 import AlertContext from '@/context/alert';
 
+/**
+ * Types coming in from node normalizer are formatted like:
+ * 'biolink:Disease' and KGs are going to expect just 'disease' as
+ * the node type, so we need to convert the incoming type
+ * @param {string} type string we want to convert to standard format
+ */
+function ingestNodeType(type) {
+  let normalizedType = type;
+  if (type.indexOf(':') > -1) {
+    [, normalizedType] = type.split(':'); // grab the second item, the type
+    const splitRegex = new RegExp(/(?<=[a-z])[A-Z]|[A-Z](?=[a-z])/g);
+    const splitByCapital = normalizedType.replaceAll(splitRegex, (match, ind) => {
+      if (ind !== 0) {
+        return `_${match.toLowerCase()}`;
+      }
+      return match.toLowerCase();
+    });
+    normalizedType = splitByCapital;
+  }
+  return normalizedType;
+}
+
 export default function FillIdentifier({
   onSelect, type, focus, clearFocus,
 }) {
@@ -25,17 +47,38 @@ export default function FillIdentifier({
   const [selection, updateSelection] = useState({ curie: [] });
 
   async function fetchCuries(newSearchTerm) {
-    // Get and update list of curies
-    const response = await API.ranker.entityLookup(newSearchTerm);
-    if (response.status === 'error' || !_.isArray(response)) {
+    // Get list of curies that match this search term
+    const response = await API.nameResolver.entityLookup(newSearchTerm, 1000);
+    if (response.status === 'error') {
       displayAlert('error',
-        'Failed to contact server to search curies. You will still be able to select generic types. Please try again later');
-    } else {
-      // Filter out curies based on type
-      updateCuries(
-        response.filter((c) => c.type.includes(type)),
-      );
+        'Failed to contact name resolver to search curies. Please try again later.');
+      updateCuries([]);
+      setLoading(false);
+      return;
     }
+    const curieResponse = Object.keys(response);
+
+    // Pass curies to nodeNormalizer to get type information and
+    // a better curie identifier
+    const normalizationResponse = await API.nodeNormalization.getNormalizedNodesPost({ curies: curieResponse });
+
+    if (normalizationResponse.status === 'error') {
+      displayAlert('error',
+        'Failed to contact node normalizer to search curies. Please try again later.');
+      updateCuries([]);
+      setLoading(false);
+      return;
+    }
+
+    // Sometimes the nodeNormalizer returns null responses
+    // so we use a filter to remove those
+    const newCuries = Object.values(normalizationResponse).filter((c) => c).map((c) => ({
+      name: c.id.label || c.id.identifier,
+      type: ingestNodeType(c.type[0]),
+      curie: c.id.identifier,
+    })).filter((c) => c.type.includes(type));
+    // Filter out curies based on type
+    updateCuries(newCuries);
     setLoading(false);
   }
 
@@ -64,13 +107,14 @@ export default function FillIdentifier({
     onSelect(value);
   }
 
-  function rightButtonFunction() {
+  function clearSelection() {
     updateSelection({ curie: [] });
     updateSearchTerm('');
     onSelect({});
   }
 
-  const rightButtonContents = selection.curie.length > 0 ? (<Glyphicon glyph="remove" />) : (<Glyphicon glyph="triangle-bottom" />);
+  const rightButtonContents = searchTerm && selection.curie.length === 0 ? (<Glyphicon glyph="remove" />) : (<Glyphicon glyph="triangle-bottom" />);
+  const rightButtonFunction = searchTerm && selection.curie.length === 0 ? clearSelection : () => updateSearchTerm(searchTerm);
 
   return (
     <CurieConceptSelector
