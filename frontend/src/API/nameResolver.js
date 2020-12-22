@@ -1,7 +1,7 @@
 import axios from 'axios';
 import utils from './utils';
 
-const baseUrl = 'http://robokop.renci.org:2433';
+const baseUrl = `${window.location.origin}/api/external/nameResolver`;
 
 const baseRoutes = {
   /**
