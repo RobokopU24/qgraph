@@ -51,7 +51,10 @@ export default function QuestionGraphViewContainer(props) {
     }
   }
 
-  const graphClickCallbackMemo = useMemo(() => graphClickCallback, []);
+  /**
+   * refresh graph click callback whenever underlying query graph changes
+   */
+  const graphClickCallbackMemo = useMemo(graphClickCallback, [panelStore.query_graph]);
 
   /**
    * Save the value from the json editor
