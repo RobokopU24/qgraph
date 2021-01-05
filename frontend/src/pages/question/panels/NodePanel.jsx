@@ -12,6 +12,7 @@ import AlertContext from '@/context/alert';
 import API from '@/API';
 
 import BiolinkContext from '@/context/biolink';
+import ConceptsContext from '@/context/concepts';
 import entityNameDisplay from '@/utils/entityNameDisplay';
 import biolinkUtils from '@/utils/biolink';
 
@@ -21,22 +22,29 @@ import CurieConceptSelector from '@/components/shared/curies/CurieConceptSelecto
  * Types coming in from node normalizer are formatted like:
  * 'biolink:Disease' and KGs are going to expect just 'disease' as
  * the node type, so we need to convert the incoming type
- * @param {string} type string we want to convert to standard format
+ * @param {array} typesToIngest array of strings we want to convert to standard format
  */
-function ingestNodeType(type) {
-  let normalizedType = type;
-  if (type.indexOf(':') > -1) {
-    [, normalizedType] = type.split(':'); // grab the second item, the type
-    const splitRegex = new RegExp(/(?<=[a-z])[A-Z]|[A-Z](?=[a-z])/g);
-    const splitByCapital = normalizedType.replaceAll(splitRegex, (match, ind) => {
-      if (ind !== 0) {
-        return `_${match.toLowerCase()}`;
-      }
-      return match.toLowerCase();
-    });
-    normalizedType = splitByCapital;
+function ingestNodeTypes(typesToIngest) {
+  let types = typesToIngest;
+  if (typeof types === 'string') {
+    types = [types];
   }
-  return normalizedType;
+  types = types.map((type) => {
+    let normalizedType = type;
+    if (type.indexOf(':') > -1) {
+      [, normalizedType] = type.split(':'); // grab the second item, the type
+      const splitRegex = new RegExp(/(?<=[a-z])[A-Z]|[A-Z](?=[a-z])/g);
+      const splitByCapital = normalizedType.replaceAll(splitRegex, (match, ind) => {
+        if (ind !== 0) {
+          return `_${match.toLowerCase()}`;
+        }
+        return match.toLowerCase();
+      });
+      normalizedType = splitByCapital;
+    }
+    return normalizedType;
+  });
+  return types;
 }
 
 /**
@@ -47,6 +55,7 @@ export default function NodePanel({ panelStore }) {
   const { node } = panelStore;
 
   const biolink = useContext(BiolinkContext);
+  const concepts = useContext(ConceptsContext);
 
   const displayAlert = useContext(AlertContext);
 
@@ -61,8 +70,7 @@ export default function NodePanel({ panelStore }) {
     if (!biolink) {
       return;
     }
-    const validConcepts = biolinkUtils.getValidConcepts(biolink);
-    const conceptsFormatted = Object.keys(validConcepts).map(
+    const conceptsFormatted = concepts.map(
       (identifier) => ({
         type: biolinkUtils.snakeCase(identifier),
         name: entityNameDisplay(identifier),
@@ -118,7 +126,7 @@ export default function NodePanel({ panelStore }) {
     node.updateCuries(
       Object.values(normalizationResponse).filter((c) => c).map((c) => ({
         name: c.id.label || c.id.identifier,
-        type: ingestNodeType(c.type[0]),
+        type: ingestNodeTypes(c.type),
         curie: c.id.identifier,
       })),
     );

@@ -33,9 +33,11 @@ function getHierarchy(biolink, className) {
 
 const baseClass = 'biological_entity';
 
-/*
+/**
  * Filter out concepts that are not derived classes of biological_entity
-*/
+ * @param {object} biolink Biolink context
+ * @returns {object} object of valid concepts
+ */
 function getValidConcepts(biolink) {
   return _.pickBy(biolink.classes,
     (value, identifier) => getHierarchy(biolink, identifier).includes(baseClass));

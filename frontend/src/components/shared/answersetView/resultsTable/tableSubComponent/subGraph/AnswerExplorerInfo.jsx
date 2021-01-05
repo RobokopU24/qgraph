@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import shortid from 'shortid';
 
-import SubGraphViewer from '../../../../graphs/SubGraphViewer';
+import ConceptsContext from '@/context/concepts';
+import SubGraphViewer from '@/components/shared/graphs/SubGraphViewer';
+
+import curieUrls from '@/utils/curieUrls';
+import ctdUrls from '@/utils/ctdUrls';
+import getNodeTypeColorMap from '@/utils/colorUtils';
+import entityNameDisplay from '@/utils/entityNameDisplay';
+
 import PubmedList from './PubmedList';
-
-import curieUrls from '../../../../../../utils/curieUrls';
-import ctdUrls from '../../../../../../utils/ctdUrls';
-import getNodeTypeColorMap from '../../../../../../utils/colorUtils';
-import entityNameDisplay from '../../../../../../utils/entityNameDisplay';
-
-import config from '../../../../../../config.json';
 
 const nodeBlocklist = [
   'isSet', 'labels', 'label', 'equivalent_identifiers', 'type',
@@ -29,6 +29,8 @@ export default function AnswerExplorerInfo(props) {
   const [selectedNodeId, setSelectedNodeId] = useState(null);
   const [subgraph, setSubgraph] = useState({ nodes: [], edges: [] });
   const [disableGraphClick, setDisableGraphClick] = useState(false);
+
+  const concepts = useContext(ConceptsContext);
 
   function syncPropsAndState() {
     const nodes = graph.nodes.filter((n) => ((n.id === selectedEdge.source_id) || (n.id === selectedEdge.target_id)));
@@ -72,7 +74,7 @@ export default function AnswerExplorerInfo(props) {
       const urlObj = ctdUrls(n.type, n.equivalent_identifiers);
       urls.push(urlObj);
     }
-    const nodeTypeColorMap = getNodeTypeColorMap(config.concepts);
+    const nodeTypeColorMap = getNodeTypeColorMap(concepts);
     const backgroundColor = nodeTypeColorMap(n.type);
     const extraFields = Object.keys(n).filter((property) => !nodeBlocklist.includes(property));
     return (
@@ -214,7 +216,6 @@ export default function AnswerExplorerInfo(props) {
         omitEdgeLabel={false}
         varyEdgeSmoothRoundness
         callbackOnGraphClick={onGraphClick}
-        concepts={config.concepts}
       />
       <div id="subgraphModalNodeEdgeInfo">
         {getNodeInfoFrag(subgraph.nodes[0])}
