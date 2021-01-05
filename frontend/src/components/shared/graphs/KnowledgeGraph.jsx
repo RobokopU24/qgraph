@@ -29,7 +29,7 @@ function SliderLabel(props) {
 }
 
 export default function KnowledgeGraph(props) {
-  const { messageStore, concepts } = props;
+  const { messageStore } = props;
   const [hierarchical, toggleHierarchy] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [localPruneNum, updateLocalPruneNum] = useState(35);
@@ -55,7 +55,6 @@ export default function KnowledgeGraph(props) {
           <>
             <SubGraphViewer
               subgraph={kg}
-              concepts={concepts}
               layoutRandomSeed={randomSeed.current}
               layoutStyle={hierarchical ? 'hierarchical' : ''}
               showSupport={false}

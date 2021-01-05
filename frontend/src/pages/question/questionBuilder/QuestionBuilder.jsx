@@ -15,7 +15,6 @@ import API from '@/API';
 import queryGraphUtils from '@/utils/queryGraph';
 import { formatDateTimeShort } from '@/utils/cache';
 import HelpButton from '@/components/shared/HelpButton';
-import config from '@/config.json';
 
 import AlertContext from '@/context/alert';
 import UserContext from '@/context/user';
@@ -317,7 +316,6 @@ export default function QuestionBuilder(props) {
         showModal={showModal}
         close={() => toggleModal(false)}
         selectQuestion={onQuestionTemplate}
-        concepts={config.concepts}
       />
       <QuestionListModal
         show={questionsReady}

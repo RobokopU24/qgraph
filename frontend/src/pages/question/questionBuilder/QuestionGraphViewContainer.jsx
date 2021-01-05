@@ -4,7 +4,6 @@ import React, {
 import { FaPlusSquare } from 'react-icons/fa';
 import { Button } from 'react-bootstrap';
 
-import config from '@/config.json';
 import queryGraphUtils from '@/utils/queryGraph';
 
 import QuestionGraphView from '@/components/shared/graphs/QuestionGraphView';
@@ -87,7 +86,6 @@ export default function QuestionGraphViewContainer(props) {
           height={height}
           width={width}
           question={query_graph_list_format}
-          concepts={config.concepts}
           graphState={questionStore.graphState}
           selectable
           graphClickCallback={graphClickCallbackMemo}

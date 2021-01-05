@@ -20,7 +20,6 @@ import './newQuestion.css';
 import QuestionBuilder from './questionBuilder/QuestionBuilder';
 
 import useQuestionStore from './useQuestionStore';
-import config from '../../config.json';
 
 export default function SimpleQuestion() {
   const user = useContext(UserContext);
@@ -118,7 +117,6 @@ export default function SimpleQuestion() {
                 </div>
                 <AnswersetView
                   user={user}
-                  concepts={config.concepts}
                   messageStore={messageStore}
                   omitHeader
                 />

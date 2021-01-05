@@ -8,7 +8,6 @@ import Button from '@material-ui/core/Button';
 import API from '@/API';
 import { useVisibility } from '@/utils/cache';
 import AlertContext from '@/context/alert';
-import config from '@/config.json';
 import parseMessage from '@/utils/parseMessage';
 import usePageStatus from '@/utils/usePageStatus';
 import useMessageStore from '@/stores/useMessageStore';
@@ -177,7 +176,6 @@ export default function SimpleViewer(props) {
             <>
               <AnswersetView
                 user={user}
-                concepts={config.concepts}
                 messageStore={messageStore}
                 omitHeader
               />
@@ -226,7 +224,7 @@ export default function SimpleViewer(props) {
                 >
                   {({ getRootProps, getInputProps }) => (
                     <section id="dropzoneContainer">
-                      <div id="dropzone" {...getRootProps()} style={{ backgroundColor: config.colors.bluegray }}>
+                      <div id="dropzone" {...getRootProps()} style={{ backgroundColor: '#f5f7fa' }}>
                         <input {...getInputProps()} />
                         <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>
                           <h1 style={{ fontSize: '48px' }}>

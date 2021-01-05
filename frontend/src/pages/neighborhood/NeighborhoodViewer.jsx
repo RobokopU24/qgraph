@@ -1,19 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import ReactTable from 'react-table-6';
 import _ from 'lodash';
 
-import AnswersetGraph from '../../components/shared/graphs/AnswersetGraph';
-import getNodeTypeColorMap from '../../utils/colorUtils';
-import getColumnWidth from '../../utils/rtColumnWidth';
+import ConceptsContext from '@/context/concepts';
 
-import useMessageStore from '../../stores/useMessageStore';
-import config from '../../config.json';
+import AnswersetGraph from '@/components/shared/graphs/AnswersetGraph';
+import getNodeTypeColorMap from '@/utils/colorUtils';
+import getColumnWidth from '@/utils/rtColumnWidth';
+
+import useMessageStore from '@/stores/useMessageStore';
 
 export default function NeightborhoodViewer(props) {
   const { sourceNode } = props;
   const messageStore = useMessageStore();
   const [answers, setAnswers] = useState([]);
   const [columns, setColumns] = useState([]);
+
+  const concepts = useContext(ConceptsContext);
 
   // Filter method for table columns that is case-insensitive, and matches all rows that contain
   // provided sub-string
@@ -28,7 +31,7 @@ export default function NeightborhoodViewer(props) {
   }
 
   function getReactTableColumnSpec(columnHeaders, data) {
-    const bgColorMap = getNodeTypeColorMap(config.concepts);
+    const bgColorMap = getNodeTypeColorMap(concepts);
     // Take columnHeaders from store and update it as needed
     const colHeaders = columnHeaders.map((col) => {
       const colSpecObj = _.cloneDeep(col);
@@ -76,7 +79,7 @@ export default function NeightborhoodViewer(props) {
 
   useEffect(() => {
     messageStore.setMessage(props.data);
-    const { columnHeaders, answers: newAnswers } = messageStore.getAlphaTable(config.concepts);
+    const { columnHeaders, answers: newAnswers } = messageStore.getAlphaTable(concepts);
     initializeState(columnHeaders, newAnswers);
   }, []);
 
@@ -88,7 +91,6 @@ export default function NeightborhoodViewer(props) {
     <div style={{ marginBottom: '30px' }}>
       <AnswersetGraph
         messageStore={messageStore}
-        concepts={config.concepts}
       />
       <ReactTable
         data={answers}

@@ -1,7 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 
 import useMessageStore from '@/stores/useMessageStore';
-import config from '@/config.json';
 import parseMessage from '@/utils/parseMessage';
 
 import API from '@/API';
@@ -88,7 +87,6 @@ export default function StoredAnswersetView({ question_id, answer_id }) {
         <>
           <AnswersetView
             user={user}
-            concepts={config.concepts}
             messageStore={messageStore}
             omitHeader
           />

@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Modal, ButtonGroup, Button } from 'react-bootstrap';
 import { FaSave, FaTrash, FaUndo } from 'react-icons/fa';
 
-import config from '@/config.json';
+import ConceptsContext from '@/context/concepts';
 import HelpButton from '@/components/shared/HelpButton';
 import getNodeTypeColorMap from '@/utils/colorUtils';
 import EdgePanel from './EdgePanel';
@@ -14,13 +14,14 @@ import './panels.css';
  * @param {Object} panelStore new question panel custom hook
  */
 export default function NewQuestionPanelModal({ panelStore, onQuestionUpdated }) {
+  const concepts = useContext(ConceptsContext);
   /**
    * Get the panel background color
    * @param {Boolean} isNodePanel is panel of type node
    */
   function getBackgroundColor(isNodePanel) {
     // set the color of the node/edge panel header
-    const panelColorMap = getNodeTypeColorMap(config.concepts);
+    const panelColorMap = getNodeTypeColorMap(concepts);
     if (isNodePanel) {
       return { backgroundColor: panelColorMap(panelStore.node.type) };
     }
