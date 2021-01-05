@@ -108,6 +108,7 @@ export default function NodePanel({ panelStore }) {
         type: '',
         curie: newSearchTerm,
       }]);
+      node.setLoading(false);
       return;
     }
     // Get list of curies that match this search term
