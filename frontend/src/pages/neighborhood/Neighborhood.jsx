@@ -10,7 +10,6 @@ import NeighborhoodViewer from './NeighborhoodViewer';
 import NodeDetails from './NodeDetails';
 
 import './neighborhood.css';
-import config from '../../config.json';
 
 export default function Neighborhood(props) {
   const { appConfig, identifier } = props;
@@ -102,7 +101,6 @@ export default function Neighborhood(props) {
                 >
                   {/*
                   <CurieSelectorContainer
-                    concepts={config.concepts}
                     search={onSearch}
                     width={width}
                     initialInputs={{ type: '', term, curie }}
@@ -127,7 +125,6 @@ export default function Neighborhood(props) {
       {neighborhoodReady && (
         <NeighborhoodViewer
           data={neighborhood}
-          concepts={config.concepts}
           sourceNode={term}
         />
       )}

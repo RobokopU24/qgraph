@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 
-import config from '@/config.json';
 import entityNameDisplay from '@/utils/entityNameDisplay';
+import ConceptsContext from '@/context/concepts';
 
 export default function useNodePanels() {
   const [type, setType] = useState('');
@@ -13,6 +13,8 @@ export default function useNodePanels() {
   const [filteredConcepts, setFilteredConcepts] = useState([]);
   const [curies, updateCuries] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const biolinkConcepts = useContext(ConceptsContext);
 
   function reset() {
     setType('');
@@ -39,7 +41,7 @@ export default function useNodePanels() {
    * by picking the first one in the list (that is not named_thing)
   */
   function conceptListToString(curieTypes) {
-    const specificConcepts = config.concepts.filter((t) => t !== 'named_thing');
+    const specificConcepts = biolinkConcepts.filter((t) => t !== 'named_thing');
     const curieType = specificConcepts.find((concept) => curieTypes.includes(concept));
     return curieType || '';
   }

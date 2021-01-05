@@ -1,13 +1,12 @@
 import React, {
-  useEffect, useRef, useMemo,
+  useEffect, useRef, useMemo, useContext,
 } from 'react';
 import _ from 'lodash';
 import shortid from 'shortid';
 
-import getNodeTypeColorMap from '../../../utils/colorUtils';
-import entityNameDisplay from '../../../utils/entityNameDisplay';
-
-import config from '../../../config.json';
+import ConceptsContext from '@/context/concepts';
+import getNodeTypeColorMap from '@/utils/colorUtils';
+import entityNameDisplay from '@/utils/entityNameDisplay';
 
 const Graph = require('react-graph-vis').default;
 
@@ -125,6 +124,7 @@ export default function QuestionGraphView(props) {
     interactable = true,
   } = props;
   const network = useRef(null);
+  const concepts = useContext(ConceptsContext);
 
   // Bind network fit callbacks to resize graph and cancel fit callbacks on start of zoom/pan
   function setNetworkCallbacks() {
@@ -145,7 +145,7 @@ export default function QuestionGraphView(props) {
     const graph = _.cloneDeep(question);
 
     // Adds vis.js specific tags to manage colors in graph
-    const nodeTypeColorMap = getNodeTypeColorMap(config.concepts);
+    const nodeTypeColorMap = getNodeTypeColorMap(concepts);
 
     graph.nodes.forEach((n) => {
       let backgroundColor;

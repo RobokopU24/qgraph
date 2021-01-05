@@ -5,6 +5,7 @@ import Graph from 'react-graph-vis';
 import shortid from 'shortid';
 import _ from 'lodash';
 
+import ConceptsContext from '@/context/concepts';
 import getNodeTypeColorMap from '@/utils/colorUtils';
 import entityNameDisplay from '@/utils/entityNameDisplay';
 import AlertContext from '@/context/alert';
@@ -81,18 +82,18 @@ const defaultGraphOptions = {
  * @param {boolean} omitEdgeLabel should the graph hide edge labels
  * @param {boolean} varyEdgeSmoothRoundness should the graph edges curve so as not to overlap
  * @param {number} layoutRandomSeed the seed number at which to generate the graph
- * @param {array} concepts an array of node types
  */
 export default function SubGraphViewer(props) {
   const {
     subgraph, layoutStyle = 'auto', callbackOnGraphClick = () => {}, height = 600,
     showSupport = false, omitEdgeLabel = false, varyEdgeSmoothRoundness = false,
-    layoutRandomSeed = 0, concepts,
+    layoutRandomSeed = 0,
   } = props;
   const [displayGraph, updateDisplayGraph] = useState(null);
   const [displayGraphOptions, updateGraphOptions] = useState(defaultGraphOptions);
   const network = useRef(null);
   const displayAlert = useContext(AlertContext);
+  const concepts = useContext(ConceptsContext);
 
   // Bind network fit callbacks to resize graph and cancel fit callbacks on start of zoom/pan
   function setNetworkCallbacks() {
