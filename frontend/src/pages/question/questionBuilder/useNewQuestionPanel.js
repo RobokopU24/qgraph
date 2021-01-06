@@ -125,6 +125,10 @@ export default function useNewQuestionPanel() {
    * @param {string} id unique id of node or edge. i.e. n0, n1, e0...
    */
   function openPanel(type, id) {
+    if (type === 'node' && query_graph.nodes[id] && query_graph.nodes[id].deleted) {
+      // stop panel from opening
+      return;
+    }
     setPanelInfo({ type, id });
 
     togglePanel(true);
