@@ -96,7 +96,18 @@ export default function NodePanel({ panelStore }) {
   useEffect(() => { updateConceptList(); }, [biolink]);
 
   async function fetchCuries(newSearchTerm) {
+    // search term needs to be at least 3 characters before we lookup
     if (newSearchTerm.length < 3) {
+      node.setLoading(false);
+      return;
+    }
+    // if search term has a colon, the user is inputing a specific curie
+    if (newSearchTerm.includes(':')) {
+      node.updateCuries([{
+        name: newSearchTerm,
+        type: '',
+        curie: newSearchTerm,
+      }]);
       node.setLoading(false);
       return;
     }

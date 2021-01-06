@@ -116,7 +116,8 @@ export default function CurieConceptSelector({
   }
 
   const nRows = concepts.length + curies.length;
-  const showOptions = searchTerm && !selection.type;
+  const showOptions = searchTerm && !selection.type && !selection.curie.length;
+  const showSelectedCurie = !showOptions && !!selection.curie.length;
   const isEmpty = nRows === 0;
 
   const rowHeight = 50;
@@ -134,7 +135,7 @@ export default function CurieConceptSelector({
             inputRef={(ref) => { inputRef.current = ref; }}
             onChange={(e) => updateSearchTerm(e.target.value)}
           />
-          {!showOptions && selection.curie.length > 0 && (
+          {showSelectedCurie && (
             <InputGroup.Addon>
               {selection.curie[0]}
             </InputGroup.Addon>
