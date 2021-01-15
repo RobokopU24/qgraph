@@ -1,8 +1,10 @@
 import React from 'react';
 import { Row, Col, Panel } from 'react-bootstrap';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import QuestionGraphView from './QuestionGraphView';
+
 import strings from '@/utils/stringUtils';
+
+import QuestionGraphView from './QuestionGraphView';
 
 /* eslint-disable no-param-reassign */
 const nodePreProcFn = (n) => {
