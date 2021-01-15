@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { Modal, ButtonGroup, Button } from 'react-bootstrap';
 import { FaSave, FaTrash, FaUndo } from 'react-icons/fa';
 
@@ -43,7 +43,8 @@ export default function NewQuestionPanelModal({ panelStore, onQuestionUpdated })
 
   const isNodePanel = panelStore.panelType === 'node';
   const isNewPanel = panelStore.activePanelId == null;
-  const backgroundColor = getBackgroundColor(isNodePanel);
+  const backgroundColor = useMemo(() => getBackgroundColor(isNodePanel),
+    [panelStore.node.type, panelStore.edge.sourceId, panelStore.edge.targetId, panelStore.showPanel]);
   return (
     <Modal
       style={{ marginTop: '5%' }}
