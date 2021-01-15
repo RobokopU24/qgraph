@@ -1,39 +1,14 @@
 import React, {
   useContext, useState, useCallback,
 } from 'react';
-
 import _ from 'lodash';
-
 import {
   Glyphicon,
 } from 'react-bootstrap';
 
 import API from '@/API';
-import CurieConceptSelector from '@/components/shared/curies/CurieConceptSelector';
-
 import AlertContext from '@/context/alert';
-
-/**
- * Types coming in from node normalizer are formatted like:
- * 'biolink:Disease' and KGs are going to expect just 'disease' as
- * the node type, so we need to convert the incoming type
- * @param {string} type string we want to convert to standard format
- */
-function ingestNodeType(type) {
-  let normalizedType = type;
-  if (type.indexOf(':') > -1) {
-    [, normalizedType] = type.split(':'); // grab the second item, the type
-    const splitRegex = new RegExp(/(?<=[a-z])[A-Z]|[A-Z](?=[a-z])/g);
-    const splitByCapital = normalizedType.replaceAll(splitRegex, (match, ind) => {
-      if (ind !== 0) {
-        return `_${match.toLowerCase()}`;
-      }
-      return match.toLowerCase();
-    });
-    normalizedType = splitByCapital;
-  }
-  return normalizedType;
-}
+import CurieConceptSelector from '@/components/shared/curies/CurieConceptSelector';
 
 export default function FillIdentifier({
   onSelect, type, focus, clearFocus,
@@ -76,7 +51,7 @@ export default function FillIdentifier({
     // so we use a filter to remove those
     const newCuries = Object.values(normalizationResponse).filter((c) => c).map((c) => ({
       name: c.id.label || c.id.identifier,
-      type: ingestNodeType(c.type[0]),
+      type: c.type,
       curie: c.id.identifier,
     })).filter((c) => c.type.includes(type));
     // Filter out curies based on type

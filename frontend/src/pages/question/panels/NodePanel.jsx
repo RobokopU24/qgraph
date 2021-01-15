@@ -11,41 +11,10 @@ import _ from 'lodash';
 import AlertContext from '@/context/alert';
 import API from '@/API';
 
-import BiolinkContext from '@/context/biolink';
 import ConceptsContext from '@/context/concepts';
-import entityNameDisplay from '@/utils/entityNameDisplay';
-import biolinkUtils from '@/utils/biolink';
+import strings from '@/utils/stringUtils';
 
 import CurieConceptSelector from '@/components/shared/curies/CurieConceptSelector';
-
-/**
- * Types coming in from node normalizer are formatted like:
- * 'biolink:Disease' and KGs are going to expect just 'disease' as
- * the node type, so we need to convert the incoming type
- * @param {array} typesToIngest array of strings we want to convert to standard format
- */
-function ingestNodeTypes(typesToIngest) {
-  let types = typesToIngest;
-  if (typeof types === 'string') {
-    types = [types];
-  }
-  types = types.map((type) => {
-    let normalizedType = type;
-    if (type.indexOf(':') > -1) {
-      [, normalizedType] = type.split(':'); // grab the second item, the type
-      const splitRegex = new RegExp(/(?<=[a-z])[A-Z]|[A-Z](?=[a-z])/g);
-      const splitByCapital = normalizedType.replaceAll(splitRegex, (match, ind) => {
-        if (ind !== 0) {
-          return `_${match.toLowerCase()}`;
-        }
-        return match.toLowerCase();
-      });
-      normalizedType = splitByCapital;
-    }
-    return normalizedType;
-  });
-  return types;
-}
 
 /**
  * Node Panel
@@ -54,7 +23,6 @@ function ingestNodeTypes(typesToIngest) {
 export default function NodePanel({ panelStore }) {
   const { node } = panelStore;
 
-  const biolink = useContext(BiolinkContext);
   const concepts = useContext(ConceptsContext);
 
   const displayAlert = useContext(AlertContext);
@@ -67,19 +35,16 @@ export default function NodePanel({ panelStore }) {
   function updateConceptList() {
     const setify = (name) => `Set of ${name}s`;
 
-    if (!biolink) {
-      return;
-    }
     const conceptsFormatted = concepts.map(
       (identifier) => ({
-        type: biolinkUtils.snakeCase(identifier),
-        name: entityNameDisplay(identifier),
+        type: identifier,
+        label: strings.displayType(identifier),
         set: false,
       }),
     );
     const conceptsSetified = conceptsFormatted.map((c) => ({
       ...c,
-      name: setify(c.name),
+      label: setify(c.label),
       set: true,
     }));
 
@@ -93,7 +58,7 @@ export default function NodePanel({ panelStore }) {
     node.setConcepts(combinedConcepts);
   }
   // When node panel mounts get concepts
-  useEffect(() => { updateConceptList(); }, [biolink]);
+  useEffect(() => { updateConceptList(); }, [concepts]);
 
   async function fetchCuries(newSearchTerm) {
     // search term needs to be at least 3 characters before we lookup
@@ -104,7 +69,7 @@ export default function NodePanel({ panelStore }) {
     // if search term has a colon, the user is inputing a specific curie
     if (newSearchTerm.includes(':')) {
       node.updateCuries([{
-        name: newSearchTerm,
+        label: newSearchTerm,
         type: '',
         curie: newSearchTerm,
       }]);
@@ -136,8 +101,8 @@ export default function NodePanel({ panelStore }) {
     // so we use a filter to remove those
     node.updateCuries(
       Object.values(normalizationResponse).filter((c) => c).map((c) => ({
-        name: c.id.label || c.id.identifier,
-        type: ingestNodeTypes(c.type),
+        label: strings.prettyDisplay(c.id.label) || c.id.identifier,
+        type: c.type,
         curie: c.id.identifier,
       })),
     );
