@@ -124,7 +124,7 @@ const convert = {
     reasonerRepresentation.nodes.forEach(pruneCuries);
     reasonerRepresentation.nodes.forEach(pruneTypes);
 
-    reasonerRepresentation.nodes.forEach(removeLabel);
+    // reasonerRepresentation.nodes.forEach(removeLabel);
     reasonerRepresentation.edges.forEach(pruneTypes);
     return reasonerRepresentation;
   },
