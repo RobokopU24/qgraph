@@ -57,11 +57,11 @@ export default function useNewQuestionPanel() {
   function getEdgeLabel(sourceId, targetId) {
     let sourceLabel = '';
     if (sourceId) {
-      sourceLabel = query_graph.nodes[sourceId].name || strings.displayType(query_graph.nodes[sourceId].type);
+      sourceLabel = query_graph.nodes[sourceId].label || strings.displayType(query_graph.nodes[sourceId].type);
     }
     let targetLabel = '';
     if (targetId) {
-      targetLabel = query_graph.nodes[targetId].name || strings.displayType(query_graph.nodes[targetId].type);
+      targetLabel = query_graph.nodes[targetId].label || strings.displayType(query_graph.nodes[targetId].type);
     }
     return `${sourceId} ${sourceLabel} → ${targetId} ${targetLabel}`;
   }
@@ -79,7 +79,7 @@ export default function useNewQuestionPanel() {
         if (Array.isArray(nodeSeed.type)) {
           [nodeSeed.type] = nodeSeed.type;
         }
-        setName(panelInfo.id);
+        setName(`${panelInfo.id}: ${nodeSeed.label}`);
         node.initialize(nodeSeed);
       } else { // new node
         node.reset();
@@ -109,14 +109,29 @@ export default function useNewQuestionPanel() {
   useEffect(initializeNodeOrEdge, [panelInfo]);
 
   /**
+   * Update panel header whenever node changes
+   */
+  useEffect(() => {
+    if (panelInfo.id) {
+      setName(`${panelInfo.id}: ${node.label}`);
+    } else {
+      setName(`${getNextNodeID()}: ${node.label}`);
+    }
+  }, [node.label]);
+
+  /**
    * Update the edge panel header
    * @param {string} source edge source id
    * @param {string} target edge target id
    * @param {string} id edge id
    */
-  function updateEdgePanelHeader(source, target, id) {
-    const label = getEdgeLabel(source, target, id);
-    setName(`${id}: ${label}`);
+  function updateEdgePanelHeader(source, target) {
+    const label = getEdgeLabel(source, target);
+    if (panelInfo.id) {
+      setName(`${panelInfo.id}: ${label}`);
+    } else {
+      setName(`${getNextEdgeID()}: ${label}`);
+    }
   }
 
   /**
@@ -200,7 +215,7 @@ export default function useNewQuestionPanel() {
         new_node.set = node.set;
       }
       const node_id = panelInfo.id || getNextNodeID();
-      new_node.label = `${node_id}: ${node.label || new_node.curie || strings.displayType(new_node.type)}`;
+      new_node.label = node.label || new_node.curie || strings.displayType(new_node.type);
 
       q_graph.nodes[node_id] = new_node;
     } else {
