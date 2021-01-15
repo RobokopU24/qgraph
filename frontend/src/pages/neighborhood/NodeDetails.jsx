@@ -3,7 +3,7 @@ import {
   ListGroup, ListGroupItem, Panel, Row, Col,
 } from 'react-bootstrap';
 import shortid from 'shortid';
-import entityNameDisplay from '../../utils/entityNameDisplay';
+import strings from '@/utils/stringUtils';
 
 export default function NodeDetails(props) {
   const { details, sources, sourceNode } = props;
@@ -36,7 +36,7 @@ export default function NodeDetails(props) {
             <Row key={shortid.generate()} style={{ margin: '20px 0px' }}>
               <Col sm={2} style={{ textAlign: 'right' }}>
                 <span style={{ margin: 0, color: 'lightgrey' }}>
-                  {entityNameDisplay(key).toUpperCase()}:
+                  {strings.prettyDisplay(key).toUpperCase()}:
                 </span>
               </Col>
               <Col sm={9}>

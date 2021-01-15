@@ -9,7 +9,7 @@ import { FaClone } from 'react-icons/fa';
 
 import ConceptsContext from '@/context/concepts';
 import getNodeTypeColorMap from '@/utils/colorUtils';
-import entityNameDisplay from '@/utils/entityNameDisplay';
+import strings from '@/utils/stringUtils';
 import getColumnWidth from '@/utils/rtColumnWidth';
 import Cell from './Cell';
 import SubTable from './SubTable';
@@ -67,8 +67,8 @@ export default function MetaDataView(props) {
     });
 
     const headerTitle = (
-      isSet ? `Nodes for the ${selectedNodeId} - ${entityNameDisplay(rowData[selectedNodeId].type)} Set` :
-        `Metadata for ${selectedNodeId} - ${entityNameDisplay(rowData[selectedNodeId].type)}`
+      isSet ? `Nodes for the ${selectedNodeId} - ${strings.displayType(rowData[selectedNodeId].type)} Set` :
+        `Metadata for ${selectedNodeId} - ${strings.displayType(rowData[selectedNodeId].type)}`
     );
     const backgroundColor = colorMap(rowData[selectedNodeId].type);
     const cols = [
@@ -88,7 +88,7 @@ export default function MetaDataView(props) {
     const dropDownList = nodeList.map((nId) => ({
       nId,
       isSet: rowData[nId].isSet,
-      type: entityNameDisplay(rowData[nId].type),
+      type: strings.displayType(rowData[nId].type),
     }));
 
     setDropdownNodes(dropDownList);

@@ -8,7 +8,7 @@ import _ from 'lodash';
 
 import AlertContext from '@/context/alert';
 
-import entityNameDisplay from '@/utils/entityNameDisplay';
+import strings from '@/utils/stringUtils';
 import getNodeTypeColorMap from '@/utils/colorUtils';
 import Table from './Table';
 
@@ -40,7 +40,7 @@ export default function AnswerTable(props) {
           if (setNodes.length === 1) {
             return setNodes[0].name ? [setNodes[0].name] : [setNodes[0].id];
           }
-          return [entityNameDisplay(colSpecObj.type), `[${setNodes.length}]`];
+          return [strings.displayType(colSpecObj.type), `[${setNodes.length}]`];
         };
         colSpecObj.Cell = (row) => {
           const setNodes = messageStore.getSetNodes(row.row.index, row.column.id);

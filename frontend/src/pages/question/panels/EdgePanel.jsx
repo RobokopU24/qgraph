@@ -6,7 +6,7 @@ import {
 import { FaSpinner } from 'react-icons/fa';
 import { Multiselect, DropdownList } from 'react-widgets';
 
-import entityNameDisplay from '@/utils/entityNameDisplay';
+import strings from '@/utils/stringUtils';
 import usePageStatus from '@/utils/usePageStatus';
 import biolinkUtils from '@/utils/biolink';
 import BiolinkContext from '@/context/biolink';
@@ -34,9 +34,9 @@ export default function EdgePanel(props) {
     }
     return Object.entries(biolink.slots).map(
       ([identifier, predicate]) => ({
-        name: biolinkUtils.snakeCase(identifier),
-        domain: biolinkUtils.snakeCase(predicate.domain),
-        range: biolinkUtils.snakeCase(predicate.range),
+        name: biolinkUtils.toSnakeCase(identifier),
+        domain: biolinkUtils.toSnakeCase(predicate.domain),
+        range: biolinkUtils.toSnakeCase(predicate.range),
       }),
     );
   }
@@ -95,7 +95,7 @@ export default function EdgePanel(props) {
     Object.entries(panelStore.query_graph.nodes).map(
       ([id, node]) => ({
         ...node,
-        name: `${id}: ${node.name || entityNameDisplay(node.type)}`,
+        name: `${id}: ${node.name || strings.displayType(node.type)}`,
         id,
       }),
     ).filter((n) => !n.deleted);

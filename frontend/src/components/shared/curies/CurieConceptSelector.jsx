@@ -7,7 +7,6 @@ import shortid from 'shortid';
 
 import { AutoSizer, List } from 'react-virtualized';
 
-import entityNameDisplay from '@/utils/entityNameDisplay';
 import getNodeTypeColorMap from '@/utils/colorUtils';
 import curieUrls from '@/utils/curieUrls';
 
@@ -38,7 +37,7 @@ export default function CurieConceptSelector({
     style,
   }) {
     const isConcept = index < concepts.length;
-    let name = '';
+    let label = '';
     let entry = {};
     let degree;
     let links = '';
@@ -47,7 +46,7 @@ export default function CurieConceptSelector({
     let colorStripes = [];
     let typeColor = '';
     if (isConcept) {
-      name = concepts[index].name;
+      label = concepts[index].label;
       entry = concepts[index];
       ({ type } = concepts[index]); // this is a string
       const typeColorMap = getNodeTypeColorMap();
@@ -57,7 +56,7 @@ export default function CurieConceptSelector({
       entry = curies[i];
 
       ({
-        degree, type, name, curie,
+        degree, type, label, curie,
       } = entry);
       const urls = curieUrls(curie);
       links = (
@@ -99,7 +98,7 @@ export default function CurieConceptSelector({
           </div>
         )}
         <div className="curieName">
-          <div title={entityNameDisplay(name)}>{entityNameDisplay(name)}</div>
+          <div title={label}>{label}</div>
         </div>
         <div className="curieDetails">
           {curie}

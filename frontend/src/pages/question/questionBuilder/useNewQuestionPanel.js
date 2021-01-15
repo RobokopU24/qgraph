@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import _ from 'lodash';
 
 import queryGraphUtils from '@/utils/queryGraph';
-import entityNameDisplay from '@/utils/entityNameDisplay';
+import strings from '@/utils/stringUtils';
 
 import useNode from './useNode';
 import useEdge from './useEdge';
@@ -57,11 +57,11 @@ export default function useNewQuestionPanel() {
   function getEdgeLabel(sourceId, targetId) {
     let sourceLabel = '';
     if (sourceId) {
-      sourceLabel = query_graph.nodes[sourceId].name || entityNameDisplay(query_graph.nodes[sourceId].type);
+      sourceLabel = query_graph.nodes[sourceId].name || strings.displayType(query_graph.nodes[sourceId].type);
     }
     let targetLabel = '';
     if (targetId) {
-      targetLabel = query_graph.nodes[targetId].name || entityNameDisplay(query_graph.nodes[targetId].type);
+      targetLabel = query_graph.nodes[targetId].name || strings.displayType(query_graph.nodes[targetId].type);
     }
     return `${sourceId} ${sourceLabel} → ${targetId} ${targetLabel}`;
   }
@@ -193,18 +193,14 @@ export default function useNewQuestionPanel() {
       if (new_node.type && !Array.isArray(new_node.type)) {
         new_node.type = [new_node.type];
       }
-
       if (node.curie) {
         new_node.curie = node.curie;
-      }
-      if (node.name) {
-        new_node.name = node.name;
       }
       if (node.set) {
         new_node.set = node.set;
       }
       const node_id = panelInfo.id || getNextNodeID();
-      new_node.label = node.label || `${node_id}: ${entityNameDisplay(new_node.name || new_node.curie || new_node.type)}`;
+      new_node.label = `${node_id}: ${node.label || new_node.curie || strings.displayType(new_node.type)}`;
 
       q_graph.nodes[node_id] = new_node;
     } else {

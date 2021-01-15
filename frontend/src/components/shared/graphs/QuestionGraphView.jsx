@@ -6,7 +6,7 @@ import shortid from 'shortid';
 
 import ConceptsContext from '@/context/concepts';
 import getNodeTypeColorMap from '@/utils/colorUtils';
-import entityNameDisplay from '@/utils/entityNameDisplay';
+import strings from '@/utils/stringUtils';
 
 const Graph = require('react-graph-vis').default;
 
@@ -41,7 +41,7 @@ function defaultNodePreProc(n) {
 
   if ('label' in n) {
     if (('nodeSpecType' in n) && (n.nodeSpecType === 'Node Type')) {
-      n.label = entityNameDisplay(n.label);
+      n.label = strings.prettyDisplay(n.label);
     }
     // else just keep your label
   } else if ('name' in n) {
@@ -57,7 +57,7 @@ function defaultNodePreProc(n) {
       n.label = n.curie;
     }
   } else if ('type' in n) {
-    n.label = entityNameDisplay(n.type);
+    n.label = strings.displayType(n.type);
   } else if ('id' in n) {
     n.label = n.id;
   } else {
