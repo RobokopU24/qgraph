@@ -41,11 +41,11 @@ function dictToListWithIds(dict) {
  * Remove internal label property
  * @param {object} n a query graph node
  */
-function removeLabel(n) {
-  if (n.label) {
-    delete n.label;
-  }
-}
+// function removeLabel(n) {
+//   if (n.label) {
+//     delete n.label;
+//   }
+// }
 
 /**
  * Convert curie to array if not given as array

@@ -15,6 +15,10 @@ function toCamelCase(str) {
   return _.camelCase(str);
 }
 
+function toSnakeCase(str) {
+  return _.snakeCase(str);
+}
+
 /**
  * Convert to pascal case with biolink curie format
  * @param {string} str string to convert to pascal case
@@ -37,7 +41,7 @@ function toArray(types) {
  * @param {string} type biolink type to ingest
  */
 function fromBiolink(type) {
-  return `biolink:${toPascalCase(type)}`;
+  return type && `biolink:${toPascalCase(type)}`;
 }
 
 /**
@@ -82,17 +86,12 @@ function prettyDisplay(arg) {
   return out.replace(/(?!or\b)\b\w+/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
 }
 
-function displayPredicate(arg) {
-  if (!arg) {
-    return '';
-  }
-}
-
 export default {
   fromBiolink,
   toSpaceCase,
   toCamelCase,
   toPascalCase,
+  toSnakeCase,
   toArray,
   prettyDisplay,
   displayType,

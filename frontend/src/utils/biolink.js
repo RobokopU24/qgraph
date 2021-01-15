@@ -43,5 +43,4 @@ function getValidConcepts(biolink) {
 export default {
   getHierarchy,
   getValidConcepts,
-  toSnakeCase: strings.fromBiolink,
 };

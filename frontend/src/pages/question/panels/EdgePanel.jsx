@@ -34,9 +34,9 @@ export default function EdgePanel(props) {
     }
     return Object.entries(biolink.slots).map(
       ([identifier, predicate]) => ({
-        name: biolinkUtils.toSnakeCase(identifier),
-        domain: biolinkUtils.toSnakeCase(predicate.domain),
-        range: biolinkUtils.toSnakeCase(predicate.range),
+        label: strings.toSnakeCase(identifier),
+        domain: strings.fromBiolink(predicate.domain),
+        range: strings.fromBiolink(predicate.range),
       }),
     );
   }
@@ -183,9 +183,9 @@ export default function EdgePanel(props) {
             itemComponent={listItem}
             busySpinner={<FaSpinner className="icon-spin" />}
             placeholder={predicateInputMsg}
-            textField={(value) => value.name || value}
+            textField={(value) => value.label || value}
             value={edge.predicate}
-            valueField={(value) => value.name || value}
+            valueField={(value) => value.label || value}
             onChange={handlePredicateUpdate}
             containerClassName={isValidPredicate ? 'valid' : 'invalid'}
             messages={{
