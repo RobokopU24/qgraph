@@ -1,36 +1,31 @@
 {
-    "name": "WF1 Module 2 - $name1$ ($identifier1$)",
-    "natural_question": "WF1 Module 2 : $name1$ ($identifier1$) to gene to chemical substance.",
-    "query_graph": {
-      "nodes": [
-            {
-                "id": "n0",
-                "type": "disease",
-                "curie": [
-                  "$identifier1$"
-                ]
-            },
-            {
-                "id": "n1",
-                "type": "gene"
-            },
-            {
-                "id": "n2",
-                "type": "chemical_substance",
-		"drug": true
-            }
-        ],
-        "edges": [
-            {
-                "id": "e0",
-                "source_id": "n0",
-                "target_id": "n1"
-            },
-            {
-                "id": "e1",
-                "source_id": "n1",
-                "target_id": "n2"
-            }
+  "name": "WF1 Module 2 - $name1$ ($identifier1$)",
+  "natural_question": "WF1 Module 2 : $name1$ ($identifier1$) to gene to chemical substance.",
+  "query_graph": {
+    "nodes": {
+      "n0": {
+        "type": "biolink:Disease",
+        "curie": [
+          "$identifier1$"
         ]
+      },
+      "n1": {
+        "type": "biolink:Gene"
+      },
+      "n2": {
+        "type": "biolink:ChemicalSubstance",
+        "drug": true
+      }
+    },
+    "edges": {
+      "e0": {
+        "source_id": "n0",
+        "target_id": "n1"
+      },
+      "e1": {
+        "source_id": "n1",
+        "target_id": "n2"
+      }
     }
+  }
 }

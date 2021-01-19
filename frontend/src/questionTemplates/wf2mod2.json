@@ -1,29 +1,25 @@
 {
   "natural_question": "WF2mod2 property $identifier2$ and disease $name1$ ($identifier1$)?",
   "query_graph": {
-    "nodes": [
-      {
-        "id": "n0",
-        "type": "chemical_substance",
+    "nodes": {
+      "n0": {
+        "type": "biolink:ChemicalSubstance",
         "$identifier2$": true
       },
-      {
-        "id": "n1",
-        "type": "gene"
+      "n1": {
+        "type": "biolink:Gene"
       },
-      {
-        "id": "n2",
-        "type": "disease",
+      "n2": {
+        "type": "biolink:Disease",
         "curie": "$identifier1$"
       }
-    ],
-    "edges": [
-      {
-        "id": "e0",
+    },
+    "edges": {
+      "e0": {
         "source_id": "n1",
         "target_id": "n0",
-	      "type": "increases_degradation_of"
+	      "type": "biolink:increases_degradation_of"
       }
-    ]
+    }
   }
 }
