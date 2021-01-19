@@ -7,6 +7,7 @@ import {
 import shortid from 'shortid';
 import _ from 'lodash';
 
+import strings from '@/utils/stringUtils';
 import questionTemplates from '@/questionTemplates';
 
 import FillIdentifier from './subComponents/FillIdentifier';
@@ -15,7 +16,8 @@ function extractDetails(questionTemplate) {
   const newTypes = [];
   const newLabels = [];
   const newCuries = [];
-  questionTemplate.query_graph.nodes.forEach((node) => {
+  Object.keys(questionTemplate.query_graph.nodes).forEach((nodeId) => {
+    const node = questionTemplate.query_graph.nodes[nodeId];
     if (node.curie) {
       // we're going to grab the number of the identifier from the curie and add that node's type to the list of types in its correct spot.
       if (Array.isArray(node.curie)) {
@@ -89,7 +91,7 @@ export default function QuestionTemplateModal(props) {
             onClick={() => setFocus(refNum, true)}
             key={shortid.generate()}
           >
-            {newTypes[refNum]}
+            {strings.displayType(newTypes[refNum]).toLowerCase()}
           </button>
         );
         newNameList.push({
@@ -122,21 +124,22 @@ export default function QuestionTemplateModal(props) {
   function updateQuestionTemplate() {
     if (!questionTemplate || !questionTemplate.query_graph) return;
 
-    const newQuestionTemplate = { ...questionTemplate };
+    const newQuestionTemplate = _.cloneDeep(questionTemplate);
     newQuestionTemplate.natural_question = questionName.join(' ');
     let num = 0;
-    newQuestionTemplate.query_graph.nodes.forEach((node, index) => {
+    Object.keys(newQuestionTemplate.query_graph.nodes).forEach((nodeId) => {
+      const node = newQuestionTemplate.query_graph.nodes[nodeId];
       if (node.curie) {
         if (Array.isArray(node.curie)) {
           node.curie.forEach((curie, i) => {
             // TODO: num only works if there's only one curie in the array. So far, that's the only case.
-            newQuestionTemplate.query_graph.nodes[index].curie[i] = nameList[num].id;
-            newQuestionTemplate.query_graph.nodes[index].name = nameList[num].name;
+            node.curie[i] = nameList[num].id;
+            node.label = nameList[num].label;
             num += 1;
           });
         } else {
-          newQuestionTemplate.query_graph.nodes[index].curie = nameList[0].id;
-          newQuestionTemplate.query_graph.nodes[index].name = nameList[0].name;
+          node.curie = nameList[0].id;
+          node.label = nameList[0].label;
         }
       }
     });
@@ -144,7 +147,7 @@ export default function QuestionTemplateModal(props) {
   }
 
   function handleIdentifierChange(index, value) {
-    const { name: label } = value;
+    const { label } = value;
     const curie = value.curie && value.curie[0];
 
     // Values that we update during this function
@@ -156,7 +159,7 @@ export default function QuestionTemplateModal(props) {
     nameList.forEach((name, i) => {
       if (name.ider === index && label && curie) {
         newQuestionName[name.nameIndex] = `${label} (${curie})`;
-        newNameList[i].name = label;
+        newNameList[i].label = label;
         newNameList[i].id = curie;
         newLabels[index] = label;
         newCuries[index] = curie;

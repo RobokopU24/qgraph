@@ -50,7 +50,7 @@ export default function FillIdentifier({
     // Sometimes the nodeNormalizer returns null responses
     // so we use a filter to remove those
     const newCuries = Object.values(normalizationResponse).filter((c) => c).map((c) => ({
-      name: c.id.label || c.id.identifier,
+      label: c.id.label || c.id.identifier,
       type: c.type,
       curie: c.id.identifier,
     })).filter((c) => c.type.includes(type));
@@ -80,7 +80,7 @@ export default function FillIdentifier({
   function handleSelect(value) {
     value.curie = [value.curie];
     updateSelection(value);
-    setSearchTerm(value.name);
+    setSearchTerm(value.label);
     onSelect(value);
   }
 
