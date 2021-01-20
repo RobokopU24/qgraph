@@ -1,26 +1,23 @@
 {
-    "name": "Expand - $name1$ ($identifier1$) to $type2$",
-    "natural_question": "What $type2$s are associated with $name1$ ($identifier1$)?",
-    "query_graph": {
-      "nodes": [
-            {
-                "id": "n0",
-                "type": "disease",
-                "curie": [
-                  "$identifier1$"
-                ]
-            },
-            {
-                "id": "n1",
-                "type": "$type2$"
-            }
-        ],
-        "edges": [
-            {
-                "id": "e0",
-                "source_id": "n0",
-                "target_id": "n1"
-            }
+  "name": "Expand - $name1$ ($identifier1$) to $type2$",
+  "natural_question": "What $type2$s are associated with $name1$ ($identifier1$)?",
+  "query_graph": {
+    "nodes": {
+      "n0": {
+        "type": "biolink:Disease",
+        "curie": [
+          "$identifier1$"
         ]
+      },
+      "n1": {
+        "type": "$type2$"
+      }
+    },
+    "edges": {
+      "e0": {
+        "source_id": "n0",
+        "target_id": "n1"
+      }
     }
+  }
 }

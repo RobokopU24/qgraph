@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
 export default function useEdgePanels() {
-  const [id, setId] = useState(null);
   const [sourceId, setSourceId] = useState(null);
   const [targetId, setTargetId] = useState(null);
   const [predicate, setPredicate] = useState([]);
@@ -19,13 +18,14 @@ export default function useEdgePanels() {
   }
 
   function switchSourceTarget() {
-    setSourceId(targetId);
-    setTargetId(sourceId);
-    return { source: targetId, target: sourceId, id };
+    const target = sourceId;
+    const source = targetId;
+    setSourceId(source);
+    setTargetId(target);
+    return { source, target };
   }
 
   function reset() {
-    setId(null);
     setSourceId(null);
     setTargetId(null);
     setPredicate([]);
@@ -33,7 +33,6 @@ export default function useEdgePanels() {
 
   function initialize(seed) {
     reset();
-    setId(seed.id || null);
     setSourceId(seed.source_id || null);
     setTargetId(seed.target_id || null);
     if (seed.type) {
@@ -44,8 +43,6 @@ export default function useEdgePanels() {
   }
 
   return {
-    id,
-
     sourceId,
     updateSourceId,
     targetId,

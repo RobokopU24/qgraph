@@ -2,41 +2,36 @@
   "name": "WF5 - $name1$ ($identifier1$)",
   "natural_question": "WF5 - $name1$ ($identifier1$) to gene to biological process or activity to phenotypic feature",
   "query_graph": {
-    "nodes": [{
-        "id": "n0",
-        "type": "chemical_substance",
+    "nodes": {
+      "n0": {
+        "type": "biolink:ChemicalSubstance",
         "curie": [
           "$identifier1$"
         ]
       },
-      {
-        "id": "n1",
-        "type": "gene"
+      "n1": {
+        "type": "biolink:Gene"
       },
-      {
-        "id": "n2",
-        "type": "biological_process_or_activity"
+      "n2": {
+        "type": "biolink:BiologicalProcessOrActivity"
       },
-      {
-        "id": "n3",
-        "type": "phenotypic_feature"
+      "n3": {
+        "type": "biolink:PhenotypicFeature"
       }
-    ],
-    "edges": [{
-        "id": "e0",
+    },
+    "edges": {
+      "e0": {
         "source_id": "n0",
         "target_id": "n1"
       },
-      {
-        "id": "e1",
+      "e1": {
         "source_id": "n1",
         "target_id": "n2"
       },
-      {
-        "id": "e2",
+      "e2": {
         "source_id": "n2",
         "target_id": "n3"
       }
-    ]
+    }
   }
 }

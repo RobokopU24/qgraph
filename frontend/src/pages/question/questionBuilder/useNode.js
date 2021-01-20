@@ -1,11 +1,11 @@
 import { useState, useContext } from 'react';
 
-import entityNameDisplay from '@/utils/entityNameDisplay';
+import strings from '@/utils/stringUtils';
 import ConceptsContext from '@/context/concepts';
 
 export default function useNodePanels() {
   const [type, setType] = useState('');
-  const [name, setName] = useState('');
+  const [label, setLabel] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [curie, setCurie] = useState([]);
   const [set, setSet] = useState(false);
@@ -18,7 +18,7 @@ export default function useNodePanels() {
 
   function reset() {
     setType('');
-    setName('');
+    setLabel('');
     setSearchTerm('');
     setCurie([]);
     setSet(false);
@@ -30,25 +30,28 @@ export default function useNodePanels() {
   function initialize(seed) {
     reset();
     setType(seed.type || '');
-    setName(seed.name || seed.type || '');
-    setSearchTerm(seed.name || seed.type || '');
+    setLabel(seed.label || strings.displayType(seed.type) || '');
+    setSearchTerm(seed.label || strings.displayType(seed.type) || '');
     setSet(seed.set || false);
     setCurie(seed.curie || []);
   }
 
-  /*
+  /**
    * Convert a list of types to a single type
-   * by picking the first one in the list (that is not named_thing)
-  */
+   * by picking the first one in the list
+   * @param {array} curieTypes array of types for picked node
+   * @returns {string} single type string
+   */
   function conceptListToString(curieTypes) {
-    const specificConcepts = biolinkConcepts.filter((t) => t !== 'named_thing');
-    const curieType = specificConcepts.find((concept) => curieTypes.includes(concept));
+    let curieType = strings.toArray(curieTypes);
+    // Use the first type in the list of types of the node
+    curieType = curieType.find((concept) => biolinkConcepts.includes(concept));
     return curieType || '';
   }
 
   function select(entry) {
-    setSearchTerm(entityNameDisplay(entry.name));
-    setName(entityNameDisplay(entry.name));
+    setSearchTerm(entry.label);
+    setLabel(entry.label);
     if (entry.curie) {
       setCurie([entry.curie]);
     }
@@ -60,7 +63,7 @@ export default function useNodePanels() {
 
   function clearSelection() {
     setType('');
-    setName('');
+    setLabel('');
     setSet(false);
     setCurie([]);
   }
@@ -69,7 +72,7 @@ export default function useNodePanels() {
     // Convert name to lowercase before searching
     const newFilteredConcepts = concepts
       .filter(
-        (concept) => concept.name.toLowerCase().includes(value.toLowerCase()),
+        (concept) => concept.label.toLowerCase().includes(value.toLowerCase()),
       );
     setFilteredConcepts(newFilteredConcepts);
   }
@@ -77,7 +80,7 @@ export default function useNodePanels() {
   const isValid = !!type || !!curie.length;
 
   return {
-    name,
+    label,
     clearSelection,
     updateCuries,
     updateFilteredConcepts,

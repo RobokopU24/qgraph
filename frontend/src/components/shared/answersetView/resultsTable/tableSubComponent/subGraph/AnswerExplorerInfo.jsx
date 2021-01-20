@@ -9,7 +9,7 @@ import SubGraphViewer from '@/components/shared/graphs/SubGraphViewer';
 import curieUrls from '@/utils/curieUrls';
 import ctdUrls from '@/utils/ctdUrls';
 import getNodeTypeColorMap from '@/utils/colorUtils';
-import entityNameDisplay from '@/utils/entityNameDisplay';
+import strings from '@/utils/stringUtils';
 
 import PubmedList from './PubmedList';
 
@@ -95,7 +95,7 @@ export default function AnswerExplorerInfo(props) {
         </h3>
         <CardContent className="cardContent">
           <h5>
-            {`type: ${entityNameDisplay(n.type)}`}
+            {`type: ${strings.displayType(n.type)}`}
           </h5>
           <h5>
             {`id: ${n.id}`}

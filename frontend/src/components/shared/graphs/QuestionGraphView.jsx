@@ -6,7 +6,7 @@ import shortid from 'shortid';
 
 import ConceptsContext from '@/context/concepts';
 import getNodeTypeColorMap from '@/utils/colorUtils';
-import entityNameDisplay from '@/utils/entityNameDisplay';
+import strings from '@/utils/stringUtils';
 
 const Graph = require('react-graph-vis').default;
 
@@ -39,25 +39,21 @@ function defaultNodePreProc(n) {
     n.shapeProperties = { borderDashes: [3, 1] };
   }
 
+  // make user-displayed node label
   if ('label' in n) {
-    if (('nodeSpecType' in n) && (n.nodeSpecType === 'Node Type')) {
-      n.label = entityNameDisplay(n.label);
-    }
-    // else just keep your label
-  } else if ('name' in n) {
-    n.label = n.name;
+    n.label = `${n.id}: ${n.label}`;
   } else if (n.curie) {
     if (Array.isArray(n.curie)) {
       if (n.curie.length > 0) {
-        n.label = n.curie[0]; // eslint-disable-line prefer-destructuring
+        n.label = `${n.id}: ${n.curie[0]}`; // eslint-disable-line prefer-destructuring
       } else {
         n.label = '';
       }
     } else {
-      n.label = n.curie;
+      n.label = `${n.id}: ${n.curie}`;
     }
   } else if ('type' in n) {
-    n.label = entityNameDisplay(n.type);
+    n.label = `${n.id}: ${strings.displayType(n.type)}`;
   } else if ('id' in n) {
     n.label = n.id;
   } else {

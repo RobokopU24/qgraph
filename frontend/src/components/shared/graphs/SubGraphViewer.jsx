@@ -7,7 +7,7 @@ import _ from 'lodash';
 
 import ConceptsContext from '@/context/concepts';
 import getNodeTypeColorMap from '@/utils/colorUtils';
-import entityNameDisplay from '@/utils/entityNameDisplay';
+import strings from '@/utils/stringUtils';
 import AlertContext from '@/context/alert';
 
 const keyBlocklist = ['isSet', 'labels', 'label', 'equivalent_identifiers', 'type', 'id', 'degree', 'name', 'title', 'color', 'binding', 'scoreVector', 'aggScore', 'level'];
@@ -245,7 +245,7 @@ export default function SubGraphViewer(props) {
         `<div class="vis-tooltip-inner">
           <div><span class="title">${n.name}</span></div>
           <div><span class="field-name">id: </span>${n.id}</div>
-          <div><span class="field-name">type: </span>${entityNameDisplay(n.type)}</div>
+          <div><span class="field-name">type: </span>${strings.displayType(n.type)}</div>
           ${extraFields.join('')}
         </div>`
       );

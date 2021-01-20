@@ -1,59 +1,49 @@
 {
-    "name": "WF1 Module 2 with pathway expansion - $name1$ ($identifier1$)",
-    "natural_question": "WF1 Module 2 : $name1$ ($identifier1$) to gene to (Relevant) process to gene to chemical substance.",
-    "query_graph": {
-      "nodes": [
-            {
-                "id": "n0",
-                "type": "disease",
-                "curie": [
-                  "$identifier1$"
-                ]
-            },
-            {
-                "id": "n1",
-                "type": "gene"
-            },
-            {
-                "id": "n2",
-                "type": "biological_process_or_activity"
-            },
-            {
-                "id": "n3",
-                "type": "gene"
-            },
-            {
-                "id": "n4",
-                "type": "chemical_substance",
-		"drug": true
-            }
-        ],
-        "edges": [
-            {
-                "id": "e0",
-                "source_id": "n0",
-                "target_id": "n1"
-            },
-            {
-                "id": "e1",
-                "source_id": "n1",
-                "target_id": "n2"
-            },
-            {
-                "id": "e3",
-                "source_id": "n2",
-                "target_id": "n3"
-            },
-            {
-                "id": "e4",
-                "source_id": "n3",
-                "target_id": "n4"
-            },
-            {
-                "id": "e5",
-                "source_id": "n0",
-                "target_id": "n2"
-            }
+  "name": "WF1 Module 2 with pathway expansion - $name1$ ($identifier1$)",
+  "natural_question": "WF1 Module 2 : $name1$ ($identifier1$) to gene to (Relevant) process to gene to chemical substance.",
+  "query_graph": {
+    "nodes": {
+      "n0": {
+        "type": "biolink:Disease",
+        "curie": [
+          "$identifier1$"
         ]
+      },
+      "n1": {
+        "type": "biolink:Gene"
+      },
+      "n2": {
+        "type": "biolink:BiologicalProcessOrActivity"
+      },
+      "n3": {
+        "type": "biolink:Gene"
+      },
+      "n4": {
+        "type": "biolink:ChemicalSubstance",
+        "drug": true
+      }
+    },
+    "edges": {
+      "e0": {
+        "source_id": "n0",
+        "target_id": "n1"
+      },
+      "e1": {
+        "source_id": "n1",
+        "target_id": "n2"
+      },
+      "e3": {
+        "source_id": "n2",
+        "target_id": "n3"
+      },
+      "e4": {
+        "source_id": "n3",
+        "target_id": "n4"
+      },
+      "e5": {
+        "source_id": "n0",
+        "target_id": "n2"
+      }
     }
+  }
 }

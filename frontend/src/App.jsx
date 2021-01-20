@@ -48,7 +48,7 @@ export default function App() {
         'Failed to contact server to download biolink model. You will not be able to select predicates. Please try again later');
       return;
     }
-    const validConcepts = Object.keys(biolinkUtils.getValidConcepts(response));
+    const validConcepts = biolinkUtils.getValidConcepts(response);
     setBiolink(response);
     setConcepts(validConcepts);
   }

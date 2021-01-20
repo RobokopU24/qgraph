@@ -2,57 +2,52 @@
   "name": "WF1 Module 3 - $name1$ ($identifier1$)",
   "natural_question": "WF1 Module 3 - $name1$ ($identifier1$) to chemical_substance to gene to chemical_substance",
   "query_graph": {
-    "nodes": [{
-        "id": "n0",
-        "type": "disease",
+    "nodes": {
+      "n0": {
+        "type": "biolink:Disease",
         "curie": [
           "$identifier1$"
         ]
       },
-      {
-        "id": "n1",
-        "type": "chemical_substance"
+      "n1": {
+        "type": "biolink:ChemicalSubstance"
       },
-      {
-        "id": "n2",
-        "type": "gene"
+      "n2": {
+        "type": "biolink:Gene"
       },
-      {
-        "id": "n3",
-        "type": "chemical_substance",
-	"drug": true
+      "n3": {
+        "type": "biolink:ChemicalSubstance",
+        "drug": true
       }
-    ],
-    "edges": [{
-        "id": "e1",
+    },
+    "edges": {
+      "e1": {
         "source_id": "n1",
         "target_id": "n0",
-        "type": "contributes_to"
+        "type": "biolink:contributes_to"
       },
-      {
-        "id": "e2",
+      "e2": {
         "source_id": "n2",
         "target_id": "n1",
         "type": [
-          "increases_synthesis_of",
-          "increases_abundance_of",
-          "increases_response_to",
-          "decreases_uptake_of"
+          "biolink:increases_synthesis_of",
+          "biolink:increases_abundance_of",
+          "biolink:increases_response_to",
+          "biolink:decreases_uptake_of"
         ]
       },
-      {
-        "id": "e3",
+      "e3": {
         "source_id": "n3",
         "target_id": "n2",
         "type": [
-          "decreases_activity_of",
-          "decreases_expression_of",
-          "increases_degradation_of",
-          "decreases_stability_of",
-          "decreases_synthesis_of",
-          "decreases_secretion_of"
+          "biolink:decreases_activity_of",
+          "biolink:decreases_expression_of",
+          "biolink:increases_degradation_of",
+          "biolink:decreases_stability_of",
+          "biolink:decreases_synthesis_of",
+          "biolink:decreases_secretion_of"
         ]
       }
-    ]
+    }
   }
 }

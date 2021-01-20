@@ -2,7 +2,7 @@
 import { useState, useRef } from 'react';
 import _ from 'lodash';
 
-import entityNameDisplay from '../utils/entityNameDisplay';
+import strings from '../utils/stringUtils';
 
 const makeEmptyArray = (len, init) => {
   const array = new Array(len);
@@ -305,7 +305,7 @@ export default function useMessageStore() {
         [type] = type;
       }
       columnHeaders.push({
-        Header: `${n.id}: ${entityNameDisplay(type)}`,
+        Header: `${n.id}: ${strings.displayType(type)}`,
         id: n.id,
         isSet: n.set,
         type,
@@ -363,7 +363,7 @@ export default function useMessageStore() {
         // This is not a set node
         if (('set' in qNode) && qNode.set) {
           // Actually a set but only has one element
-          nodeListObj = { type: qNode.type, name: `Set: ${entityNameDisplay(qNode.type)}`, isSet: true };
+          nodeListObj = { type: qNode.type, name: `Set: ${strings.displayType(qNode.type)}`, isSet: true };
           nodeListObj.setNodes = [kgNodeIds].map((kgNodeId) => getKgNode(kgNodeId));
         } else {
           // for real, not a set
@@ -375,7 +375,7 @@ export default function useMessageStore() {
         nodeListObj = { ...getKgNode(kgNodeIds[0]), ...nodeListObj };
       } else {
         // Set
-        nodeListObj = { type: qNode.type, name: `Set: ${entityNameDisplay(qNode.type)}`, isSet: true };
+        nodeListObj = { type: qNode.type, name: `Set: ${strings.displayType(qNode.type)}`, isSet: true };
         nodeListObj.setNodes = kgNodeIds.map((kgNodeId) => getKgNode(kgNodeId));
       }
       ansObj.nodes[qNodeId] = nodeListObj;

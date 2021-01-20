@@ -1,8 +1,10 @@
 import React from 'react';
 import { Row, Col, Panel } from 'react-bootstrap';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+
+import strings from '@/utils/stringUtils';
+
 import QuestionGraphView from './QuestionGraphView';
-import entityNameDisplay from '../../../utils/entityNameDisplay';
 
 /* eslint-disable no-param-reassign */
 const nodePreProcFn = (n) => {
@@ -33,7 +35,7 @@ const nodePreProcFn = (n) => {
         n.label = n.curie;
       }
     } else if ('type' in n) {
-      n.label = entityNameDisplay(n.type);
+      n.label = strings.displayType(n.type);
     } else {
       n.label = '';
     }
