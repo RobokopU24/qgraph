@@ -174,7 +174,7 @@ export default function QuestionTemplateModal(props) {
             onClick={() => setFocus(i, true)}
             key={shortid.generate()}
           >
-            {types[name.ider]}
+            {strings.displayType(types[name.ider]).toLowerCase()}
           </button>
         );
         newLabels[name.ider] = '';
