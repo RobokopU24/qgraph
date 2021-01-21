@@ -7,6 +7,7 @@ const baseClass = 'biological entity';
 export default function useBiolink() {
   const biolink = useRef(null);
   const concepts = useRef([]);
+  const hierarchies = useRef({});
 
   /**
    * Given a biolink class build a list of parent classes
@@ -35,6 +36,17 @@ export default function useBiolink() {
     return hierarchy;
   }
 
+  function makeHierarchies() {
+    return Object.keys(biolink.current.classes).reduce((obj, item) => {
+      let hierarchy = getHierarchy(item);
+      if (hierarchy.includes(baseClass)) {
+        hierarchy = hierarchy.map((h) => strings.nodeFromBiolink(h));
+        obj[strings.nodeFromBiolink(item)] = hierarchy;
+      }
+      return obj;
+    }, {});
+  }
+
   /**
    * Filter out concepts that are not derived classes of base class
    * @returns {array} list of valid concepts
@@ -43,14 +55,15 @@ export default function useBiolink() {
     // const allHierarchies = Object.keys(biolink.current.classes).map((type) => ({ [type]: getHierarchy(type) })).filter((hier) => hier.includes(baseClass));
     // console.log(allHierarchies);
     const validClasses = Object.keys(biolink.current.classes).filter((type) => getHierarchy(type).includes(baseClass));
-    return validClasses.map((type) => strings.fromBiolink(type));
+    return validClasses.map((type) => strings.nodeFromBiolink(type));
   }
 
   function getEdgeTypes() {
-    return Object.defineProperties(biolink.current.slots).map(([identifier, predicate]) => ({
-      label: strings.toSnakeCase(identifier),
-      domain: strings.fromBiolink(predicate.domain),
-      range: strings.fromBiolink(predicate.range),
+    return Object.entries(biolink.current.slots).map(([identifier, predicate]) => ({
+      type: strings.edgeFromBiolink(identifier),
+      label: strings.toSpaceCase(identifier),
+      domain: strings.nodeFromBiolink(predicate.domain),
+      range: strings.nodeFromBiolink(predicate.range),
     }));
   }
 
@@ -61,6 +74,7 @@ export default function useBiolink() {
   function initialize(biolinkObj) {
     biolink.current = biolinkObj;
     concepts.current = getValidConcepts();
+    hierarchies.current = makeHierarchies();
   }
 
   return {
@@ -68,5 +82,6 @@ export default function useBiolink() {
     getHierarchy,
     getEdgeTypes,
     concepts: concepts.current,
+    hierarchies: hierarchies.current,
   };
 }
