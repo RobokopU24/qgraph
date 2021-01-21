@@ -64,15 +64,13 @@ function defaultNodePreProc(n) {
 
 function defaultEdgePreProc(e) {
   let label = '';
-  if ('predicate' in e) {
-    label = e.predicate;
-  } else if ('type' in e) {
+  if ('type' in e) {
     label = e.type;
   }
   if (Array.isArray(label)) {
-    label = label.join(', ');
+    label = label.map((l) => strings.displayPredicate(l)).join(', ');
   }
-  if (!('type' in e) && !(e.predicate && e.predicate.length > 0)) {
+  if (!('type' in e)) {
     e.arrows = {
       to: {
         enabled: false,
