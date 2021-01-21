@@ -11,7 +11,7 @@ import _ from 'lodash';
 import AlertContext from '@/context/alert';
 import API from '@/API';
 
-import ConceptsContext from '@/context/concepts';
+import BiolinkContext from '@/context/biolink';
 import strings from '@/utils/stringUtils';
 
 import CurieConceptSelector from '@/components/shared/curies/CurieConceptSelector';
@@ -23,7 +23,7 @@ import CurieConceptSelector from '@/components/shared/curies/CurieConceptSelecto
 export default function NodePanel({ panelStore }) {
   const { node } = panelStore;
 
-  const concepts = useContext(ConceptsContext);
+  const { concepts } = useContext(BiolinkContext);
 
   const displayAlert = useContext(AlertContext);
 

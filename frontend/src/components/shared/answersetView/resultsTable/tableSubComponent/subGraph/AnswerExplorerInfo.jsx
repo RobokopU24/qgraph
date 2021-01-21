@@ -3,7 +3,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import shortid from 'shortid';
 
-import ConceptsContext from '@/context/concepts';
+import BiolinkContext from '@/context/biolink';
 import SubGraphViewer from '@/components/shared/graphs/SubGraphViewer';
 
 import curieUrls from '@/utils/curieUrls';
@@ -30,7 +30,7 @@ export default function AnswerExplorerInfo(props) {
   const [subgraph, setSubgraph] = useState({ nodes: [], edges: [] });
   const [disableGraphClick, setDisableGraphClick] = useState(false);
 
-  const concepts = useContext(ConceptsContext);
+  const { concepts } = useContext(BiolinkContext);
 
   function syncPropsAndState() {
     const nodes = graph.nodes.filter((n) => ((n.id === selectedEdge.source_id) || (n.id === selectedEdge.target_id)));

@@ -4,7 +4,7 @@ import React, {
 import _ from 'lodash';
 import shortid from 'shortid';
 
-import ConceptsContext from '@/context/concepts';
+import BiolinkContext from '@/context/biolink';
 import getNodeTypeColorMap from '@/utils/colorUtils';
 import strings from '@/utils/stringUtils';
 
@@ -120,7 +120,7 @@ export default function QuestionGraphView(props) {
     interactable = true,
   } = props;
   const network = useRef(null);
-  const concepts = useContext(ConceptsContext);
+  const { concepts } = useContext(BiolinkContext);
 
   // Bind network fit callbacks to resize graph and cancel fit callbacks on start of zoom/pan
   function setNetworkCallbacks() {

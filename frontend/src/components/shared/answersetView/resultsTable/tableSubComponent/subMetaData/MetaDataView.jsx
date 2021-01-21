@@ -7,7 +7,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import { FaClone } from 'react-icons/fa';
 
-import ConceptsContext from '@/context/concepts';
+import BiolinkContext from '@/context/biolink';
 import getNodeTypeColorMap from '@/utils/colorUtils';
 import strings from '@/utils/stringUtils';
 import getColumnWidth from '@/utils/rtColumnWidth';
@@ -22,7 +22,7 @@ export default function MetaDataView(props) {
   const [dropdownNodes, setDropdownNodes] = useState([]);
   const [columns, setColumns] = useState([]);
   const [metaData, setMetaData] = useState([]);
-  const concepts = useContext(ConceptsContext);
+  const { concepts } = useContext(BiolinkContext);
   const colorMap = useCallback(getNodeTypeColorMap(concepts), [concepts]);
 
   function makeColumns() {
