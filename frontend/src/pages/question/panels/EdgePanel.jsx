@@ -8,7 +8,6 @@ import { Multiselect, DropdownList } from 'react-widgets';
 
 import strings from '@/utils/stringUtils';
 import usePageStatus from '@/utils/usePageStatus';
-import biolinkUtils from '@/utils/biolink';
 import BiolinkContext from '@/context/biolink';
 
 const listItem = ({ item }) => (
@@ -32,13 +31,7 @@ export default function EdgePanel(props) {
     if (!biolink) {
       return null;
     }
-    return Object.entries(biolink.slots).map(
-      ([identifier, predicate]) => ({
-        label: strings.toSnakeCase(identifier),
-        domain: strings.fromBiolink(predicate.domain),
-        range: strings.fromBiolink(predicate.range),
-      }),
-    );
+    return biolink.getEdgeTypes();
   }
 
   const predicateList = useMemo(getPredicateList, [biolink]) || [];
@@ -58,8 +51,12 @@ export default function EdgePanel(props) {
       return null;
     }
 
-    const sourceNodeTypeHierarchy = biolinkUtils.getHierarchy(biolink, sourceNode.type[0]);
-    const targetNodeTypeHierarchy = biolinkUtils.getHierarchy(biolink, targetNode.type[0]);
+    const sourceNodeTypeHierarchy = biolink.hierarchies[sourceNode.type[0]];
+    const targetNodeTypeHierarchy = biolink.hierarchies[targetNode.type[0]];
+
+    if (!sourceNodeTypeHierarchy || !targetNodeTypeHierarchy) {
+      return null;
+    }
 
     return predicateList.filter(
       (p) => sourceNodeTypeHierarchy.includes(p.domain) &&
@@ -82,7 +79,7 @@ export default function EdgePanel(props) {
   }
 
   function handlePredicateUpdate(value) {
-    edge.setPredicate(value);
+    edge.setType(value);
     panelStore.toggleUnsavedChanges(true);
   }
 
@@ -112,8 +109,8 @@ export default function EdgePanel(props) {
 
   // Every predicate selected must match at least one
   // predicate in the filteredPredicateList
-  const isValidPredicate = edge.predicate.every(
-    (p) => filteredPredicateList.some((fp) => p.name === fp.name),
+  const isValidPredicate = edge.type.every(
+    (p) => filteredPredicateList.some((fp) => p.type === fp.type),
   );
 
   const isValid = edge.sourceId && edge.targetId && isValidPredicate;
@@ -183,9 +180,9 @@ export default function EdgePanel(props) {
             itemComponent={listItem}
             busySpinner={<FaSpinner className="icon-spin" />}
             placeholder={predicateInputMsg}
-            textField={(value) => value.label || value}
-            value={edge.predicate}
-            valueField={(value) => value.label || value}
+            textField={(value) => value.label || value.type}
+            value={edge.type}
+            valueField={(value) => value.label || value.type}
             onChange={handlePredicateUpdate}
             containerClassName={isValidPredicate ? 'valid' : 'invalid'}
             messages={{

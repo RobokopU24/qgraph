@@ -223,8 +223,8 @@ export default function useNewQuestionPanel() {
         source_id: edge.sourceId,
         target_id: edge.targetId,
       };
-      if (edge.predicate && edge.predicate.length > 0) {
-        new_edge.type = edge.predicate.map((p) => p.name);
+      if (edge.type && edge.type.length > 0) {
+        new_edge.type = edge.type.map((t) => t.type);
       }
 
       if (!panelInfo.id) {
