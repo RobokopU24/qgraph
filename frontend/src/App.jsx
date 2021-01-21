@@ -42,7 +42,7 @@ export default function App() {
     const response = await API.biolink.getModelSpecification();
     if (response.status === 'error') {
       simpleSetAlert('error',
-        'Failed to contact server to download biolink model. You will not be able to select predicates. Please try again later');
+        'Failed to contact server to download biolink model. You will not be able to select general nodes or predicates. Please try again later.');
       return;
     }
     biolink.initialize(response);
