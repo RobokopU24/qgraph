@@ -34,7 +34,6 @@ export default function App() {
   const [biolink, setBiolink] = useState(null);
   const [alert, setAlert] = useState({});
   const [concepts, setConcepts] = useState([]);
-  const isSignedIn = Boolean(user && user.username);
 
   function simpleSetAlert(severity, msg) {
     setAlert({ severity, msg });
@@ -67,7 +66,7 @@ export default function App() {
                       alert={alert}
                       onClose={() => simpleSetAlert(alert.severity, '')}
                     />
-                    <Header user={user} setUser={setUser} />
+                    <Header setUser={setUser} />
                     <div id="contentContainer">
                       <Switch>
                         <Route path="/about">
@@ -77,7 +76,7 @@ export default function App() {
                           <Help />
                         </Route>
                         <Route path="/guide">
-                          <Guide isSignedIn={isSignedIn} />
+                          <Guide />
                         </Route>
                         <Route path="/neighborhood">
                           <Neighborhood />
@@ -92,9 +91,7 @@ export default function App() {
                           <TermsofService />
                         </Route>
                         <Route path="/simple/view">
-                          <SimpleViewer
-                            user={user}
-                          />
+                          <SimpleViewer />
                         </Route>
                         <Route path="/simple/question">
                           <SimpleQuestion />
@@ -103,7 +100,7 @@ export default function App() {
                           <QuestionNew />
                         </Route>
                         <Route path="/">
-                          <Landing isSignedIn={isSignedIn} />
+                          <Landing />
                         </Route>
                       </Switch>
                     </div>

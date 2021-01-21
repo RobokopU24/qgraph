@@ -35,7 +35,8 @@ export default function Header({ setUser }) {
     timeoutId.current = setTimeout(async () => {
       try {
         const { id_token, expires_in } = await googleUser.reloadAuthResponse();
-        const username = googleUser.getBasicProfile().Ad;
+        const userProfile = googleUser.getBasicProfile();
+        const username = userProfile.getEmail();
         setUser({ username, id_token });
         const newRefreshTime = (expires_in - 60) * 1000;
         refreshToken(newRefreshTime, googleUser);
@@ -47,7 +48,8 @@ export default function Header({ setUser }) {
   }
 
   function signInSuccess(googleUser) {
-    const username = googleUser.getBasicProfile().Ad;
+    const userProfile = googleUser.getBasicProfile();
+    const username = userProfile.getEmail();
     const { id_token, expires_in } = googleUser.getAuthResponse();
     setUser({ username, id_token });
     const timeToRefresh = (expires_in - 60) * 1000;

@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Grid, Jumbotron, ButtonToolbar, Button, ListGroup,
   ListGroupItem, Glyphicon, Col, Row,
 } from 'react-bootstrap';
 
+import UserContext from '@/context/user';
 import './simplecss.css';
 
 function CustomComponent({
@@ -37,9 +38,9 @@ function CustomComponent({
 
 /**
  * Home page
- * @param {boolean} isSignedIn is the user signed in
  */
-export default function Landing({ isSignedIn }) {
+export default function Landing() {
+  const user = useContext(UserContext);
   return (
     <Grid>
       <Jumbotron>
@@ -67,7 +68,7 @@ export default function Landing({ isSignedIn }) {
               Browse Questions
             </Button>
           </Link>
-          {isSignedIn ? (
+          {user ? (
             <Link to="/q/new">
               <Button
                 bsSize="large"
