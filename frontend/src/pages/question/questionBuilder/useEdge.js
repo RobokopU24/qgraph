@@ -1,7 +1,5 @@
 import { useState } from 'react';
 
-import strings from '@/utils/stringUtils';
-
 export default function useEdgePanels() {
   const [sourceId, setSourceId] = useState(null);
   const [targetId, setTargetId] = useState(null);
@@ -42,14 +40,7 @@ export default function useEdgePanels() {
       if (!Array.isArray(seed.type)) {
         seed.type = [seed.type];
       }
-      setType(seed.type.map(
-        (t) => (
-          {
-            label: t.label || strings.displayPredicate(t),
-            type: t,
-          }
-        ),
-      ));
+      setType(seed.type);
     } else {
       setType([]);
     }

@@ -19,6 +19,12 @@ const listItem = ({ item }) => (
   </div>
 );
 
+const predicateItem = ({ item }) => (
+  <div className="listItem">
+    {strings.displayPredicate(item.type)}
+  </div>
+);
+
 export default function EdgePanel(props) {
   const predicateStatus = usePageStatus(false);
   const { panelStore } = props;
@@ -78,8 +84,16 @@ export default function EdgePanel(props) {
     panelStore.toggleUnsavedChanges(true);
   }
 
+  /**
+   * Update edge with types
+   * @param {Object[]} value list of selected type objects
+   * @param {string} value.type predicate type
+   * @param {string} value.domain predicate source node
+   * @param {string} value.range predicate target node
+   */
   function handlePredicateUpdate(value) {
-    edge.setType(value);
+    const types = value.map((v) => v.type);
+    edge.setType(types);
     panelStore.toggleUnsavedChanges(true);
   }
 
@@ -110,7 +124,7 @@ export default function EdgePanel(props) {
   // Every predicate selected must match at least one
   // predicate in the filteredPredicateList
   const isValidPredicate = edge.type.every(
-    (p) => filteredPredicateList.some((fp) => p.type === fp.type),
+    (p) => filteredPredicateList.some((fp) => p === fp.type),
   );
 
   const isValid = edge.sourceId && edge.targetId && isValidPredicate;
@@ -177,12 +191,12 @@ export default function EdgePanel(props) {
             allowCreate={false}
             readOnly={disablePredicates}
             data={filteredPredicateList}
-            itemComponent={listItem}
+            itemComponent={predicateItem}
             busySpinner={<FaSpinner className="icon-spin" />}
             placeholder={predicateInputMsg}
-            textField={(value) => value.label || value.type}
+            textField={(value) => strings.displayPredicate(value.type)}
             value={edge.type}
-            valueField={(value) => value.label || value.type}
+            valueField="type"
             onChange={handlePredicateUpdate}
             containerClassName={isValidPredicate ? 'valid' : 'invalid'}
             messages={{

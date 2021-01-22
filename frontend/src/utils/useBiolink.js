@@ -1,13 +1,13 @@
-import { useRef } from 'react';
+import { useState, useEffect } from 'react';
 import _ from 'lodash';
 import strings from './stringUtils';
 
-const baseClass = 'biological entity';
+const baseClass = 'biolink:BiologicalEntity';
 
 export default function useBiolink() {
-  const biolink = useRef(null);
-  const concepts = useRef([]);
-  const hierarchies = useRef({});
+  const [biolink, setBiolink] = useState(null);
+  const [concepts, setConcepts] = useState([]);
+  const [hierarchies, setHierarchies] = useState({});
 
   /**
    * Given a biolink class build a list of parent classes
@@ -18,7 +18,7 @@ export default function useBiolink() {
    *   "named_thing" ]
    */
   function getHierarchy(className) {
-    const standardizedClassDictionary = _.transform(biolink.current.classes,
+    const standardizedClassDictionary = _.transform(biolink.classes,
       (result, value, key) => { result[key] = value; });
 
     let currentType = className;
@@ -37,14 +37,13 @@ export default function useBiolink() {
   }
 
   function makeHierarchies() {
-    return Object.keys(biolink.current.classes).reduce((obj, item) => {
+    const newHierarchies = Object.keys(biolink.classes).reduce((obj, item) => {
       let hierarchy = getHierarchy(item);
-      if (hierarchy.includes(baseClass)) {
-        hierarchy = hierarchy.map((h) => strings.nodeFromBiolink(h));
-        obj[strings.nodeFromBiolink(item)] = hierarchy;
-      }
+      hierarchy = hierarchy.map((h) => strings.nodeFromBiolink(h));
+      obj[strings.nodeFromBiolink(item)] = hierarchy;
       return obj;
     }, {});
+    setHierarchies(newHierarchies);
   }
 
   /**
@@ -52,16 +51,13 @@ export default function useBiolink() {
    * @returns {array} list of valid concepts
    */
   function getValidConcepts() {
-    // const allHierarchies = Object.keys(biolink.current.classes).map((type) => ({ [type]: getHierarchy(type) })).filter((hier) => hier.includes(baseClass));
-    // console.log(allHierarchies);
-    const validClasses = Object.keys(biolink.current.classes).filter((type) => getHierarchy(type).includes(baseClass));
-    return validClasses.map((type) => strings.nodeFromBiolink(type));
+    const newConcepts = Object.keys(hierarchies).filter((key) => hierarchies[key].includes(baseClass));
+    setConcepts(newConcepts);
   }
 
   function getEdgeTypes() {
-    return Object.entries(biolink.current.slots).map(([identifier, predicate]) => ({
+    return Object.entries(biolink.slots).map(([identifier, predicate]) => ({
       type: strings.edgeFromBiolink(identifier),
-      label: strings.toSpaceCase(identifier),
       domain: strings.nodeFromBiolink(predicate.domain),
       range: strings.nodeFromBiolink(predicate.range),
     }));
@@ -72,16 +68,26 @@ export default function useBiolink() {
    * @param {object} biolinkObj object we get back from biolink model
    */
   function initialize(biolinkObj) {
-    biolink.current = biolinkObj;
-    concepts.current = getValidConcepts();
-    hierarchies.current = makeHierarchies();
+    setBiolink(biolinkObj);
   }
+
+  useEffect(() => {
+    if (biolink) {
+      makeHierarchies();
+    }
+  }, [biolink]);
+
+  useEffect(() => {
+    if (Object.keys(hierarchies).length) {
+      getValidConcepts();
+    }
+  }, [hierarchies]);
 
   return {
     initialize,
     getHierarchy,
     getEdgeTypes,
-    concepts: concepts.current,
-    hierarchies: hierarchies.current,
+    concepts,
+    hierarchies,
   };
 }

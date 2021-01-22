@@ -224,14 +224,11 @@ export default function useNewQuestionPanel() {
         target_id: edge.targetId,
       };
       if (edge.type && edge.type.length > 0) {
-        new_edge.type = edge.type.map((t) => t.type);
+        new_edge.type = edge.type;
       }
+      const edge_id = panelInfo.id || getNextEdgeID();
 
-      if (!panelInfo.id) {
-        q_graph.edges[getNextEdgeID()] = new_edge;
-      } else {
-        q_graph.edges[panelInfo.id] = new_edge;
-      }
+      q_graph.edges[edge_id] = new_edge;
     }
     const trimmedQueryGraph = trimFloatingNodes(q_graph);
     updateQueryGraph(trimmedQueryGraph);
