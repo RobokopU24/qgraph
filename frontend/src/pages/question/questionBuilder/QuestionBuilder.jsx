@@ -77,6 +77,11 @@ export default function QuestionBuilder(props) {
    * @param {Number} question.max_connectivity max connections for question
    */
   function onQuestionTemplate(question) {
+    Object.values(question.query_graph.edges).forEach((e) => {
+      if (e.type && !Array.isArray(e.type)) {
+        e.type = [e.type];
+      }
+    });
     questionStore.updateQueryGraph(question.query_graph);
     questionStore.updateQuestionName(question.natural_question);
     setStep('build');
@@ -113,6 +118,12 @@ export default function QuestionBuilder(props) {
     fileContentObj.query_graph.nodes.forEach((node) => {
       if (!node.label) {
         node.label = `${node.id}: ${node.name || node.curie || node.type}`;
+      }
+    });
+
+    fileContentObj.query_graph.edges.forEach((e) => {
+      if (e.type && !Array.isArray(e.type)) {
+        e.type = [e.type];
       }
     });
 
