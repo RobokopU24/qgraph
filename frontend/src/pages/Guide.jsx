@@ -1,15 +1,17 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 
 import {
   Grid, Row, Col, ButtonToolbar, Button,
 } from 'react-bootstrap';
 
+import UserContext from '@/context/user';
+
 /**
  * Robokop Guide Page
- * @param {boolean} isSignedIn is the user signed in
  */
-export default function Guide({ isSignedIn }) {
+export default function Guide() {
+  const user = useContext(UserContext);
   return (
     <Grid>
       <Row>
@@ -99,7 +101,7 @@ export default function Guide({ isSignedIn }) {
                 Browse Questions
               </Button>
             </Link>
-            {isSignedIn ? (
+            {user ? (
               <Link to="/q/new">
                 <Button bsSize="large">
                   Ask a Question

@@ -8,19 +8,20 @@ import Button from '@material-ui/core/Button';
 import API from '@/API';
 import { useVisibility } from '@/utils/cache';
 import AlertContext from '@/context/alert';
+import UserContext from '@/context/user';
 import parseMessage from '@/utils/parseMessage';
 import usePageStatus from '@/utils/usePageStatus';
 import useMessageStore from '@/stores/useMessageStore';
 
 import AnswersetView from '@/components/shared/answersetView/AnswersetView';
 
-export default function SimpleViewer(props) {
-  const { user } = props;
+export default function SimpleViewer() {
   const [messageSaved, setMessageSaved] = useState(false);
   const messageStore = useMessageStore();
   const pageStatus = usePageStatus(false);
   const visibility = useVisibility();
   const displayAlert = useContext(AlertContext);
+  const user = useContext(UserContext);
 
   async function askQuestion() {
     const defaultQuestion = {
@@ -175,7 +176,6 @@ export default function SimpleViewer(props) {
           {messageSaved ? (
             <>
               <AnswersetView
-                user={user}
                 messageStore={messageStore}
                 omitHeader
               />
