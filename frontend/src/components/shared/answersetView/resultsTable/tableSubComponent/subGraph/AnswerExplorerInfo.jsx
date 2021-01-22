@@ -19,7 +19,7 @@ const nodeBlocklist = [
 ];
 const edgeBlocklist = [
   'binding', 'ctime', 'id', 'publications', 'source_database',
-  'source_id', 'target_id', 'type',
+  'subject', 'object', 'type',
 ];
 
 export default function AnswerExplorerInfo(props) {
@@ -33,9 +33,9 @@ export default function AnswerExplorerInfo(props) {
   const { concepts } = useContext(BiolinkContext);
 
   function syncPropsAndState() {
-    const nodes = graph.nodes.filter((n) => ((n.id === selectedEdge.source_id) || (n.id === selectedEdge.target_id)));
+    const nodes = graph.nodes.filter((n) => ((n.id === selectedEdge.subject) || (n.id === selectedEdge.object)));
     const nodeIds = nodes.map((n) => n.id);
-    const edges = graph.edges.filter((e) => (nodeIds.includes(e.source_id) && nodeIds.includes(e.target_id)));
+    const edges = graph.edges.filter((e) => (nodeIds.includes(e.subject) && nodeIds.includes(e.object)));
 
     setSubgraph({ nodes, edges });
     setSelectedEdgeId(selectedEdge.edgeIdFromKG);
@@ -173,8 +173,8 @@ export default function AnswerExplorerInfo(props) {
         );
       }
 
-      const sourceNode = subgraph.nodes.find((n) => n.id === edge.source_id);
-      const targetNode = subgraph.nodes.find((n) => n.id === edge.target_id);
+      const sourceNode = subgraph.nodes.find((n) => n.id === edge.subject);
+      const targetNode = subgraph.nodes.find((n) => n.id === edge.object);
       if ('publications' in edge && Array.isArray(edge.publications)) {
         ({ publications } = edge);
       }

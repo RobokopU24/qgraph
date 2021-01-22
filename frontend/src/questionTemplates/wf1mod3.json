@@ -22,13 +22,13 @@
     },
     "edges": {
       "e1": {
-        "source_id": "n1",
-        "target_id": "n0",
+        "subject": "n1",
+        "object": "n0",
         "type": "biolink:contributes_to"
       },
       "e2": {
-        "source_id": "n2",
-        "target_id": "n1",
+        "subject": "n2",
+        "object": "n1",
         "type": [
           "biolink:increases_synthesis_of",
           "biolink:increases_abundance_of",
@@ -37,8 +37,8 @@
         ]
       },
       "e3": {
-        "source_id": "n3",
-        "target_id": "n2",
+        "subject": "n3",
+        "object": "n2",
         "type": [
           "biolink:decreases_activity_of",
           "biolink:decreases_expression_of",

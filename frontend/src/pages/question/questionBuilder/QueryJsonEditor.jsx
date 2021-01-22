@@ -65,9 +65,9 @@ export default function QuestionJsonEditor(props) {
         errMessage.push('Edges should be an object.');
       }
       // each edge should have a valid source and target id
-      const edgesHaveIds = Object.keys(graph.edges).reduce((val, e) => val && graph.edges[e] && graph.edges[e].source_id && graph.edges[e].target_id, true);
+      const edgesHaveIds = Object.keys(graph.edges).reduce((val, e) => val && graph.edges[e] && graph.edges[e].subject && graph.edges[e].object, true);
       if (!edgesHaveIds) {
-        errMessage.push('Each edge must have a valid "source_id" and a "target_id" property.');
+        errMessage.push('Each edge must have a valid "subject" and a "object" property.');
       }
     }
 

@@ -228,7 +228,7 @@ export default function useMessageStore() {
     const prunedKgNodeIdSet = new Set(prunedKgNodeList.map((node) => node.id));
     // Construct pruned edges from original KG-graph
     const prunedKgEdgeList = kg.edges.filter((edge) => {
-      if (prunedKgNodeIdSet.has(edge.source_id) && prunedKgNodeIdSet.has(edge.target_id)) {
+      if (prunedKgNodeIdSet.has(edge.subject) && prunedKgNodeIdSet.has(edge.object)) {
         return true;
       }
       return false;
@@ -424,7 +424,7 @@ export default function useMessageStore() {
           const node = { id: nodeId };
           let score = 0;
           message.knowledge_graph.edges.forEach((edge) => {
-            if ((nodeId === edge.source_id || nodeId === edge.target_id) && Array.isArray(edge.publications)) {
+            if ((nodeId === edge.subject || nodeId === edge.object) && Array.isArray(edge.publications)) {
               score += edge.publications.length;
             }
           });
@@ -465,7 +465,7 @@ export default function useMessageStore() {
         // get kedge details
         let kgEdge = getGraphEdge(message.knowledge_graph, eId);
         // check that kedge is not pruned away
-        if (kgEdge && prunedAgNodeIdSet.has(kgEdge.source_id) && prunedAgNodeIdSet.has(kgEdge.target_id)) {
+        if (kgEdge && prunedAgNodeIdSet.has(kgEdge.subject) && prunedAgNodeIdSet.has(kgEdge.object)) {
           kgEdge = _.cloneDeep(kgEdge);
           kgEdge.binding = qedgeId;
           // add to newEdges

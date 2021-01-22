@@ -34,8 +34,8 @@ export default function useEdgePanels() {
 
   function initialize(seed) {
     reset();
-    setSourceId(seed.source_id || null);
-    setTargetId(seed.target_id || null);
+    setSourceId(seed.subject || null);
+    setTargetId(seed.object || null);
     if (seed.type) {
       if (!Array.isArray(seed.type)) {
         seed.type = [seed.type];

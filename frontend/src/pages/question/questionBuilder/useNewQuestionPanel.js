@@ -88,19 +88,19 @@ export default function useNewQuestionPanel() {
     } else if (panelInfo.type === 'edge') {
       if (panelInfo.id) { // load edge from query graph
         const edgeSeed = query_graph.edges[panelInfo.id];
-        const label = getEdgeLabel(edgeSeed.source_id, edgeSeed.target_id);
+        const label = getEdgeLabel(edgeSeed.subject, edgeSeed.object);
         setName(`${panelInfo.id}: ${label}`);
         edge.initialize({ id: panelInfo.id, ...edgeSeed });
       } else { // new edge
         const newId = getNextEdgeID();
         // grab the last two nodes to prefill edge
-        const [source_id, target_id] = Object.keys(query_graph.nodes).slice(-2);
+        const [subject, object] = Object.keys(query_graph.nodes).slice(-2);
         edge.initialize({
           id: newId,
-          source_id,
-          target_id,
+          subject,
+          object,
         });
-        const label = getEdgeLabel(source_id, target_id);
+        const label = getEdgeLabel(subject, object);
         setName(`${newId}: ${label}`);
       }
     }
@@ -164,8 +164,8 @@ export default function useNewQuestionPanel() {
   function trimFloatingNodes(q_graph) {
     const notFloatingNodeIDs = new Set();
     Object.values(q_graph.edges).forEach((e) => {
-      notFloatingNodeIDs.add(e.source_id);
-      notFloatingNodeIDs.add(e.target_id);
+      notFloatingNodeIDs.add(e.subject);
+      notFloatingNodeIDs.add(e.object);
     });
 
     // Trim a node if it is floating and marked for deletion
@@ -220,8 +220,8 @@ export default function useNewQuestionPanel() {
       q_graph.nodes[node_id] = new_node;
     } else {
       const new_edge = {
-        source_id: edge.sourceId,
-        target_id: edge.targetId,
+        subject: edge.sourceId,
+        object: edge.targetId,
       };
       if (edge.type && edge.type.length > 0) {
         new_edge.type = edge.type;

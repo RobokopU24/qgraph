@@ -77,8 +77,8 @@ function defaultEdgePreProc(e) {
 
   const smooth = { forceDirection: 'none' };
 
-  e.from = e.source_id;
-  e.to = e.target_id;
+  e.from = e.subject;
+  e.to = e.object;
   e.chosen = false;
   e.width = 1;
   const defaultParams = {

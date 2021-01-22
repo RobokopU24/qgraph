@@ -34,24 +34,24 @@
     },
     "edges": {
       "edge01": {
-        "source_id": "node0",
-        "target_id": "node1"
+        "subject": "node0",
+        "object": "node1"
       },
       "edge12": {
-        "source_id": "node1",
-        "target_id": "node2"
+        "subject": "node1",
+        "object": "node2"
       },
       "edge23": {
-        "source_id": "node2",
-        "target_id": "node3"
+        "subject": "node2",
+        "object": "node3"
       },
       "edge34": {
-        "source_id": "node3",
-        "target_id": "node4"
+        "subject": "node3",
+        "object": "node4"
       },
       "edge45": {
-        "source_id": "node4",
-        "target_id": "node5"
+        "subject": "node4",
+        "object": "node5"
       }
     }
   }

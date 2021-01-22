@@ -270,7 +270,7 @@ export default function SubGraphViewer(props) {
 
       // Check if this is a self support edge
       // These are not particularly informative in display
-      e.selfEdge = e.source_id === e.target_id;
+      e.selfEdge = e.subject === e.object;
       // e.selfEdge = false;
     });
 
@@ -290,7 +290,7 @@ export default function SubGraphViewer(props) {
         }
 
         // Find a corresponding support edge
-        const sameNodesSupportEdge = edgesSupport.find((s) => (((e.source_id === s.source_id) && (e.target_id === s.target_id)) || ((e.source_id === s.target_id) && (e.target_id === s.source_id))));
+        const sameNodesSupportEdge = edgesSupport.find((s) => (((e.subject === s.subject) && (e.object === s.object)) || ((e.subject === s.object) && (e.object === s.subject))));
         if (sameNodesSupportEdge) {
           // We have a repeated edge
           sameNodesSupportEdge.duplicateEdge = true; // Mark for deletion
@@ -307,7 +307,7 @@ export default function SubGraphViewer(props) {
       // Find edges that go between the same two nodes and mark them accordingly
 
       // Find a corresponding support edge
-      const sameNodesEdge = edgesRegular.filter((e2) => (((e.source_id === e2.source_id) && (e.target_id === e2.target_id)) || ((e.source_id === e2.target_id) && (e.target_id === e2.source_id))));
+      const sameNodesEdge = edgesRegular.filter((e2) => (((e.subject === e2.subject) && (e.object === e2.object)) || ((e.subject === e2.object) && (e.object === e2.subject))));
       sameNodesEdge.splice(sameNodesEdge.findIndex((e2) => e2.id === e.id), 1);
       if (sameNodesEdge.length > 0) {
         // We have a repeated edge
@@ -330,7 +330,7 @@ export default function SubGraphViewer(props) {
         const n1 = g.nodes[iNode];
         for (let jNode = iNode; jNode < g.nodes.length; jNode += 1) {
           const n2 = g.nodes[jNode];
-          const theseNodeEdges = g.edges.filter((e) => (((e.source_id === n1.id) && (e.target_id === n2.id)) || ((e.target_id === n1.id) && (e.source_id === n2.id))));
+          const theseNodeEdges = g.edges.filter((e) => (((e.subject === n1.id) && (e.object === n2.id)) || ((e.object === n1.id) && (e.subject === n2.id))));
           let roundnessStep = 0.15;
           if (theseNodeEdges.length > 13) {
             // Roundness must be between 0 and 1. In general for less than 13 edges steps of 0.15 looks good
@@ -339,7 +339,7 @@ export default function SubGraphViewer(props) {
             roundnessStep = 1 / (Math.ceil(theseNodeEdges.length) / 2);
           }
           theseNodeEdges.forEach((e, i) => {
-            const typeInd = (i + (e.source_id === n1.id)) % 2;
+            const typeInd = (i + (e.subject === n1.id)) % 2;
             e.smooth = {
               enabled: true,
               type: types[typeInd],
@@ -352,7 +352,7 @@ export default function SubGraphViewer(props) {
     // TODO: Remove any straggler duplicate edges (Fix me)
     // const fromTo = [];
     // const deleteMe = g.edges.map((e) => {
-    //   const thisFromTo = `${e.source_id}_${e.target_id}`;
+    //   const thisFromTo = `${e.subject}_${e.object}`;
     //   if (fromTo.includes(thisFromTo)) {
     //     return true;
     //   }
@@ -416,8 +416,8 @@ export default function SubGraphViewer(props) {
       if (varyEdgeSmoothRoundness) {
         ({ smooth } = e);
       }
-      e.from = e.source_id;
-      e.to = e.target_id;
+      e.from = e.subject;
+      e.to = e.object;
       // Assign a unique id to the edge
       if (e.id) {
         e.edgeIdFromKG = e.id;
