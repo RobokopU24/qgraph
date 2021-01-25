@@ -1,20 +1,20 @@
 {
   "name": "WF1 Module 1 - $name1$ ($identifier1$)",
-  "natural_question": "WF1 Module 1 : $name1$ ($identifier1$) to phenotypes to genetic condition.",
+  "natural_question": "WF1 Module 1 : $name1$ ($identifier1$) to phenocategories to genetic condition.",
   "query_graph": {
     "nodes": {
       "n0": {
-        "type": "biolink:Disease",
+        "category": "biolink:Disease",
         "curie": [
           "$identifier1$"
         ]
       },
       "n1": {
-        "type": "biolink:PhenotypicFeature",
+        "category": "biolink:PhenotypicFeature",
         "set": true
       },
       "n2": {
-        "type": "biolink:GeneticCondition"
+        "category": "biolink:GeneticCondition"
       }
     },
     "edges": {

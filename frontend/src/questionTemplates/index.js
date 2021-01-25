@@ -1,5 +1,5 @@
 const copDisease = require('./cop_disease.json');
-const copPhenotype = require('./cop_phenotype.json');
+const copPhenotype = require('./cop_phenocategory.json');
 const repurposingByGene = require('./repurposing_by_gene.json');
 const wf1mod1WithGene = require('./wf1mod1_with_gene.json');
 const wf1mod1WithProcess = require('./wf1mod1_with_process.json');

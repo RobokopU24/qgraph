@@ -3,14 +3,14 @@
   "query_graph": {
     "nodes": {
       "n0": {
-        "type": "biolink:ChemicalSubstance",
+        "category": "biolink:ChemicalSubstance",
         "$identifier2$": true
       },
       "n1": {
-        "type": "biolink:Gene"
+        "category": "biolink:Gene"
       },
       "n2": {
-        "type": "biolink:Disease",
+        "category": "biolink:Disease",
         "curie": "$identifier1$"
       }
     },
@@ -18,7 +18,7 @@
       "e0": {
         "subject": "n1",
         "object": "n0",
-	      "type": "biolink:increases_degradation_of"
+	      "category": "biolink:increases_degradation_of"
       }
     }
   }

@@ -1,16 +1,16 @@
 {
-  "name": "Expand - $name1$ ($identifier1$) to $type2$",
-  "natural_question": "What $type2$s are associated with $name1$ ($identifier1$)?",
+  "name": "Expand - $name1$ ($identifier1$) to $category2$",
+  "natural_question": "What $category2$s are associated with $name1$ ($identifier1$)?",
   "query_graph": {
     "nodes": {
       "n0": {
-        "type": "biolink:Disease",
+        "category": "biolink:Disease",
         "curie": [
           "$identifier1$"
         ]
       },
       "n1": {
-        "type": "$type2$"
+        "category": "$category2$"
       }
     },
     "edges": {

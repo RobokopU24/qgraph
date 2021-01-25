@@ -4,22 +4,22 @@
   "query_graph": {
     "nodes": {
       "n0": {
-        "type": "biolink:Disease",
+        "category": "biolink:Disease",
         "curie": [
           "$identifier1$"
         ]
       },
       "n1": {
-        "type": "biolink:Gene"
+        "category": "biolink:Gene"
       },
       "n2": {
-        "type": "biolink:BiologicalProcessOrActivity"
+        "category": "biolink:BiologicalProcessOrActivity"
       },
       "n3": {
-        "type": "biolink:Gene"
+        "category": "biolink:Gene"
       },
       "n4": {
-        "type": "biolink:ChemicalSubstance",
+        "category": "biolink:ChemicalSubstance",
         "drug": true
       }
     },

@@ -1,21 +1,21 @@
 {
   "name": "WF1 Module 1 (version 2) - $name1$ ($identifier1$)",
-  "natural_question": "WF1 Module 1 (version 2): $name1$ ($identifier1$) to phenotype feature to genetic condition with shared gene.",
+  "natural_question": "WF1 Module 1 (version 2): $name1$ ($identifier1$) to phenocategory feature to genetic condition with shared gene.",
   "query_graph": {
     "nodes": {
       "n0": {
-        "type": "biolink:Disease",
+        "category": "biolink:Disease",
         "curie": "$identifier1$"
       },
       "n1": {
-        "type": "biolink:PhenotypicFeature",
+        "category": "biolink:PhenotypicFeature",
         "set": true
       },
       "n2": {
-        "type": "biolink:GeneticCondition"
+        "category": "biolink:GeneticCondition"
       },
       "n3": {
-        "type": "biolink:Gene",
+        "category": "biolink:Gene",
         "set": true
       }
     },

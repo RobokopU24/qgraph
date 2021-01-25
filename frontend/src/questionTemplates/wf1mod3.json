@@ -4,19 +4,19 @@
   "query_graph": {
     "nodes": {
       "n0": {
-        "type": "biolink:Disease",
+        "category": "biolink:Disease",
         "curie": [
           "$identifier1$"
         ]
       },
       "n1": {
-        "type": "biolink:ChemicalSubstance"
+        "category": "biolink:ChemicalSubstance"
       },
       "n2": {
-        "type": "biolink:Gene"
+        "category": "biolink:Gene"
       },
       "n3": {
-        "type": "biolink:ChemicalSubstance",
+        "category": "biolink:ChemicalSubstance",
         "drug": true
       }
     },
@@ -24,12 +24,12 @@
       "e1": {
         "subject": "n1",
         "object": "n0",
-        "type": "biolink:contributes_to"
+        "category": "biolink:contributes_to"
       },
       "e2": {
         "subject": "n2",
         "object": "n1",
-        "type": [
+        "category": [
           "biolink:increases_synthesis_of",
           "biolink:increases_abundance_of",
           "biolink:increases_response_to",
@@ -39,7 +39,7 @@
       "e3": {
         "subject": "n3",
         "object": "n2",
-        "type": [
+        "category": [
           "biolink:decreases_activity_of",
           "biolink:decreases_expression_of",
           "biolink:increases_degradation_of",

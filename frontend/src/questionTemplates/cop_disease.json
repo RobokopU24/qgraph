@@ -3,34 +3,34 @@
   "query_graph": {
     "nodes": {
       "node0": {
-        "type": "biolink:ChemicalSubstance",
+        "category": "biolink:ChemicalSubstance",
         "set": false,
         "curie": [
           "$identifier1$"
         ]
       },
       "node1": {
-        "type": "biolink:Gene",
+        "category": "biolink:Gene",
         "set": false
       },
       "node2": {
-        "type": "biolink:BiologicalProcessOrActivity",
+        "category": "biolink:BiologicalProcessOrActivity",
         "set": true
       },
       "node3": {
-        "type": "biolink:Cell",
+        "category": "biolink:Cell",
         "set": false
       },
       "node4": {
-        "type": "biolink:AnatomicalEntity",
+        "category": "biolink:AnatomicalEntity",
         "set": false
       },
       "node5": {
-        "type": "biolink:PhenotypicFeature",
+        "category": "biolink:PhenotypicFeature",
         "set": true
       },
       "node6": {
-        "type": "biolink:Disease",
+        "category": "biolink:Disease",
         "set": false,
         "curie": [
           "$identifier2$"
