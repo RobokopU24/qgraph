@@ -36,13 +36,13 @@ export default function useEdgePanels() {
     reset();
     setSourceId(seed.subject || null);
     setTargetId(seed.object || null);
-    if (seed.type) {
-      if (!Array.isArray(seed.type)) {
-        seed.type = [seed.type];
+    if (seed.predicate) {
+      if (!Array.isArray(seed.predicate)) {
+        seed.predicate = [seed.predicate];
       }
-      setType(seed.type);
+      setPredicate(seed.type);
     } else {
-      setType([]);
+      setPredicate([]);
     }
   }
 

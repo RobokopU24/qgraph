@@ -24,7 +24,7 @@ export default function NodeProperties(props) {
               <tr key={['property', i].join('_')}>
                 <td>
                   <DropdownList
-                    data={validProperties[activePanel.type]}
+                    data={validProperties[activePanel.category]}
                     itemComponent={listItem}
                     value={property.key}
                     onChange={(value) => activePanel.updateProperty(value, i, 'key')}
@@ -34,19 +34,19 @@ export default function NodeProperties(props) {
                   />
                 </td>
                 <td>
-                  {(!property.type || property.type === 'string') && (
+                  {(!property.category || property.category === 'string') && (
                     <input
                       id="propertyValue"
-                      style={!property.type ? { backgroundColor: '#CCCCCC' } : {}}
+                      style={!property.category ? { backgroundColor: '#CCCCCC' } : {}}
                       placeholder="Enter a value here."
-                      type="text"
+                      category="text"
                       onChange={(e) => activePanel.updateProperty(e.target.value, i, 'value')}
                       value={property.value}
-                      disabled={!property.type}
+                      disabled={!property.category}
                       className="constraintInput"
                     />
                   )}
-                  {property.type === 'boolean' && (
+                  {property.category === 'boolean' && (
                     <DropdownList
                       data={[true, false]}
                       onChange={(value) => activePanel.updateProperty(value, i, 'value')}
@@ -54,20 +54,20 @@ export default function NodeProperties(props) {
                       containerClassName="constraintInput"
                     />
                   )}
-                  {property.type === 'integer' && (
+                  {property.category === 'integer' && (
                     <input
                       id="propertyValue"
-                      type="number"
+                      category="number"
                       min="0"
                       onChange={(e) => activePanel.updateProperty(Number(e.target.value), i, 'value')}
                       value={property.value}
                       className="constraintInput"
                     />
                   )}
-                  {property.type === 'float' && (
+                  {property.category === 'float' && (
                     <input
                       id="propertyValue"
-                      type="number"
+                      category="number"
                       min="0"
                       step="0.1"
                       onChange={(e) => activePanel.updateProperty(Number(e.target.value), i, 'value')}

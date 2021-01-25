@@ -1,10 +1,16 @@
 /**
- * Many Translator services now have differently formatted types. These utilities
+ * Many Translator services now have differently formatted categories. These utilities
  * should help keep everything consistent internally.
+<<<<<<< HEAD
  * Incoming biolink types are space case
  * All outgoing node types are 'biolink:PascalCase'
  * All outgoing edge types are 'biolink:snake_case'
  * User input types can be anything
+=======
+ * Incoming biolink categories are space case
+ * All outgoing categories are 'biolink:PascalCase'
+ * User input categories can be anything
+>>>>>>> Did a smart find and replace for instances of type in the rest of the code base
  */
 import _ from 'lodash';
 
@@ -26,24 +32,23 @@ function toSnakeCase(str) {
  */
 function toPascalCase(str) {
   const camelCaseStr = _.camelCase(str);
-  const pascalType = `${camelCaseStr.charAt(0).toUpperCase()}${camelCaseStr.slice(1)}`;
-  return pascalType;
+  const pascalCategory = `${camelCaseStr.charAt(0).toUpperCase()}${camelCaseStr.slice(1)}`;
+  return pascalCategory;
 }
 
-function toArray(types) {
-  if (!Array.isArray(types)) {
-    return [types];
+function toArray(categories) {
+  if (!Array.isArray(categories)) {
+    return [categories];
   }
-  return types;
+  return categories;
 }
 
 /**
- * Convert type from biolink into pascal case
- * @param {string} type biolink type to ingest
- * @returns {string} 'biolink:PascalType'
+ * Convert category from biolink into snake case
+ * @param {string} category biolink category to ingest
  */
-function nodeFromBiolink(type) {
-  return type && `biolink:${toPascalCase(type)}`;
+function nodeFromBiolink(category) {
+  return category && `biolink:${toPascalCase(category)}`;
 }
 
 /**
@@ -60,7 +65,7 @@ function edgeFromBiolink(type) {
  * @param {string|array} arg string or array of wanted pretty display
  * will only grab the first item in array
  */
-function displayType(arg) {
+function displayCategory(arg) {
   if (!arg) {
     return '';
   }
@@ -70,12 +75,12 @@ function displayType(arg) {
   }
   try {
     // remove 'biolink:'
-    const [, pascalType] = label.split(':');
+    const [, pascalCategory] = label.split(':');
     // split pascal case
-    const out = pascalType.split(/(?=[A-Z][a-z])/g);
+    const out = pascalCategory.split(/(?=[A-Z][a-z])/g);
     return out.join(' ');
   } catch (err) {
-    console.log('Error making display type:', err);
+    console.log('Error making display category:', err);
     return '';
   }
 }
@@ -126,6 +131,6 @@ export default {
   toSnakeCase,
   toArray,
   prettyDisplay,
-  displayType,
   displayPredicate,
+  displayCategory,
 };

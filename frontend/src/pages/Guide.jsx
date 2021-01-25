@@ -36,7 +36,7 @@ export default function Guide() {
             Ask a Question
           </h3>
           <p>
-            Currently, questions in Robokop are &quot;asked&quot; by specifying a path template through types of nodes
+            Currently, questions in Robokop are &quot;asked&quot; by specifying a path template through categories of nodes
             in a knowledge graph. The <Link to="/help">Help Page</Link> will provide further
             details on asking new questions.
           </p>

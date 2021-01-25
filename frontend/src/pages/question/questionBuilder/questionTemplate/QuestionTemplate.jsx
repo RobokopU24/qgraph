@@ -13,29 +13,29 @@ import questionTemplates from '@/questionTemplates';
 import FillIdentifier from './subComponents/FillIdentifier';
 
 function extractDetails(questionTemplate) {
-  const newTypes = [];
+  const newCategories = [];
   const newLabels = [];
   const newCuries = [];
   Object.keys(questionTemplate.query_graph.nodes).forEach((nodeId) => {
     const node = questionTemplate.query_graph.nodes[nodeId];
     if (node.curie) {
-      // we're going to grab the number of the identifier from the curie and add that node's type to the list of types in its correct spot.
+      // we're going to grab the number of the identifier from the curie and add that node's category to the list of categories in its correct spot.
       if (Array.isArray(node.curie)) {
         node.curie.forEach((curie) => {
           // find the indentifier's number
           const i = curie.match(/\d/);
           // minus one because index starts at 0
-          newTypes[i - 1] = node.type;
+          newCategories[i - 1] = node.category;
         });
       } else {
         const i = node.curie.match(/\d/);
-        newTypes[i - 1] = node.type;
+        newCategories[i - 1] = node.category;
       }
       newLabels.push('');
       newCuries.push('');
     }
   });
-  return { newTypes, newLabels, newCuries };
+  return { newCategories, newLabels, newCuries };
 }
 
 function displayQuestion(questionName) {
@@ -55,7 +55,7 @@ export default function QuestionTemplateModal(props) {
   const [questionTemplate, setQuestionTemplate] = useState({});
   const [questionName, updateQuestionName] = useState([]);
   const [nameList, updateNameList] = useState([]);
-  const [types, setTypes] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [labels, setLabels] = useState([]);
   const [curies, setCuries] = useState([]);
 
@@ -72,7 +72,7 @@ export default function QuestionTemplateModal(props) {
     });
   }
 
-  function replaceName(qName, newTypes) {
+  function replaceName(qName, newCategories) {
     const newNameList = [];
     let question = qName;
     question = question.split(/\s|\?/g);
@@ -91,7 +91,7 @@ export default function QuestionTemplateModal(props) {
             onClick={() => setFocus(refNum, true)}
             key={shortid.generate()}
           >
-            {strings.displayType(newTypes[refNum]).toLowerCase()}
+            {strings.displayCategory(newCategories[refNum]).toLowerCase()}
           </button>
         );
         newNameList.push({
@@ -112,11 +112,11 @@ export default function QuestionTemplateModal(props) {
   function selectNewQuestionTemplate(event) {
     const newQuestionTemplate = _.cloneDeep(event);
     let newQuestionName = newQuestionTemplate.natural_question;
-    const { newTypes, newLabels, newCuries } = extractDetails(newQuestionTemplate);
-    newQuestionName = replaceName(newQuestionName, newTypes);
+    const { newCategories, newLabels, newCuries } = extractDetails(newQuestionTemplate);
+    newQuestionName = replaceName(newQuestionName, newCategories);
     setQuestionTemplate(newQuestionTemplate);
     updateQuestionName(newQuestionName);
-    setTypes(newTypes);
+    setCategories(newCategories);
     setCuries(newCuries);
     setLabels(newLabels);
   }
@@ -174,7 +174,7 @@ export default function QuestionTemplateModal(props) {
             onClick={() => setFocus(i, true)}
             key={shortid.generate()}
           >
-            {strings.displayType(types[name.ider]).toLowerCase()}
+            {strings.displayCategory(categories[name.ider]).toLowerCase()}
           </button>
         );
         newLabels[name.ider] = '';
@@ -193,7 +193,7 @@ export default function QuestionTemplateModal(props) {
     setQuestionTemplate({});
     updateQuestionName([]);
     updateNameList([]);
-    setTypes([]);
+    setCategories([]);
     setLabels([]);
     setCuries([]);
   }
@@ -248,11 +248,11 @@ export default function QuestionTemplateModal(props) {
         )}
         {nameList.map((n, i) => (
           <FillIdentifier
-            key={types[i] + i}
+            key={categories[i] + i}
             onSelect={(v) => handleIdentifierChange(i, v)}
             focus={n.focus}
             clearFocus={() => setFocus(i, false)}
-            type={types[i]}
+            category={categories[i]}
           />
         ))}
       </Modal.Body>

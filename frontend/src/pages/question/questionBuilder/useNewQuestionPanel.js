@@ -57,27 +57,27 @@ export default function useNewQuestionPanel() {
   function getEdgeLabel(sourceId, targetId) {
     let sourceLabel = '';
     if (sourceId) {
-      sourceLabel = query_graph.nodes[sourceId].label || strings.displayType(query_graph.nodes[sourceId].type);
+      sourceLabel = query_graph.nodes[sourceId].label || strings.displayCategory(query_graph.nodes[sourceId].category);
     }
     let targetLabel = '';
     if (targetId) {
-      targetLabel = query_graph.nodes[targetId].label || strings.displayType(query_graph.nodes[targetId].type);
+      targetLabel = query_graph.nodes[targetId].label || strings.displayCategory(query_graph.nodes[targetId].category);
     }
     return `${sourceId} ${sourceLabel} → ${targetId} ${targetLabel}`;
   }
 
   /**
    * Initialize a node or edge
-   * based on given id and type
+   * based on given id and category
    */
   function initializeNodeOrEdge() {
     if (panelInfo.type === 'node') {
       if (panelInfo.id) { // load node from query graph
         const nodeSeed = { ...query_graph.nodes[panelInfo.id] };
-        // Convert array of types to string before seeding
+        // Convert array of categorys to string before seeding
         // panel
-        if (Array.isArray(nodeSeed.type)) {
-          [nodeSeed.type] = nodeSeed.type;
+        if (Array.isArray(nodeSeed.category)) {
+          [nodeSeed.category] = nodeSeed.category;
         }
         setName(`${panelInfo.id}: ${nodeSeed.label}`);
         node.initialize(nodeSeed);
@@ -136,15 +136,15 @@ export default function useNewQuestionPanel() {
 
   /**
    * Open a node/edge panel either fresh or with a seed id
-   * @param {string} type either node or edge
+   * @param {string} category either node or edge
    * @param {string} id unique id of node or edge. i.e. n0, n1, e0...
    */
-  function openPanel(type, id) {
-    if (type === 'node' && query_graph.nodes[id] && query_graph.nodes[id].deleted) {
+  function openPanel(category, id) {
+    if (category === 'node' && query_graph.nodes[id] && query_graph.nodes[id].deleted) {
       // stop panel from opening
       return;
     }
-    setPanelInfo({ type, id });
+    setPanelInfo({ category, id });
 
     togglePanel(true);
     toggleUnsavedChanges(false);
@@ -202,11 +202,11 @@ export default function useNewQuestionPanel() {
     const q_graph = _.cloneDeep(query_graph);
     if (panelInfo.type === 'node') {
       const new_node = {
-        type: node.type,
+        category: node.category,
       };
-      // If node type isn't an array, convert to one
-      if (new_node.type && !Array.isArray(new_node.type)) {
-        new_node.type = [new_node.type];
+      // If node category isn't an array, convert to one
+      if (new_node.category && !Array.isArray(new_node.category)) {
+        new_node.category = [new_node.category];
       }
       if (node.curie) {
         new_node.curie = node.curie;
@@ -215,7 +215,7 @@ export default function useNewQuestionPanel() {
         new_node.set = node.set;
       }
       const node_id = panelInfo.id || getNextNodeID();
-      new_node.label = node.label || new_node.curie || strings.displayType(new_node.type);
+      new_node.label = node.label || new_node.curie || strings.displayCategory(new_node.category);
 
       q_graph.nodes[node_id] = new_node;
     } else {
@@ -223,8 +223,8 @@ export default function useNewQuestionPanel() {
         subject: edge.sourceId,
         object: edge.targetId,
       };
-      if (edge.type && edge.type.length > 0) {
-        new_edge.type = edge.type;
+      if (edge.predicate && edge.predicate.length > 0) {
+        new_edge.predicate = edge.predicate;
       }
       const edge_id = panelInfo.id || getNextEdgeID();
 

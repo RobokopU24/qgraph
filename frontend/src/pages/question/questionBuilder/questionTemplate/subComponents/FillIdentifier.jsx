@@ -11,7 +11,7 @@ import AlertContext from '@/context/alert';
 import CurieConceptSelector from '@/components/shared/curies/CurieConceptSelector';
 
 export default function FillIdentifier({
-  onSelect, type, focus, clearFocus,
+  onSelect, category, focus, clearFocus,
 }) {
   const displayAlert = useContext(AlertContext);
 
@@ -36,7 +36,7 @@ export default function FillIdentifier({
     }
     const curieResponse = Object.keys(response);
 
-    // Pass curies to nodeNormalizer to get type information and
+    // Pass curies to nodeNormalizer to get category information and
     // a better curie identifier
     const normalizationResponse = await API.nodeNormalization.getNormalizedNodesPost({ curies: curieResponse });
 
@@ -51,10 +51,10 @@ export default function FillIdentifier({
     // so we use a filter to remove those
     const newCuries = Object.values(normalizationResponse).filter((c) => c).map((c) => ({
       label: c.id.label || c.id.identifier,
-      type: c.type,
+      category: c.type,
       curie: c.id.identifier,
-    })).filter((c) => c.type.includes(type));
-    // Filter out curies based on type
+    })).filter((c) => c.category.includes(category));
+    // Filter out curies based on category
     updateCuries(newCuries);
     setLoading(false);
   }

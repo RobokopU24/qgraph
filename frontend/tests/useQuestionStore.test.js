@@ -4,10 +4,10 @@ import useQuestionStore from '../src/pages/question/useQuestionStore';
 const testGoodQuery = {
   nodes: {
     n0: {
-      type: 'disease',
+      category: 'disease',
     },
     n1: {
-      type: 'gene',
+      category: 'gene',
     },
   },
   edges: {
@@ -21,7 +21,7 @@ const testGoodQuery = {
 const testBadQuery = {
   nodes: {
     n0: {
-      type: 'disease',
+      category: 'disease',
     },
   },
 };
@@ -29,11 +29,11 @@ const testBadQuery = {
 const testDeletedQuery = {
   nodes: {
     n0: {
-      type: 'disease',
+      category: 'disease',
       deleted: true,
     },
     n1: {
-      type: 'gene',
+      category: 'gene',
     },
   },
   edges: {

@@ -37,8 +37,8 @@ export default function NodePanel({ panelStore }) {
 
     const conceptsFormatted = concepts.map(
       (identifier) => ({
-        type: identifier,
-        label: strings.displayType(identifier),
+        category: identifier,
+        label: strings.displayCategory(identifier),
         set: false,
       }),
     );
@@ -70,7 +70,7 @@ export default function NodePanel({ panelStore }) {
     if (newSearchTerm.includes(':')) {
       node.updateCuries([{
         label: newSearchTerm,
-        type: '',
+        category: '',
         curie: newSearchTerm,
       }]);
       node.setLoading(false);
@@ -80,19 +80,19 @@ export default function NodePanel({ panelStore }) {
     const response = await API.nameResolver.entityLookup(newSearchTerm, 1000);
     if (response.status === 'error') {
       displayAlert('error',
-        'Failed to contact name resolver to search curies. You will still be able to select generic types. Please try again later');
+        'Failed to contact name resolver to search curies. You will still be able to select generic categorys. Please try again later');
       node.setLoading(false);
       return;
     }
     const curies = Object.keys(response);
 
-    // Pass curies to nodeNormalizer to get type information and
+    // Pass curies to nodeNormalizer to get category information and
     // a better curie identifier
     const normalizationResponse = await API.nodeNormalization.getNormalizedNodesPost({ curies });
 
     if (normalizationResponse.status === 'error') {
       displayAlert('error',
-        'Failed to contact node normalizer to search curies. You will still be able to select generic types. Please try again later');
+        'Failed to contact node normalizer to search curies. You will still be able to select generic categorys. Please try again later');
       node.setLoading(false);
       return;
     }
@@ -102,7 +102,7 @@ export default function NodePanel({ panelStore }) {
     node.updateCuries(
       Object.values(normalizationResponse).filter((c) => c).map((c) => ({
         label: strings.prettyDisplay(c.id.label) || c.id.identifier,
-        type: c.type,
+        category: c.category,
         curie: c.id.identifier,
       })),
     );
@@ -129,12 +129,12 @@ export default function NodePanel({ panelStore }) {
     fetchCuriesDebounced(value);
   }
 
-  const showOptions = node.searchTerm && !node.type;
+  const showOptions = node.searchTerm && !node.category;
   const rightButtonContents = showOptions ? (<Glyphicon glyph="remove" />) : (<Glyphicon glyph="triangle-bottom" />);
   const rightButtonFunction = showOptions ? node.reset : () => updateSearchTerm(node.searchTerm);
   return (
     <>
-      <h4 style={{ color: '#CCCCCC' }}>NODE TYPE</h4>
+      <h4 style={{ color: '#CCCCCC' }}>NODE category</h4>
       <CurieConceptSelector
         concepts={node.filteredConcepts}
         curies={node.curies}
@@ -149,7 +149,7 @@ export default function NodePanel({ panelStore }) {
       />
       {/* {showConstraints && (
         <>
-          {store.nodePropertyList[nodePanelState.type] && store.nodePropertyList[nodePanelState.type].length > 0 ? (
+          {store.nodePropertyList[nodePanelState.category] && store.nodePropertyList[nodePanelState.category].length > 0 ? (
             <NodeProperties activePanel={nodePanelState} validProperties={store.nodePropertyList} />
           ) : (
             <p
@@ -157,7 +157,7 @@ export default function NodePanel({ panelStore }) {
                 position: 'absolute', bottom: 0, width: '100%', textAlign: 'center',
               }}
             >
-              No constraints available for this type.
+              No constraints available for this category.
             </p>
           )}
         </>

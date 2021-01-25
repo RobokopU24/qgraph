@@ -1,28 +1,28 @@
-export default function ctdUrls(type, equalIds) {
+export default function ctdUrls(category, equalIds) {
   let id = '';
-  let ctdType = '';
-  if (type === 'chemical_substance') {
+  let ctdCategory = '';
+  if (category === 'chemical_substance') {
     id = equalIds.find((ei) => ei.toUpperCase().includes('MESH'));
     if (id) {
       id = id.substr(id.indexOf(':') + 1);
     }
-    ctdType = 'chem';
-  } else if (type === 'disease') {
+    ctdCategory = 'chem';
+  } else if (category === 'disease') {
     id = equalIds.find((ei) => ei.toUpperCase().includes('MESH') || ei.toUpperCase().includes('OMIM'));
-    ctdType = 'disease';
-  } else if (type === 'gene') {
+    ctdCategory = 'disease';
+  } else if (category === 'gene') {
     id = equalIds.find((ei) => ei.toUpperCase().includes('NCBIGENE'));
     if (id) {
       id = id.substr(id.indexOf(':') + 1);
     }
-    ctdType = 'gene';
-  } else if (type === 'biological_process') {
+    ctdCategory = 'gene';
+  } else if (category === 'biological_process') {
     id = equalIds.find((ei) => ei.toUpperCase().includes('GO'));
-    ctdType = 'go';
-  } else if (type === 'pathway') {
+    ctdCategory = 'go';
+  } else if (category === 'pathway') {
     id = equalIds.find((ei) => ei.toUpperCase().includes('KEGG') || ei.toUpperCase().includes('REACT'));
-    ctdType = 'pathway';
+    ctdCategory = 'pathway';
   }
   // const onto = id.substr(0, id.indexOf(':'));
-  return { label: 'CTD', url: `http://ctdbase.org/detail.go?type=${ctdType}&acc=${id}`, iconUrl: 'http://ctdbase.org/images/ctdlogo_xs.v15420.png' };
+  return { label: 'CTD', url: `http://ctdbase.org/detail.go?category=${ctdCategory}&acc=${id}`, iconUrl: 'http://ctdbase.org/images/ctdlogo_xs.v15420.png' };
 }

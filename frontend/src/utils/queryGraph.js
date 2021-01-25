@@ -58,13 +58,13 @@ function standardizeCuries(n) {
 }
 
 /**
- * Convert type to array if not given as array
- * @param {object} e edge object with a type property
+ * Convert category to array if not given as array
+ * @param {object} e edge object with a category property
  */
-function standardizeType(e) {
-  // Convert type to array if not given as array
-  if (e.type && !_.isArray(e.type)) {
-    e.type = [e.type];
+function standardizeCategory(e) {
+  // Convert category to array if not given as array
+  if (e.category && !_.isArray(e.category)) {
+    e.category = [e.category];
   }
 }
 
@@ -80,13 +80,13 @@ function pruneCuries(n) {
 }
 
 /**
- * Remove empty type arrays
- * @param {object} e edge object with a type property
+ * Remove empty category arrays
+ * @param {object} e edge object with a category property
 */
-function pruneTypes(e) {
-  if (e.type && _.isArray(e.type) &&
-      e.type.length === 0) {
-    delete e.type;
+function pruneCategories(e) {
+  if (e.category && _.isArray(e.category) &&
+      e.category.length === 0) {
+    delete e.category;
   }
 }
 
@@ -106,9 +106,9 @@ const convert = {
     internalRepresentation.edges = listWithIdsToDict(q.edges);
 
     Object.values(internalRepresentation.nodes).forEach(standardizeCuries);
-    Object.values(internalRepresentation.nodes).forEach(standardizeType);
+    Object.values(internalRepresentation.nodes).forEach(standardizeCategory);
 
-    Object.values(internalRepresentation.edges).forEach(standardizeType);
+    Object.values(internalRepresentation.edges).forEach(standardizeCategory);
     return internalRepresentation;
   },
   /**
@@ -122,10 +122,10 @@ const convert = {
     reasonerRepresentation.edges = dictToListWithIds(q.edges);
 
     reasonerRepresentation.nodes.forEach(pruneCuries);
-    reasonerRepresentation.nodes.forEach(pruneTypes);
+    reasonerRepresentation.nodes.forEach(pruneCategories);
 
     // reasonerRepresentation.nodes.forEach(removeLabel);
-    reasonerRepresentation.edges.forEach(pruneTypes);
+    reasonerRepresentation.edges.forEach(pruneCategories);
     return reasonerRepresentation;
   },
 };

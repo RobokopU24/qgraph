@@ -1,6 +1,6 @@
 // Check out https://html-color.codes to pick new colors
 // This is hard to have this many contrasting colors that are within families leave text readable.
-// This should be periodically updated as new node types are introduced to give them consistent colors
+// This should be periodically updated as new node categories are introduced to give them consistent colors
 const undefinedColor = '#cccccc';
 
 const conceptColorMap = {
@@ -34,15 +34,15 @@ const conceptColorMap = {
   'biolink:SequenceVariant': '#00c4e6', // Light teal'
 };
 
-export default function getNodeTypeColorMap(types) {
-  return (type) => {
+export default function getNodeCategoryColorMap(categories) {
+  return (category) => {
     let color = undefinedColor;
 
-    if (type in conceptColorMap) {
-      color = conceptColorMap[type];
-    } else if (types && Array.isArray(types) && (types.indexOf(type) >= 0)) {
+    if (category in conceptColorMap) {
+      color = conceptColorMap[category];
+    } else if (categories && Array.isArray(categories) && (categories.indexOf(category) >= 0)) {
       // We are supposed to have a color for this.
-      // console.log('No color is known for: ', type);
+      // console.log('No color is known for: ', category);
     }
 
     return color;

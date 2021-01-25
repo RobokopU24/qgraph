@@ -4,7 +4,7 @@ import strings from '@/utils/stringUtils';
 import BiolinkContext from '@/context/biolink';
 
 export default function useNodePanels() {
-  const [type, setType] = useState('');
+  const [category, setCategory] = useState('');
   const [label, setLabel] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [curie, setCurie] = useState([]);
@@ -17,7 +17,7 @@ export default function useNodePanels() {
   const { concepts: biolinkConcepts } = useContext(BiolinkContext);
 
   function reset() {
-    setType('');
+    setCategory('');
     setLabel('');
     setSearchTerm('');
     setCurie([]);
@@ -29,24 +29,24 @@ export default function useNodePanels() {
 
   function initialize(seed) {
     reset();
-    setType(seed.type || '');
-    setLabel(seed.label || strings.displayType(seed.type) || '');
-    setSearchTerm(seed.label || strings.displayType(seed.type) || '');
+    setCategory(seed.category || '');
+    setLabel(seed.label || strings.displayCategory(seed.category) || '');
+    setSearchTerm(seed.label || strings.displayCategory(seed.category) || '');
     setSet(seed.set || false);
     setCurie(seed.curie || []);
   }
 
   /**
-   * Convert a list of types to a single type
+   * Convert a list of categories to a single category
    * by picking the first one in the list
-   * @param {array} curieTypes array of types for picked node
-   * @returns {string} single type string
+   * @param {array} curieCategories array of categories for picked node
+   * @returns {string} single category string
    */
-  function conceptListToString(curieTypes) {
-    let curieType = strings.toArray(curieTypes);
-    // Use the first type in the list of types of the node
-    curieType = curieType.find((concept) => biolinkConcepts.includes(concept));
-    return curieType || '';
+  function conceptListToString(curieCategories) {
+    let curieCategory = strings.toArray(curieCategories);
+    // Use the first category in the list of categories of the node
+    curieCategory = curieCategory.find((concept) => biolinkConcepts.includes(concept));
+    return curieCategory || '';
   }
 
   function select(entry) {
@@ -58,11 +58,11 @@ export default function useNodePanels() {
     if (entry.set) {
       setSet(true);
     }
-    setType(conceptListToString(entry.type));
+    setCategory(conceptListToString(entry.category));
   }
 
   function clearSelection() {
-    setType('');
+    setCategory('');
     setLabel('');
     setSet(false);
     setCurie([]);
@@ -77,7 +77,7 @@ export default function useNodePanels() {
     setFilteredConcepts(newFilteredConcepts);
   }
 
-  const isValid = !!type || !!curie.length;
+  const isValid = !!category || !!curie.length;
 
   return {
     label,
@@ -91,7 +91,7 @@ export default function useNodePanels() {
     curie,
     curies,
     searchTerm,
-    type,
+    category,
     set,
     initialize,
     reset,

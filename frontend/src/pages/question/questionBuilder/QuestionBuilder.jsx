@@ -114,7 +114,7 @@ export default function QuestionBuilder(props) {
     // TODO: this is pretty hacky
     fileContentObj.query_graph.nodes.forEach((node) => {
       if (!node.label) {
-        node.label = `${node.id}: ${node.name || node.curie || node.type}`;
+        node.label = `${node.id}: ${node.name || node.curie || node.category}`;
       }
       queryGraphUtils.standardizeType(node);
     });

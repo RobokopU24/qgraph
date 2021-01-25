@@ -4,7 +4,7 @@ import { FaSave, FaTrash, FaUndo } from 'react-icons/fa';
 
 import BiolinkContext from '@/context/biolink';
 import HelpButton from '@/components/shared/HelpButton';
-import getNodeTypeColorMap from '@/utils/colorUtils';
+import getNodeCategoryColorMap from '@/utils/colorUtils';
 import EdgePanel from './EdgePanel';
 import NodePanel from './NodePanel';
 import './panels.css';
@@ -17,22 +17,22 @@ export default function NewQuestionPanelModal({ panelStore, onQuestionUpdated })
   const { concepts } = useContext(BiolinkContext);
   /**
    * Get the panel background color
-   * @param {Boolean} isNodePanel is panel of type node
+   * @param {Boolean} isNodePanel is panel of category node
    */
   function getBackgroundColor(isNodePanel) {
     // set the color of the node/edge panel header
-    const panelColorMap = getNodeTypeColorMap(concepts);
+    const panelColorMap = getNodeCategoryColorMap(concepts);
     if (isNodePanel) {
-      return { backgroundColor: panelColorMap(panelStore.node.type) };
+      return { backgroundColor: panelColorMap(panelStore.node.category) };
     }
     const { nodes } = panelStore.query_graph;
     // only find the node panels in questionStore state.
     const node1 = nodes[panelStore.edge.sourceId];
-    const type1 = (node1 && node1.type[0]) || 'edge';
+    const category1 = (node1 && node1.category[0]) || 'edge';
     const node2 = nodes[panelStore.edge.targetId];
-    const type2 = (node2 && node2.type[0]) || 'edge';
-    const color1 = panelColorMap(type1);
-    const color2 = panelColorMap(type2);
+    const category2 = (node2 && node2.category[0]) || 'edge';
+    const color1 = panelColorMap(category1);
+    const color2 = panelColorMap(category2);
     return { backgroundImage: `linear-gradient(80deg, ${color1} 50%, ${color2} 50%)`, borderRadius: '5px 5px 0px 0px' };
   }
 
@@ -41,10 +41,10 @@ export default function NewQuestionPanelModal({ panelStore, onQuestionUpdated })
     onQuestionUpdated(updatedQueryGraph);
   }
 
-  const isNodePanel = panelStore.panelType === 'node';
+  const isNodePanel = panelStore.panelCategory === 'node';
   const isNewPanel = panelStore.activePanelId == null;
   const backgroundColor = useMemo(() => getBackgroundColor(isNodePanel),
-    [panelStore.node.type, panelStore.edge.sourceId, panelStore.edge.targetId, panelStore.showPanel]);
+    [panelStore.node.category, panelStore.edge.sourceId, panelStore.edge.targetId, panelStore.showPanel]);
   return (
     <Modal
       style={{ marginTop: '5%' }}

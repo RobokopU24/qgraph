@@ -53,7 +53,7 @@ export default function EdgePanel(props) {
     const sourceNode = panelStore.query_graph.nodes[edge.sourceId];
     const targetNode = panelStore.query_graph.nodes[edge.targetId];
 
-    if (!sourceNode.type || !targetNode.type) {
+    if (!sourceNode.category || !targetNode.category) {
       return null;
     }
 
@@ -65,8 +65,8 @@ export default function EdgePanel(props) {
     }
 
     return predicateList.filter(
-      (p) => sourceNodeTypeHierarchy.includes(p.domain) &&
-               targetNodeTypeHierarchy.includes(p.range),
+      (p) => sourceNodeCategoryHierarchy.includes(p.domain) &&
+               targetNodeCategoryHierarchy.includes(p.range),
     );
   }
 
@@ -108,7 +108,7 @@ export default function EdgePanel(props) {
     Object.entries(panelStore.query_graph.nodes).map(
       ([id, node]) => ({
         ...node,
-        label: `${id}: ${node.label || strings.displayType(node.type)}`,
+        label: `${id}: ${node.label || strings.displayCategory(node.category)}`,
         id,
       }),
     ).filter((n) => !n.deleted);

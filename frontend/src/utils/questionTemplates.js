@@ -6,16 +6,16 @@ const questions = [
         {
           id: 'node0',
           name: 'ebola hemorrhagic fever',
-          type: 'disease',
+          category: 'disease',
           curie: 'MONDO:0005737',
         },
         {
           id: 'node1',
-          type: 'gene',
+          category: 'gene',
         },
         {
           id: 'node2',
-          type: 'genetic_condition',
+          category: 'genetic_condition',
         },
       ],
       edges: [
@@ -39,35 +39,35 @@ const questions = [
         {
           id: 'node0',
           name: 'imatinib',
-          type: 'chemical_substance',
+          category: 'chemical_substance',
           curie: 'PUBCHEM:5291',
         },
         {
           id: 'node1',
-          type: 'gene',
+          category: 'gene',
         },
         {
           id: 'node2',
-          type: 'biological_process',
+          category: 'biological_process',
           set: true,
         },
         {
           id: 'node3',
-          type: 'cell',
+          category: 'cell',
         },
         {
           id: 'node4',
-          type: 'anatomical_entity',
+          category: 'anatomical_entity',
         },
         {
           id: 'node5',
-          type: 'phenotypic_feature',
+          category: 'phenotypic_feature',
           set: true,
         },
         {
           id: 'node6',
           name: 'asthma',
-          type: 'disease',
+          category: 'disease',
           curie: 'MONDO:0004979',
         },
       ],
@@ -111,12 +111,12 @@ const questions = [
       nodes: [
         {
           id: 'node0',
-          type: 'gene',
+          category: 'gene',
         },
         {
           id: 'node1',
           name: 'Fanconi Anemia',
-          type: 'disease',
+          category: 'disease',
           curie: 'MONDO:0019391',
         },
       ],
@@ -135,20 +135,20 @@ const questions = [
       nodes: [
         {
           id: 'node0',
-          type: 'disease',
+          category: 'disease',
           curie: 'MONDO:0005148',
         },
         {
           id: 'node1',
-          type: 'chemical_substance',
+          category: 'chemical_substance',
         },
         {
           id: 'node2',
-          type: 'gene',
+          category: 'gene',
         },
         {
           id: 'node3',
-          type: 'chemical_substance',
+          category: 'chemical_substance',
         },
       ],
       edges: [
@@ -156,13 +156,13 @@ const questions = [
           id: 'edge10',
           subject: 'node1',
           object: 'node0',
-          type: 'contributes_to',
+          category: 'contributes_to',
         },
         {
           id: 'edge21',
           subject: 'node2',
           object: 'node1',
-          type: [
+          category: [
             'increases_degradation_of',
             'decreases_abundance_of',
             'decreases_response_to',
@@ -172,7 +172,7 @@ const questions = [
           id: 'edge32',
           subject: 'node3',
           object: 'node2',
-          type: [
+          category: [
             'increases_activity_of',
             'increases_expression_of',
             'decreases_degradation_of',
@@ -190,29 +190,29 @@ const questions = [
       nodes: [
         {
           id: 'node0',
-          type: 'gene',
+          category: 'gene',
         },
         {
           name: ' voltage-gated sodium channel activity',
           curie: 'GO:0005248',
           id: 'node1',
-          type: 'biological_process_or_activity',
+          category: 'biological_process_or_activity',
         },
         {
           name: 'muscle contraction',
           curie: 'GO:0006936',
           id: 'node2',
-          type: 'biological_process_or_activity',
+          category: 'biological_process_or_activity',
         },
         {
           name: 'neuronal action potential',
           curie: 'GO:0019228',
           id: 'node3',
-          type: 'biological_process_or_activity',
+          category: 'biological_process_or_activity',
         },
         {
           id: 'node4',
-          type: 'chemical_substance',
+          category: 'chemical_substance',
         },
       ],
       edges: [
@@ -229,21 +229,21 @@ const questions = [
       nodes: [
         {
           id: 'node0',
-          type: 'disease',
+          category: 'disease',
           name: 'chronic obstructive pulmonary disorder',
           curie: 'MONDO:0005002',
         },
         {
           id: 'node1',
-          type: 'gene',
+          category: 'gene',
         },
         {
           id: 'node2',
-          type: 'gene',
+          category: 'gene',
         },
         {
           id: 'node3',
-          type: 'chemical_substance',
+          category: 'chemical_substance',
         },
       ],
       edges: [
@@ -261,19 +261,19 @@ const questions = [
           id: 'edge31',
           subject: 'node3',
           object: 'node1',
-          type: 'interacts_with',
+          category: 'interacts_with',
         },
         {
           id: 'edge32',
           subject: 'node3',
           object: 'node2',
-          type: 'interacts_with',
+          category: 'interacts_with',
         },
         {
           id: 'edge30',
           subject: 'node3',
           object: 'node0',
-          type: 'treats',
+          category: 'treats',
         },
       ],
     },
