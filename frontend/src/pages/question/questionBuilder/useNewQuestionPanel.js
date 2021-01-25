@@ -136,15 +136,15 @@ export default function useNewQuestionPanel() {
 
   /**
    * Open a node/edge panel either fresh or with a seed id
-   * @param {string} category either node or edge
+   * @param {string} type either node or edge
    * @param {string} id unique id of node or edge. i.e. n0, n1, e0...
    */
-  function openPanel(category, id) {
-    if (category === 'node' && query_graph.nodes[id] && query_graph.nodes[id].deleted) {
+  function openPanel(type, id) {
+    if (type === 'node' && query_graph.nodes[id] && query_graph.nodes[id].deleted) {
       // stop panel from opening
       return;
     }
-    setPanelInfo({ category, id });
+    setPanelInfo({ type, id });
 
     togglePanel(true);
     toggleUnsavedChanges(false);

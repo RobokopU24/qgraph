@@ -9,7 +9,7 @@ import _ from 'lodash';
 import AlertContext from '@/context/alert';
 
 import strings from '@/utils/stringUtils';
-import getNodeTypeColorMap from '@/utils/colorUtils';
+import getNodeCategoryColorMap from '@/utils/colorUtils';
 import Table from './Table';
 
 import './resultsTable.css';
@@ -25,7 +25,7 @@ export default function AnswerTable(props) {
   }, []);
 
   function getReactTableColumnSpec(columnHeaders) {
-    const bgColorMap = getNodeTypeColorMap(concepts);
+    const bgColorMap = getNodeCategoryColorMap(concepts);
     // Take columnHeaders from store and update it as needed
     const colHeaders = columnHeaders.map((col) => {
       const colSpecObj = _.cloneDeep(col);
@@ -40,7 +40,7 @@ export default function AnswerTable(props) {
           if (setNodes.length === 1) {
             return setNodes[0].name ? [setNodes[0].name] : [setNodes[0].id];
           }
-          return [strings.displayType(colSpecObj.type), `[${setNodes.length}]`];
+          return [strings.displayCategory(colSpecObj.category), `[${setNodes.length}]`];
         };
         colSpecObj.Cell = (row) => {
           const setNodes = messageStore.getSetNodes(row.row.index, row.column.id);
@@ -65,7 +65,7 @@ export default function AnswerTable(props) {
       colSpecObj.qnodeId = nodeId;
       messageStore.initializeFilter();
 
-      const backgroundColor = bgColorMap(colSpecObj.type);
+      const backgroundColor = bgColorMap(colSpecObj.category);
       const columnHeader = colSpecObj.Header;
       colSpecObj.Header = () => (
         <div style={{ backgroundColor, padding: 2 }}>{columnHeader}</div>
@@ -97,7 +97,7 @@ export default function AnswerTable(props) {
       // filterable: false,
       disableFilters: true,
       accessor: 'score',
-      sortType: 'basic',
+      sortCategory: 'basic',
       Cell: (d) => {
         if (!d.value) {
           return <div className="center">N/A</div>;

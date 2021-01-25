@@ -5,7 +5,7 @@ import _ from 'lodash';
 import shortid from 'shortid';
 
 import BiolinkContext from '@/context/biolink';
-import getNodeTypeColorMap from '@/utils/colorUtils';
+import getNodeCategoryColorMap from '@/utils/colorUtils';
 import strings from '@/utils/stringUtils';
 
 const Graph = require('react-graph-vis').default;
@@ -52,8 +52,8 @@ function defaultNodePreProc(n) {
     } else {
       n.label = `${n.id}: ${n.curie}`;
     }
-  } else if ('type' in n) {
-    n.label = `${n.id}: ${strings.displayType(n.type)}`;
+  } else if ('category' in n) {
+    n.label = `${n.id}: ${strings.displayCategory(n.category)}`;
   } else if ('id' in n) {
     n.label = n.id;
   } else {
@@ -64,10 +64,10 @@ function defaultNodePreProc(n) {
 
 function defaultEdgePreProc(e) {
   let label = '';
-  if ('type' in e) {
-    label = e.type.map((type) => strings.displayPredicate(type)).join(', ');
+  if ('predicate' in e) {
+    label = e.predicate.map((predicate) => strings.displayPredicate(predicate)).join(', ');
   }
-  if (!('type' in e)) {
+  if (!('predicate' in e)) {
     e.arrows = {
       to: {
         enabled: false,
@@ -136,14 +136,14 @@ export default function QuestionGraphView(props) {
     const graph = _.cloneDeep(question);
 
     // Adds vis.js specific tags to manage colors in graph
-    const nodeTypeColorMap = getNodeTypeColorMap(concepts);
+    const nodeCategoryColorMap = getNodeCategoryColorMap(concepts);
 
     graph.nodes.forEach((n) => {
       let backgroundColor;
-      if (Array.isArray(n.type)) {
-        backgroundColor = nodeTypeColorMap(n.type[0]);
+      if (Array.isArray(n.category)) {
+        backgroundColor = nodeCategoryColorMap(n.category[0]);
       } else {
-        backgroundColor = nodeTypeColorMap(n.type);
+        backgroundColor = nodeCategoryColorMap(n.category);
       }
       n.color = {
         border: '#000000',

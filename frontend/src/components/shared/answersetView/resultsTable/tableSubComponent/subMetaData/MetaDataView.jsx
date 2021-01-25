@@ -8,7 +8,7 @@ import Select from '@material-ui/core/Select';
 import { FaClone } from 'react-icons/fa';
 
 import BiolinkContext from '@/context/biolink';
-import getNodeTypeColorMap from '@/utils/colorUtils';
+import getNodeCategoryColorMap from '@/utils/colorUtils';
 import strings from '@/utils/stringUtils';
 import getColumnWidth from '@/utils/rtColumnWidth';
 import Cell from './Cell';
@@ -23,11 +23,11 @@ export default function MetaDataView(props) {
   const [columns, setColumns] = useState([]);
   const [metaData, setMetaData] = useState([]);
   const { concepts } = useContext(BiolinkContext);
-  const colorMap = useCallback(getNodeTypeColorMap(concepts), [concepts]);
+  const colorMap = useCallback(getNodeCategoryColorMap(concepts), [concepts]);
 
   function makeColumns() {
     const blocklist = ['isSet', 'level'];
-    const allowlist = ['name', 'id', 'type'];
+    const allowlist = ['name', 'id', 'category'];
     const { isSet } = rowData[selectedNodeId];
     const nodes = isSet ? rowData[selectedNodeId].setNodes : [rowData[selectedNodeId]];
     const columnHeaders = [];
@@ -67,10 +67,10 @@ export default function MetaDataView(props) {
     });
 
     const headerTitle = (
-      isSet ? `Nodes for the ${selectedNodeId} - ${strings.displayType(rowData[selectedNodeId].type)} Set` :
-        `Metadata for ${selectedNodeId} - ${strings.displayType(rowData[selectedNodeId].type)}`
+      isSet ? `Nodes for the ${selectedNodeId} - ${strings.displayCategory(rowData[selectedNodeId].category)} Set` :
+        `Metadata for ${selectedNodeId} - ${strings.displayCategory(rowData[selectedNodeId].category)}`
     );
-    const backgroundColor = colorMap(rowData[selectedNodeId].type);
+    const backgroundColor = colorMap(rowData[selectedNodeId].category);
     const cols = [
       {
         Header: <div style={{ backgroundColor, padding: 2 }}>{headerTitle}</div>,
@@ -88,7 +88,7 @@ export default function MetaDataView(props) {
     const dropDownList = nodeList.map((nId) => ({
       nId,
       isSet: rowData[nId].isSet,
-      type: strings.displayType(rowData[nId].type),
+      category: strings.displayCategory(rowData[nId].category),
     }));
 
     setDropdownNodes(dropDownList);
@@ -120,7 +120,7 @@ export default function MetaDataView(props) {
               >
                 {dropdownNodes.map((n) => (
                   <MenuItem key={n.nId} value={n.nId}>
-                    {`${n.nId}: ${n.type}`}
+                    {`${n.nId}: ${n.category}`}
                     {n.isSet && <FaClone />}
                   </MenuItem>
                 ))}

@@ -7,7 +7,7 @@ import shortid from 'shortid';
 
 import { AutoSizer, List } from 'react-virtualized';
 
-import getNodeTypeColorMap from '@/utils/colorUtils';
+import getNodeCategoryColorMap from '@/utils/colorUtils';
 import curieUrls from '@/utils/curieUrls';
 
 export default function CurieConceptSelector({
@@ -42,21 +42,21 @@ export default function CurieConceptSelector({
     let degree;
     let links = '';
     let curie = '';
-    let type = '';
+    let category = '';
     let colorStripes = [];
-    let typeColor = '';
+    let categoryColor = '';
     if (isConcept) {
       label = concepts[index].label;
       entry = concepts[index];
-      ({ type } = concepts[index]); // this is a string
-      const typeColorMap = getNodeTypeColorMap();
-      typeColor = typeColorMap(type);
+      ({ category } = concepts[index]); // this is a string
+      const categoryColorMap = getNodeCategoryColorMap();
+      categoryColor = categoryColorMap(category);
     } else {
       const i = index - concepts.length;
       entry = curies[i];
 
       ({
-        degree, type, label, curie,
+        degree, category, label, curie,
       } = entry);
       const urls = curieUrls(curie);
       links = (
@@ -66,14 +66,14 @@ export default function CurieConceptSelector({
           ))}
         </span>
       );
-      if (Array.isArray(type)) {
-        type = type.filter((t) => t !== 'named_thing');
-        const typeColorMap = getNodeTypeColorMap(type);
-        colorStripes = type.map((t) => (
+      if (Array.isArray(category)) {
+        category = category.filter((t) => t !== 'named_thing');
+        const categoryColorMap = getNodeCategoryColorMap(category);
+        colorStripes = category.map((t) => (
           <div
             title={t}
             style={{
-              backgroundColor: typeColorMap(t),
+              backgroundColor: categoryColorMap(t),
               height: '100%',
               width: '5px',
             }}
@@ -83,12 +83,12 @@ export default function CurieConceptSelector({
       }
     }
 
-    const fullColor = typeof type === 'string';
+    const fullColor = typeof category === 'string';
 
     return (
       <div
         key={key}
-        style={{ ...style, backgroundColor: typeColor }}
+        style={{ ...style, backgroundColor: categoryColor }}
         className="nodePanelSelector"
         id={index === concepts.length - 1 && curies.length > 0 ? 'lastConcept' : ''}
       >
@@ -115,7 +115,7 @@ export default function CurieConceptSelector({
   }
 
   const nRows = concepts.length + curies.length;
-  const showOptions = searchTerm && !selection.type && !selection.curie.length;
+  const showOptions = searchTerm && !selection.category && !selection.curie.length;
   const showSelectedCurie = !showOptions && !!selection.curie.length;
   const isEmpty = nRows === 0;
 
@@ -127,7 +127,7 @@ export default function CurieConceptSelector({
       <div id="nodeSelectorContainer">
         <InputGroup>
           <FormControl
-            type="text"
+            category="text"
             className="curieSelectorInput"
             placeholder="Start typing to search."
             value={searchTerm}

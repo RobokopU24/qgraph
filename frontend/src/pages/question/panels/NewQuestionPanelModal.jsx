@@ -41,7 +41,7 @@ export default function NewQuestionPanelModal({ panelStore, onQuestionUpdated })
     onQuestionUpdated(updatedQueryGraph);
   }
 
-  const isNodePanel = panelStore.panelCategory === 'node';
+  const isNodePanel = panelStore.panelType === 'node';
   const isNewPanel = panelStore.activePanelId == null;
   const backgroundColor = useMemo(() => getBackgroundColor(isNodePanel),
     [panelStore.node.category, panelStore.edge.sourceId, panelStore.edge.targetId, panelStore.showPanel]);

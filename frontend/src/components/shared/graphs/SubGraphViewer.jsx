@@ -6,7 +6,7 @@ import shortid from 'shortid';
 import _ from 'lodash';
 
 import BiolinkContext from '@/context/biolink';
-import getNodeTypeColorMap from '@/utils/colorUtils';
+import getNodeCategoryColorMap from '@/utils/colorUtils';
 import strings from '@/utils/stringUtils';
 import AlertContext from '@/context/alert';
 
@@ -204,7 +204,7 @@ export default function SubGraphViewer(props) {
   function addTagsToGraph(graph) {
     // Adds vis.js specific tags primarily to style graph as desired
     const g = _.cloneDeep(graph);
-    const nodeTypeColorMap = getNodeTypeColorMap(concepts); // We could put standardized concepts here
+    const nodeCategoryColorMap = getNodeCategoryColorMap(concepts); // We could put standardized concepts here
 
     // remove all duplicate nodes
     const nodeIds = new Set();
@@ -229,7 +229,7 @@ export default function SubGraphViewer(props) {
       if (Array.isArray(n.type)) {
         n.type = concepts.find((concept) => concept !== 'named_thing' && n.type.includes(concept));
       }
-      const backgroundColor = nodeTypeColorMap(n.type);
+      const backgroundColor = nodeCategoryColorMap(n.type);
       n.color = {
         border: '#000000',
         background: backgroundColor,
@@ -245,7 +245,7 @@ export default function SubGraphViewer(props) {
         `<div class="vis-tooltip-inner">
           <div><span class="title">${n.name}</span></div>
           <div><span class="field-name">id: </span>${n.id}</div>
-          <div><span class="field-name">type: </span>${strings.displayType(n.type)}</div>
+          <div><span class="field-name">type: </span>${strings.displayCategory(n.type)}</div>
           ${extraFields.join('')}
         </div>`
       );
