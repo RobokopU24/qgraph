@@ -4,7 +4,7 @@ import React, {
 import _ from 'lodash';
 import shortid from 'shortid';
 
-import ConceptsContext from '@/context/concepts';
+import BiolinkContext from '@/context/biolink';
 import getNodeTypeColorMap from '@/utils/colorUtils';
 import strings from '@/utils/stringUtils';
 
@@ -64,15 +64,10 @@ function defaultNodePreProc(n) {
 
 function defaultEdgePreProc(e) {
   let label = '';
-  if ('predicate' in e) {
-    label = e.predicate;
-  } else if ('type' in e) {
-    label = e.type;
+  if ('type' in e) {
+    label = e.type.map((type) => strings.displayPredicate(type)).join(', ');
   }
-  if (Array.isArray(label)) {
-    label = label.join(', ');
-  }
-  if (!('type' in e) && !(e.predicate && e.predicate.length > 0)) {
+  if (!('type' in e)) {
     e.arrows = {
       to: {
         enabled: false,
@@ -120,7 +115,7 @@ export default function QuestionGraphView(props) {
     interactable = true,
   } = props;
   const network = useRef(null);
-  const concepts = useContext(ConceptsContext);
+  const { concepts } = useContext(BiolinkContext);
 
   // Bind network fit callbacks to resize graph and cancel fit callbacks on start of zoom/pan
   function setNetworkCallbacks() {

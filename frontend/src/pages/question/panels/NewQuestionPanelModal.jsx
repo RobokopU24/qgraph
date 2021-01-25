@@ -2,7 +2,7 @@ import React, { useContext, useMemo } from 'react';
 import { Modal, ButtonGroup, Button } from 'react-bootstrap';
 import { FaSave, FaTrash, FaUndo } from 'react-icons/fa';
 
-import ConceptsContext from '@/context/concepts';
+import BiolinkContext from '@/context/biolink';
 import HelpButton from '@/components/shared/HelpButton';
 import getNodeTypeColorMap from '@/utils/colorUtils';
 import EdgePanel from './EdgePanel';
@@ -14,7 +14,7 @@ import './panels.css';
  * @param {Object} panelStore new question panel custom hook
  */
 export default function NewQuestionPanelModal({ panelStore, onQuestionUpdated }) {
-  const concepts = useContext(ConceptsContext);
+  const { concepts } = useContext(BiolinkContext);
   /**
    * Get the panel background color
    * @param {Boolean} isNodePanel is panel of type node

@@ -2,7 +2,8 @@
  * Many Translator services now have differently formatted types. These utilities
  * should help keep everything consistent internally.
  * Incoming biolink types are space case
- * All outgoing types are 'biolink:PascalCase'
+ * All outgoing node types are 'biolink:PascalCase'
+ * All outgoing edge types are 'biolink:snake_case'
  * User input types can be anything
  */
 import _ from 'lodash';
@@ -37,11 +38,21 @@ function toArray(types) {
 }
 
 /**
+ * Convert type from biolink into pascal case
+ * @param {string} type biolink type to ingest
+ * @returns {string} 'biolink:PascalType'
+ */
+function nodeFromBiolink(type) {
+  return type && `biolink:${toPascalCase(type)}`;
+}
+
+/**
  * Convert type from biolink into snake case
  * @param {string} type biolink type to ingest
+ * @returns {string} 'biolink:snake_case'
  */
-function fromBiolink(type) {
-  return type && `biolink:${toPascalCase(type)}`;
+function edgeFromBiolink(type) {
+  return type && `biolink:${toSnakeCase(type)}`;
 }
 
 /**
@@ -69,6 +80,26 @@ function displayType(arg) {
   }
 }
 
+function displayPredicate(arg) {
+  if (!arg) {
+    return '';
+  }
+  let label = arg;
+  if (Array.isArray(label)) {
+    [label] = label;
+  }
+  try {
+    // remove 'biolink:'
+    const [, snake_type] = label.split(':');
+    // split snake case
+    const out = snake_type.split(/_/g);
+    return out.join(' ');
+  } catch (err) {
+    console.log('Error making display predicate:', err);
+    return '';
+  }
+}
+
 /**
  * Convert label into prettier display
  * @param {string|array} arg string or array of wanted pretty display
@@ -87,7 +118,8 @@ function prettyDisplay(arg) {
 }
 
 export default {
-  fromBiolink,
+  nodeFromBiolink,
+  edgeFromBiolink,
   toSpaceCase,
   toCamelCase,
   toPascalCase,
@@ -95,4 +127,5 @@ export default {
   toArray,
   prettyDisplay,
   displayType,
+  displayPredicate,
 };

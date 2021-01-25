@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import ReactTable from 'react-table-6';
 import _ from 'lodash';
 
-import ConceptsContext from '@/context/concepts';
+import BiolinkContext from '@/context/biolink';
 
 import AnswersetGraph from '@/components/shared/graphs/AnswersetGraph';
 import getNodeTypeColorMap from '@/utils/colorUtils';
@@ -16,7 +16,7 @@ export default function NeightborhoodViewer(props) {
   const [answers, setAnswers] = useState([]);
   const [columns, setColumns] = useState([]);
 
-  const concepts = useContext(ConceptsContext);
+  const { concepts } = useContext(BiolinkContext);
 
   // Filter method for table columns that is case-insensitive, and matches all rows that contain
   // provided sub-string

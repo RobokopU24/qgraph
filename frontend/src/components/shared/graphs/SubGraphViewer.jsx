@@ -5,7 +5,7 @@ import Graph from 'react-graph-vis';
 import shortid from 'shortid';
 import _ from 'lodash';
 
-import ConceptsContext from '@/context/concepts';
+import BiolinkContext from '@/context/biolink';
 import getNodeTypeColorMap from '@/utils/colorUtils';
 import strings from '@/utils/stringUtils';
 import AlertContext from '@/context/alert';
@@ -93,7 +93,7 @@ export default function SubGraphViewer(props) {
   const [displayGraphOptions, updateGraphOptions] = useState(defaultGraphOptions);
   const network = useRef(null);
   const displayAlert = useContext(AlertContext);
-  const concepts = useContext(ConceptsContext);
+  const { concepts } = useContext(BiolinkContext);
 
   // Bind network fit callbacks to resize graph and cancel fit callbacks on start of zoom/pan
   function setNetworkCallbacks() {

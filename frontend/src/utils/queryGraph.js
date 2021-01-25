@@ -133,4 +133,5 @@ const convert = {
 export default {
   getEmptyGraph,
   convert,
+  standardizeType,
 };

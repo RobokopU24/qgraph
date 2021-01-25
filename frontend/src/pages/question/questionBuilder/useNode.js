@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react';
 
 import strings from '@/utils/stringUtils';
-import ConceptsContext from '@/context/concepts';
+import BiolinkContext from '@/context/biolink';
 
 export default function useNodePanels() {
   const [type, setType] = useState('');
@@ -14,7 +14,7 @@ export default function useNodePanels() {
   const [curies, updateCuries] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const biolinkConcepts = useContext(ConceptsContext);
+  const { concepts: biolinkConcepts } = useContext(BiolinkContext);
 
   function reset() {
     setType('');
