@@ -9,9 +9,9 @@ import API from '@/API';
 import { useVisibility } from '@/utils/cache';
 import AlertContext from '@/context/alert';
 import UserContext from '@/context/user';
-import parseMessage from '@/utils/parseMessage';
 import usePageStatus from '@/utils/usePageStatus';
 import useMessageStore from '@/stores/useMessageStore';
+import trapiUtils from '@/utils/trapiUtils';
 
 import AnswersetView from '@/components/shared/answersetView/AnswersetView';
 
@@ -145,15 +145,17 @@ export default function SimpleViewer() {
           showErrorAndReset('There was the problem parsing the file. Is this valid JSON?');
           return;
         }
-        let parsedMessage;
-        try {
-          parsedMessage = parseMessage(message);
-        } catch (err) {
-          showErrorAndReset(err.message);
+
+        const validationErrors = trapiUtils.validateMessage(message);
+        if (validationErrors) {
+          showErrorAndReset(
+            `Found errors while parsing message: ${validationErrors.join(', ')}`,
+          );
           return;
         }
+
         try {
-          messageStore.initializeMessage(parsedMessage);
+          messageStore.initializeMessage(message);
           setMessageSaved(true);
           pageStatus.setSuccess();
         } catch (err) {

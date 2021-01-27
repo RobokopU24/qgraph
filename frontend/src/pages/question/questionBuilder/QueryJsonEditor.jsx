@@ -19,6 +19,7 @@ import QuestionGraphView from '@/components/shared/graphs/QuestionGraphView';
 
 import AlertContext from '@/context/alert';
 import usePageStatus from '@/utils/usePageStatus';
+import trapiUtils from '@/utils/trapiUtils';
 import queryGraphUtils from '@/utils/queryGraph';
 
 import './jsonEditor.css';
@@ -40,7 +41,7 @@ export default function QuestionJsonEditor(props) {
   function updateJson(e) {
     // updated_src is the updated graph RJV gives back
     const data = e.updated_src;
-    setErrorMessages(queryGraphUtils.validateQueryGraph(data));
+    setErrorMessages(trapiUtils.validateGraph(data));
     updateQueryGraph(data);
   }
 
@@ -55,7 +56,7 @@ export default function QuestionJsonEditor(props) {
         try {
           const graph = JSON.parse(fileContents);
 
-          setErrorMessages(queryGraphUtils.validateQueryGraph(graph));
+          setErrorMessages(trapiUtils.validateGraph(graph));
           updateQueryGraph(graph);
           initialQueryGraph.current = questionStore.query_graph;
         } catch (err) {
@@ -72,7 +73,7 @@ export default function QuestionJsonEditor(props) {
   }
 
   useEffect(() => {
-    setErrorMessages(queryGraphUtils.validateQueryGraph(questionStore.query_graph));
+    setErrorMessages(trapiUtils.validateGraph(questionStore.query_graph));
     updateQueryGraph(questionStore.query_graph);
     initialQueryGraph.current = questionStore.query_graph;
   }, [questionStore.query_graph]);
@@ -98,7 +99,7 @@ export default function QuestionJsonEditor(props) {
               title="Revert"
               disabled={!pageStatus.displayPage}
               onClick={() => {
-                setErrorMessages(queryGraphUtils.validateQueryGraph(initialQueryGraph.current));
+                setErrorMessages(trapiUtils.validateGraph(initialQueryGraph.current));
                 updateQueryGraph(initialQueryGraph.current);
               }}
             >

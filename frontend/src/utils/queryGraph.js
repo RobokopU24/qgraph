@@ -90,44 +90,6 @@ function pruneCategories(e) {
   }
 }
 
-/*
- * Quick question validity checks (not bullet proof, just to help you out a little)
-*/
-function validateQueryGraph(graph) {
-  const errMessage = [];
-
-  // Check for nodes
-  if (!graph.nodes) {
-    errMessage.push('A query graph requires a "nodes" property.');
-  } else {
-    if (Array.isArray(graph.nodes)) {
-      errMessage.push('Nodes should be an object.');
-    }
-    // Since every node has an id we can check if they are unique
-    const nodeIds = new Set(Object.keys(graph.nodes));
-    const hasUniqueNodeIds = nodeIds.size === Object.keys(graph.nodes).length;
-    if (!hasUniqueNodeIds) {
-      errMessage.push('There are multiple nodes with the same ID.');
-    }
-  }
-
-  // Check for edges
-  if (!graph.edges) {
-    errMessage.push('A query graph requires an "edges" property.');
-  } else {
-    if (Array.isArray(graph.edges)) {
-      errMessage.push('Edges should be an object.');
-    }
-    // each edge should have a valid source and target id
-    const edgesHaveIds = Object.keys(graph.edges).reduce((val, e) => val && graph.edges[e] && graph.edges[e].subject && graph.edges[e].object, true);
-    if (!edgesHaveIds) {
-      errMessage.push('Each edge must have a valid "subject" and a "object" property.');
-    }
-  }
-
-  return errMessage;
-}
-
 /**
  * Conversion utilities between
  * different query graph representations
@@ -170,7 +132,6 @@ const convert = {
 
 export default {
   getEmptyGraph,
-  validateQueryGraph,
   convert,
   standardizeType,
 };

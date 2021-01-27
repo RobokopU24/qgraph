@@ -1,11 +1,11 @@
 import React, { useContext, useEffect } from 'react';
 
 import useMessageStore from '@/stores/useMessageStore';
-import parseMessage from '@/utils/parseMessage';
 
 import API from '@/API';
 import UserContext from '@/context/user';
 import usePageStatus from '@/utils/usePageStatus';
+import trapiUtils from '@/utils/trapiUtils';
 
 import AnswersetView from './AnswersetView';
 
@@ -60,15 +60,16 @@ export default function StoredAnswersetView({ question_id, answer_id }) {
     const message =
       { ...questionResponseJSON, ...answerResponseJSON };
 
-    let parsedMessage;
-    try {
-      parsedMessage = parseMessage(message);
-    } catch (err) {
-      pageStatus.setFailure(err.message);
+    const validationErrors = trapiUtils.validateMessage(message);
+    if (validationErrors) {
+      pageStatus.setFailure(
+        `Found errors while parsing message: ${validationErrors.join(', ')}`,
+      );
+      return;
     }
 
     try {
-      messageStore.initializeMessage(parsedMessage);
+      messageStore.initializeMessage(message);
       pageStatus.setSuccess();
     } catch (err) {
       pageStatus.setFailure(`Failed to fully load this message. ${err.message}`);

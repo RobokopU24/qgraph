@@ -11,10 +11,10 @@ import UserContext from '@/context/user';
 import API from '@/API';
 
 import AnswersetView from '@/components/shared/answersetView/AnswersetView';
-import parseMessage from '@/utils/parseMessage';
 import useMessageStore from '@/stores/useMessageStore';
 import usePageStatus from '@/utils/usePageStatus';
 import queryGraphUtils from '@/utils/queryGraph';
+import trapiUtils from '@/utils/trapiUtils';
 
 import './newQuestion.css';
 import QuestionBuilder from './questionBuilder/QuestionBuilder';
@@ -71,13 +71,16 @@ export default function SimpleQuestion() {
       return;
     }
 
-    try {
-      const parsedMessage = parseMessage(response);
-      messageStore.initializeMessage(parsedMessage);
-    } catch (err) {
-      answersetStatus.setFailure(response.message);
+    const { message } = response;
+    const validationErrors = trapiUtils.validateMessage(message);
+    if (validationErrors.length) {
+      answersetStatus.setFailure(
+        `Found errors while parsing message: ${validationErrors.join(', ')}`,
+      );
       return;
     }
+
+    messageStore.initializeMessage(message);
     answersetStatus.setSuccess();
   }
 

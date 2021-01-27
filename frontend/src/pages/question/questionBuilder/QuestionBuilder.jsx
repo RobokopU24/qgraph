@@ -13,6 +13,7 @@ import slugify from 'slugify';
 import API from '@/API';
 
 import queryGraphUtils from '@/utils/queryGraph';
+import trapiUtils from '@/utils/trapiUtils';
 import { formatDateTimeShort } from '@/utils/cache';
 import HelpButton from '@/components/shared/HelpButton';
 
@@ -103,7 +104,7 @@ export default function QuestionBuilder(props) {
       return;
     }
 
-    const validationErrors = queryGraphUtils.validateQueryGraph(message.query_graph);
+    const validationErrors = trapiUtils.validateGraph(message.query_graph);
 
     validationErrors.forEach((e) => {
       displayAlert('error', e);
