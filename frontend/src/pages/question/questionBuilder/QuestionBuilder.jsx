@@ -86,9 +86,9 @@ export default function QuestionBuilder(props) {
   }
 
   function validateAndParseFile(fileContents) {
-    let fileContentObj;
+    let message;
     try {
-      fileContentObj = JSON.parse(fileContents);
+      message = JSON.parse(fileContents);
     } catch (err) {
       displayAlert('error',
         'The provided file is not valid JSON. Please fix and try again.');
@@ -96,34 +96,29 @@ export default function QuestionBuilder(props) {
       return;
     }
 
-    if (!('query_graph' in fileContentObj)) {
+    if (!('query_graph' in message)) {
       displayAlert('error',
         'The provided file does not have a query_graph object. Please ensure that the file format adheres to the Reasoner Standard API Query Schema.');
       setStep('options');
       return;
     }
 
-    if (!_.isArray(fileContentObj.query_graph.nodes) ||
-       !_.isArray(fileContentObj.query_graph.edges)) {
-      displayAlert('error',
-        'The provided file does not have an array of nodes or edges. Please ensure that the file format adheres to the Reasoner Standard API Query Schema.');
+    const validationErrors = queryGraphUtils.validateQueryGraph(message.query_graph);
+
+    validationErrors.forEach((e) => {
+      displayAlert('error', e);
       setStep('options');
-      return;
-    }
+    });
 
     // TODO: this is pretty hacky
-    fileContentObj.query_graph.nodes.forEach((node) => {
+    Object.values(message.query_graph.nodes).forEach((node) => {
       if (!node.label) {
         node.label = `${node.id}: ${node.name || node.curie || node.category}`;
       }
       queryGraphUtils.standardizeType(node);
     });
 
-    fileContentObj.query_graph.edges.forEach(queryGraphUtils.standardizeType);
-
-    questionStore.updateQueryGraph(
-      queryGraphUtils.convert.reasonerToInternal(fileContentObj.query_graph),
-    );
+    questionStore.updateQueryGraph(message.query_graph);
     setStep('build');
   }
 

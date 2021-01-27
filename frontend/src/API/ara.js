@@ -1,7 +1,8 @@
 import axios from 'axios';
 import utils from './utils';
 
-const messenger = 'http://robokop.renci.org:4868';
+// const messenger = 'http://robokop.renci.org:4866';
+const strider = 'http://robokop.renci.org:5781';
 
 const baseRoutes = {
   /**
@@ -10,7 +11,7 @@ const baseRoutes = {
    */
   async getAnswer(question) {
     const config = {
-      url: `${messenger}/answer`,
+      url: `${strider}/query`,
       method: 'POST',
       data: {
         message: {

@@ -4,8 +4,10 @@ const axios = require('axios');
 const robokache = require('./robokache');
 const { handleAxiosError } = require('./utils');
 
-const messenger = process.env.MESSENGER_HOST ||
-                    'http://robokop.renci.org:4868';
+// const messenger = process.env.MESSENGER_HOST ||
+//                    'http://robokop.renci.org:4868';
+const strider = process.env.STRIDER_HOST ||
+                    'http://robokop.renci.org:5781';
 
 router.route('/answer')
   .post(async (req, res) => {
@@ -18,7 +20,7 @@ router.route('/answer')
       const message = response;
       const config = {
         method: 'POST',
-        url: `${messenger}/answer`,
+        url: `${strider}/answer`,
         data: {
           message,
         },

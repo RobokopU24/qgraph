@@ -61,14 +61,16 @@ export default function SimpleQuestion() {
     toggleSubmittedQuestion(true);
     answersetStatus.setLoading();
 
-    const query_graph = queryGraphUtils.convert.internalToReasoner(
-      questionStore.query_graph,
-    );
-    const response = await API.ara.getAnswer(query_graph);
+    // Strip labels from nodes
+    const prepared_query_graph = _.cloneDeep(questionStore.query_graph);
+    Object.values(prepared_query_graph.nodes).forEach((n) => delete n.label);
+
+    const response = await API.ara.getAnswer(prepared_query_graph);
     if (response.status === 'error') {
       answersetStatus.setFailure(response.message);
       return;
     }
+
     try {
       const parsedMessage = parseMessage(response);
       messageStore.initializeMessage(parsedMessage);

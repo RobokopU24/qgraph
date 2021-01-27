@@ -37,47 +37,10 @@ export default function QuestionJsonEditor(props) {
 
   const displayAlert = useContext(AlertContext);
 
-  function validateQueryGraph(graph) {
-    // Quick question validity checks (not bullet proof, just to help you out a little)
-    // This is primarily meant to catch graph display errors
-    const errMessage = [];
-
-    // Check for nodes
-    if (!graph.nodes) {
-      errMessage.push('A query graph requires a "nodes" property.');
-    } else {
-      if (Array.isArray(graph.nodes)) {
-        errMessage.push('Nodes should be an object.');
-      }
-      // Since every node has an id we can check if they are unique
-      const nodeIds = new Set(Object.keys(graph.nodes));
-      const hasUniqueNodeIds = nodeIds.size === Object.keys(graph.nodes).length;
-      if (!hasUniqueNodeIds) {
-        errMessage.push('There are multiple nodes with the same ID.');
-      }
-    }
-
-    // Check for edges
-    if (!graph.edges) {
-      errMessage.push('A query graph requires an "edges" property.');
-    } else {
-      if (Array.isArray(graph.edges)) {
-        errMessage.push('Edges should be an object.');
-      }
-      // each edge should have a valid source and target id
-      const edgesHaveIds = Object.keys(graph.edges).reduce((val, e) => val && graph.edges[e] && graph.edges[e].subject && graph.edges[e].object, true);
-      if (!edgesHaveIds) {
-        errMessage.push('Each edge must have a valid "subject" and a "object" property.');
-      }
-    }
-
-    setErrorMessages(errMessage);
-  }
-
   function updateJson(e) {
     // updated_src is the updated graph RJV gives back
     const data = e.updated_src;
-    validateQueryGraph(data);
+    setErrorMessages(queryGraphUtils.validateQueryGraph(data));
     updateQueryGraph(data);
   }
 
@@ -90,24 +53,9 @@ export default function QuestionJsonEditor(props) {
       fr.onload = (e) => {
         const fileContents = e.target.result;
         try {
-          let graph = JSON.parse(fileContents);
+          const graph = JSON.parse(fileContents);
 
-          // rip out just the query graph and convert to our internal
-          // representation
-          if (graph.query_graph) {
-            graph = graph.query_graph;
-          } else if (graph.question_graph) {
-            graph = graph.question_graph;
-          }
-          if (graph.nodes && Array.isArray(graph.nodes) && Array.isArray(graph.edges)) {
-            graph.nodes.forEach((node) => {
-              if (!node.label) {
-                node.label = `${node.id}: ${node.name || node.curie || node.category}`;
-              }
-            });
-            graph = queryGraphUtils.convert.reasonerToInternal(graph);
-          }
-          validateQueryGraph(graph);
+          setErrorMessages(queryGraphUtils.validateQueryGraph(graph));
           updateQueryGraph(graph);
           initialQueryGraph.current = questionStore.query_graph;
         } catch (err) {
@@ -124,7 +72,7 @@ export default function QuestionJsonEditor(props) {
   }
 
   useEffect(() => {
-    validateQueryGraph(questionStore.query_graph);
+    setErrorMessages(queryGraphUtils.validateQueryGraph(questionStore.query_graph));
     updateQueryGraph(questionStore.query_graph);
     initialQueryGraph.current = questionStore.query_graph;
   }, [questionStore.query_graph]);
@@ -150,7 +98,7 @@ export default function QuestionJsonEditor(props) {
               title="Revert"
               disabled={!pageStatus.displayPage}
               onClick={() => {
-                validateQueryGraph(initialQueryGraph.current);
+                setErrorMessages(queryGraphUtils.validateQueryGraph(initialQueryGraph.current));
                 updateQueryGraph(initialQueryGraph.current);
               }}
             >
