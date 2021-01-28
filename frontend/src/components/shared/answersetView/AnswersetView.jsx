@@ -22,7 +22,7 @@ function bindingTrapiToStoreFormat(oldBinding) {
   Object.keys(oldBinding.edge_bindings).forEach((qg_id) => {
     const kg_ids = [];
     oldBinding.edge_bindings[qg_id].forEach((kg_id) => {
-      kg_ids.push(kg_id);
+      kg_ids.push(kg_id.id);
     });
     convertedEdgeBindings.push({
       qg_id,
@@ -33,7 +33,7 @@ function bindingTrapiToStoreFormat(oldBinding) {
   Object.keys(oldBinding.node_bindings).forEach((qg_id) => {
     const kg_ids = [];
     oldBinding.node_bindings[qg_id].forEach((kg_id) => {
-      kg_ids.push(kg_id);
+      kg_ids.push(kg_id.id);
     });
     convertedNodeBindings.push({
       qg_id,
@@ -46,6 +46,10 @@ function bindingTrapiToStoreFormat(oldBinding) {
   };
 }
 
+/*
+ * Convert a message of the new Trapi v1.0 format to match
+ * the old format used by useMessageStore
+*/
 function msgTrapiToStoreFormat(oldMessage) {
   const message = _.cloneDeep(oldMessage);
   message.query_graph = queryGraphUtils.convert.internalToReasoner(message.query_graph);

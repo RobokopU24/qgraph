@@ -1,6 +1,4 @@
-import React, { useContext, useEffect } from 'react';
-
-import useMessageStore from '@/stores/useMessageStore';
+import React, { useContext, useEffect, useState } from 'react';
 
 import API from '@/API';
 import UserContext from '@/context/user';
@@ -14,8 +12,8 @@ import AnswersetView from './AnswersetView';
  * Wrapper around AnswersetView
  */
 export default function StoredAnswersetView({ question_id, answer_id }) {
+  const [message, setMessage] = useState(null);
   const pageStatus = usePageStatus(true);
-  const messageStore = useMessageStore();
   const user = useContext(UserContext);
 
   async function fetchQuestionAnswerData() {
@@ -57,7 +55,7 @@ export default function StoredAnswersetView({ question_id, answer_id }) {
       return;
     }
 
-    const message =
+    const newMessage =
       { ...questionResponseJSON, ...answerResponseJSON };
 
     const validationErrors = trapiUtils.validateMessage(message);
@@ -68,12 +66,8 @@ export default function StoredAnswersetView({ question_id, answer_id }) {
       return;
     }
 
-    try {
-      messageStore.initializeMessage(message);
-      pageStatus.setSuccess();
-    } catch (err) {
-      pageStatus.setFailure(`Failed to fully load this message. ${err.message}`);
-    }
+    setMessage(newMessage);
+    pageStatus.setSuccess();
   }
 
   useEffect(() => {
@@ -88,7 +82,7 @@ export default function StoredAnswersetView({ question_id, answer_id }) {
         <>
           <AnswersetView
             user={user}
-            messageStore={messageStore}
+            message={message}
             omitHeader
           />
         </>

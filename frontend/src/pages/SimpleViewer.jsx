@@ -10,14 +10,13 @@ import { useVisibility } from '@/utils/cache';
 import AlertContext from '@/context/alert';
 import UserContext from '@/context/user';
 import usePageStatus from '@/utils/usePageStatus';
-import useMessageStore from '@/stores/useMessageStore';
 import trapiUtils from '@/utils/trapiUtils';
 
 import AnswersetView from '@/components/shared/answersetView/AnswersetView';
 
 export default function SimpleViewer() {
   const [messageSaved, setMessageSaved] = useState(false);
-  const messageStore = useMessageStore();
+  const [message, setMessage] = useState();
   const pageStatus = usePageStatus(false);
   const visibility = useVisibility();
   const displayAlert = useContext(AlertContext);
@@ -39,7 +38,7 @@ export default function SimpleViewer() {
 
     const questionId = response.id;
     // Upload question data
-    const questionData = JSON.stringify({ query_graph: messageStore.message.query_graph }, null, 2);
+    const questionData = JSON.stringify(message, null, 2);
     response = await API.cache.setQuestionData(questionId, questionData, user.id_token);
     if (response.status === 'error') {
       displayAlert('error', response.message);
@@ -83,7 +82,7 @@ export default function SimpleViewer() {
     const questionId = response.id;
 
     // Upload question data
-    const questionData = JSON.stringify({ query_graph: messageStore.message.query_graph }, null, 2);
+    const questionData = JSON.stringify({ query_graph: message.query_graph }, null, 2);
     response = await API.cache.setQuestionData(questionId, questionData, user.id_token);
     if (response.status === 'error') {
       displayAlert('error', response.message);
@@ -99,8 +98,8 @@ export default function SimpleViewer() {
     const answerId = response.id;
     // Upload answer data
     const answerData = JSON.stringify({
-      knowledge_graph: messageStore.message.knowledge_graph,
-      results: messageStore.message.results,
+      knowledge_graph: message.knowledge_graph,
+      results: message.results,
     }, null, 2);
     // Upload answer data
     response = await API.cache.setAnswerData(answerId, answerData, user.id_token);
@@ -138,29 +137,25 @@ export default function SimpleViewer() {
       };
       fr.onload = (e) => {
         const fileContents = e.target.result;
-        let message;
+        let newMessage;
         try {
-          message = JSON.parse(fileContents);
+          newMessage = JSON.parse(fileContents);
         } catch (err) {
           showErrorAndReset('There was the problem parsing the file. Is this valid JSON?');
           return;
         }
 
-        const validationErrors = trapiUtils.validateMessage(message);
-        if (validationErrors) {
+        const validationErrors = trapiUtils.validateMessage(newMessage);
+        if (validationErrors.length) {
           showErrorAndReset(
             `Found errors while parsing message: ${validationErrors.join(', ')}`,
           );
           return;
         }
 
-        try {
-          messageStore.initializeMessage(message);
-          setMessageSaved(true);
-          pageStatus.setSuccess();
-        } catch (err) {
-          showErrorAndReset(err.message);
-        }
+        setMessage(newMessage);
+        setMessageSaved(true);
+        pageStatus.setSuccess();
       };
       fr.onerror = () => {
         showErrorAndReset('There was the problem loading the file. Is this valid JSON?');
@@ -178,7 +173,7 @@ export default function SimpleViewer() {
           {messageSaved ? (
             <>
               <AnswersetView
-                messageStore={messageStore}
+                message={message}
                 omitHeader
               />
               {user && (
