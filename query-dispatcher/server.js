@@ -16,6 +16,4 @@ app.use(bodyParser.json({ limit: '4000mb' }));
 // Add routes
 app.use('/', routes);
 
-app.listen(80, () => {
-  console.log('Server running on port 80');
-});
+app.listen(80);
