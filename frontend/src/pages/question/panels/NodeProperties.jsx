@@ -34,19 +34,19 @@ export default function NodeProperties(props) {
                   />
                 </td>
                 <td>
-                  {(!property.category || property.category === 'string') && (
+                  {(!property.type || property.type === 'string') && (
                     <input
                       id="propertyValue"
-                      style={!property.category ? { backgroundColor: '#CCCCCC' } : {}}
+                      style={!property.type ? { backgroundColor: '#CCCCCC' } : {}}
                       placeholder="Enter a value here."
-                      category="text"
+                      type="text"
                       onChange={(e) => activePanel.updateProperty(e.target.value, i, 'value')}
                       value={property.value}
-                      disabled={!property.category}
+                      disabled={!property.type}
                       className="constraintInput"
                     />
                   )}
-                  {property.category === 'boolean' && (
+                  {property.type === 'boolean' && (
                     <DropdownList
                       data={[true, false]}
                       onChange={(value) => activePanel.updateProperty(value, i, 'value')}
@@ -54,20 +54,20 @@ export default function NodeProperties(props) {
                       containerClassName="constraintInput"
                     />
                   )}
-                  {property.category === 'integer' && (
+                  {property.type === 'integer' && (
                     <input
                       id="propertyValue"
-                      category="number"
+                      type="number"
                       min="0"
                       onChange={(e) => activePanel.updateProperty(Number(e.target.value), i, 'value')}
                       value={property.value}
                       className="constraintInput"
                     />
                   )}
-                  {property.category === 'float' && (
+                  {property.type === 'float' && (
                     <input
                       id="propertyValue"
-                      category="number"
+                      type="number"
                       min="0"
                       step="0.1"
                       onChange={(e) => activePanel.updateProperty(Number(e.target.value), i, 'value')}

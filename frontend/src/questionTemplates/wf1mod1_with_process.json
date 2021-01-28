@@ -1,6 +1,6 @@
 {
   "name": "WF1 Module 1 (version 2) - $name1$ ($identifier1$)",
-  "natural_question": "WF1 Module 1 (version 2): $name1$ ($identifier1$) to phenocategory feature to genetic condition with shared biological process.",
+  "natural_question": "WF1 Module 1 (version 2): $name1$ ($identifier1$) to phenotype feature to genetic condition with shared biological process.",
   "query_graph": {
     "nodes": {
       "n0": {

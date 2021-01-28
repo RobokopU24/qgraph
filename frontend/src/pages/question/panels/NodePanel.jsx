@@ -80,7 +80,7 @@ export default function NodePanel({ panelStore }) {
     const response = await API.nameResolver.entityLookup(newSearchTerm, 1000);
     if (response.status === 'error') {
       displayAlert('error',
-        'Failed to contact name resolver to search curies. You will still be able to select generic categorys. Please try again later');
+        'Failed to contact name resolver to search curies. You will still be able to select generic categories. Please try again later');
       node.setLoading(false);
       return;
     }
@@ -92,7 +92,7 @@ export default function NodePanel({ panelStore }) {
 
     if (normalizationResponse.status === 'error') {
       displayAlert('error',
-        'Failed to contact node normalizer to search curies. You will still be able to select generic categorys. Please try again later');
+        'Failed to contact node normalizer to search curies. You will still be able to select generic categories. Please try again later');
       node.setLoading(false);
       return;
     }

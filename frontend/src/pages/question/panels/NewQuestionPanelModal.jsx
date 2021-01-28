@@ -17,7 +17,7 @@ export default function NewQuestionPanelModal({ panelStore, onQuestionUpdated })
   const { concepts } = useContext(BiolinkContext);
   /**
    * Get the panel background color
-   * @param {Boolean} isNodePanel is panel of category node
+   * @param {Boolean} isNodePanel is panel of type node
    */
   function getBackgroundColor(isNodePanel) {
     // set the color of the node/edge panel header

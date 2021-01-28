@@ -61,7 +61,7 @@ export default function About() {
                       <a href={license.url}>{license.url}</a>
                     </p>
                     <p>
-                      {'Category: '}
+                      {'Type: '}
                       {license.license}
                     </p>
                     <p>

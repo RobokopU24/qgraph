@@ -127,7 +127,7 @@ export default function CurieConceptSelector({
       <div id="nodeSelectorContainer">
         <InputGroup>
           <FormControl
-            category="text"
+            type="text"
             className="curieSelectorInput"
             placeholder="Start typing to search."
             value={searchTerm}

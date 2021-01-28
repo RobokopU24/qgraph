@@ -74,7 +74,7 @@ export default function useNewQuestionPanel() {
     if (panelInfo.type === 'node') {
       if (panelInfo.id) { // load node from query graph
         const nodeSeed = { ...query_graph.nodes[panelInfo.id] };
-        // Convert array of categorys to string before seeding
+        // Convert array of categories to string before seeding
         // panel
         if (Array.isArray(nodeSeed.category)) {
           [nodeSeed.category] = nodeSeed.category;
