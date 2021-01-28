@@ -17,10 +17,40 @@ export const answerSetTabEnum = {
   aggregate: 2,
 };
 
-function msgInternalToReasoner(oldMessage) {
+function bindingTrapiToStoreFormat(oldBinding) {
+  const convertedEdgeBindings = [];
+  Object.keys(oldBinding.edge_bindings).forEach((qg_id) => {
+    const kg_ids = [];
+    oldBinding.edge_bindings[qg_id].forEach((kg_id) => {
+      kg_ids.push(kg_id);
+    });
+    convertedEdgeBindings.push({
+      qg_id,
+      kg_id: kg_ids,
+    });
+  });
+  const convertedNodeBindings = [];
+  Object.keys(oldBinding.node_bindings).forEach((qg_id) => {
+    const kg_ids = [];
+    oldBinding.node_bindings[qg_id].forEach((kg_id) => {
+      kg_ids.push(kg_id);
+    });
+    convertedNodeBindings.push({
+      qg_id,
+      kg_id: kg_ids,
+    });
+  });
+  return {
+    node_bindings: convertedNodeBindings,
+    edge_bindings: convertedEdgeBindings,
+  };
+}
+
+function msgTrapiToStoreFormat(oldMessage) {
   const message = _.cloneDeep(oldMessage);
   message.query_graph = queryGraphUtils.convert.internalToReasoner(message.query_graph);
   message.knowledge_graph = queryGraphUtils.convert.internalToReasoner(message.knowledge_graph);
+  message.results = message.results.map(bindingTrapiToStoreFormat);
   return message;
 }
 
@@ -46,9 +76,8 @@ export default function AnswersetView(props) {
 
   const messageStore = useMessageStore();
 
-  debugger;
   useEffect(() => {
-    messageStore.initializeMessage(msgInternalToReasoner(message));
+    messageStore.initializeMessage(msgTrapiToStoreFormat(message));
   }, [message]);
 
   const [tabKey, setTabKey] = useState(answerSetTabEnum.answerTable);
