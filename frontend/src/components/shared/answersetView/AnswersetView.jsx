@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import {
   Grid, Tabs, Tab,
 } from 'react-bootstrap';
 
+import useMessageStore from '@/stores/useMessageStore';
+import queryGraphUtils from '@/utils/queryGraph';
 import KnowledgeGraph from '../graphs/KnowledgeGraph';
 import ResultsTable from './resultsTable/ResultsTable';
 import QuestionGraphContainer from '../graphs/QuestionGraphContainer';
@@ -15,9 +17,16 @@ export const answerSetTabEnum = {
   aggregate: 2,
 };
 
+function msgInternalToReasoner(oldMessage) {
+  const message = _.cloneDeep(oldMessage);
+  message.query_graph = queryGraphUtils.convert.internalToReasoner(message.query_graph);
+  message.knowledge_graph = queryGraphUtils.convert.internalToReasoner(message.knowledge_graph);
+  return message;
+}
+
 /**
  * Full Answerset View
- * @param {object} messageStore message store custom hook
+ * @param {object} message message to display
  * @param {array} concepts an array of node types
  * @param {string} question name of the question
  * @param {object} style custom styling to apply to answerset view container
@@ -32,8 +41,16 @@ export const answerSetTabEnum = {
  */
 export default function AnswersetView(props) {
   const {
-    messageStore, concepts, style,
+    message, concepts, style,
   } = props;
+
+  const messageStore = useMessageStore();
+
+  debugger;
+  useEffect(() => {
+    messageStore.initializeMessage(msgInternalToReasoner(message));
+  }, [message]);
+
   const [tabKey, setTabKey] = useState(answerSetTabEnum.answerTable);
 
   const hasResults = messageStore.message && messageStore.message.results && Array.isArray(messageStore.message.results);

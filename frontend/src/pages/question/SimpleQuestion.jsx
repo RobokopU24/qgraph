@@ -11,7 +11,6 @@ import UserContext from '@/context/user';
 import API from '@/API';
 
 import AnswersetView from '@/components/shared/answersetView/AnswersetView';
-import useMessageStore from '@/stores/useMessageStore';
 import usePageStatus from '@/utils/usePageStatus';
 import queryGraphUtils from '@/utils/queryGraph';
 import trapiUtils from '@/utils/trapiUtils';
@@ -23,14 +22,14 @@ import useQuestionStore from './useQuestionStore';
 
 export default function SimpleQuestion() {
   const user = useContext(UserContext);
-  const messageStore = useMessageStore();
+  const [message, setMessage] = useState(null);
   const questionStore = useQuestionStore();
   const answersetStatus = usePageStatus();
 
   const [submittedQuestion, toggleSubmittedQuestion] = useState(false);
 
   function onDownloadAnswer() {
-    const data = messageStore.message;
+    const data = message;
 
     // Transform the data into a json blob and give it a url
     const json = JSON.stringify(data);
@@ -48,7 +47,7 @@ export default function SimpleQuestion() {
   function onResetQuestion() {
     if (window.confirm('Are you sure you want to reset this question? This action cannot be undone.')) {
       const emptyGraph = { nodes: [], edges: [] };
-      messageStore.initializeMessage({
+      setMessage({
         results: [],
         query_graph: emptyGraph,
         knowledge_graph: emptyGraph,
@@ -71,8 +70,8 @@ export default function SimpleQuestion() {
       return;
     }
 
-    const { message } = response;
-    const validationErrors = trapiUtils.validateMessage(message);
+    const newMessage = response.message;
+    const validationErrors = trapiUtils.validateMessage(newMessage);
     if (validationErrors.length) {
       answersetStatus.setFailure(
         `Found errors while parsing message: ${validationErrors.join(', ')}`,
@@ -80,7 +79,7 @@ export default function SimpleQuestion() {
       return;
     }
 
-    messageStore.initializeMessage(message);
+    setMessage(newMessage);
     answersetStatus.setSuccess();
   }
 
@@ -122,7 +121,7 @@ export default function SimpleQuestion() {
                 </div>
                 <AnswersetView
                   user={user}
-                  messageStore={messageStore}
+                  message={message}
                   omitHeader
                 />
               </>
