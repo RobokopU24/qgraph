@@ -13,7 +13,6 @@ router.route('/answer')
     try {
       let response = await robokache.getQuestionData(questionId, req.headers.authorization);
       if (response.status === 'error') {
-        console.log('Unable to get query graph.');
         return res.send(response);
       }
       const message = response;
@@ -49,13 +48,11 @@ router.route('/answer')
       // Create a new answer in Robokache
       response = await robokache.createAnswer({ parent: questionId, visibility: 1 }, req.headers.authorization);
       if (response.status === 'error') {
-        console.log('Unable to create a new answer.');
         return res.send(response);
       }
       const answerId = response.id;
       response = await robokache.setAnswerData(answerId, answer, req.headers.authorization);
       if (response.status === 'error') {
-        console.log('Unable to save answer.');
         return res.send(response);
       }
       return res.status(200).send({ id: answerId });
