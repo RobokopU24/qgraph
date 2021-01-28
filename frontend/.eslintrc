@@ -5,7 +5,8 @@
   "env": {
     "browser": true,
     "node": true,
-    "es6": true
+    "es6": true,
+    "jest": true
   },
   "settings": {
     "import/resolver": {
@@ -44,6 +45,18 @@
     ],
     "react-hooks/rules-of-hooks": "error",
     "react/jsx-one-expression-per-line": "off",
-    "react/jsx-props-no-spreading": "off"
+    "react/jsx-props-no-spreading": "off",
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": ["**/webpack*", "**/tests/*"]
+      }
+    ],
+    "react/jsx-filename-extension": [
+      0,
+      {
+        "extensions": ["*.test.js"]
+      }
+    ]
   }
 }
