@@ -76,8 +76,9 @@ function validateResult(r) {
  */
 function validateMessage(message) {
   const errors = [];
-  if (message.constructor !== Object) {
+  if (!message || message.constructor !== Object) {
     errors.push("The uploaded message isn't a valid JSON object.");
+    return errors;
   }
 
   errors.concat(validateGraph(message.knowledge_graph));

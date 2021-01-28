@@ -56,10 +56,10 @@ export default function StoredAnswersetView({ question_id, answer_id }) {
     }
 
     const newMessage =
-      { ...questionResponseJSON, ...answerResponseJSON };
+      { ...questionResponseJSON, ...answerResponseJSON.message };
 
-    const validationErrors = trapiUtils.validateMessage(message);
-    if (validationErrors) {
+    const validationErrors = trapiUtils.validateMessage(newMessage);
+    if (validationErrors.length) {
       pageStatus.setFailure(
         `Found errors while parsing message: ${validationErrors.join(', ')}`,
       );
