@@ -51,19 +51,19 @@ export default function useNewQuestionPanel() {
 
   /**
    * Create a readable edge label
-   * @param {string} sourceId an edge source id
-   * @param {string} targetId an edge target id
+   * @param {string} subject an edge source id
+   * @param {string} object an edge target id
    */
-  function getEdgeLabel(sourceId, targetId) {
+  function getEdgeLabel(subject, object) {
     let sourceLabel = '';
-    if (sourceId) {
-      sourceLabel = query_graph.nodes[sourceId].label || strings.displayCategory(query_graph.nodes[sourceId].category);
+    if (subject) {
+      sourceLabel = query_graph.nodes[subject].label || strings.displayCategory(query_graph.nodes[subject].category);
     }
     let targetLabel = '';
-    if (targetId) {
-      targetLabel = query_graph.nodes[targetId].label || strings.displayCategory(query_graph.nodes[targetId].category);
+    if (object) {
+      targetLabel = query_graph.nodes[object].label || strings.displayCategory(query_graph.nodes[object].category);
     }
-    return `${sourceId} ${sourceLabel} → ${targetId} ${targetLabel}`;
+    return `${subject} ${sourceLabel} → ${object} ${targetLabel}`;
   }
 
   /**
@@ -220,8 +220,8 @@ export default function useNewQuestionPanel() {
       q_graph.nodes[node_id] = new_node;
     } else {
       const new_edge = {
-        subject: edge.sourceId,
-        object: edge.targetId,
+        subject: edge.subject,
+        object: edge.object,
       };
       if (edge.predicate && edge.predicate.length > 0) {
         new_edge.predicate = edge.predicate;
