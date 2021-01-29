@@ -81,6 +81,11 @@ export default function AnswersetView(props) {
   const messageStore = useMessageStore();
 
   useEffect(() => {
+    Object.values(message.query_graph.nodes).forEach((node) => {
+      if (!node.label) {
+        node.label = `${node.name || node.id || node.category}`;
+      }
+    });
     messageStore.initializeMessage(msgTrapiToStoreFormat(message));
   }, [message]);
 
