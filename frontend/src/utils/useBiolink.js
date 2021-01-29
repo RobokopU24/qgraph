@@ -57,7 +57,7 @@ export default function useBiolink() {
 
   function getEdgePredicates() {
     return Object.entries(biolink.slots).map(([identifier, predicate]) => ({
-      type: strings.edgeFromBiolink(identifier),
+      predicate: strings.edgeFromBiolink(identifier),
       domain: strings.nodeFromBiolink(predicate.domain),
       range: strings.nodeFromBiolink(predicate.range),
     }));

@@ -19,7 +19,7 @@ const nodeBlocklist = [
 ];
 const edgeBlocklist = [
   'binding', 'ctime', 'id', 'publications', 'source_database',
-  'subject', 'object', 'category',
+  'subject', 'object', 'predicate',
 ];
 
 export default function AnswerExplorerInfo(props) {
@@ -131,7 +131,7 @@ export default function AnswerExplorerInfo(props) {
     return (
       <Card>
         <h3 className="cardTitle greyBackground">
-          {edge.category}
+          {edge.predicate}
         </h3>
         <CardContent className="cardContent">
           {origin && (
