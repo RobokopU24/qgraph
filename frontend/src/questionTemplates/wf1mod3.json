@@ -24,12 +24,12 @@
       "e1": {
         "subject": "n1",
         "object": "n0",
-        "category": "biolink:contributes_to"
+        "predicate": "biolink:contributes_to"
       },
       "e2": {
         "subject": "n2",
         "object": "n1",
-        "category": [
+        "predicate": [
           "biolink:increases_synthesis_of",
           "biolink:increases_abundance_of",
           "biolink:increases_response_to",
@@ -39,7 +39,7 @@
       "e3": {
         "subject": "n3",
         "object": "n2",
-        "category": [
+        "predicate": [
           "biolink:decreases_activity_of",
           "biolink:decreases_expression_of",
           "biolink:increases_degradation_of",
