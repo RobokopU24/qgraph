@@ -86,6 +86,11 @@ export default function AnswersetView(props) {
         node.label = `${node.name || node.id || node.category}`;
       }
     });
+    Object.values(message.query_graph.nodes).forEach(queryGraphUtils.standardizeCategory);
+    Object.values(message.query_graph.edges).forEach(queryGraphUtils.standardizePredicate);
+    Object.values(message.knowledge_graph.nodes).forEach(queryGraphUtils.standardizeCategory);
+    Object.values(message.knowledge_graph.edges).forEach(queryGraphUtils.standardizePredicate);
+
     messageStore.initializeMessage(msgTrapiToStoreFormat(message));
   }, [message]);
 

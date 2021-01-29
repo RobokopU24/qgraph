@@ -51,7 +51,7 @@ export default function FillIdentifier({
     // so we use a filter to remove those
     const newCuries = Object.values(normalizationResponse).filter((c) => c).map((c) => ({
       label: c.id.label || c.id.identifier,
-      category: c.category,
+      category: c.type,
       curie: c.id.identifier,
     })).filter((c) => c.category.includes(category));
     // Filter out curies based on category
