@@ -27,9 +27,9 @@ export default function NewQuestionPanelModal({ panelStore, onQuestionUpdated })
     }
     const { nodes } = panelStore.query_graph;
     // only find the node panels in questionStore state.
-    const node1 = nodes[panelStore.edge.sourceId];
+    const node1 = nodes[panelStore.edge.subject];
     const category1 = (node1 && node1.category[0]) || 'edge';
-    const node2 = nodes[panelStore.edge.targetId];
+    const node2 = nodes[panelStore.edge.object];
     const category2 = (node2 && node2.category[0]) || 'edge';
     const color1 = panelColorMap(category1);
     const color2 = panelColorMap(category2);
@@ -44,7 +44,7 @@ export default function NewQuestionPanelModal({ panelStore, onQuestionUpdated })
   const isNodePanel = panelStore.panelType === 'node';
   const isNewPanel = panelStore.activePanelId == null;
   const backgroundColor = useMemo(() => getBackgroundColor(isNodePanel),
-    [panelStore.node.category, panelStore.edge.sourceId, panelStore.edge.targetId, panelStore.showPanel]);
+    [panelStore.node.category, panelStore.edge.subject, panelStore.edge.object, panelStore.showPanel]);
   return (
     <Modal
       style={{ marginTop: '5%' }}
