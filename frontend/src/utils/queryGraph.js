@@ -38,23 +38,13 @@ function dictToListWithIds(dict) {
 }
 
 /**
- * Remove internal label property
- * @param {object} o a query graph node
- */
-// function removeLabel(n) {
-//   if (n.label) {
-//     delete n.label;
-//   }
-// }
-
-/**
  * Convert property that could be a string to an array if not given as array
- * @param {object} o object to modify
- * @param {object} property property to modify
+ * @param {object} obj object to modify
+ * @param {string} property property to modify
  */
-function standardizeArrayProperty(o, property) {
-  if (o[property] && !_.isArray(o[property])) {
-    o[property] = [o[property]];
+function standardizeArrayProperty(obj, property) {
+  if (obj[property] && !_.isArray(obj[property])) {
+    obj[property] = [obj[property]];
   }
 }
 
@@ -63,24 +53,14 @@ const standardizePredicate = (o) => standardizeArrayProperty(o, 'predicate');
 const standardizeCategory = (o) => standardizeArrayProperty(o, 'category');
 
 /**
- * Remove empty curie arrays
- * @param {object} n node object with a curie property
+ * Remove empty arrays
+ * @param {object} obj object to prune
+ * @param {string} property property of object to prune
 */
-function pruneCuries(n) {
-  if (n.curie && _.isArray(n.curie) &&
-      n.curie.length === 0) {
-    delete n.curie;
-  }
-}
-
-/**
- * Remove empty category arrays
- * @param {object} e edge object with a category property
-*/
-function pruneCategories(e) {
-  if (e.category && _.isArray(e.category) &&
-      e.category.length === 0) {
-    delete e.category;
+function pruneEmptyArrays(obj, property) {
+  if (obj[property] && _.isArray(obj[property]) &&
+      obj[property].length === 0) {
+    delete obj[property];
   }
 }
 
@@ -115,11 +95,10 @@ const convert = {
     reasonerRepresentation.nodes = dictToListWithIds(q.nodes);
     reasonerRepresentation.edges = dictToListWithIds(q.edges);
 
-    reasonerRepresentation.nodes.forEach(pruneCuries);
-    reasonerRepresentation.nodes.forEach(pruneCategories);
+    reasonerRepresentation.nodes.forEach((node) => pruneEmptyArrays(node, 'id'));
+    reasonerRepresentation.nodes.forEach((node) => pruneEmptyArrays(node, 'category'));
 
-    // reasonerRepresentation.nodes.forEach(removeLabel);
-    reasonerRepresentation.edges.forEach(pruneCategories);
+    reasonerRepresentation.edges.forEach((edge) => pruneEmptyArrays(edge, 'predicate'));
     return reasonerRepresentation;
   },
 };
