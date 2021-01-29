@@ -39,7 +39,7 @@ function dictToListWithIds(dict) {
 
 /**
  * Remove internal label property
- * @param {object} n a query graph node
+ * @param {object} o a query graph node
  */
 // function removeLabel(n) {
 //   if (n.label) {
@@ -48,25 +48,19 @@ function dictToListWithIds(dict) {
 // }
 
 /**
- * Convert curie to array if not given as array
- * @param {object} n node object with a curie property
+ * Convert property that could be a string to an array if not given as array
+ * @param {object} o object to modify
+ * @param {object} property property to modify
  */
-function standardizeCuries(n) {
-  if (n.curie && !_.isArray(n.curie)) {
-    n.curie = [n.curie];
+function standardizeArrayProperty(o, property) {
+  if (o[property] && !_.isArray(o[property])) {
+    o[property] = [o[property]];
   }
 }
 
-/**
- * Convert category to array if not given as array
- * @param {object} e edge object with a category property
- */
-function standardizeCategory(e) {
-  // Convert category to array if not given as array
-  if (e.category && !_.isArray(e.category)) {
-    e.category = [e.category];
-  }
-}
+const standardizeCuries = (o) => standardizeArrayProperty(o, 'curie');
+const standardizePredicate = (o) => standardizeArrayProperty(o, 'predicate');
+const standardizeCategory = (o) => standardizeArrayProperty(o, 'category');
 
 /**
  * Remove empty curie arrays
@@ -133,5 +127,7 @@ const convert = {
 export default {
   getEmptyGraph,
   convert,
-  standardizeType,
+  standardizeCategory,
+  standardizePredicate,
+  standardizeCuries,
 };

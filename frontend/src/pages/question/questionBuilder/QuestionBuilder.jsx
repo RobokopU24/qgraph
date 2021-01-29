@@ -78,8 +78,8 @@ export default function QuestionBuilder(props) {
    * @param {Number} question.max_connectivity max connections for question
    */
   function onQuestionTemplate(question) {
-    Object.values(question.query_graph.edges).forEach(queryGraphUtils.standardizeType);
-    Object.values(question.query_graph.nodes).forEach(queryGraphUtils.standardizeType);
+    Object.values(question.query_graph.edges).forEach(queryGraphUtils.standardizePredicate);
+    Object.values(question.query_graph.nodes).forEach(queryGraphUtils.standardizeCategory);
     questionStore.updateQueryGraph(question.query_graph);
     questionStore.updateQuestionName(question.natural_question);
     setStep('build');
@@ -116,8 +116,9 @@ export default function QuestionBuilder(props) {
       if (!node.label) {
         node.label = `${node.id}: ${node.name || node.curie || node.category}`;
       }
-      queryGraphUtils.standardizeType(node);
+      queryGraphUtils.standardizeCategory(node);
     });
+    Object.values(message.query_graph.edges).forEach((e) => queryGraphUtils.standardizePredicate(e));
 
     questionStore.updateQueryGraph(message.query_graph);
     setStep('build');
