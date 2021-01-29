@@ -3,7 +3,7 @@ import { useState } from 'react';
 export default function useEdgePanels() {
   const [sourceId, setSourceId] = useState(null);
   const [targetId, setTargetId] = useState(null);
-  const [type, setType] = useState([]);
+  const [predicate, setPredicate] = useState([]);
 
   const [isValidPredicate, setIsValidPredicate] = useState(false);
   const [isValid, setIsValid] = useState(false);
@@ -22,14 +22,14 @@ export default function useEdgePanels() {
     const source = targetId;
     setSourceId(source);
     setTargetId(target);
-    setType([]);
+    setPredicate([]);
     return { source, target };
   }
 
   function reset() {
     setSourceId(null);
     setTargetId(null);
-    setType([]);
+    setPredicate([]);
   }
 
   function initialize(seed) {
@@ -52,8 +52,8 @@ export default function useEdgePanels() {
     targetId,
     updateTargetId,
 
-    type,
-    setType,
+    predicate,
+    setPredicate,
 
     isValid,
     setIsValid,

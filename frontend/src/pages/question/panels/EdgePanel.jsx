@@ -21,7 +21,7 @@ const listItem = ({ item }) => (
 
 const predicateItem = ({ item }) => (
   <div className="listItem">
-    {strings.displayPredicate(item.type)}
+    {strings.displayPredicate(item.predicate)}
   </div>
 );
 
@@ -37,7 +37,7 @@ export default function EdgePanel(props) {
     if (!biolink) {
       return null;
     }
-    return biolink.getEdgeTypes();
+    return biolink.getEdgePredicates();
   }
 
   const predicateList = useMemo(getPredicateList, [biolink]) || [];
@@ -57,10 +57,10 @@ export default function EdgePanel(props) {
       return null;
     }
 
-    const sourceNodeTypeHierarchy = biolink.hierarchies[sourceNode.type[0]];
-    const targetNodeTypeHierarchy = biolink.hierarchies[targetNode.type[0]];
+    const sourceNodeCategoryHierarchy = biolink.hierarchies[sourceNode.category[0]];
+    const targetNodeCategoryHierarchy = biolink.hierarchies[targetNode.category[0]];
 
-    if (!sourceNodeTypeHierarchy || !targetNodeTypeHierarchy) {
+    if (!sourceNodeCategoryHierarchy || !targetNodeCategoryHierarchy) {
       return null;
     }
 
@@ -92,8 +92,8 @@ export default function EdgePanel(props) {
    * @param {string} value.range predicate target node
    */
   function handlePredicateUpdate(value) {
-    const types = value.map((v) => v.type);
-    edge.setType(types);
+    const types = value.map((v) => v.predicate);
+    edge.setPredicate(types);
     panelStore.toggleUnsavedChanges(true);
   }
 
@@ -123,8 +123,8 @@ export default function EdgePanel(props) {
 
   // Every predicate selected must match at least one
   // predicate in the filteredPredicateList
-  const isValidPredicate = edge.type.every(
-    (p) => filteredPredicateList.some((fp) => p === fp.type),
+  const isValidPredicate = edge.predicate.every(
+    (p) => filteredPredicateList.some((fp) => p === fp.predicate),
   );
 
   const isValid = edge.sourceId && edge.targetId && isValidPredicate;
@@ -194,9 +194,9 @@ export default function EdgePanel(props) {
             itemComponent={predicateItem}
             busySpinner={<FaSpinner className="icon-spin" />}
             placeholder={predicateInputMsg}
-            textField={(value) => strings.displayPredicate(value.type)}
-            value={edge.type}
-            valueField="type"
+            textField={(value) => strings.displayPredicate(value.predicate)}
+            value={edge.predicate}
+            valueField="predicate"
             onChange={handlePredicateUpdate}
             containerClassName={isValidPredicate ? 'valid' : 'invalid'}
             messages={{

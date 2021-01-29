@@ -65,7 +65,11 @@ function defaultNodePreProc(n) {
 function defaultEdgePreProc(e) {
   let label = '';
   if ('predicate' in e) {
-    label = e.predicate.map((predicate) => strings.displayPredicate(predicate)).join(', ');
+    if (Array.isArray(e.predicate)) {
+      label = e.predicate.map((predicate) => strings.displayPredicate(predicate)).join(', ');
+    } else {
+      label = e.predicate;
+    }
   }
   if (!('predicate' in e)) {
     e.arrows = {
