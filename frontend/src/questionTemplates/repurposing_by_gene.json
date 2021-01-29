@@ -35,7 +35,7 @@
       "e3": {
         "subject": "n3",
         "object": "n2",
-        "category": "biolink:treats"
+        "predicate": "biolink:treats"
       }
     }
   }
