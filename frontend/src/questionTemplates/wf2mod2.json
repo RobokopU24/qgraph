@@ -18,7 +18,7 @@
       "e0": {
         "subject": "n1",
         "object": "n0",
-	      "category": "biolink:increases_degradation_of"
+	      "predicate": "biolink:increases_degradation_of"
       }
     }
   }
