@@ -5,6 +5,7 @@ import {
 
 import { FaDownload } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import _ from 'lodash';
 
 import UserContext from '@/context/user';
 
@@ -12,7 +13,6 @@ import API from '@/API';
 
 import AnswersetView from '@/components/shared/answersetView/AnswersetView';
 import usePageStatus from '@/utils/usePageStatus';
-import queryGraphUtils from '@/utils/queryGraph';
 import trapiUtils from '@/utils/trapiUtils';
 
 import './newQuestion.css';

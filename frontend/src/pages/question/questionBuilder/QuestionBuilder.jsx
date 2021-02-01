@@ -7,7 +7,6 @@ import { GoRepoForked } from 'react-icons/go';
 import {
   Col, Form, FormGroup, FormControl, Panel, Jumbotron, Button,
 } from 'react-bootstrap';
-import _ from 'lodash';
 import slugify from 'slugify';
 
 import API from '@/API';

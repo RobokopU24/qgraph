@@ -4,6 +4,8 @@ import {
   Grid, Tabs, Tab,
 } from 'react-bootstrap';
 
+import _ from 'lodash';
+
 import useMessageStore from '@/stores/useMessageStore';
 import queryGraphUtils from '@/utils/queryGraph';
 import KnowledgeGraph from '../graphs/KnowledgeGraph';

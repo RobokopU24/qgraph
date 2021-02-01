@@ -4,6 +4,7 @@ import {
 } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
+import _ from 'lodash';
 
 import UserContext from '@/context/user';
 import AlertContext from '@/context/alert';
@@ -12,7 +13,6 @@ import API from '@/API';
 
 import './newQuestion.css';
 
-import queryGraphUtils from '@/utils/queryGraph';
 import { useVisibility } from '@/utils/cache';
 import usePageStatus from '@/utils/usePageStatus';
 
