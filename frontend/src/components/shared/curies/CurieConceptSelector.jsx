@@ -37,7 +37,7 @@ export default function CurieConceptSelector({
     style,
   }) {
     const isConcept = index < concepts.length;
-    let label = '';
+    let name = '';
     let entry = {};
     let degree;
     let links = '';
@@ -46,7 +46,7 @@ export default function CurieConceptSelector({
     let colorStripes = [];
     let categoryColor = '';
     if (isConcept) {
-      label = concepts[index].label;
+      name = concepts[index].name;
       entry = concepts[index];
       ({ category } = concepts[index]); // this is a string
       const categoryColorMap = getNodeCategoryColorMap();
@@ -56,7 +56,7 @@ export default function CurieConceptSelector({
       entry = curies[i];
 
       ({
-        degree, category, label, curie,
+        degree, category, name, curie,
       } = entry);
       const urls = curieUrls(curie);
       links = (
@@ -98,7 +98,7 @@ export default function CurieConceptSelector({
           </div>
         )}
         <div className="curieName">
-          <div title={label}>{label}</div>
+          <div title={name}>{name}</div>
         </div>
         <div className="curieDetails">
           {curie}

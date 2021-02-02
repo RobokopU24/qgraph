@@ -40,8 +40,8 @@ function defaultNodePreProc(n) {
   }
 
   // make user-displayed node label
-  if ('label' in n) {
-    n.label = `${n.id}: ${n.label}`;
+  if ('name' in n) {
+    n.label = `${n.id}: ${n.name}`;
   } else if (n.curie) {
     if (Array.isArray(n.curie)) {
       if (n.curie.length > 0) {

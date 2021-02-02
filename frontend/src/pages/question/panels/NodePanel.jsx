@@ -38,13 +38,13 @@ export default function NodePanel({ panelStore }) {
     const conceptsFormatted = concepts.map(
       (identifier) => ({
         category: identifier,
-        label: strings.displayCategory(identifier),
+        name: strings.displayCategory(identifier),
         set: false,
       }),
     );
     const conceptsSetified = conceptsFormatted.map((c) => ({
       ...c,
-      label: setify(c.label),
+      name: setify(c.name),
       set: true,
     }));
 
@@ -69,7 +69,7 @@ export default function NodePanel({ panelStore }) {
     // if search term has a colon, the user is inputing a specific curie
     if (newSearchTerm.includes(':')) {
       node.updateCuries([{
-        label: newSearchTerm,
+        name: newSearchTerm,
         category: '',
         curie: newSearchTerm,
       }]);
@@ -101,7 +101,7 @@ export default function NodePanel({ panelStore }) {
     // so we use a filter to remove those
     node.updateCuries(
       Object.values(normalizationResponse).filter((c) => c).map((c) => ({
-        label: strings.prettyDisplay(c.id.label) || c.id.identifier,
+        name: strings.prettyDisplay(c.id.label) || c.id.identifier,
         category: c.category,
         curie: c.id.identifier,
       })),

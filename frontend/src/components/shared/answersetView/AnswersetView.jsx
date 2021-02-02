@@ -8,6 +8,7 @@ import _ from 'lodash';
 
 import useMessageStore from '@/stores/useMessageStore';
 import queryGraphUtils from '@/utils/queryGraph';
+import strings from '@/utils/stringUtils';
 import KnowledgeGraph from '../graphs/KnowledgeGraph';
 import ResultsTable from './resultsTable/ResultsTable';
 import QuestionGraphContainer from '../graphs/QuestionGraphContainer';
@@ -84,8 +85,8 @@ export default function AnswersetView(props) {
   useEffect(() => {
     const convertedMessage = _.cloneDeep(message);
     Object.values(convertedMessage.query_graph.nodes).forEach((node) => {
-      if (!node.label) {
-        node.label = `${node.name || node.id || node.category}`;
+      if (!node.name) {
+        node.name = `${node.id || strings.displayCategory(node.category)}`;
       }
     });
     Object.values(convertedMessage.query_graph.nodes).forEach(queryGraphUtils.standardizeCategory);

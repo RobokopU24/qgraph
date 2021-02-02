@@ -12,7 +12,7 @@ import BiolinkContext from '@/context/biolink';
 
 const listItem = ({ item }) => (
   <div className="listItem">
-    {item.label}
+    {item.name}
     {item.degree !== undefined && (
       <Badge>{item.degree}</Badge>
     )}
@@ -105,10 +105,10 @@ export default function EdgePanel(props) {
     panelStore.toggleUnsavedChanges(true);
   }
 
-  function handleSwitchSourceTarget() {
+  function handleSwitchSubjectObject() {
     // TODO: do this less hacky
-    const { source, target } = edge.switchSourceTarget();
-    panelStore.updateEdgePanelHeader(source, target);
+    const { newSubject, newObject } = edge.switchSubjectObject();
+    panelStore.updateEdgePanelHeader(newSubject, newObject);
     panelStore.toggleUnsavedChanges(true);
   }
 
@@ -116,7 +116,7 @@ export default function EdgePanel(props) {
     Object.entries(panelStore.query_graph.nodes).map(
       ([id, node]) => ({
         ...node,
-        label: `${id}: ${node.label || strings.displayCategory(node.category)}`,
+        name: `${id}: ${node.name || strings.displayCategory(node.category)}`,
         id,
       }),
     ).filter((n) => !n.deleted);
@@ -153,7 +153,7 @@ export default function EdgePanel(props) {
           filter="contains"
           data={validNodeSelectionList}
           itemComponent={listItem}
-          textField="label"
+          textField="name"
           valueField="id"
           value={edge.subject}
           onChange={handleSubjectUpdate}
@@ -165,7 +165,7 @@ export default function EdgePanel(props) {
       </Col>
       <Col sm={2} id="nodesSwitch">
         <Button
-          onClick={() => handleSwitchSourceTarget()}
+          onClick={() => handleSwitchSubjectObject()}
           id="nodeSwitchButton"
           disabled={disabledSwitch}
         >
@@ -179,7 +179,7 @@ export default function EdgePanel(props) {
           data={validNodeSelectionList.filter((n) => n.id !== edge.subject)}
           busySpinner={<FaSpinner className="icon-spin" />}
           itemComponent={listItem}
-          textField="label"
+          textField="name"
           valueField="id"
           value={edge.object}
           onChange={handleObjectUpdate}

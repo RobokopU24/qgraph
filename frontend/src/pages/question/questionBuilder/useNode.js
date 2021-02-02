@@ -5,7 +5,7 @@ import BiolinkContext from '@/context/biolink';
 
 export default function useNodePanels() {
   const [category, setCategory] = useState('');
-  const [label, setLabel] = useState('');
+  const [name, setName] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [curie, setCurie] = useState([]);
   const [set, setSet] = useState(false);
@@ -18,7 +18,7 @@ export default function useNodePanels() {
 
   function reset() {
     setCategory('');
-    setLabel('');
+    setName('');
     setSearchTerm('');
     setCurie([]);
     setSet(false);
@@ -30,8 +30,8 @@ export default function useNodePanels() {
   function initialize(seed) {
     reset();
     setCategory(seed.category || '');
-    setLabel(seed.label || strings.displayCategory(seed.category) || '');
-    setSearchTerm(seed.label || strings.displayCategory(seed.category) || '');
+    setName(seed.name || strings.displayCategory(seed.category) || '');
+    setSearchTerm(seed.name || strings.displayCategory(seed.category) || '');
     setSet(seed.set || false);
     setCurie(seed.curie || []);
   }
@@ -50,8 +50,8 @@ export default function useNodePanels() {
   }
 
   function select(entry) {
-    setSearchTerm(entry.label);
-    setLabel(entry.label);
+    setSearchTerm(entry.name);
+    setName(entry.name);
     if (entry.curie) {
       setCurie([entry.curie]);
     }
@@ -63,7 +63,7 @@ export default function useNodePanels() {
 
   function clearSelection() {
     setCategory('');
-    setLabel('');
+    setName('');
     setSet(false);
     setCurie([]);
   }
@@ -72,7 +72,7 @@ export default function useNodePanels() {
     // Convert name to lowercase before searching
     const newFilteredConcepts = concepts
       .filter(
-        (concept) => concept.label.toLowerCase().includes(value.toLowerCase()),
+        (concept) => concept.name.toLowerCase().includes(value.toLowerCase()),
       );
     setFilteredConcepts(newFilteredConcepts);
   }
@@ -80,7 +80,7 @@ export default function useNodePanels() {
   const isValid = !!category || !!curie.length;
 
   return {
-    label,
+    name,
     clearSelection,
     updateCuries,
     updateFilteredConcepts,

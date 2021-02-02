@@ -13,6 +13,7 @@ import API from '@/API';
 
 import queryGraphUtils from '@/utils/queryGraph';
 import trapiUtils from '@/utils/trapiUtils';
+import strings from '@/utils/stringUtils';
 import { formatDateTimeShort } from '@/utils/cache';
 import HelpButton from '@/components/shared/HelpButton';
 
@@ -106,10 +107,9 @@ export default function QuestionBuilder(props) {
 
     const { query_graph } = message.message;
 
-    // TODO: this is pretty hacky
     Object.values(query_graph.nodes).forEach((node) => {
-      if (!node.label) {
-        node.label = `${node.name || node.id || node.category}`;
+      if (!node.name) {
+        node.name = `${node.id || strings.displayCategory(node.category)}`;
       }
       queryGraphUtils.standardizeCategory(node);
     });

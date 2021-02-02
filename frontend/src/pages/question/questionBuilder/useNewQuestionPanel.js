@@ -79,7 +79,7 @@ export default function useNewQuestionPanel() {
         if (Array.isArray(nodeSeed.category)) {
           [nodeSeed.category] = nodeSeed.category;
         }
-        setName(`${panelInfo.id}: ${nodeSeed.label}`);
+        setName(`${panelInfo.id}: ${nodeSeed.name}`);
         node.initialize(nodeSeed);
       } else { // new node
         node.reset();
@@ -113,11 +113,11 @@ export default function useNewQuestionPanel() {
    */
   useEffect(() => {
     if (panelInfo.id) {
-      setName(`${panelInfo.id}: ${node.label}`);
+      setName(`${panelInfo.id}: ${node.name}`);
     } else {
-      setName(`${getNextNodeID()}: ${node.label}`);
+      setName(`${getNextNodeID()}: ${node.name}`);
     }
-  }, [node.label]);
+  }, [node.name]);
 
   /**
    * Update the edge panel header
@@ -208,14 +208,14 @@ export default function useNewQuestionPanel() {
       if (new_node.category && !Array.isArray(new_node.category)) {
         new_node.category = [new_node.category];
       }
-      if (node.curie) {
+      if (node.curie && Array.isArray(node.curie) && node.curie.length) {
         new_node.curie = node.curie;
       }
       if (node.set) {
         new_node.set = node.set;
       }
       const node_id = panelInfo.id || getNextNodeID();
-      new_node.label = node.label || new_node.curie || strings.displayCategory(new_node.category);
+      new_node.name = node.name || new_node.curie || strings.displayCategory(new_node.category);
 
       q_graph.nodes[node_id] = new_node;
     } else {
