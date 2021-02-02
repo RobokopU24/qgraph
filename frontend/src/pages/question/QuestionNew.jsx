@@ -78,7 +78,7 @@ export default function QuestionNew() {
     Object.values(prepared_query_graph.nodes).forEach((n) => delete n.label);
 
     // Upload question data
-    const questionData = JSON.stringify({ query_graph: prepared_query_graph }, null, 2);
+    const questionData = JSON.stringify({ message: { query_graph: prepared_query_graph } }, null, 2);
     response = await API.cache.setQuestionData(questionId, questionData, user.id_token);
     if (response.status === 'error') {
       displayAlert('error', response.message);

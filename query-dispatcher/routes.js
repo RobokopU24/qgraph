@@ -21,9 +21,7 @@ router.route('/answer')
       const config = {
         method: 'POST',
         url: strider,
-        data: {
-          message,
-        },
+        data: message,
         // don't parse the response
         transformResponse: [(data) => data],
       };

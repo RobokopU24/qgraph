@@ -37,8 +37,11 @@ export default function SimpleViewer() {
     }
 
     const questionId = response.id;
+    // take out query graph from whole message
+    const { query_graph } = message;
+
     // Upload question data
-    const questionData = JSON.stringify(message, null, 2);
+    const questionData = JSON.stringify({ message: { query_graph } }, null, 2);
     response = await API.cache.setQuestionData(questionId, questionData, user.id_token);
     if (response.status === 'error') {
       displayAlert('error', response.message);
@@ -80,9 +83,11 @@ export default function SimpleViewer() {
       return;
     }
     const questionId = response.id;
+    // take out query graph from whole message
+    const { query_graph } = message;
 
     // Upload question data
-    const questionData = JSON.stringify({ query_graph: message.query_graph }, null, 2);
+    const questionData = JSON.stringify({ message: { query_graph } }, null, 2);
     response = await API.cache.setQuestionData(questionId, questionData, user.id_token);
     if (response.status === 'error') {
       displayAlert('error', response.message);
@@ -96,11 +101,9 @@ export default function SimpleViewer() {
       return;
     }
     const answerId = response.id;
+    // message includes query graph
     // Upload answer data
-    const answerData = JSON.stringify({
-      knowledge_graph: message.knowledge_graph,
-      results: message.results,
-    }, null, 2);
+    const answerData = JSON.stringify({ message }, null, 2);
     // Upload answer data
     response = await API.cache.setAnswerData(answerId, answerData, user.id_token);
     if (response.status === 'error') {
@@ -153,7 +156,7 @@ export default function SimpleViewer() {
           return;
         }
 
-        setMessage(newMessage);
+        setMessage(newMessage.message);
         setMessageSaved(true);
         pageStatus.setSuccess();
       };

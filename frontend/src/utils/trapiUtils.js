@@ -77,19 +77,23 @@ function validateResult(r) {
 function validateMessage(message) {
   const errors = [];
   if (!message || message.constructor !== Object) {
-    errors.push("The uploaded message isn't a valid JSON object.");
+    errors.push('The uploaded message isn\'t a valid JSON object.');
+    return errors;
+  }
+  if (!('message' in message)) {
+    errors.push('The uploaded message should follow the TRAPI Standard format.');
     return errors;
   }
 
-  errors.concat(validateGraph(message.knowledge_graph));
-  errors.concat(validateGraph(message.query_graph));
+  errors.concat(validateGraph(message.message.knowledge_graph));
+  errors.concat(validateGraph(message.message.query_graph));
 
-  if (!Array.isArray(message.results)) {
+  if (!Array.isArray(message.message.results)) {
     errors.push('Message results should be an array.');
     return errors;
   }
 
-  const resultErrors = message.results.map(validateResult);
+  const resultErrors = message.message.results.map(validateResult);
   // Add results errors if not null
   errors.concat(resultErrors.flat().filter((e) => !!e));
 

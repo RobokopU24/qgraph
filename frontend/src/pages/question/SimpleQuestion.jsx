@@ -48,9 +48,9 @@ export default function SimpleQuestion() {
     if (window.confirm('Are you sure you want to reset this question? This action cannot be undone.')) {
       const emptyGraph = { nodes: [], edges: [] };
       setMessage({
-        results: [],
         query_graph: emptyGraph,
         knowledge_graph: emptyGraph,
+        results: [],
       });
       questionStore.resetQuestion();
     }
@@ -64,14 +64,13 @@ export default function SimpleQuestion() {
     const prepared_query_graph = _.cloneDeep(questionStore.query_graph);
     Object.values(prepared_query_graph.nodes).forEach((n) => delete n.label);
 
-    const response = await API.ara.getAnswer(prepared_query_graph);
+    const response = await API.ara.getAnswer({ message: { query_graph: prepared_query_graph } });
     if (response.status === 'error') {
       answersetStatus.setFailure(response.message);
       return;
     }
 
-    const newMessage = response.message;
-    const validationErrors = trapiUtils.validateMessage(newMessage);
+    const validationErrors = trapiUtils.validateMessage(response);
     if (validationErrors.length) {
       answersetStatus.setFailure(
         `Found errors while parsing message: ${validationErrors.join(', ')}`,
@@ -79,7 +78,7 @@ export default function SimpleQuestion() {
       return;
     }
 
-    setMessage(newMessage);
+    setMessage(response.message);
     answersetStatus.setSuccess();
   }
 

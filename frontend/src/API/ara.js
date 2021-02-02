@@ -7,17 +7,13 @@ const strider = 'http://robokop.renci.org:5781';
 const baseRoutes = {
   /**
    * Send a query graph to ask an ARA for an answer
-   * @param {object} question query graph object
+   * @param {object} message message standard object
    */
-  async getAnswer(question) {
+  async getAnswer(message) {
     const config = {
       url: `${strider}/query`,
       method: 'POST',
-      data: {
-        message: {
-          query_graph: question,
-        },
-      },
+      data: message,
     };
     try {
       const response = await axios(config);

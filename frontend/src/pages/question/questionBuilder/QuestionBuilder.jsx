@@ -96,30 +96,24 @@ export default function QuestionBuilder(props) {
       return;
     }
 
-    if (!('query_graph' in message)) {
-      displayAlert('error',
-        'The provided file does not have a query_graph object. Please ensure that the file format adheres to the Reasoner Standard API Query Schema.');
-      setStep('options');
-      return;
-    }
-
-    const validationErrors = trapiUtils.validateGraph(message.query_graph);
+    const validationErrors = trapiUtils.validateMessage(message);
 
     validationErrors.forEach((e) => {
       displayAlert('error', e);
       setStep('options');
     });
+    const { query_graph } = message.message;
 
     // TODO: this is pretty hacky
-    Object.values(message.query_graph.nodes).forEach((node) => {
+    Object.values(query_graph.nodes).forEach((node) => {
       if (!node.label) {
         node.label = `${node.name || node.id || node.category}`;
       }
       queryGraphUtils.standardizeCategory(node);
     });
-    Object.values(message.query_graph.edges).forEach((e) => queryGraphUtils.standardizePredicate(e));
+    Object.values(query_graph.edges).forEach((e) => queryGraphUtils.standardizePredicate(e));
 
-    questionStore.updateQueryGraph(message.query_graph);
+    questionStore.updateQueryGraph(query_graph);
     setStep('build');
   }
 
@@ -159,12 +153,11 @@ export default function QuestionBuilder(props) {
     if (response.status === 'error') {
       displayAlert('error', response.message);
       setStep('options');
+      return;
     }
-    const { query_graph } = JSON.parse(response);
+    const { message } = JSON.parse(response);
 
-    questionStore.updateQueryGraph(
-      queryGraphUtils.convert.reasonerToInternal(query_graph),
-    );
+    questionStore.updateQueryGraph(message.query_graph);
     questionStore.updateQuestionName(name);
 
     setStep('build');

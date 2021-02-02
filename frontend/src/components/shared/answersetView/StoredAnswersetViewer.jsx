@@ -56,8 +56,10 @@ export default function StoredAnswersetView({ question_id, answer_id }) {
       return;
     }
 
+    // merge both messages, query_graph from question response will overwrite
+    // qg from answer response
     const newMessage =
-      { ...questionResponseJSON, ...answerResponseJSON.message };
+      _.merge(answerResponseJSON, questionResponseJSON);
 
     const validationErrors = trapiUtils.validateMessage(newMessage);
     if (validationErrors.length) {
@@ -67,7 +69,7 @@ export default function StoredAnswersetView({ question_id, answer_id }) {
       return;
     }
 
-    setMessage(newMessage);
+    setMessage(newMessage.message);
     pageStatus.setSuccess();
   }
 
