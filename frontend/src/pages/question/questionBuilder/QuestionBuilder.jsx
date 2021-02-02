@@ -171,13 +171,10 @@ export default function QuestionBuilder(props) {
   }
 
   function onDownloadQuestion() {
-    const query_graph = queryGraphUtils.convert.internalToReasoner(
-      questionStore.query_graph,
-    );
-    const data = { query_graph };
+    const message = { message: { query_graph: questionStore.query_graph } };
 
-    // Transform the data into a json blob and give it a url
-    const json = JSON.stringify(data, null, 2);
+    // Transform the message into a json blob and give it a url
+    const json = JSON.stringify(message, null, 2);
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
 
