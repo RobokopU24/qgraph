@@ -52,8 +52,7 @@ function bindingTrapiToStoreFormat(oldBinding) {
  * Convert a message of the new Trapi v1.0 format to match
  * the old format used by useMessageStore
 */
-function msgTrapiToStoreFormat(oldMessage) {
-  const message = _.cloneDeep(oldMessage);
+function msgTrapiToStoreFormat(message) {
   message.query_graph = queryGraphUtils.convert.internalToReasoner(message.query_graph);
   message.knowledge_graph = queryGraphUtils.convert.internalToReasoner(message.knowledge_graph);
   message.results = message.results.map(bindingTrapiToStoreFormat);
@@ -83,17 +82,18 @@ export default function AnswersetView(props) {
   const messageStore = useMessageStore();
 
   useEffect(() => {
-    Object.values(message.query_graph.nodes).forEach((node) => {
+    const convertedMessage = _.cloneDeep(message);
+    Object.values(convertedMessage.query_graph.nodes).forEach((node) => {
       if (!node.label) {
         node.label = `${node.name || node.id || node.category}`;
       }
     });
-    Object.values(message.query_graph.nodes).forEach(queryGraphUtils.standardizeCategory);
-    Object.values(message.query_graph.edges).forEach(queryGraphUtils.standardizePredicate);
-    Object.values(message.knowledge_graph.nodes).forEach(queryGraphUtils.standardizeCategory);
-    Object.values(message.knowledge_graph.edges).forEach(queryGraphUtils.standardizePredicate);
+    Object.values(convertedMessage.query_graph.nodes).forEach(queryGraphUtils.standardizeCategory);
+    Object.values(convertedMessage.query_graph.edges).forEach(queryGraphUtils.standardizePredicate);
+    Object.values(convertedMessage.knowledge_graph.nodes).forEach(queryGraphUtils.standardizeCategory);
+    Object.values(convertedMessage.knowledge_graph.edges).forEach(queryGraphUtils.standardizePredicate);
 
-    messageStore.initializeMessage(msgTrapiToStoreFormat(message));
+    messageStore.initializeMessage(msgTrapiToStoreFormat(convertedMessage));
   }, [message]);
 
   const [tabKey, setTabKey] = useState(answerSetTabEnum.answerTable);
