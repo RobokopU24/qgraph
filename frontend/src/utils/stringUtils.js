@@ -1,16 +1,10 @@
 /**
  * Many Translator services now have differently formatted categories. These utilities
  * should help keep everything consistent internally.
-<<<<<<< HEAD
  * Incoming biolink types are space case
  * All outgoing node types are 'biolink:PascalCase'
  * All outgoing edge types are 'biolink:snake_case'
  * User input types can be anything
-=======
- * Incoming biolink categories are space case
- * All outgoing categories are 'biolink:PascalCase'
- * User input categories can be anything
->>>>>>> Did a smart find and replace for instances of type in the rest of the code base
  */
 import _ from 'lodash';
 

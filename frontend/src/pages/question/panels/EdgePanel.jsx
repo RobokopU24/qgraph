@@ -50,39 +50,42 @@ export default function EdgePanel(props) {
     if (!edge.subject || !edge.object) {
       return null;
     }
-    const sourceNode = panelStore.query_graph.nodes[edge.subject];
-    const targetNode = panelStore.query_graph.nodes[edge.object];
+    const subjectNode = panelStore.query_graph.nodes[edge.subject];
+    const objectNode = panelStore.query_graph.nodes[edge.object];
 
-    if (!sourceNode.category || !targetNode.category) {
+    if (!subjectNode.category || !objectNode.category) {
       return null;
     }
 
-    const sourceNodeCategoryHierarchy = biolink.hierarchies[sourceNode.category[0]];
-    const targetNodeCategoryHierarchy = biolink.hierarchies[targetNode.category[0]];
+    const subjectNodeCategoryHierarchy = biolink.hierarchies[subjectNode.category[0]];
+    const objectNodeCategoryHierarchy = biolink.hierarchies[objectNode.category[0]];
 
-    if (!sourceNodeCategoryHierarchy || !targetNodeCategoryHierarchy) {
+    if (!subjectNodeCategoryHierarchy || !objectNodeCategoryHierarchy) {
       return null;
     }
-
-    predicateList.forEach((p) => {
-      p.predicate = p.type;
-      delete p.type;
-    });
 
     return predicateList.filter(
-      (p) => sourceNodeCategoryHierarchy.includes(p.domain) &&
-               targetNodeCategoryHierarchy.includes(p.range),
+      (p) => subjectNodeCategoryHierarchy.includes(p.domain) &&
+             objectNodeCategoryHierarchy.includes(p.range),
     );
   }
 
   const filteredPredicateList = useMemo(getFilteredPredicateList, [edge.subject, edge.object, biolink, predicateList]) || [];
 
+  /**
+   * Update object node of edge
+   * @param {object} value node object
+   */
   function handleObjectUpdate(value) {
     edge.updateObject(value.id);
     panelStore.updateEdgePanelHeader(edge.subject, value.id);
     panelStore.toggleUnsavedChanges(true);
   }
 
+  /**
+   * Update subject node of edge
+   * @param {object} value node object
+   */
   function handleSubjectUpdate(value) {
     edge.updateSubject(value.id);
     panelStore.updateEdgePanelHeader(value.id, edge.object);
@@ -145,7 +148,7 @@ export default function EdgePanel(props) {
   return (
     <Form horizontal>
       <Col sm={5}>
-        <h4 style={{ color: '#CCCCCC' }}>SOURCE</h4>
+        <h4 style={{ color: '#CCCCCC' }}>SUBJECT</h4>
         <DropdownList
           filter="contains"
           data={validNodeSelectionList}
@@ -170,7 +173,7 @@ export default function EdgePanel(props) {
         </Button>
       </Col>
       <Col sm={5}>
-        <h4 style={{ color: '#CCCCCC' }}>TARGET</h4>
+        <h4 style={{ color: '#CCCCCC' }}>OBJECT</h4>
         <DropdownList
           filter="contains"
           data={validNodeSelectionList.filter((n) => n.id !== edge.subject)}
@@ -190,7 +193,7 @@ export default function EdgePanel(props) {
       <predicateStatus.Display />
       { predicateStatus.displayPage && (
         <Col sm={12} style={{ marginTop: '40px' }}>
-          <h4 style={{ color: '#CCCCCC' }}>PREDICATES</h4>
+          <h4 style={{ color: '#CCCCCC' }}>PREDICATE</h4>
           <Multiselect
             filter="contains"
             allowCreate={false}

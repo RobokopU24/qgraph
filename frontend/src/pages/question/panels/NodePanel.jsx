@@ -134,7 +134,7 @@ export default function NodePanel({ panelStore }) {
   const rightButtonFunction = showOptions ? node.reset : () => updateSearchTerm(node.searchTerm);
   return (
     <>
-      <h4 style={{ color: '#CCCCCC' }}>NODE category</h4>
+      <h4 style={{ color: '#CCCCCC' }}>NODE CATEGORY</h4>
       <CurieConceptSelector
         concepts={node.filteredConcepts}
         curies={node.curies}

@@ -245,7 +245,7 @@ export default function SubGraphViewer(props) {
         `<div class="vis-tooltip-inner">
           <div><span class="title">${n.name}</span></div>
           <div><span class="field-name">id: </span>${n.id}</div>
-          <div><span class="field-name">type: </span>${strings.displayCategory(n.type)}</div>
+          <div><span class="field-name">category: </span>${strings.displayCategory(n.category)}</div>
           ${extraFields.join('')}
         </div>`
       );

@@ -24,7 +24,7 @@ export default function NodeProperties(props) {
               <tr key={['property', i].join('_')}>
                 <td>
                   <DropdownList
-                    data={validProperties[activePanel.category]}
+                    data={validProperties[activePanel.type]}
                     itemComponent={listItem}
                     value={property.key}
                     onChange={(value) => activePanel.updateProperty(value, i, 'key')}

@@ -98,10 +98,12 @@ export default function QuestionBuilder(props) {
 
     const validationErrors = trapiUtils.validateMessage(message);
 
-    validationErrors.forEach((e) => {
-      displayAlert('error', e);
+    if (validationErrors.length) {
+      displayAlert('error', `Found errors while parsing message: ${validationErrors.join(', ')}`);
       setStep('options');
-    });
+      return;
+    }
+
     const { query_graph } = message.message;
 
     // TODO: this is pretty hacky

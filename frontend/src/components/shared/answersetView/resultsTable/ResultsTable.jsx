@@ -97,7 +97,7 @@ export default function AnswerTable(props) {
       // filterable: false,
       disableFilters: true,
       accessor: 'score',
-      sortCategory: 'basic',
+      sortType: 'basic',
       Cell: (d) => {
         if (!d.value) {
           return <div className="center">N/A</div>;

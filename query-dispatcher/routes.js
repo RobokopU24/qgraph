@@ -7,7 +7,7 @@ const { handleAxiosError } = require('./utils');
 // const messenger = process.env.MESSENGER_URL ||
 //                    'http://robokop.renci.org:4868/answer';
 const strider = process.env.STRIDER_URL ||
-                    'http://robokop.renci.org:5781/query';
+                    'http://robokop.renci.org:5781';
 
 router.route('/answer')
   .post(async (req, res) => {
@@ -20,7 +20,7 @@ router.route('/answer')
       const message = response;
       const config = {
         method: 'POST',
-        url: strider,
+        url: `${strider}/query`,
         data: message,
         // don't parse the response
         transformResponse: [(data) => data],

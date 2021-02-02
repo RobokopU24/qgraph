@@ -51,19 +51,19 @@ export default function useNewQuestionPanel() {
 
   /**
    * Create a readable edge label
-   * @param {string} subject an edge source id
-   * @param {string} object an edge target id
+   * @param {string} subject an edge subject id
+   * @param {string} object an edge object id
    */
   function getEdgeLabel(subject, object) {
-    let sourceLabel = '';
+    let subjectLabel = '';
     if (subject) {
-      sourceLabel = query_graph.nodes[subject].label || strings.displayCategory(query_graph.nodes[subject].category);
+      subjectLabel = query_graph.nodes[subject].label || strings.displayCategory(query_graph.nodes[subject].category);
     }
-    let targetLabel = '';
+    let objectLabel = '';
     if (object) {
-      targetLabel = query_graph.nodes[object].label || strings.displayCategory(query_graph.nodes[object].category);
+      objectLabel = query_graph.nodes[object].label || strings.displayCategory(query_graph.nodes[object].category);
     }
-    return `${subject} ${sourceLabel} → ${object} ${targetLabel}`;
+    return `${subject} ${subjectLabel} → ${object} ${objectLabel}`;
   }
 
   /**
@@ -121,12 +121,12 @@ export default function useNewQuestionPanel() {
 
   /**
    * Update the edge panel header
-   * @param {string} source edge source id
-   * @param {string} target edge target id
+   * @param {string} subject edge subject id
+   * @param {string} object edge object id
    * @param {string} id edge id
    */
-  function updateEdgePanelHeader(source, target) {
-    const label = getEdgeLabel(source, target);
+  function updateEdgePanelHeader(subject, object) {
+    const label = getEdgeLabel(subject, object);
     if (panelInfo.id) {
       setName(`${panelInfo.id}: ${label}`);
     } else {

@@ -29,10 +29,8 @@ export default function SimpleQuestion() {
   const [submittedQuestion, toggleSubmittedQuestion] = useState(false);
 
   function onDownloadAnswer() {
-    const data = message;
-
-    // Transform the data into a json blob and give it a url
-    const json = JSON.stringify(data);
+    // Transform the message into a json blob and give it a url
+    const json = JSON.stringify(message);
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
 
