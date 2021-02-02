@@ -17,13 +17,16 @@ export default function useEdgePanels() {
     setObject(newObject);
   }
 
-  function switchSourceTarget() {
-    const target = subject;
-    const source = object;
-    setSubject(source);
-    setObject(target);
+  /**
+   * Switch edge subject and object properties
+   */
+  function switchSubjectObject() {
+    const newObject = subject;
+    const newSubject = object;
+    setSubject(newSubject);
+    setObject(newObject);
     setPredicate([]);
-    return { source, target };
+    return { newSubject, newObject };
   }
 
   function reset() {
@@ -62,6 +65,6 @@ export default function useEdgePanels() {
 
     reset,
     initialize,
-    switchSourceTarget,
+    switchSubjectObject,
   };
 }
