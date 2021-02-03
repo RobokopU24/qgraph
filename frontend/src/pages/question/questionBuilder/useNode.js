@@ -8,7 +8,7 @@ export default function useNodePanels() {
   const [name, setName] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [id, setId] = useState([]);
-  const [set, setSet] = useState(false);
+  const [is_set, setSet] = useState(false);
   const [concepts, setConcepts] = useState([]);
   const [filteredConcepts, setFilteredConcepts] = useState([]);
   const [curies, updateCuries] = useState([]);
@@ -32,7 +32,7 @@ export default function useNodePanels() {
     setCategory(seed.category || '');
     setName(seed.name || strings.displayCategory(seed.category) || '');
     setSearchTerm(seed.name || strings.displayCategory(seed.category) || '');
-    setSet(seed.set || false);
+    setSet(seed.is_set || false);
     setId(seed.id || []);
   }
 
@@ -55,7 +55,7 @@ export default function useNodePanels() {
     if (entry.id) {
       setId([entry.id]);
     }
-    if (entry.set) {
+    if (entry.is_set) {
       setSet(true);
     }
     setCategory(conceptListToString(entry.category));
@@ -92,7 +92,7 @@ export default function useNodePanels() {
     curies,
     searchTerm,
     category,
-    set,
+    is_set,
     initialize,
     reset,
     select,

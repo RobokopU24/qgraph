@@ -14,7 +14,7 @@
       },
       "n2": {
         "category": "biolink:BiologicalProcessOrActivity",
-        "set": true
+        "is_set": true
       },
       "n3": {
         "category": "biolink:Gene"

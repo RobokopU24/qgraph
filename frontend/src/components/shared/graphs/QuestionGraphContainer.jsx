@@ -8,11 +8,10 @@ import QuestionGraphView from './QuestionGraphView';
 
 /* eslint-disable no-param-reassign */
 const nodePreProcFn = (n) => {
-  n.isSet = ('set' in n) && (((typeof n.set === typeof true) && n.set) || ((typeof n.set === 'string') && n.set === 'true'));
   n.chosen = false; // Not needed since borderWidth manually set below
   n.borderWidth = 1;
   n.borderWidthSelected = 2;
-  if (n.isSet) {
+  if (n.is_set) {
     n.borderWidth = 3;
     n.borderWidthSelected = 5;
   } else {

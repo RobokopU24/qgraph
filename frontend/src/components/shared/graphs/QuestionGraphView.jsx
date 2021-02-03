@@ -13,10 +13,9 @@ const Graph = require('react-graph-vis').default;
 // Default pre-processing method on each node object to return updated node obj
 /* eslint-disable no-param-reassign */
 function defaultNodePreProc(n) {
-  n.isSet = ('set' in n) && (((typeof n.set === typeof true) && n.set) || ((typeof n.set === 'string') && n.set === 'true'));
   n.chosen = false; // Not needed since borderWidth manually set below
   n.borderWidth = 1;
-  if (n.isSet) {
+  if (n.is_set) {
     n.shadow = {
       enabled: true,
       size: 10,

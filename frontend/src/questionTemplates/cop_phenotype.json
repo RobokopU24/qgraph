@@ -4,26 +4,26 @@
     "nodes": {
       "node0": {
         "category": "biolink:ChemicalSubstance",
-        "set": false,
+        "is_set": false,
         "curie": [
           "$identifier1$"
         ]
       },
       "node1": {
         "category": "biolink:Gene",
-        "set": false
+        "is_set": false
       },
       "node2": {
         "category": "biolink:BiologicalProcessOrActivity",
-        "set": true
+        "is_set": true
       },
       "node3": {
         "category": "biolink:Cell",
-        "set": false
+        "is_set": false
       },
       "node4": {
         "category": "biolink:AnatomicalEntity",
-        "set": false
+        "is_set": false
       },
       "node5": {
         "category": "biolink:PhenotypicFeature",

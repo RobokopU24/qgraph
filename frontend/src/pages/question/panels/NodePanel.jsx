@@ -39,13 +39,13 @@ export default function NodePanel({ panelStore }) {
       (identifier) => ({
         category: identifier,
         name: strings.displayCategory(identifier),
-        set: false,
+        is_set: false,
       }),
     );
     const conceptsSetified = conceptsFormatted.map((c) => ({
       ...c,
       name: setify(c.name),
-      set: true,
+      is_set: true,
     }));
 
     // Merge concepts with sets interleaved

@@ -307,7 +307,7 @@ export default function useMessageStore() {
       columnHeaders.push({
         Header: `${n.id}: ${strings.displayCategory(category)}`,
         id: n.id,
-        isSet: n.set,
+        isSet: n.is_set,
         category,
       });
     });
@@ -361,7 +361,7 @@ export default function useMessageStore() {
       const kgNodeIds = answer.node_bindings.find((ans) => ans.qg_id === qNodeId).kg_id;
       if (!Array.isArray(kgNodeIds)) {
         // This is not a set node
-        if (('set' in qNode) && qNode.set) {
+        if (('is_set' in qNode) && qNode.is_set) {
           // Actually a set but only has one element
           nodeListObj = { category: qNode.category, name: `Set: ${strings.displayCategory(qNode.category)}`, isSet: true };
           nodeListObj.setNodes = [kgNodeIds].map((kgNodeId) => getKgNode(kgNodeId));
@@ -369,7 +369,7 @@ export default function useMessageStore() {
           // for real, not a set
           nodeListObj = { ...getKgNode(kgNodeIds), ...nodeListObj };
         }
-      } else if ((kgNodeIds.length === 1) && !qNode.set) {
+      } else if ((kgNodeIds.length === 1) && !qNode.is_set) {
         // This is not a set node but, for some reason is an array
 
         nodeListObj = { ...getKgNode(kgNodeIds[0]), ...nodeListObj };
@@ -412,7 +412,7 @@ export default function useMessageStore() {
       let nodes = [];
       let isSet = true;
 
-      if (!qNode.set) {
+      if (!qNode.is_set) {
         // if the node is not a set but is still an array
         const nodeId = Array.isArray(nodeIds) ? nodeIds[0] : nodeIds;
         nodes = [{ id: nodeId }];

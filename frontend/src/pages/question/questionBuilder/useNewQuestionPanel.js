@@ -211,8 +211,8 @@ export default function useNewQuestionPanel() {
       if (node.id && Array.isArray(node.id) && node.id.length) {
         new_node.id = node.id;
       }
-      if (node.set) {
-        new_node.set = node.set;
+      if (node.is_set) {
+        new_node.is_set = node.is_set;
       }
       const nodeKey = panelInfo.id || getNextNodeID();
       new_node.name = node.name || new_node.id || strings.displayCategory(new_node.category);

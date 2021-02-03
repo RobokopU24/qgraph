@@ -9,14 +9,14 @@
       },
       "n1": {
         "category": "biolink:PhenotypicFeature",
-        "set": true
+        "is_set": true
       },
       "n2": {
         "category": "biolink:GeneticCondition"
       },
       "n3": {
         "category": "biolink:BiologicalProcessOrActivity",
-        "set": true
+        "is_set": true
       }
     },
     "edges": {
