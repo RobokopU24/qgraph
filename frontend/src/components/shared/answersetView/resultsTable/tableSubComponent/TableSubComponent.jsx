@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import {
-  FaThList, FaFileCode,
+  /* FaThList, */ FaFileCode,
 } from 'react-icons/fa';
 import { IoIosGitNetwork } from 'react-icons/io';
 // import IoCodeWorking from 'react-icons/lib/io/code-working'
@@ -11,7 +11,7 @@ import './tableSubComponent.css';
 
 import TableSubGraph from './subGraph/TableSubGraph';
 import JsonView from './subJson/JsonView';
-import MetaDataView from './subMetaData/MetaDataView';
+// import MetaDataView from './subMetaData/MetaDataView';
 
 export const answersetSubComponentEnum = {
   graph: 1,
@@ -43,7 +43,7 @@ export default function TableSubComponent(props) {
 
   const isJsonActive = activeSubComponentButton === answersetSubComponentEnum.json;
   const isGraphActive = activeSubComponentButton === answersetSubComponentEnum.graph;
-  const isMetadataActive = activeSubComponentButton === answersetSubComponentEnum.metadata;
+  // const isMetadataActive = activeSubComponentButton === answersetSubComponentEnum.metadata;
   return (
     <div id="tableSubComponentBackground">
       <div id="tableSubComponentContainer">
@@ -72,7 +72,7 @@ export default function TableSubComponent(props) {
               <span style={{ paddingLeft: '5px' }}>Graph</span>
             </div>
           </Button>
-          <Button
+          {/* <Button
             className={isMetadataActive ? 'activeSubComponentButton' : ''}
             style={{ textAlign: 'left' }}
             onClick={() => setActiveSubComponentButton(answersetSubComponentEnum.metadata)}
@@ -81,7 +81,7 @@ export default function TableSubComponent(props) {
               <FaThList />
               <span style={{ paddingLeft: '5px' }}>Metadata</span>
             </span>
-          </Button>
+          </Button> */}
         </ButtonGroup>
         {isJsonActive && (
           <JsonView
@@ -93,12 +93,12 @@ export default function TableSubComponent(props) {
           messageStore={messageStore}
           activeAnswerId={rowData.id}
         />
-        {isMetadataActive && rowData.nodes && (
+        {/* {isMetadataActive && rowData.nodes && (
           <MetaDataView
             messageStore={messageStore}
             rowData={rowData.nodes}
           />
-        )}
+        )} */}
       </div>
     </div>
   );

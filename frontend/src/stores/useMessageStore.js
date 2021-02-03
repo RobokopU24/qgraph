@@ -20,7 +20,7 @@ export default function useMessageStore() {
   const [filteredAnswers, setFilteredAnswers] = useState([]);
   const [answers, setAnswers] = useState([]);
 
-  const keyBlocklist = ['isSet', 'labels', 'equivalent_identifiers', 'category', 'id', 'degree', 'synonyms'];
+  const keyBlocklist = ['isSet', 'labels', 'equivalent_identifiers', 'category', 'id', 'degree', 'synonyms', 'attributes'];
 
   function makeIdToIndexMap(arr) {
     const idToIndexMap = new Map();
