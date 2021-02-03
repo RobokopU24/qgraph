@@ -58,11 +58,7 @@ export default function SimpleQuestion() {
     toggleSubmittedQuestion(true);
     answersetStatus.setLoading();
 
-    // Strip labels from nodes
-    const prepared_query_graph = _.cloneDeep(questionStore.query_graph);
-    Object.values(prepared_query_graph.nodes).forEach((n) => delete n.label);
-
-    const response = await API.ara.getAnswer({ message: { query_graph: prepared_query_graph } });
+    const response = await API.ara.getAnswer({ message: { query_graph: questionStore.query_graph } });
     if (response.status === 'error') {
       answersetStatus.setFailure(response.message);
       return;
