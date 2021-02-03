@@ -5,7 +5,7 @@
       "node0": {
         "category": "biolink:ChemicalSubstance",
         "is_set": false,
-        "curie": [
+        "id": [
           "$identifier1$"
         ]
       },
@@ -32,7 +32,7 @@
       "node6": {
         "category": "biolink:Disease",
         "is_set": false,
-        "curie": [
+        "id": [
           "$identifier2$"
         ]
       }

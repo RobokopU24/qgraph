@@ -5,7 +5,7 @@
     "nodes": {
       "n0": {
         "category": "biolink:ChemicalSubstance",
-        "curie": [
+        "id": [
           "$identifier1$"
         ]
       },

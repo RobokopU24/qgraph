@@ -5,7 +5,7 @@
     "nodes": {
       "n0": {
         "category": "biolink:PhenotypicFeature",
-        "curie": [
+        "id": [
           "$identifier1$"
         ]
       },
