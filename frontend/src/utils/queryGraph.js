@@ -33,7 +33,7 @@ function listWithIdsToDict(list) {
  */
 function dictToListWithIds(dict) {
   return Object.entries(dict).map(
-    ([id, node]) => ({ ...node, id }),
+    ([key, node]) => ({ ...node, key }),
   );
 }
 
@@ -48,7 +48,7 @@ function standardizeArrayProperty(obj, property) {
   }
 }
 
-const standardizeCuries = (o) => standardizeArrayProperty(o, 'curie');
+const standardizeIDs = (o) => standardizeArrayProperty(o, 'id');
 const standardizePredicate = (o) => standardizeArrayProperty(o, 'predicate');
 const standardizeCategory = (o) => standardizeArrayProperty(o, 'category');
 
@@ -79,7 +79,7 @@ const convert = {
     internalRepresentation.nodes = listWithIdsToDict(q.nodes);
     internalRepresentation.edges = listWithIdsToDict(q.edges);
 
-    Object.values(internalRepresentation.nodes).forEach(standardizeCuries);
+    Object.values(internalRepresentation.nodes).forEach(standardizeIDs);
     Object.values(internalRepresentation.nodes).forEach(standardizeCategory);
 
     Object.values(internalRepresentation.edges).forEach(standardizeCategory);
@@ -95,10 +95,20 @@ const convert = {
     reasonerRepresentation.nodes = dictToListWithIds(q.nodes);
     reasonerRepresentation.edges = dictToListWithIds(q.edges);
 
-    reasonerRepresentation.nodes.forEach((node) => pruneEmptyArrays(node, 'id'));
-    reasonerRepresentation.nodes.forEach((node) => pruneEmptyArrays(node, 'category'));
+    reasonerRepresentation.nodes.forEach((node) => {
+      pruneEmptyArrays(node, 'id');
+      pruneEmptyArrays(node, 'category');
+      node.curie = node.id;
+      node.id = node.key;
+      delete node.key;
+    });
 
-    reasonerRepresentation.edges.forEach((edge) => pruneEmptyArrays(edge, 'predicate'));
+    reasonerRepresentation.edges.forEach((edge) => {
+      pruneEmptyArrays(edge, 'predicate');
+      edge.id = edge.key;
+      delete edge.key;
+    });
+
     return reasonerRepresentation;
   },
 };
@@ -108,5 +118,5 @@ export default {
   convert,
   standardizeCategory,
   standardizePredicate,
-  standardizeCuries,
+  standardizeIDs,
 };

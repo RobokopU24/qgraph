@@ -77,8 +77,8 @@ export default function EdgePanel(props) {
    * @param {object} value node object
    */
   function handleObjectUpdate(value) {
-    edge.updateObject(value.id);
-    panelStore.updateEdgePanelHeader(edge.subject, value.id);
+    edge.updateObject(value.key);
+    panelStore.updateEdgePanelHeader(edge.subject, value.key);
     panelStore.toggleUnsavedChanges(true);
   }
 
@@ -87,8 +87,8 @@ export default function EdgePanel(props) {
    * @param {object} value node object
    */
   function handleSubjectUpdate(value) {
-    edge.updateSubject(value.id);
-    panelStore.updateEdgePanelHeader(value.id, edge.object);
+    edge.updateSubject(value.key);
+    panelStore.updateEdgePanelHeader(value.key, edge.object);
     panelStore.toggleUnsavedChanges(true);
   }
 
@@ -114,10 +114,10 @@ export default function EdgePanel(props) {
 
   const validNodeSelectionList =
     Object.entries(panelStore.query_graph.nodes).map(
-      ([id, node]) => ({
+      ([key, node]) => ({
         ...node,
-        name: `${id}: ${node.name || strings.displayCategory(node.category)}`,
-        id,
+        name: `${key}: ${node.name || strings.displayCategory(node.category)}`,
+        key,
       }),
     ).filter((n) => !n.deleted);
 
@@ -154,11 +154,11 @@ export default function EdgePanel(props) {
           data={validNodeSelectionList}
           itemComponent={listItem}
           textField="name"
-          valueField="id"
+          valueField="key"
           value={edge.subject}
           onChange={handleSubjectUpdate}
           containerClassName={
-            validNodeSelectionList.find((n) => n.id === edge.subject)
+            validNodeSelectionList.find((n) => n.key === edge.subject)
               ? 'valid' : 'invalid'
           }
         />
@@ -176,15 +176,15 @@ export default function EdgePanel(props) {
         <h4 style={{ color: '#CCCCCC' }}>OBJECT</h4>
         <DropdownList
           filter="contains"
-          data={validNodeSelectionList.filter((n) => n.id !== edge.subject)}
+          data={validNodeSelectionList.filter((n) => n.key !== edge.subject)}
           busySpinner={<FaSpinner className="icon-spin" />}
           itemComponent={listItem}
           textField="name"
-          valueField="id"
+          valueField="key"
           value={edge.object}
           onChange={handleObjectUpdate}
           containerClassName={
-            validNodeSelectionList.find((n) => n.id === edge.object)
+            validNodeSelectionList.find((n) => n.key === edge.object)
               ? 'valid' : 'invalid'
           }
         />

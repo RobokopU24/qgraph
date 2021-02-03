@@ -103,7 +103,7 @@ export default function NodePanel({ panelStore }) {
       Object.values(normalizationResponse).filter((c) => c).map((c) => ({
         name: strings.prettyDisplay(c.id.label) || c.id.identifier,
         category: c.category,
-        curie: c.id.identifier,
+        id: c.id.identifier,
       })),
     );
     node.setLoading(false);

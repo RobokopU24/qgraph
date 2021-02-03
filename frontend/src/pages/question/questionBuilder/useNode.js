@@ -7,7 +7,7 @@ export default function useNodePanels() {
   const [category, setCategory] = useState('');
   const [name, setName] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  const [curie, setCurie] = useState([]);
+  const [id, setId] = useState([]);
   const [set, setSet] = useState(false);
   const [concepts, setConcepts] = useState([]);
   const [filteredConcepts, setFilteredConcepts] = useState([]);
@@ -20,7 +20,7 @@ export default function useNodePanels() {
     setCategory('');
     setName('');
     setSearchTerm('');
-    setCurie([]);
+    setId([]);
     setSet(false);
     setFilteredConcepts([]);
     updateCuries([]);
@@ -33,7 +33,7 @@ export default function useNodePanels() {
     setName(seed.name || strings.displayCategory(seed.category) || '');
     setSearchTerm(seed.name || strings.displayCategory(seed.category) || '');
     setSet(seed.set || false);
-    setCurie(seed.curie || []);
+    setId(seed.id || []);
   }
 
   /**
@@ -52,8 +52,8 @@ export default function useNodePanels() {
   function select(entry) {
     setSearchTerm(entry.name);
     setName(entry.name);
-    if (entry.curie) {
-      setCurie([entry.curie]);
+    if (entry.id) {
+      setId([entry.id]);
     }
     if (entry.set) {
       setSet(true);
@@ -65,7 +65,7 @@ export default function useNodePanels() {
     setCategory('');
     setName('');
     setSet(false);
-    setCurie([]);
+    setId([]);
   }
 
   function updateFilteredConcepts(value) {
@@ -77,7 +77,7 @@ export default function useNodePanels() {
     setFilteredConcepts(newFilteredConcepts);
   }
 
-  const isValid = !!category || !!curie.length;
+  const isValid = !!category || !!id.length;
 
   return {
     name,
@@ -88,7 +88,7 @@ export default function useNodePanels() {
     setLoading,
     setSearchTerm,
     filteredConcepts,
-    curie,
+    id,
     curies,
     searchTerm,
     category,

@@ -208,16 +208,16 @@ export default function useNewQuestionPanel() {
       if (new_node.category && !Array.isArray(new_node.category)) {
         new_node.category = [new_node.category];
       }
-      if (node.curie && Array.isArray(node.curie) && node.curie.length) {
-        new_node.curie = node.curie;
+      if (node.id && Array.isArray(node.id) && node.id.length) {
+        new_node.id = node.id;
       }
       if (node.set) {
         new_node.set = node.set;
       }
-      const node_id = panelInfo.id || getNextNodeID();
-      new_node.name = node.name || new_node.curie || strings.displayCategory(new_node.category);
+      const nodeKey = panelInfo.id || getNextNodeID();
+      new_node.name = node.name || new_node.id || strings.displayCategory(new_node.category);
 
-      q_graph.nodes[node_id] = new_node;
+      q_graph.nodes[nodeKey] = new_node;
     } else {
       const new_edge = {
         subject: edge.subject,

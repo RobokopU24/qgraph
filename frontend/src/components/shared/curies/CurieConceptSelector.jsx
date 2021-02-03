@@ -41,7 +41,7 @@ export default function CurieConceptSelector({
     let entry = {};
     let degree;
     let links = '';
-    let curie = '';
+    let id = '';
     let category = '';
     let colorStripes = [];
     let categoryColor = '';
@@ -56,9 +56,9 @@ export default function CurieConceptSelector({
       entry = curies[i];
 
       ({
-        degree, category, name, curie,
+        degree, category, name, id,
       } = entry);
-      const urls = curieUrls(curie);
+      const urls = curieUrls(id);
       links = (
         <span>
           {urls.map((u) => (
@@ -101,7 +101,7 @@ export default function CurieConceptSelector({
           <div title={name}>{name}</div>
         </div>
         <div className="curieDetails">
-          {curie}
+          {id}
           <Badge>{degree}</Badge>
           {links}
           <Button
@@ -115,8 +115,8 @@ export default function CurieConceptSelector({
   }
 
   const nRows = concepts.length + curies.length;
-  const showOptions = searchTerm && !selection.category && !selection.curie.length;
-  const showSelectedCurie = !showOptions && !!selection.curie.length;
+  const showOptions = searchTerm && !selection.category && !selection.id.length;
+  const showSelectedCurie = !showOptions && !!selection.id.length;
   const isEmpty = nRows === 0;
 
   const rowHeight = 50;
@@ -136,7 +136,7 @@ export default function CurieConceptSelector({
           />
           {showSelectedCurie && (
             <InputGroup.Addon>
-              {selection.curie[0]}
+              {selection.id[0]}
             </InputGroup.Addon>
           )}
           <InputGroup.Addon
