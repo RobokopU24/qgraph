@@ -11,7 +11,7 @@ export default function useNodePanels() {
   const [is_set, setSet] = useState(false);
   const [concepts, setConcepts] = useState([]);
   const [filteredConcepts, setFilteredConcepts] = useState([]);
-  const [curies, updateCuries] = useState([]);
+  const [ids, updateIDs] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const { concepts: biolinkConcepts } = useContext(BiolinkContext);
@@ -23,7 +23,7 @@ export default function useNodePanels() {
     setId([]);
     setSet(false);
     setFilteredConcepts([]);
-    updateCuries([]);
+    updateIDs([]);
     setLoading(false);
   }
 
@@ -82,14 +82,14 @@ export default function useNodePanels() {
   return {
     name,
     clearSelection,
-    updateCuries,
+    updateIDs,
     updateFilteredConcepts,
     setConcepts,
     setLoading,
     setSearchTerm,
     filteredConcepts,
     id,
-    curies,
+    ids,
     searchTerm,
     category,
     is_set,

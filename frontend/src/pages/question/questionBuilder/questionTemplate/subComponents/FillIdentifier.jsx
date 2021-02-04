@@ -11,15 +11,15 @@ import AlertContext from '@/context/alert';
 import CurieConceptSelector from '@/components/shared/curies/CurieConceptSelector';
 
 export default function FillIdentifier({
-  onSelect, category, focus, clearFocus,
+  onSelect, category,
 }) {
   const displayAlert = useContext(AlertContext);
 
-  const [curies, updateCuries] = useState([]);
+  const [ids, updateIDs] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const [selection, updateSelection] = useState({ curie: [] });
+  const [selection, updateSelection] = useState({ id: [] });
 
   async function fetchCuries(newSearchTerm) {
     if (newSearchTerm.length < 3) {
@@ -49,13 +49,13 @@ export default function FillIdentifier({
 
     // Sometimes the nodeNormalizer returns null responses
     // so we use a filter to remove those
-    const newCuries = Object.values(normalizationResponse).filter((c) => c).map((c) => ({
-      label: c.id.label || c.id.identifier,
+    const newIDs = Object.values(normalizationResponse).filter((c) => c).map((c) => ({
+      name: c.id.label || c.id.identifier,
       category: c.type,
-      curie: c.id.identifier,
+      id: c.id.identifier,
     })).filter((c) => c.category.includes(category));
     // Filter out curies based on category
-    updateCuries(newCuries);
+    updateIDs(newIDs);
     setLoading(false);
   }
 
@@ -67,9 +67,9 @@ export default function FillIdentifier({
 
   async function updateSearchTerm(value) {
     // Clear existing selection
-    updateSelection({ curie: [] });
+    updateSelection({ id: [] });
     // Clear existing curies
-    updateCuries([]);
+    updateIDs([]);
     // Update search term
     setSearchTerm(value);
 
@@ -78,27 +78,25 @@ export default function FillIdentifier({
   }
 
   function handleSelect(value) {
-    value.curie = [value.curie];
+    value.id = [value.id];
     updateSelection(value);
-    setSearchTerm(value.label);
+    setSearchTerm(value.name);
     onSelect(value);
   }
 
   function clearSelection() {
-    updateSelection({ curie: [] });
+    updateSelection({ id: [] });
     updateSearchTerm('');
     onSelect({});
   }
 
-  const rightButtonContents = searchTerm && selection.curie.length === 0 ? (<Glyphicon glyph="remove" />) : (<Glyphicon glyph="triangle-bottom" />);
-  const rightButtonFunction = searchTerm && selection.curie.length === 0 ? clearSelection : () => updateSearchTerm(searchTerm);
+  const rightButtonContents = searchTerm && selection.id.length === 0 ? (<Glyphicon glyph="remove" />) : (<Glyphicon glyph="triangle-bottom" />);
+  const rightButtonFunction = searchTerm && selection.id.length === 0 ? clearSelection : () => updateSearchTerm(searchTerm);
 
   return (
     <CurieConceptSelector
-      focus={focus}
-      clearFocus={clearFocus}
       concepts={[]}
-      curies={curies}
+      ids={ids}
       selection={selection}
       handleSelect={handleSelect}
       searchTerm={searchTerm}

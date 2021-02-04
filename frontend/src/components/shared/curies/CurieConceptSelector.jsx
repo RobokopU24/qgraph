@@ -12,7 +12,7 @@ import curieUrls from '@/utils/curieUrls';
 
 export default function CurieConceptSelector({
   concepts,
-  curies,
+  ids,
   selection, handleSelect,
   searchTerm, updateSearchTerm,
   loading,
@@ -53,7 +53,7 @@ export default function CurieConceptSelector({
       categoryColor = categoryColorMap(category);
     } else {
       const i = index - concepts.length;
-      entry = curies[i];
+      entry = ids[i];
 
       ({
         degree, category, name, id,
@@ -90,7 +90,7 @@ export default function CurieConceptSelector({
         key={key}
         style={{ ...style, backgroundColor: categoryColor }}
         className="nodePanelSelector"
-        id={index === concepts.length - 1 && curies.length > 0 ? 'lastConcept' : ''}
+        id={index === concepts.length - 1 && ids.length > 0 ? 'lastConcept' : ''}
       >
         {!fullColor && (
           <div className="colorStripesContainer">
@@ -114,9 +114,9 @@ export default function CurieConceptSelector({
     );
   }
 
-  const nRows = concepts.length + curies.length;
+  const nRows = concepts.length + ids.length;
   const showOptions = searchTerm && !selection.category && !selection.id.length;
-  const showSelectedCurie = !showOptions && !!selection.id.length;
+  const showSelectedId = !showOptions && !!selection.id.length;
   const isEmpty = nRows === 0;
 
   const rowHeight = 50;
@@ -134,7 +134,7 @@ export default function CurieConceptSelector({
             inputRef={(ref) => { inputRef.current = ref; }}
             onChange={(e) => updateSearchTerm(e.target.value)}
           />
-          {showSelectedCurie && (
+          {showSelectedId && (
             <InputGroup.Addon>
               {selection.id[0]}
             </InputGroup.Addon>

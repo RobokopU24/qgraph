@@ -66,12 +66,12 @@ export default function NodePanel({ panelStore }) {
       node.setLoading(false);
       return;
     }
-    // if search term has a colon, the user is inputing a specific curie
+    // if search term has a colon, the user is inputing a specific id
     if (newSearchTerm.includes(':')) {
-      node.updateCuries([{
+      node.updateIDs([{
         name: newSearchTerm,
         category: '',
-        curie: newSearchTerm,
+        id: newSearchTerm,
       }]);
       node.setLoading(false);
       return;
@@ -99,7 +99,7 @@ export default function NodePanel({ panelStore }) {
 
     // Sometimes the nodeNormalizer returns null responses
     // so we use a filter to remove those
-    node.updateCuries(
+    node.updateIDs(
       Object.values(normalizationResponse).filter((c) => c).map((c) => ({
         name: strings.prettyDisplay(c.id.label) || c.id.identifier,
         category: c.category,
@@ -119,7 +119,7 @@ export default function NodePanel({ panelStore }) {
     // Clear existing selection
     node.clearSelection();
     // Clear existing curies
-    node.updateCuries([]);
+    node.updateIDs([]);
     // Update list of concepts
     node.updateFilteredConcepts(value);
     // Update search term
@@ -137,7 +137,7 @@ export default function NodePanel({ panelStore }) {
       <h4 style={{ color: '#CCCCCC' }}>NODE CATEGORY</h4>
       <CurieConceptSelector
         concepts={node.filteredConcepts}
-        curies={node.curies}
+        ids={node.ids}
         selection={node}
         handleSelect={handleSelect}
         searchTerm={node.searchTerm}
