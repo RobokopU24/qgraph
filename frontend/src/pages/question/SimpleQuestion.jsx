@@ -5,7 +5,6 @@ import {
 
 import { FaDownload } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import _ from 'lodash';
 
 import UserContext from '@/context/user';
 
