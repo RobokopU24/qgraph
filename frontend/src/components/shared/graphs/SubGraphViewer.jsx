@@ -226,10 +226,10 @@ export default function SubGraphViewer(props) {
     });
 
     g.nodes.forEach((n) => {
-      if (Array.isArray(n.type)) {
-        n.type = concepts.find((concept) => concept !== 'named_thing' && n.type.includes(concept));
+      if (Array.isArray(n.category)) {
+        n.category = concepts.find((concept) => concept !== 'biolink:NamedThing' && n.category.includes(concept));
       }
-      const backgroundColor = nodeCategoryColorMap(n.type);
+      const backgroundColor = nodeCategoryColorMap(n.category);
       n.color = {
         border: '#000000',
         background: backgroundColor,

@@ -98,7 +98,6 @@ const convert = {
     reasonerRepresentation.nodes.forEach((node) => {
       pruneEmptyArrays(node, 'id');
       pruneEmptyArrays(node, 'category');
-      node.curie = node.id;
       node.id = node.key;
       delete node.key;
     });
