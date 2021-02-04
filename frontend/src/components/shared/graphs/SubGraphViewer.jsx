@@ -463,8 +463,6 @@ export default function SubGraphViewer(props) {
 
     updateDisplayGraph(graph);
     updateGraphOptions(graphOptions);
-
-    // this.setState({ displayGraph: graph, displayGraphOptions: graphOptions }, this.setNetworkCallbacks);
   }
 
   useEffect(() => {
@@ -476,18 +474,6 @@ export default function SubGraphViewer(props) {
       setNetworkCallbacks();
     }
   }, [displayGraphOptions, network]);
-
-  // componentWillReceiveProps(nextProps) {
-  //   this.syncStateAndProps(nextProps);
-  // }
-
-  // shouldComponentUpdate(nextProps) {
-  //   // Only redraw/remount component if subgraph components change
-  //   if (_.isEqual(this.props.subgraph, nextProps.subgraph) && this.network && (this.props.layoutStyle === nextProps.layoutStyle)) {
-  //     return false;
-  //   }
-  //   return true;
-  // }
 
   function clickCallback(event) { /* eslint-disable no-param-reassign */
     // Add edge objects not just ids
