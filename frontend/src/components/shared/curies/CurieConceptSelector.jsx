@@ -62,21 +62,22 @@ export default function CurieConceptSelector({
           ))}
         </span>
       );
-      if (Array.isArray(category)) {
-        category = category.filter((t) => t !== 'named_thing');
-        const categoryColorMap = getNodeCategoryColorMap(category);
-        colorStripes = category.map((t) => (
-          <div
-            title={t}
-            style={{
-              backgroundColor: categoryColorMap(t),
-              height: '100%',
-              width: '5px',
-            }}
-            key={shortid.generate()}
-          />
-        ));
+      if (!Array.isArray(category)) {
+        category = [category];
       }
+      category = category.filter((t) => t !== 'biolink:NamedThing');
+      const categoryColorMap = getNodeCategoryColorMap(category);
+      colorStripes = category.map((t) => (
+        <div
+          title={t}
+          style={{
+            backgroundColor: categoryColorMap(t),
+            height: '100%',
+            width: '5px',
+          }}
+          key={shortid.generate()}
+        />
+      ));
     }
 
     const fullColor = typeof category === 'string';

@@ -102,7 +102,7 @@ export default function NodePanel({ panelStore }) {
     node.updateIDs(
       Object.values(normalizationResponse).filter((c) => c).map((c) => ({
         name: strings.prettyDisplay(c.id.label) || c.id.identifier,
-        category: c.category,
+        category: c.type,
         id: c.id.identifier,
       })),
     );
