@@ -80,6 +80,7 @@ export default function QuestionBuilder(props) {
   function onQuestionTemplate(question) {
     Object.values(question.query_graph.edges).forEach(queryGraphUtils.standardizePredicate);
     Object.values(question.query_graph.nodes).forEach(queryGraphUtils.standardizeCategory);
+    Object.values(question.query_graph.nodes).forEach(queryGraphUtils.standardizeIDs);
     questionStore.updateQueryGraph(question.query_graph);
     questionStore.updateQuestionName(question.natural_question);
     setStep('build');

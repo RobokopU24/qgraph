@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import {
   FormControl, Button, Badge, InputGroup,
@@ -17,19 +17,15 @@ export default function CurieConceptSelector({
   searchTerm, updateSearchTerm,
   loading,
   rightButtonFunction, rightButtonContents,
-  focus, clearFocus,
+  focus,
 }) {
-  // Reference to the input element used for setting focus
-  const inputRef = useRef(null);
+  const inputRef = useRef();
+
   useEffect(() => {
-    if (!focus) return;
-
-    // Set focus
-    inputRef.current.focus();
-
-    // After we have set focus, clear the variable so we can set it again
-    if (clearFocus) clearFocus();
-  }, [focus]);
+    if (focus) {
+      inputRef.current.focus();
+    }
+  }, []);
 
   function rowRenderer({
     index,

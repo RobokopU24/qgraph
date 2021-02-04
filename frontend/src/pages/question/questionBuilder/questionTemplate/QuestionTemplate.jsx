@@ -13,29 +13,34 @@ import questionTemplates from '@/questionTemplates';
 import FillIdentifier from './subComponents/FillIdentifier';
 
 function extractDetails(questionTemplate) {
-  const newCategories = [];
-  const newLabels = [];
-  const newCuries = [];
+  const blankNodes = {};
   Object.keys(questionTemplate.query_graph.nodes).forEach((nodeId) => {
     const node = questionTemplate.query_graph.nodes[nodeId];
-    if (node.curie) {
-      // we're going to grab the number of the identifier from the curie and add that node's category to the list of categories in its correct spot.
-      if (Array.isArray(node.curie)) {
-        node.curie.forEach((curie) => {
-          // find the indentifier's number
-          const i = curie.match(/\d/);
-          // minus one because index starts at 0
-          newCategories[i - 1] = node.category;
+    if (node.id) {
+      // grab the number of the identifier from the id and add that node's category to the list of categories in its correct spot.
+      if (Array.isArray(node.id)) {
+        node.id.forEach((id) => {
+          // find the identifier's number
+          const i = id.match(/\d/);
+          blankNodes[i] = {
+            key: nodeId,
+            category: node.category,
+            name: '',
+            id: '',
+          };
         });
       } else {
-        const i = node.curie.match(/\d/);
-        newCategories[i - 1] = node.category;
+        const i = node.id.match(/\d/);
+        blankNodes[i] = {
+          key: nodeId,
+          category: node.category,
+          name: '',
+          id: '',
+        };
       }
-      newLabels.push('');
-      newCuries.push('');
     }
   });
-  return { newCategories, newLabels, newCuries };
+  return blankNodes;
 }
 
 function displayQuestion(questionName) {
@@ -54,26 +59,9 @@ export default function QuestionTemplateModal(props) {
   } = props;
   const [questionTemplate, setQuestionTemplate] = useState({});
   const [questionName, updateQuestionName] = useState([]);
-  const [nameList, updateNameList] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [labels, setLabels] = useState([]);
-  const [curies, setCuries] = useState([]);
+  const [nodes, updateNodes] = useState({});
 
-  // We use the name.focus property as a signal that the
-  // underlying component needs to execute the focus method.
-  //
-  // After it is set to true, the component will clear it
-  // once the focus operation is done
-  function setFocus(i, value) {
-    updateNameList((oldNameList) => {
-      const newNameList = [...oldNameList];
-      newNameList[i].focus = value;
-      return newNameList;
-    });
-  }
-
-  function replaceName(qName, newCategories) {
-    const newNameList = [];
+  function replaceName(qName, blankNodes) {
     let question = qName;
     question = question.split(/\s|\?/g);
     let num = 1;
@@ -81,22 +69,12 @@ export default function QuestionTemplateModal(props) {
       const nameRegex = `$name${num}$`;
       const idRegex = `($identifier${num}$)`;
       if (question[i] === nameRegex) {
-        const refNum = num - 1;
         question[i] = (
-          <button
-            type="button"
-            style={{
-              textDecoration: 'underline', color: 'grey', border: 'none', backgroundColor: 'white',
-            }}
-            onClick={() => setFocus(refNum, true)}
-            key={shortid.generate()}
-          >
-            {strings.displayCategory(newCategories[refNum]).toLowerCase()}
-          </button>
+          <span style={{ color: 'grey' }} key={i}>
+            {strings.displayCategory(blankNodes[num].category).toLowerCase()}
+          </span>
         );
-        newNameList.push({
-          nameIndex: i, name: '', id: '', ider: refNum, ref: { current: null },
-        });
+        blankNodes[num].questionIndex = i;
         for (let j = i; j < question.length; j += 1) {
           if (question[j] === idRegex) {
             question.splice(j, 1);
@@ -105,20 +83,17 @@ export default function QuestionTemplateModal(props) {
         num += 1;
       }
     }
-    updateNameList(newNameList);
+    updateNodes(blankNodes);
     return question;
   }
 
   function selectNewQuestionTemplate(event) {
     const newQuestionTemplate = _.cloneDeep(event);
     let newQuestionName = newQuestionTemplate.natural_question;
-    const { newCategories, newLabels, newCuries } = extractDetails(newQuestionTemplate);
-    newQuestionName = replaceName(newQuestionName, newCategories);
+    const blankNodes = extractDetails(newQuestionTemplate);
+    newQuestionName = replaceName(newQuestionName, blankNodes);
     setQuestionTemplate(newQuestionTemplate);
     updateQuestionName(newQuestionName);
-    setCategories(newCategories);
-    setCuries(newCuries);
-    setLabels(newLabels);
   }
 
   function updateQuestionTemplate() {
@@ -126,84 +101,53 @@ export default function QuestionTemplateModal(props) {
 
     const newQuestionTemplate = _.cloneDeep(questionTemplate);
     newQuestionTemplate.natural_question = questionName.join(' ');
-    let num = 0;
-    Object.keys(newQuestionTemplate.query_graph.nodes).forEach((nodeId) => {
-      const node = newQuestionTemplate.query_graph.nodes[nodeId];
-      if (node.curie) {
-        if (Array.isArray(node.curie)) {
-          node.curie.forEach((curie, i) => {
-            // TODO: num only works if there's only one curie in the array. So far, that's the only case.
-            node.curie[i] = nameList[num].id;
-            node.label = nameList[num].label;
-            num += 1;
-          });
-        } else {
-          node.curie = nameList[0].id;
-          node.label = nameList[0].label;
-        }
-      }
+    Object.values(nodes).forEach((node) => {
+      newQuestionTemplate.query_graph.nodes[node.key].name = node.name;
+      newQuestionTemplate.query_graph.nodes[node.key].id = node.id;
     });
     setQuestionTemplate(newQuestionTemplate);
   }
 
-  function handleIdentifierChange(index, value) {
-    const { label } = value;
-    const curie = value.curie && value.curie[0];
+  function handleIdentifierChange(identifierId, value) {
+    const { name } = value;
+    const id = value.id && value.id[0];
 
     // Values that we update during this function
     const newQuestionName = [...questionName];
-    const newNameList = [...nameList];
-    const newLabels = [...labels];
-    const newCuries = [...curies];
+    const blankNodes = _.cloneDeep(nodes);
 
-    nameList.forEach((name, i) => {
-      if (name.ider === index && label && curie) {
-        newQuestionName[name.nameIndex] = `${label} (${curie})`;
-        newNameList[i].label = label;
-        newNameList[i].id = curie;
-        newLabels[index] = label;
-        newCuries[index] = curie;
-      } else if (name.ider === index && !label && !curie) {
-        // we delete whatever was there before. Disable the submit button.
-        newQuestionName[name.nameIndex] = (
-          <button
-            type="button"
-            style={{
-              textDecoration: 'underline', color: 'grey', border: 'none', backgroundColor: 'white',
-            }}
-            onClick={() => setFocus(i, true)}
-            key={shortid.generate()}
-          >
-            {strings.displayCategory(categories[name.ider]).toLowerCase()}
-          </button>
-        );
-        newLabels[name.ider] = '';
-        newCuries[name.ider] = '';
-      }
+    if (name && id) {
+      blankNodes[identifierId].name = name;
+      blankNodes[identifierId].id = id;
+      newQuestionName[blankNodes[identifierId].questionIndex] = `${name} (${id})`;
+    } else {
+      // we delete whatever was there before.
+      newQuestionName[blankNodes[identifierId].questionIndex] = (
+        <span style={{ color: 'grey' }} key={blankNodes[identifierId].questionIndex}>
+          {strings.displayCategory(blankNodes[identifierId].category).toLowerCase()}
+        </span>
+      );
+      blankNodes[identifierId].name = '';
+      blankNodes[identifierId].id = '';
+    }
 
-      updateQuestionName(newQuestionName);
-      updateNameList(newNameList);
-      setLabels(newLabels);
-      setCuries(newCuries);
-    });
+    updateQuestionName(newQuestionName);
+    updateNodes(blankNodes);
   }
 
   function submitTemplate() {
     selectQuestion(questionTemplate);
     setQuestionTemplate({});
     updateQuestionName([]);
-    updateNameList([]);
-    setCategories([]);
-    setLabels([]);
-    setCuries([]);
+    updateNodes({});
   }
 
   // Disable if there are still questionName pieces that are not
   // filled in
   const disable = !questionName.every((n) => _.isString(n));
 
-  // Update question template if questionName or nameList changes
-  useEffect(updateQuestionTemplate, [questionName, nameList]);
+  // Update question template if questionName or nodes change
+  useEffect(updateQuestionTemplate, [questionName, nodes]);
 
   return (
     <Modal
@@ -246,13 +190,11 @@ export default function QuestionTemplateModal(props) {
             <p>Choose curies below to fill out the template.</p>
           </div>
         )}
-        {nameList.map((n, i) => (
+        {Object.entries(nodes).map(([identifierId, node]) => (
           <FillIdentifier
-            key={categories[i] + i}
-            onSelect={(v) => handleIdentifierChange(i, v)}
-            focus={n.focus}
-            clearFocus={() => setFocus(i, false)}
-            category={categories[i]}
+            key={node.key}
+            onSelect={(v) => handleIdentifierChange(identifierId, v)}
+            category={node.category}
           />
         ))}
       </Modal.Body>
