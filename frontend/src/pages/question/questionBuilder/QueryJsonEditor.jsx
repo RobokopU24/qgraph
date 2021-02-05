@@ -15,12 +15,12 @@ import CheckIcon from '@material-ui/icons/Check';
 import UndoIcon from '@material-ui/icons/Undo';
 import CloseIcon from '@material-ui/icons/Close';
 
-import QuestionGraphView from '@/components/shared/graphs/QuestionGraphView';
+import QuestionGraphView from '~/components/shared/graphs/QuestionGraphView';
 
-import AlertContext from '@/context/alert';
-import usePageStatus from '@/utils/usePageStatus';
-import trapiUtils from '@/utils/trapiUtils';
-import queryGraphUtils from '@/utils/queryGraph';
+import AlertContext from '~/context/alert';
+import usePageStatus from '~/utils/usePageStatus';
+import trapiUtils from '~/utils/trapiUtils';
+import queryGraphUtils from '~/utils/queryGraph';
 
 import './jsonEditor.css';
 

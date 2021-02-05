@@ -18,14 +18,14 @@ import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 
-import UserContext from '@/context/user';
-import AlertContext from '@/context/alert';
+import UserContext from '~/context/user';
+import AlertContext from '~/context/alert';
 
-import API from '@/API';
-import { formatDateTimeNicely } from '@/utils/cache';
-import usePageStatus from '@/utils/usePageStatus';
+import API from '~/API';
+import { formatDateTimeNicely } from '~/utils/cache';
+import usePageStatus from '~/utils/usePageStatus';
 
-import StoredAnswersetViewer from '@/components/shared/answersetView/StoredAnswersetViewer';
+import StoredAnswersetViewer from '~/components/shared/answersetView/StoredAnswersetViewer';
 
 import EditQuestion from './subComponents/EditQuestion';
 import EditAnswer from './subComponents/EditAnswer';

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import _ from 'lodash';
 
-import queryGraphUtils from '@/utils/queryGraph';
-import strings from '@/utils/stringUtils';
+import queryGraphUtils from '~/utils/queryGraph';
+import strings from '~/utils/stringUtils';
 
 import useNode from './useNode';
 import useEdge from './useEdge';

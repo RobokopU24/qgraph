@@ -1,32 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-
-import Landing from '@/pages/Landing';
-import About from '@/pages/About';
-import Help from '@/pages/Help';
-import Guide from '@/pages/Guide';
-import TermsofService from '@/pages/TermsofService';
-import SimpleViewer from '@/pages/SimpleViewer';
-import SimpleQuestion from '@/pages/question/SimpleQuestion';
-import QuestionNew from '@/pages/question/QuestionNew';
-
-import Neighborhood from '@/pages/neighborhood/Neighborhood';
-import QuestionList from '@/pages/questionList/QuestionList';
-import QuestionAnswerViewer from '@/pages/questionAnswerViewer/QuestionAnswerViewer';
-
-import Header from '@/components/header/Header';
-import Footer from '@/components/footer/Footer';
-import AlertWrapper from '@/components/AlertWrapper';
-
 import { ThemeProvider, StylesProvider } from '@material-ui/core/styles';
-import theme from '@/theme';
-import API from '@/API';
 
-import UserContext from '@/context/user';
-import AlertContext from '@/context/alert';
-import BiolinkContext from '@/context/biolink';
+import Landing from '~/pages/Landing';
+import About from '~/pages/About';
+import Help from '~/pages/Help';
+import Guide from '~/pages/Guide';
+import TermsofService from '~/pages/TermsofService';
+import SimpleViewer from '~/pages/SimpleViewer';
+import SimpleQuestion from '~/pages/question/SimpleQuestion';
+import QuestionNew from '~/pages/question/QuestionNew';
 
-import useBiolink from '@/utils/useBiolink';
+import Neighborhood from '~/pages/neighborhood/Neighborhood';
+import QuestionList from '~/pages/questionList/QuestionList';
+import QuestionAnswerViewer from '~/pages/questionAnswerViewer/QuestionAnswerViewer';
+
+import Header from '~/components/header/Header';
+import Footer from '~/components/footer/Footer';
+import AlertWrapper from '~/components/AlertWrapper';
+
+import theme from '~/theme';
+import API from '~/API';
+
+import UserContext from '~/context/user';
+import AlertContext from '~/context/alert';
+import BiolinkContext from '~/context/biolink';
+
+import useBiolink from '~/utils/useBiolink';
 
 export default function App() {
   const [user, setUser] = useState(null);

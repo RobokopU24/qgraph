@@ -4,7 +4,7 @@ import Box from '@material-ui/core/Box';
 import Alert from '@material-ui/lab/Alert';
 import { withStyles } from '@material-ui/core/styles';
 
-import Loading from '@/components/loading/Loading';
+import Loading from '~/components/loading/Loading';
 
 const CenteredAlert = withStyles({
   root: { justifyContent: 'center' },

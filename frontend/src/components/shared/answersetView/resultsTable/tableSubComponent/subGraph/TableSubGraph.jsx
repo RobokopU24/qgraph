@@ -13,8 +13,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import CloseIcon from '@material-ui/icons/Close';
 
-import Loading from '@/components/loading/Loading';
-import SubGraphViewer from '@/components/shared/graphs/SubGraphViewer';
+import Loading from '~/components/loading/Loading';
+import SubGraphViewer from '~/components/shared/graphs/SubGraphViewer';
 import AnswerExplorerInfo from './AnswerExplorerInfo';
 
 import './subGraph.css';

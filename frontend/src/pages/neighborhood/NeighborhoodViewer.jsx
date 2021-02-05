@@ -2,13 +2,13 @@ import React, { useState, useEffect, useContext } from 'react';
 import ReactTable from 'react-table-6';
 import _ from 'lodash';
 
-import BiolinkContext from '@/context/biolink';
+import BiolinkContext from '~/context/biolink';
 
-import AnswersetGraph from '@/components/shared/graphs/AnswersetGraph';
-import getNodeCategoryColorMap from '@/utils/colorUtils';
-import getColumnWidth from '@/utils/rtColumnWidth';
+import AnswersetGraph from '~/components/shared/graphs/AnswersetGraph';
+import getNodeCategoryColorMap from '~/utils/colorUtils';
+import getColumnWidth from '~/utils/rtColumnWidth';
 
-import useMessageStore from '@/stores/useMessageStore';
+import useMessageStore from '~/stores/useMessageStore';
 
 export default function NeightborhoodViewer(props) {
   const { sourceNode } = props;

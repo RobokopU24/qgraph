@@ -9,7 +9,7 @@ import ClearIcon from '@material-ui/icons/Clear';
 
 import { green, red } from '@material-ui/core/colors';
 
-import { useVisibility, formatDateTimeNicely } from '@/utils/cache';
+import { useVisibility, formatDateTimeNicely } from '~/utils/cache';
 
 export default function QuestionTableRow({ question }) {
   const history = useHistory();

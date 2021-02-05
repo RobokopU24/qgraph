@@ -12,10 +12,10 @@ import Button from '@material-ui/core/Button';
 import LinkIcon from '@material-ui/icons/Link';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 
-import API from '@/API';
-import UserContext from '@/context/user';
-import ClipboardButton from '@/components/shared/ClipboardButton';
-import NewDownloadButton from '@/components/shared/NewDownloadButton';
+import API from '~/API';
+import UserContext from '~/context/user';
+import ClipboardButton from '~/components/shared/ClipboardButton';
+import NewDownloadButton from '~/components/shared/NewDownloadButton';
 
 export default function EditAnswer({ answer, afterDelete }) {
   const [newAnswer, updateNewAnswer] = useState(answer);

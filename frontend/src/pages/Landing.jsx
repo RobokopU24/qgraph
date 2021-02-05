@@ -5,7 +5,7 @@ import {
   ListGroupItem, Glyphicon, Col, Row,
 } from 'react-bootstrap';
 
-import UserContext from '@/context/user';
+import UserContext from '~/context/user';
 import './simplecss.css';
 
 function CustomComponent({

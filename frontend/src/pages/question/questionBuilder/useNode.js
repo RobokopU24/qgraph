@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react';
 
-import strings from '@/utils/stringUtils';
-import BiolinkContext from '@/context/biolink';
+import strings from '~/utils/stringUtils';
+import BiolinkContext from '~/context/biolink';
 
 export default function useNodePanels() {
   const [category, setCategory] = useState('');

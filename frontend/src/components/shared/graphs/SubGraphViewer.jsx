@@ -5,10 +5,10 @@ import Graph from 'react-graph-vis';
 import shortid from 'shortid';
 import _ from 'lodash';
 
-import BiolinkContext from '@/context/biolink';
-import getNodeCategoryColorMap from '@/utils/colorUtils';
-import strings from '@/utils/stringUtils';
-import AlertContext from '@/context/alert';
+import BiolinkContext from '~/context/biolink';
+import getNodeCategoryColorMap from '~/utils/colorUtils';
+import strings from '~/utils/stringUtils';
+import AlertContext from '~/context/alert';
 
 const keyBlocklist = ['isSet', 'labels', 'label', 'equivalent_identifiers', 'type', 'id', 'degree', 'name', 'title', 'color', 'binding', 'scoreVector', 'aggScore', 'level'];
 

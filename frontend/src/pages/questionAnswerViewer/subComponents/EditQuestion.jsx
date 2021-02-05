@@ -17,12 +17,12 @@ import LinkIcon from '@material-ui/icons/Link';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import ShareIcon from '@material-ui/icons/Share';
 
-import API from '@/API';
-import UserContext from '@/context/user';
-import ClipboardButton from '@/components/shared/ClipboardButton';
-import NewDownloadButton from '@/components/shared/NewDownloadButton';
+import API from '~/API';
+import UserContext from '~/context/user';
+import ClipboardButton from '~/components/shared/ClipboardButton';
+import NewDownloadButton from '~/components/shared/NewDownloadButton';
 
-import { formatDateTimeNicely } from '@/utils/cache';
+import { formatDateTimeNicely } from '~/utils/cache';
 
 export default function EditQuestion({ question, onUpdated, onDeleted }) {
   const history = useHistory();

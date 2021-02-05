@@ -7,8 +7,8 @@ import shortid from 'shortid';
 
 import { AutoSizer, List } from 'react-virtualized';
 
-import getNodeCategoryColorMap from '@/utils/colorUtils';
-import curieUrls from '@/utils/curieUrls';
+import getNodeCategoryColorMap from '~/utils/colorUtils';
+import curieUrls from '~/utils/curieUrls';
 
 export default function CurieConceptSelector({
   concepts,

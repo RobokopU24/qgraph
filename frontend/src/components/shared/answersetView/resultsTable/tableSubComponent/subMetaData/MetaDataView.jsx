@@ -7,10 +7,10 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import { FaClone } from 'react-icons/fa';
 
-import BiolinkContext from '@/context/biolink';
-import getNodeCategoryColorMap from '@/utils/colorUtils';
-import strings from '@/utils/stringUtils';
-import getColumnWidth from '@/utils/rtColumnWidth';
+import BiolinkContext from '~/context/biolink';
+import getNodeCategoryColorMap from '~/utils/colorUtils';
+import strings from '~/utils/stringUtils';
+import getColumnWidth from '~/utils/rtColumnWidth';
 import Cell from './Cell';
 import SubTable from './SubTable';
 

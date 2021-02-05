@@ -4,9 +4,9 @@ import React, {
 import _ from 'lodash';
 import shortid from 'shortid';
 
-import BiolinkContext from '@/context/biolink';
-import getNodeCategoryColorMap from '@/utils/colorUtils';
-import strings from '@/utils/stringUtils';
+import BiolinkContext from '~/context/biolink';
+import getNodeCategoryColorMap from '~/utils/colorUtils';
+import strings from '~/utils/stringUtils';
 
 const Graph = require('react-graph-vis').default;
 

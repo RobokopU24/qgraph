@@ -12,13 +12,13 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 
-import API from '@/API';
+import API from '~/API';
 
 import './questionList.css';
 
-import UserContext from '@/context/user';
+import UserContext from '~/context/user';
 
-import usePageStatus from '@/utils/usePageStatus';
+import usePageStatus from '~/utils/usePageStatus';
 
 import QuestionTableRow from './subComponents/QuestionTableRow';
 
