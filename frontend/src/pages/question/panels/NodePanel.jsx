@@ -86,6 +86,12 @@ export default function NodePanel({ panelStore }) {
     }
     const curies = Object.keys(response);
 
+    // If we didn't get anything back from name resolver
+    if (!curies.length) {
+      node.setLoading(false);
+      return;
+    }
+
     // Pass curies to nodeNormalizer to get category information and
     // a better curie identifier
     const normalizationResponse = await API.nodeNormalization.getNormalizedNodesPost({ curies });
