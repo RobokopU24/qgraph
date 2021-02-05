@@ -86,19 +86,16 @@ function validateResults(results) {
  * Returns a list of validation errors.
  */
 function validateMessage(message) {
-  const errors = [];
   if (!message || message.constructor !== Object) {
-    errors.push('The uploaded message isn\'t a valid JSON object');
-    return errors;
+    return ['The uploaded message isn\'t a valid JSON object.'];
   }
   if (!('message' in message)) {
-    errors.push('The uploaded message should follow the TRAPI Standard format');
-    return errors;
+    return ['The uploaded message should have a parent property of "message".'];
   }
 
-  errors.concat(validateGraph(message.message.knowledge_graph, 'Knowledge Graph'));
-  errors.concat(validateGraph(message.message.query_graph, 'Query Graph'));
-  errors.concat(validateResults(message.message.results));
+  let errors = validateGraph(message.message.knowledge_graph, 'Knowledge Graph');
+  errors = [...errors, ...validateGraph(message.message.query_graph, 'Query Graph')];
+  errors = [...errors, ...validateResults(message.message.results)];
 
   return errors;
 }
