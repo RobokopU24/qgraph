@@ -33,60 +33,34 @@ function listWithIdsToDict(list) {
  */
 function dictToListWithIds(dict) {
   return Object.entries(dict).map(
-    ([id, node]) => ({ ...node, id }),
+    ([key, node]) => ({ ...node, key }),
   );
 }
 
 /**
- * Remove internal label property
- * @param {object} n a query graph node
+ * Convert property that could be a string to an array if not given as array
+ * @param {object} obj object to modify
+ * @param {string} property property to modify
  */
-// function removeLabel(n) {
-//   if (n.label) {
-//     delete n.label;
-//   }
-// }
-
-/**
- * Convert curie to array if not given as array
- * @param {object} n node object with a curie property
- */
-function standardizeCuries(n) {
-  if (n.curie && !_.isArray(n.curie)) {
-    n.curie = [n.curie];
+function standardizeArrayProperty(obj, property) {
+  if (obj[property] && !_.isArray(obj[property])) {
+    obj[property] = [obj[property]];
   }
 }
 
-/**
- * Convert type to array if not given as array
- * @param {object} e edge object with a type property
- */
-function standardizeType(e) {
-  // Convert type to array if not given as array
-  if (e.type && !_.isArray(e.type)) {
-    e.type = [e.type];
-  }
-}
+const standardizeIDs = (o) => standardizeArrayProperty(o, 'id');
+const standardizePredicate = (o) => standardizeArrayProperty(o, 'predicate');
+const standardizeCategory = (o) => standardizeArrayProperty(o, 'category');
 
 /**
- * Remove empty curie arrays
- * @param {object} n node object with a curie property
+ * Remove empty arrays
+ * @param {object} obj object to prune
+ * @param {string} property property of object to prune
 */
-function pruneCuries(n) {
-  if (n.curie && _.isArray(n.curie) &&
-      n.curie.length === 0) {
-    delete n.curie;
-  }
-}
-
-/**
- * Remove empty type arrays
- * @param {object} e edge object with a type property
-*/
-function pruneTypes(e) {
-  if (e.type && _.isArray(e.type) &&
-      e.type.length === 0) {
-    delete e.type;
+function pruneEmptyArrays(obj, property) {
+  if (obj[property] && _.isArray(obj[property]) &&
+      obj[property].length === 0) {
+    delete obj[property];
   }
 }
 
@@ -105,10 +79,10 @@ const convert = {
     internalRepresentation.nodes = listWithIdsToDict(q.nodes);
     internalRepresentation.edges = listWithIdsToDict(q.edges);
 
-    Object.values(internalRepresentation.nodes).forEach(standardizeCuries);
-    Object.values(internalRepresentation.nodes).forEach(standardizeType);
+    Object.values(internalRepresentation.nodes).forEach(standardizeIDs);
+    Object.values(internalRepresentation.nodes).forEach(standardizeCategory);
 
-    Object.values(internalRepresentation.edges).forEach(standardizeType);
+    Object.values(internalRepresentation.edges).forEach(standardizeCategory);
     return internalRepresentation;
   },
   /**
@@ -121,11 +95,19 @@ const convert = {
     reasonerRepresentation.nodes = dictToListWithIds(q.nodes);
     reasonerRepresentation.edges = dictToListWithIds(q.edges);
 
-    reasonerRepresentation.nodes.forEach(pruneCuries);
-    reasonerRepresentation.nodes.forEach(pruneTypes);
+    reasonerRepresentation.nodes.forEach((node) => {
+      pruneEmptyArrays(node, 'id');
+      pruneEmptyArrays(node, 'category');
+      node.id = node.key;
+      delete node.key;
+    });
 
-    // reasonerRepresentation.nodes.forEach(removeLabel);
-    reasonerRepresentation.edges.forEach(pruneTypes);
+    reasonerRepresentation.edges.forEach((edge) => {
+      pruneEmptyArrays(edge, 'predicate');
+      edge.id = edge.key;
+      delete edge.key;
+    });
+
     return reasonerRepresentation;
   },
 };
@@ -133,5 +115,7 @@ const convert = {
 export default {
   getEmptyGraph,
   convert,
-  standardizeType,
+  standardizeCategory,
+  standardizePredicate,
+  standardizeIDs,
 };

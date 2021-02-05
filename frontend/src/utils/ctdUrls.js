@@ -1,25 +1,25 @@
-export default function ctdUrls(type, equalIds) {
+export default function ctdUrls(category, equalIds) {
   let id = '';
   let ctdType = '';
-  if (type === 'chemical_substance') {
+  if (category === 'biolink:ChemicalSubstance') {
     id = equalIds.find((ei) => ei.toUpperCase().includes('MESH'));
     if (id) {
       id = id.substr(id.indexOf(':') + 1);
     }
     ctdType = 'chem';
-  } else if (type === 'disease') {
+  } else if (category === 'biolink:Disease') {
     id = equalIds.find((ei) => ei.toUpperCase().includes('MESH') || ei.toUpperCase().includes('OMIM'));
     ctdType = 'disease';
-  } else if (type === 'gene') {
+  } else if (category === 'biolink:Gene') {
     id = equalIds.find((ei) => ei.toUpperCase().includes('NCBIGENE'));
     if (id) {
       id = id.substr(id.indexOf(':') + 1);
     }
     ctdType = 'gene';
-  } else if (type === 'biological_process') {
+  } else if (category === 'biolink:BiologicalProcess') {
     id = equalIds.find((ei) => ei.toUpperCase().includes('GO'));
     ctdType = 'go';
-  } else if (type === 'pathway') {
+  } else if (category === 'biolink:Pathway') {
     id = equalIds.find((ei) => ei.toUpperCase().includes('KEGG') || ei.toUpperCase().includes('REACT'));
     ctdType = 'pathway';
   }

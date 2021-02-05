@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import {
   FormControl, Button, Badge, InputGroup,
@@ -7,29 +7,25 @@ import shortid from 'shortid';
 
 import { AutoSizer, List } from 'react-virtualized';
 
-import getNodeTypeColorMap from '@/utils/colorUtils';
+import getNodeCategoryColorMap from '@/utils/colorUtils';
 import curieUrls from '@/utils/curieUrls';
 
 export default function CurieConceptSelector({
   concepts,
-  curies,
+  ids,
   selection, handleSelect,
   searchTerm, updateSearchTerm,
   loading,
   rightButtonFunction, rightButtonContents,
-  focus, clearFocus,
+  focus,
 }) {
-  // Reference to the input element used for setting focus
-  const inputRef = useRef(null);
+  const inputRef = useRef();
+
   useEffect(() => {
-    if (!focus) return;
-
-    // Set focus
-    inputRef.current.focus();
-
-    // After we have set focus, clear the variable so we can set it again
-    if (clearFocus) clearFocus();
-  }, [focus]);
+    if (focus) {
+      inputRef.current.focus();
+    }
+  }, []);
 
   function rowRenderer({
     index,
@@ -37,28 +33,28 @@ export default function CurieConceptSelector({
     style,
   }) {
     const isConcept = index < concepts.length;
-    let label = '';
+    let name = '';
     let entry = {};
     let degree;
     let links = '';
-    let curie = '';
-    let type = '';
+    let id = '';
+    let category = '';
     let colorStripes = [];
-    let typeColor = '';
+    let categoryColor = '';
     if (isConcept) {
-      label = concepts[index].label;
+      name = concepts[index].name;
       entry = concepts[index];
-      ({ type } = concepts[index]); // this is a string
-      const typeColorMap = getNodeTypeColorMap();
-      typeColor = typeColorMap(type);
+      ({ category } = concepts[index]); // this is a string
+      const categoryColorMap = getNodeCategoryColorMap();
+      categoryColor = categoryColorMap(category);
     } else {
       const i = index - concepts.length;
-      entry = curies[i];
+      entry = ids[i];
 
       ({
-        degree, type, label, curie,
+        degree, category, name, id,
       } = entry);
-      const urls = curieUrls(curie);
+      const urls = curieUrls(id);
       links = (
         <span>
           {urls.map((u) => (
@@ -66,31 +62,32 @@ export default function CurieConceptSelector({
           ))}
         </span>
       );
-      if (Array.isArray(type)) {
-        type = type.filter((t) => t !== 'named_thing');
-        const typeColorMap = getNodeTypeColorMap(type);
-        colorStripes = type.map((t) => (
-          <div
-            title={t}
-            style={{
-              backgroundColor: typeColorMap(t),
-              height: '100%',
-              width: '5px',
-            }}
-            key={shortid.generate()}
-          />
-        ));
+      if (!Array.isArray(category)) {
+        category = [category];
       }
+      category = category.filter((t) => t !== 'biolink:NamedThing');
+      const categoryColorMap = getNodeCategoryColorMap(category);
+      colorStripes = category.map((t) => (
+        <div
+          title={t}
+          style={{
+            backgroundColor: categoryColorMap(t),
+            height: '100%',
+            width: '5px',
+          }}
+          key={shortid.generate()}
+        />
+      ));
     }
 
-    const fullColor = typeof type === 'string';
+    const fullColor = typeof category === 'string';
 
     return (
       <div
         key={key}
-        style={{ ...style, backgroundColor: typeColor }}
+        style={{ ...style, backgroundColor: categoryColor }}
         className="nodePanelSelector"
-        id={index === concepts.length - 1 && curies.length > 0 ? 'lastConcept' : ''}
+        id={index === concepts.length - 1 && ids.length > 0 ? 'lastConcept' : ''}
       >
         {!fullColor && (
           <div className="colorStripesContainer">
@@ -98,10 +95,10 @@ export default function CurieConceptSelector({
           </div>
         )}
         <div className="curieName">
-          <div title={label}>{label}</div>
+          <div title={name}>{name}</div>
         </div>
         <div className="curieDetails">
-          {curie}
+          {id}
           <Badge>{degree}</Badge>
           {links}
           <Button
@@ -114,9 +111,9 @@ export default function CurieConceptSelector({
     );
   }
 
-  const nRows = concepts.length + curies.length;
-  const showOptions = searchTerm && !selection.type && !selection.curie.length;
-  const showSelectedCurie = !showOptions && !!selection.curie.length;
+  const nRows = concepts.length + ids.length;
+  const showOptions = searchTerm && !selection.category && !selection.id.length;
+  const showSelectedId = !showOptions && !!selection.id.length;
   const isEmpty = nRows === 0;
 
   const rowHeight = 50;
@@ -134,9 +131,9 @@ export default function CurieConceptSelector({
             inputRef={(ref) => { inputRef.current = ref; }}
             onChange={(e) => updateSearchTerm(e.target.value)}
           />
-          {showSelectedCurie && (
+          {showSelectedId && (
             <InputGroup.Addon>
-              {selection.curie[0]}
+              {selection.id[0]}
             </InputGroup.Addon>
           )}
           <InputGroup.Addon

@@ -20,7 +20,7 @@ export default function useMessageStore() {
   const [filteredAnswers, setFilteredAnswers] = useState([]);
   const [answers, setAnswers] = useState([]);
 
-  const keyBlocklist = ['isSet', 'labels', 'equivalent_identifiers', 'type', 'id', 'degree', 'synonyms'];
+  const keyBlocklist = ['isSet', 'labels', 'equivalent_identifiers', 'category', 'id', 'degree', 'synonyms', 'attributes'];
 
   function makeIdToIndexMap(arr) {
     const idToIndexMap = new Map();
@@ -39,11 +39,11 @@ export default function useMessageStore() {
     const qgNodeMap = makeIdToIndexMap(msg.query_graph.nodes);
     const qgEdgeMap = makeIdToIndexMap(msg.query_graph.edges);
     msg.query_graph.nodes.forEach((node) => {
-      if (!node.type && node.curie) {
-        // if no node type, go look up in knowledge graph
+      if (!node.category && node.curie) {
+        // if no node category, go look up in knowledge graph
         const kgNodeInd = kgNodeMap.get(node.curie);
-        // TODO: don't just grab the first type from the array
-        [node.type] = msg.knowledge_graph.nodes[kgNodeInd].type;
+        // TODO: don't just grab the first category from the array
+        [node.category] = msg.knowledge_graph.nodes[kgNodeInd].category;
       }
     });
     setIdToIndexMaps({
@@ -107,9 +107,9 @@ export default function useMessageStore() {
 
   function annotatedPrunedKnowledgeGraph(pruneNum) {
     if (!message.query_graph) return {};
-    // KG nodes don't always have type
+    // KG nodes don't always have category
     // If they don't we need to figure out which qNodes they most like correspond to
-    // Then check labels and use the corresponding type
+    // Then check labels and use the corresponding category
 
     const { results, knowledge_graph: kg, query_graph: qg } = message;
     const Nj = Math.round(pruneNum / getNumQgNodes());
@@ -228,7 +228,7 @@ export default function useMessageStore() {
     const prunedKgNodeIdSet = new Set(prunedKgNodeList.map((node) => node.id));
     // Construct pruned edges from original KG-graph
     const prunedKgEdgeList = kg.edges.filter((edge) => {
-      if (prunedKgNodeIdSet.has(edge.source_id) && prunedKgNodeIdSet.has(edge.target_id)) {
+      if (prunedKgNodeIdSet.has(edge.subject) && prunedKgNodeIdSet.has(edge.object)) {
         return true;
       }
       return false;
@@ -239,18 +239,18 @@ export default function useMessageStore() {
       edges: prunedKgEdgeList,
     };
 
-    // Now set correct type for nodes by going through answers and
-    // allowing for majority vote across all answers for the type
+    // Now set correct category for nodes by going through answers and
+    // allowing for majority vote across all answers for the category
     const qNodes = qg.nodes;
     const qNodeBindings = qNodes.map((q) => q.id);
 
     prunedGraph.nodes.forEach((node) => {
-      if ((('type' in node) && Array.isArray(node.type)) || (!('type' in node) && ('labels' in node))) {
-        // if a prunedGraph node doesn't have a type
+      if ((('category' in node) && Array.isArray(node.category)) || (!('category' in node) && ('labels' in node))) {
+        // if a prunedGraph node doesn't have a category
         // We will look through all answers
         // We will count the number of times is used in each qNode
         // Then take the max to pick the best one
-        // The type is then the type of that qNode
+        // The category is then the category of that qNode
         const qNodeCounts = qNodeBindings.map(() => 0);
 
         results.forEach((a) => {
@@ -273,14 +273,14 @@ export default function useMessageStore() {
         const maxCounts = qNodeCounts.reduce((m, val) => Math.max(m, val));
         const qNodeIndex = qNodeCounts.indexOf(maxCounts);
 
-        // Use that numQgNodes Nodes Type
-        node.type = qNodes[qNodeIndex].type;
-        if (node.type === 'named_thing') { // we don't actually want any named_things
-          let kgNodeType = getKgNode(node.id).type;
-          if (!Array.isArray(kgNodeType)) { // so the type will always be an array
-            kgNodeType = [kgNodeType];
+        // Use that numQgNodes Nodes Category
+        node.category = qNodes[qNodeIndex].category;
+        if (node.category === 'named_thing') { // we don't actually want any named_things
+          let kgNodeCategory = getKgNode(node.id).category;
+          if (!Array.isArray(kgNodeCategory)) { // so the category will always be an array
+            kgNodeCategory = [kgNodeCategory];
           }
-          node.type = kgNodeType;
+          node.category = kgNodeCategory;
         }
       }
     });
@@ -290,8 +290,8 @@ export default function useMessageStore() {
 
   // Returns formatted answerset data for tabular display
   // {
-  //   answers: [{ nodes: {n0: {name: , id: , type: , isSet, setNodes?: }, n1: {}, ...}, score: -1 }, {}, ...],
-  //   columnHeaders: [{ Header: 'n01: Gene', id: 'n01', isSet: false, type: 'gene'}, {}, ...],
+  //   answers: [{ nodes: {n0: {name: , id: , category: , isSet, setNodes?: }, n1: {}, ...}, score: -1 }, {}, ...],
+  //   columnHeaders: [{ Header: 'n01: Gene', id: 'n01', isSet: false, category: 'gene'}, {}, ...],
   // }
   function answerSetTableData() {
     const columnHeaders = [];
@@ -299,16 +299,16 @@ export default function useMessageStore() {
     let unknownNodes = false;
     // set the column headers object
     message.query_graph.nodes.forEach((n) => {
-      // TODO: handle an array of types
-      let { type } = n;
-      if (Array.isArray(type)) { // just grab first type
-        [type] = type;
+      // TODO: handle an array of categories
+      let { category } = n;
+      if (Array.isArray(category)) { // just grab first category
+        [category] = category;
       }
       columnHeaders.push({
-        Header: `${n.id}: ${strings.displayType(type)}`,
+        Header: `${n.id}: ${strings.displayCategory(category)}`,
         id: n.id,
-        isSet: n.set,
-        type,
+        isSet: n.is_set,
+        category,
       });
     });
     // get the names and score from each answer for the table
@@ -357,25 +357,25 @@ export default function useMessageStore() {
     };
     qNodeIds.forEach((qNodeId) => {
       const qNode = getQgNode(qNodeId);
-      let nodeListObj = { type: qNode.type, isSet: false };
+      let nodeListObj = { category: qNode.category, isSet: false };
       const kgNodeIds = answer.node_bindings.find((ans) => ans.qg_id === qNodeId).kg_id;
       if (!Array.isArray(kgNodeIds)) {
         // This is not a set node
-        if (('set' in qNode) && qNode.set) {
+        if (('is_set' in qNode) && qNode.is_set) {
           // Actually a set but only has one element
-          nodeListObj = { type: qNode.type, name: `Set: ${strings.displayType(qNode.type)}`, isSet: true };
+          nodeListObj = { category: qNode.category, name: `Set: ${strings.displayCategory(qNode.category)}`, isSet: true };
           nodeListObj.setNodes = [kgNodeIds].map((kgNodeId) => getKgNode(kgNodeId));
         } else {
           // for real, not a set
           nodeListObj = { ...getKgNode(kgNodeIds), ...nodeListObj };
         }
-      } else if ((kgNodeIds.length === 1) && !qNode.set) {
+      } else if ((kgNodeIds.length === 1) && !qNode.is_set) {
         // This is not a set node but, for some reason is an array
 
         nodeListObj = { ...getKgNode(kgNodeIds[0]), ...nodeListObj };
       } else {
         // Set
-        nodeListObj = { type: qNode.type, name: `Set: ${strings.displayType(qNode.type)}`, isSet: true };
+        nodeListObj = { category: qNode.category, name: `Set: ${strings.displayCategory(qNode.category)}`, isSet: true };
         nodeListObj.setNodes = kgNodeIds.map((kgNodeId) => getKgNode(kgNodeId));
       }
       ansObj.nodes[qNodeId] = nodeListObj;
@@ -412,7 +412,7 @@ export default function useMessageStore() {
       let nodes = [];
       let isSet = true;
 
-      if (!qNode.set) {
+      if (!qNode.is_set) {
         // if the node is not a set but is still an array
         const nodeId = Array.isArray(nodeIds) ? nodeIds[0] : nodeIds;
         nodes = [{ id: nodeId }];
@@ -424,7 +424,7 @@ export default function useMessageStore() {
           const node = { id: nodeId };
           let score = 0;
           message.knowledge_graph.edges.forEach((edge) => {
-            if ((nodeId === edge.source_id || nodeId === edge.target_id) && Array.isArray(edge.publications)) {
+            if ((nodeId === edge.subject || nodeId === edge.object) && Array.isArray(edge.publications)) {
               score += edge.publications.length;
             }
           });
@@ -436,10 +436,10 @@ export default function useMessageStore() {
       }
       nodes.forEach((node) => {
         let kgNode = getKgNode(node.id);
-        // Get the type from the qNode
+        // Get the category from the qNode
         if (kgNode) {
           kgNode = _.cloneDeep(kgNode);
-          kgNode.type = qNode.type;
+          kgNode.category = qNode.category;
           kgNode.isSet = isSet;
           kgNode.binding = keyId;
           // level is needed for hierarchical view
@@ -465,7 +465,7 @@ export default function useMessageStore() {
         // get kedge details
         let kgEdge = getGraphEdge(message.knowledge_graph, eId);
         // check that kedge is not pruned away
-        if (kgEdge && prunedAgNodeIdSet.has(kgEdge.source_id) && prunedAgNodeIdSet.has(kgEdge.target_id)) {
+        if (kgEdge && prunedAgNodeIdSet.has(kgEdge.subject) && prunedAgNodeIdSet.has(kgEdge.object)) {
           kgEdge = _.cloneDeep(kgEdge);
           kgEdge.binding = qedgeId;
           // add to newEdges

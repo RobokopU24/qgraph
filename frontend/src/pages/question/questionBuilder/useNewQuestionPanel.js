@@ -51,35 +51,35 @@ export default function useNewQuestionPanel() {
 
   /**
    * Create a readable edge label
-   * @param {string} sourceId an edge source id
-   * @param {string} targetId an edge target id
+   * @param {string} subject an edge subject id
+   * @param {string} object an edge object id
    */
-  function getEdgeLabel(sourceId, targetId) {
-    let sourceLabel = '';
-    if (sourceId) {
-      sourceLabel = query_graph.nodes[sourceId].label || strings.displayType(query_graph.nodes[sourceId].type);
+  function getEdgeLabel(subject, object) {
+    let subjectLabel = '';
+    if (subject) {
+      subjectLabel = query_graph.nodes[subject].label || strings.displayCategory(query_graph.nodes[subject].category);
     }
-    let targetLabel = '';
-    if (targetId) {
-      targetLabel = query_graph.nodes[targetId].label || strings.displayType(query_graph.nodes[targetId].type);
+    let objectLabel = '';
+    if (object) {
+      objectLabel = query_graph.nodes[object].label || strings.displayCategory(query_graph.nodes[object].category);
     }
-    return `${sourceId} ${sourceLabel} → ${targetId} ${targetLabel}`;
+    return `${subject} ${subjectLabel} → ${object} ${objectLabel}`;
   }
 
   /**
    * Initialize a node or edge
-   * based on given id and type
+   * based on given id and category
    */
   function initializeNodeOrEdge() {
     if (panelInfo.type === 'node') {
       if (panelInfo.id) { // load node from query graph
         const nodeSeed = { ...query_graph.nodes[panelInfo.id] };
-        // Convert array of types to string before seeding
+        // Convert array of categories to string before seeding
         // panel
-        if (Array.isArray(nodeSeed.type)) {
-          [nodeSeed.type] = nodeSeed.type;
+        if (Array.isArray(nodeSeed.category)) {
+          [nodeSeed.category] = nodeSeed.category;
         }
-        setName(`${panelInfo.id}: ${nodeSeed.label}`);
+        setName(`${panelInfo.id}: ${nodeSeed.name}`);
         node.initialize(nodeSeed);
       } else { // new node
         node.reset();
@@ -88,19 +88,19 @@ export default function useNewQuestionPanel() {
     } else if (panelInfo.type === 'edge') {
       if (panelInfo.id) { // load edge from query graph
         const edgeSeed = query_graph.edges[panelInfo.id];
-        const label = getEdgeLabel(edgeSeed.source_id, edgeSeed.target_id);
+        const label = getEdgeLabel(edgeSeed.subject, edgeSeed.object);
         setName(`${panelInfo.id}: ${label}`);
         edge.initialize({ id: panelInfo.id, ...edgeSeed });
       } else { // new edge
         const newId = getNextEdgeID();
         // grab the last two nodes to prefill edge
-        const [source_id, target_id] = Object.keys(query_graph.nodes).slice(-2);
+        const [subject, object] = Object.keys(query_graph.nodes).slice(-2);
         edge.initialize({
           id: newId,
-          source_id,
-          target_id,
+          subject,
+          object,
         });
-        const label = getEdgeLabel(source_id, target_id);
+        const label = getEdgeLabel(subject, object);
         setName(`${newId}: ${label}`);
       }
     }
@@ -113,20 +113,20 @@ export default function useNewQuestionPanel() {
    */
   useEffect(() => {
     if (panelInfo.id) {
-      setName(`${panelInfo.id}: ${node.label}`);
+      setName(`${panelInfo.id}: ${node.name}`);
     } else {
-      setName(`${getNextNodeID()}: ${node.label}`);
+      setName(`${getNextNodeID()}: ${node.name}`);
     }
-  }, [node.label]);
+  }, [node.name]);
 
   /**
    * Update the edge panel header
-   * @param {string} source edge source id
-   * @param {string} target edge target id
+   * @param {string} subject edge subject id
+   * @param {string} object edge object id
    * @param {string} id edge id
    */
-  function updateEdgePanelHeader(source, target) {
-    const label = getEdgeLabel(source, target);
+  function updateEdgePanelHeader(subject, object) {
+    const label = getEdgeLabel(subject, object);
     if (panelInfo.id) {
       setName(`${panelInfo.id}: ${label}`);
     } else {
@@ -164,8 +164,8 @@ export default function useNewQuestionPanel() {
   function trimFloatingNodes(q_graph) {
     const notFloatingNodeIDs = new Set();
     Object.values(q_graph.edges).forEach((e) => {
-      notFloatingNodeIDs.add(e.source_id);
-      notFloatingNodeIDs.add(e.target_id);
+      notFloatingNodeIDs.add(e.subject);
+      notFloatingNodeIDs.add(e.object);
     });
 
     // Trim a node if it is floating and marked for deletion
@@ -202,29 +202,29 @@ export default function useNewQuestionPanel() {
     const q_graph = _.cloneDeep(query_graph);
     if (panelInfo.type === 'node') {
       const new_node = {
-        type: node.type,
+        category: node.category,
       };
-      // If node type isn't an array, convert to one
-      if (new_node.type && !Array.isArray(new_node.type)) {
-        new_node.type = [new_node.type];
+      // If node category isn't an array, convert to one
+      if (new_node.category && !Array.isArray(new_node.category)) {
+        new_node.category = [new_node.category];
       }
-      if (node.curie) {
-        new_node.curie = node.curie;
+      if (node.id && Array.isArray(node.id) && node.id.length) {
+        new_node.id = node.id;
       }
-      if (node.set) {
-        new_node.set = node.set;
+      if (node.is_set) {
+        new_node.is_set = node.is_set;
       }
-      const node_id = panelInfo.id || getNextNodeID();
-      new_node.label = node.label || new_node.curie || strings.displayType(new_node.type);
+      const nodeKey = panelInfo.id || getNextNodeID();
+      new_node.name = node.name || new_node.id || strings.displayCategory(new_node.category);
 
-      q_graph.nodes[node_id] = new_node;
+      q_graph.nodes[nodeKey] = new_node;
     } else {
       const new_edge = {
-        source_id: edge.sourceId,
-        target_id: edge.targetId,
+        subject: edge.subject,
+        object: edge.object,
       };
-      if (edge.type && edge.type.length > 0) {
-        new_edge.type = edge.type;
+      if (edge.predicate && edge.predicate.length > 0) {
+        new_edge.predicate = edge.predicate;
       }
       const edge_id = panelInfo.id || getNextEdgeID();
 

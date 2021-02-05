@@ -1,11 +1,10 @@
-import React, { useContext, useEffect } from 'react';
-
-import useMessageStore from '@/stores/useMessageStore';
-import parseMessage from '@/utils/parseMessage';
+import React, { useContext, useEffect, useState } from 'react';
+import _ from 'lodash';
 
 import API from '@/API';
 import UserContext from '@/context/user';
 import usePageStatus from '@/utils/usePageStatus';
+import trapiUtils from '@/utils/trapiUtils';
 
 import AnswersetView from './AnswersetView';
 
@@ -14,8 +13,8 @@ import AnswersetView from './AnswersetView';
  * Wrapper around AnswersetView
  */
 export default function StoredAnswersetView({ question_id, answer_id }) {
+  const [message, setMessage] = useState(null);
   const pageStatus = usePageStatus(true);
-  const messageStore = useMessageStore();
   const user = useContext(UserContext);
 
   async function fetchQuestionAnswerData() {
@@ -57,22 +56,21 @@ export default function StoredAnswersetView({ question_id, answer_id }) {
       return;
     }
 
-    const message =
-      { ...questionResponseJSON, ...answerResponseJSON };
+    // merge both messages, query_graph from question response will overwrite
+    // qg from answer response
+    const newMessage =
+      _.merge(answerResponseJSON, questionResponseJSON);
 
-    let parsedMessage;
-    try {
-      parsedMessage = parseMessage(message);
-    } catch (err) {
-      pageStatus.setFailure(err.message);
+    const validationErrors = trapiUtils.validateMessage(newMessage);
+    if (validationErrors.length) {
+      pageStatus.setFailure(
+        `Found errors while parsing message: ${validationErrors.join(', ')}`,
+      );
+      return;
     }
 
-    try {
-      messageStore.initializeMessage(parsedMessage);
-      pageStatus.setSuccess();
-    } catch (err) {
-      pageStatus.setFailure(`Failed to fully load this message. ${err.message}`);
-    }
+    setMessage(newMessage.message);
+    pageStatus.setSuccess();
   }
 
   useEffect(() => {
@@ -87,7 +85,7 @@ export default function StoredAnswersetView({ question_id, answer_id }) {
         <>
           <AnswersetView
             user={user}
-            messageStore={messageStore}
+            message={message}
             omitHeader
           />
         </>

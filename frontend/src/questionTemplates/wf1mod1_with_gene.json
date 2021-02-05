@@ -4,37 +4,37 @@
   "query_graph": {
     "nodes": {
       "n0": {
-        "type": "biolink:Disease",
-        "curie": "$identifier1$"
+        "category": "biolink:Disease",
+        "id": "$identifier1$"
       },
       "n1": {
-        "type": "biolink:PhenotypicFeature",
-        "set": true
+        "category": "biolink:PhenotypicFeature",
+        "is_set": true
       },
       "n2": {
-        "type": "biolink:GeneticCondition"
+        "category": "biolink:GeneticCondition"
       },
       "n3": {
-        "type": "biolink:Gene",
-        "set": true
+        "category": "biolink:Gene",
+        "is_set": true
       }
     },
     "edges": {
       "e0": {
-        "source_id": "n0",
-        "target_id": "n1"
+        "subject": "n0",
+        "object": "n1"
       },
       "e1": {
-        "source_id": "n1",
-        "target_id": "n2"
+        "subject": "n1",
+        "object": "n2"
       },
       "e2": {
-        "source_id": "n0",
-        "target_id": "n3"
+        "subject": "n0",
+        "object": "n3"
       },
       "e3": {
-        "source_id": "n3",
-        "target_id": "n2"
+        "subject": "n3",
+        "object": "n2"
       }
     }
   }

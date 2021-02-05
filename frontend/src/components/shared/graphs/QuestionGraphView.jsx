@@ -5,7 +5,7 @@ import _ from 'lodash';
 import shortid from 'shortid';
 
 import BiolinkContext from '@/context/biolink';
-import getNodeTypeColorMap from '@/utils/colorUtils';
+import getNodeCategoryColorMap from '@/utils/colorUtils';
 import strings from '@/utils/stringUtils';
 
 const Graph = require('react-graph-vis').default;
@@ -13,10 +13,9 @@ const Graph = require('react-graph-vis').default;
 // Default pre-processing method on each node object to return updated node obj
 /* eslint-disable no-param-reassign */
 function defaultNodePreProc(n) {
-  n.isSet = ('set' in n) && (((typeof n.set === typeof true) && n.set) || ((typeof n.set === 'string') && n.set === 'true'));
   n.chosen = false; // Not needed since borderWidth manually set below
   n.borderWidth = 1;
-  if (n.isSet) {
+  if (n.is_set) {
     n.shadow = {
       enabled: true,
       size: 10,
@@ -40,8 +39,8 @@ function defaultNodePreProc(n) {
   }
 
   // make user-displayed node label
-  if ('label' in n) {
-    n.label = `${n.id}: ${n.label}`;
+  if ('name' in n) {
+    n.label = `${n.id}: ${n.name}`;
   } else if (n.curie) {
     if (Array.isArray(n.curie)) {
       if (n.curie.length > 0) {
@@ -52,8 +51,8 @@ function defaultNodePreProc(n) {
     } else {
       n.label = `${n.id}: ${n.curie}`;
     }
-  } else if ('type' in n) {
-    n.label = `${n.id}: ${strings.displayType(n.type)}`;
+  } else if ('category' in n) {
+    n.label = `${n.id}: ${strings.displayCategory(n.category)}`;
   } else if ('id' in n) {
     n.label = n.id;
   } else {
@@ -64,10 +63,14 @@ function defaultNodePreProc(n) {
 
 function defaultEdgePreProc(e) {
   let label = '';
-  if ('type' in e) {
-    label = e.type.map((type) => strings.displayPredicate(type)).join(', ');
+  if ('predicate' in e) {
+    if (Array.isArray(e.predicate)) {
+      label = e.predicate.map((predicate) => strings.displayPredicate(predicate)).join(', ');
+    } else {
+      label = e.predicate;
+    }
   }
-  if (!('type' in e)) {
+  if (!('predicate' in e)) {
     e.arrows = {
       to: {
         enabled: false,
@@ -77,8 +80,8 @@ function defaultEdgePreProc(e) {
 
   const smooth = { forceDirection: 'none' };
 
-  e.from = e.source_id;
-  e.to = e.target_id;
+  e.from = e.subject;
+  e.to = e.object;
   e.chosen = false;
   e.width = 1;
   const defaultParams = {
@@ -136,14 +139,14 @@ export default function QuestionGraphView(props) {
     const graph = _.cloneDeep(question);
 
     // Adds vis.js specific tags to manage colors in graph
-    const nodeTypeColorMap = getNodeTypeColorMap(concepts);
+    const nodeCategoryColorMap = getNodeCategoryColorMap(concepts);
 
     graph.nodes.forEach((n) => {
       let backgroundColor;
-      if (Array.isArray(n.type)) {
-        backgroundColor = nodeTypeColorMap(n.type[0]);
+      if (Array.isArray(n.category)) {
+        backgroundColor = nodeCategoryColorMap(n.category[0]);
       } else {
-        backgroundColor = nodeTypeColorMap(n.type);
+        backgroundColor = nodeCategoryColorMap(n.category);
       }
       n.color = {
         border: '#000000',

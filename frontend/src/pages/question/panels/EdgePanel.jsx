@@ -12,7 +12,7 @@ import BiolinkContext from '@/context/biolink';
 
 const listItem = ({ item }) => (
   <div className="listItem">
-    {item.label}
+    {item.name}
     {item.degree !== undefined && (
       <Badge>{item.degree}</Badge>
     )}
@@ -21,7 +21,7 @@ const listItem = ({ item }) => (
 
 const predicateItem = ({ item }) => (
   <div className="listItem">
-    {strings.displayPredicate(item.type)}
+    {strings.displayPredicate(item.predicate)}
   </div>
 );
 
@@ -37,7 +37,7 @@ export default function EdgePanel(props) {
     if (!biolink) {
       return null;
     }
-    return biolink.getEdgeTypes();
+    return biolink.getEdgePredicates();
   }
 
   const predicateList = useMemo(getPredicateList, [biolink]) || [];
@@ -47,73 +47,81 @@ export default function EdgePanel(props) {
     if (!biolink) {
       return null;
     }
-    if (!edge.sourceId || !edge.targetId) {
+    if (!edge.subject || !edge.object) {
       return null;
     }
-    const sourceNode = panelStore.query_graph.nodes[edge.sourceId];
-    const targetNode = panelStore.query_graph.nodes[edge.targetId];
+    const subjectNode = panelStore.query_graph.nodes[edge.subject];
+    const objectNode = panelStore.query_graph.nodes[edge.object];
 
-    if (!sourceNode.type || !targetNode.type) {
+    if (!subjectNode.category || !objectNode.category) {
       return null;
     }
 
-    const sourceNodeTypeHierarchy = biolink.hierarchies[sourceNode.type[0]];
-    const targetNodeTypeHierarchy = biolink.hierarchies[targetNode.type[0]];
+    const subjectNodeCategoryHierarchy = biolink.hierarchies[subjectNode.category[0]];
+    const objectNodeCategoryHierarchy = biolink.hierarchies[objectNode.category[0]];
 
-    if (!sourceNodeTypeHierarchy || !targetNodeTypeHierarchy) {
+    if (!subjectNodeCategoryHierarchy || !objectNodeCategoryHierarchy) {
       return null;
     }
 
     return predicateList.filter(
-      (p) => sourceNodeTypeHierarchy.includes(p.domain) &&
-               targetNodeTypeHierarchy.includes(p.range),
+      (p) => subjectNodeCategoryHierarchy.includes(p.domain) &&
+             objectNodeCategoryHierarchy.includes(p.range),
     );
   }
 
-  const filteredPredicateList = useMemo(getFilteredPredicateList, [edge.sourceId, edge.targetId, biolink, predicateList]) || [];
+  const filteredPredicateList = useMemo(getFilteredPredicateList, [edge.subject, edge.object, biolink, predicateList]) || [];
 
-  function handleTargetIdUpdate(value) {
-    edge.updateTargetId(value.id);
-    panelStore.updateEdgePanelHeader(edge.sourceId, value.id);
-    panelStore.toggleUnsavedChanges(true);
-  }
-
-  function handleSourceIdUpdate(value) {
-    edge.updateSourceId(value.id);
-    panelStore.updateEdgePanelHeader(value.id, edge.targetId);
+  /**
+   * Update object node of edge
+   * @param {object} value node object
+   */
+  function handleObjectUpdate(value) {
+    edge.updateObject(value.key);
+    panelStore.updateEdgePanelHeader(edge.subject, value.key);
     panelStore.toggleUnsavedChanges(true);
   }
 
   /**
-   * Update edge with types
-   * @param {Object[]} value list of selected type objects
-   * @param {string} value.type predicate type
+   * Update subject node of edge
+   * @param {object} value node object
+   */
+  function handleSubjectUpdate(value) {
+    edge.updateSubject(value.key);
+    panelStore.updateEdgePanelHeader(value.key, edge.object);
+    panelStore.toggleUnsavedChanges(true);
+  }
+
+  /**
+   * Update edge with predicates
+   * @param {Object[]} value list of selected predicate objects
+   * @param {string} value.predicate predicate predicate
    * @param {string} value.domain predicate source node
    * @param {string} value.range predicate target node
    */
   function handlePredicateUpdate(value) {
-    const types = value.map((v) => v.type);
-    edge.setType(types);
+    const predicates = value.map((v) => v.predicate);
+    edge.setPredicate(predicates);
     panelStore.toggleUnsavedChanges(true);
   }
 
-  function handleSwitchSourceTarget() {
+  function handleSwitchSubjectObject() {
     // TODO: do this less hacky
-    const { source, target } = edge.switchSourceTarget();
-    panelStore.updateEdgePanelHeader(source, target);
+    const { newSubject, newObject } = edge.switchSubjectObject();
+    panelStore.updateEdgePanelHeader(newSubject, newObject);
     panelStore.toggleUnsavedChanges(true);
   }
 
   const validNodeSelectionList =
     Object.entries(panelStore.query_graph.nodes).map(
-      ([id, node]) => ({
+      ([key, node]) => ({
         ...node,
-        label: `${id}: ${node.label || strings.displayType(node.type)}`,
-        id,
+        name: `${key}: ${node.name || strings.displayCategory(node.category)}`,
+        key,
       }),
     ).filter((n) => !n.deleted);
 
-  const disablePredicates = !(edge.sourceId && edge.targetId);
+  const disablePredicates = !(edge.subject && edge.object);
 
   // Determine default message for predicate selection component
   let predicateInputMsg = 'Choose optional predicate(s)...';
@@ -123,41 +131,41 @@ export default function EdgePanel(props) {
 
   // Every predicate selected must match at least one
   // predicate in the filteredPredicateList
-  const isValidPredicate = edge.type.every(
-    (p) => filteredPredicateList.some((fp) => p === fp.type),
+  const isValidPredicate = edge.predicate.every(
+    (p) => filteredPredicateList.some((fp) => p === fp.predicate),
   );
 
-  const isValid = edge.sourceId && edge.targetId && isValidPredicate;
+  const isValid = edge.subject && edge.object && isValidPredicate;
 
-  const disabledSwitch = edge.sourceId === null || edge.targetId === null;
+  const disabledSwitch = edge.subject === null || edge.object === null;
 
   useEffect(() => {
   // Update edge in panelStore
     edge.setIsValid(isValid);
     edge.setIsValidPredicate(isValidPredicate);
-  }, [edge.sourceId, edge.targetId, edge.predicate]);
+  }, [edge.subject, edge.object, edge.predicate]);
 
   return (
     <Form horizontal>
       <Col sm={5}>
-        <h4 style={{ color: '#CCCCCC' }}>SOURCE</h4>
+        <h4 style={{ color: '#CCCCCC' }}>SUBJECT</h4>
         <DropdownList
           filter="contains"
           data={validNodeSelectionList}
           itemComponent={listItem}
-          textField="label"
-          valueField="id"
-          value={edge.sourceId}
-          onChange={handleSourceIdUpdate}
+          textField="name"
+          valueField="key"
+          value={edge.subject}
+          onChange={handleSubjectUpdate}
           containerClassName={
-            validNodeSelectionList.find((n) => n.id === edge.sourceId)
+            validNodeSelectionList.find((n) => n.key === edge.subject)
               ? 'valid' : 'invalid'
           }
         />
       </Col>
       <Col sm={2} id="nodesSwitch">
         <Button
-          onClick={() => handleSwitchSourceTarget()}
+          onClick={() => handleSwitchSubjectObject()}
           id="nodeSwitchButton"
           disabled={disabledSwitch}
         >
@@ -165,18 +173,18 @@ export default function EdgePanel(props) {
         </Button>
       </Col>
       <Col sm={5}>
-        <h4 style={{ color: '#CCCCCC' }}>TARGET</h4>
+        <h4 style={{ color: '#CCCCCC' }}>OBJECT</h4>
         <DropdownList
           filter="contains"
-          data={validNodeSelectionList.filter((n) => n.id !== edge.sourceId)}
+          data={validNodeSelectionList.filter((n) => n.key !== edge.subject)}
           busySpinner={<FaSpinner className="icon-spin" />}
           itemComponent={listItem}
-          textField="label"
-          valueField="id"
-          value={edge.targetId}
-          onChange={handleTargetIdUpdate}
+          textField="name"
+          valueField="key"
+          value={edge.object}
+          onChange={handleObjectUpdate}
           containerClassName={
-            validNodeSelectionList.find((n) => n.id === edge.targetId)
+            validNodeSelectionList.find((n) => n.key === edge.object)
               ? 'valid' : 'invalid'
           }
         />
@@ -185,7 +193,7 @@ export default function EdgePanel(props) {
       <predicateStatus.Display />
       { predicateStatus.displayPage && (
         <Col sm={12} style={{ marginTop: '40px' }}>
-          <h4 style={{ color: '#CCCCCC' }}>PREDICATES</h4>
+          <h4 style={{ color: '#CCCCCC' }}>PREDICATE</h4>
           <Multiselect
             filter="contains"
             allowCreate={false}
@@ -194,9 +202,9 @@ export default function EdgePanel(props) {
             itemComponent={predicateItem}
             busySpinner={<FaSpinner className="icon-spin" />}
             placeholder={predicateInputMsg}
-            textField={(value) => strings.displayPredicate(value.type)}
-            value={edge.type}
-            valueField="type"
+            textField={(value) => strings.displayPredicate(value.predicate)}
+            value={edge.predicate}
+            valueField="predicate"
             onChange={handlePredicateUpdate}
             containerClassName={isValidPredicate ? 'valid' : 'invalid'}
             messages={{

@@ -11,10 +11,8 @@ import UserContext from '@/context/user';
 import API from '@/API';
 
 import AnswersetView from '@/components/shared/answersetView/AnswersetView';
-import parseMessage from '@/utils/parseMessage';
-import useMessageStore from '@/stores/useMessageStore';
 import usePageStatus from '@/utils/usePageStatus';
-import queryGraphUtils from '@/utils/queryGraph';
+import trapiUtils from '@/utils/trapiUtils';
 
 import './newQuestion.css';
 import QuestionBuilder from './questionBuilder/QuestionBuilder';
@@ -23,17 +21,15 @@ import useQuestionStore from './useQuestionStore';
 
 export default function SimpleQuestion() {
   const user = useContext(UserContext);
-  const messageStore = useMessageStore();
+  const [message, setMessage] = useState(null);
   const questionStore = useQuestionStore();
   const answersetStatus = usePageStatus();
 
   const [submittedQuestion, toggleSubmittedQuestion] = useState(false);
 
   function onDownloadAnswer() {
-    const data = messageStore.message;
-
-    // Transform the data into a json blob and give it a url
-    const json = JSON.stringify(data);
+    // Transform the message into a json blob and give it a url
+    const json = JSON.stringify(message);
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
 
@@ -48,10 +44,10 @@ export default function SimpleQuestion() {
   function onResetQuestion() {
     if (window.confirm('Are you sure you want to reset this question? This action cannot be undone.')) {
       const emptyGraph = { nodes: [], edges: [] };
-      messageStore.initializeMessage({
-        results: [],
+      setMessage({
         query_graph: emptyGraph,
         knowledge_graph: emptyGraph,
+        results: [],
       });
       questionStore.resetQuestion();
     }
@@ -61,21 +57,21 @@ export default function SimpleQuestion() {
     toggleSubmittedQuestion(true);
     answersetStatus.setLoading();
 
-    const query_graph = queryGraphUtils.convert.internalToReasoner(
-      questionStore.query_graph,
-    );
-    const response = await API.ara.getAnswer(query_graph);
+    const response = await API.ara.getAnswer({ message: { query_graph: questionStore.query_graph } });
     if (response.status === 'error') {
       answersetStatus.setFailure(response.message);
       return;
     }
-    try {
-      const parsedMessage = parseMessage(response);
-      messageStore.initializeMessage(parsedMessage);
-    } catch (err) {
-      answersetStatus.setFailure(response.message);
+
+    const validationErrors = trapiUtils.validateMessage(response);
+    if (validationErrors.length) {
+      answersetStatus.setFailure(
+        `Found errors while parsing message: ${validationErrors.join(', ')}`,
+      );
       return;
     }
+
+    setMessage(response.message);
     answersetStatus.setSuccess();
   }
 
@@ -117,7 +113,7 @@ export default function SimpleQuestion() {
                 </div>
                 <AnswersetView
                   user={user}
-                  messageStore={messageStore}
+                  message={message}
                   omitHeader
                 />
               </>

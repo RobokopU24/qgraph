@@ -93,12 +93,12 @@ export default function Help() {
             <h3 id="nedgePanel">Node / Edge Panel</h3>
             <p>
               When adding a node, you can leave the text field empty to signify that this node
-              can be anything. Otherwise, you can start typing what type of node you want and
-              you will get a dropdown list of types (signified by a solid colored background)
-              and named nodes (signified by small colored stripes denoting the types associated
+              can be anything. Otherwise, you can start typing what category of node you want and
+              you will get a dropdown list of categories (signified by a solid colored background)
+              and named nodes (signified by small colored stripes denoting the categories associated
               with that node, the name of the node, and other important details). A name must always
               be selected by clicking the &quot;Select&quot; button for the name on the far right. If
-              you select a node type, depending on what type it is, you will have the option of applying
+              you select a node category, depending on what category it is, you will have the option of applying
               constraints to that node. If you click on the button to add a constraint, a table will
               appear where you can choose a constraint from the dropdown list and then specify its
               value. Users can always specify a custom name by directly typing it into the field -

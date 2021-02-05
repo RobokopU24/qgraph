@@ -3,55 +3,55 @@
   "query_graph": {
     "nodes": {
       "node0": {
-        "type": "biolink:ChemicalSubstance",
-        "set": false,
-        "curie": [
+        "category": "biolink:ChemicalSubstance",
+        "is_set": false,
+        "id": [
           "$identifier1$"
         ]
       },
       "node1": {
-        "type": "biolink:Gene",
-        "set": false
+        "category": "biolink:Gene",
+        "is_set": false
       },
       "node2": {
-        "type": "biolink:BiologicalProcessOrActivity",
-        "set": true
+        "category": "biolink:BiologicalProcessOrActivity",
+        "is_set": true
       },
       "node3": {
-        "type": "biolink:Cell",
-        "set": false
+        "category": "biolink:Cell",
+        "is_set": false
       },
       "node4": {
-        "type": "biolink:AnatomicalEntity",
-        "set": false
+        "category": "biolink:AnatomicalEntity",
+        "is_set": false
       },
       "node5": {
-        "type": "biolink:PhenotypicFeature",
-        "curie": [
+        "category": "biolink:PhenotypicFeature",
+        "id": [
           "$identifier2$"
         ]
       }
     },
     "edges": {
       "edge01": {
-        "source_id": "node0",
-        "target_id": "node1"
+        "subject": "node0",
+        "object": "node1"
       },
       "edge12": {
-        "source_id": "node1",
-        "target_id": "node2"
+        "subject": "node1",
+        "object": "node2"
       },
       "edge23": {
-        "source_id": "node2",
-        "target_id": "node3"
+        "subject": "node2",
+        "object": "node3"
       },
       "edge34": {
-        "source_id": "node3",
-        "target_id": "node4"
+        "subject": "node3",
+        "object": "node4"
       },
       "edge45": {
-        "source_id": "node4",
-        "target_id": "node5"
+        "subject": "node4",
+        "object": "node5"
       }
     }
   }

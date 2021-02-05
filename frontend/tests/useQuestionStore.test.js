@@ -4,16 +4,16 @@ import useQuestionStore from '../src/pages/question/useQuestionStore';
 const testGoodQuery = {
   nodes: {
     n0: {
-      type: 'disease',
+      category: 'biolink:Disease',
     },
     n1: {
-      type: 'gene',
+      category: 'biolink:Gene',
     },
   },
   edges: {
     e0: {
-      source_id: 'n0',
-      target_id: 'n1',
+      subject: 'n0',
+      object: 'n1',
     },
   },
 };
@@ -21,7 +21,7 @@ const testGoodQuery = {
 const testBadQuery = {
   nodes: {
     n0: {
-      type: 'disease',
+      category: 'biolink:Disease',
     },
   },
 };
@@ -29,17 +29,17 @@ const testBadQuery = {
 const testDeletedQuery = {
   nodes: {
     n0: {
-      type: 'disease',
+      category: 'biolink:Disease',
       deleted: true,
     },
     n1: {
-      type: 'gene',
+      category: 'biolink:Gene',
     },
   },
   edges: {
     e0: {
-      source_id: 'n0',
-      target_id: 'n1',
+      subject: 'n0',
+      object: 'n1',
     },
   },
 };

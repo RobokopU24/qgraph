@@ -30,6 +30,7 @@ const config = {
         use: 'url-loader?name=[name].[ext]',
       },
     ],
+    noParse: /node_modules\/lodash\/lodash\.js/,
   },
   output: {
     path: path.resolve(__dirname, 'pack'),

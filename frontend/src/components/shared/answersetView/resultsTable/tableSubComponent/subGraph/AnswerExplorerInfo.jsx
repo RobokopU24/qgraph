@@ -8,18 +8,18 @@ import SubGraphViewer from '@/components/shared/graphs/SubGraphViewer';
 
 import curieUrls from '@/utils/curieUrls';
 import ctdUrls from '@/utils/ctdUrls';
-import getNodeTypeColorMap from '@/utils/colorUtils';
+import getNodeCategoryColorMap from '@/utils/colorUtils';
 import strings from '@/utils/stringUtils';
 
 import PubmedList from './PubmedList';
 
 const nodeBlocklist = [
-  'isSet', 'labels', 'label', 'equivalent_identifiers', 'type',
+  'isSet', 'labels', 'label', 'equivalent_identifiers', 'category',
   'id', 'degree', 'name', 'title', 'color', 'binding', 'level',
 ];
 const edgeBlocklist = [
   'binding', 'ctime', 'id', 'publications', 'source_database',
-  'source_id', 'target_id', 'type',
+  'subject', 'object', 'predicate',
 ];
 
 export default function AnswerExplorerInfo(props) {
@@ -33,9 +33,9 @@ export default function AnswerExplorerInfo(props) {
   const { concepts } = useContext(BiolinkContext);
 
   function syncPropsAndState() {
-    const nodes = graph.nodes.filter((n) => ((n.id === selectedEdge.source_id) || (n.id === selectedEdge.target_id)));
+    const nodes = graph.nodes.filter((n) => ((n.id === selectedEdge.subject) || (n.id === selectedEdge.object)));
     const nodeIds = nodes.map((n) => n.id);
-    const edges = graph.edges.filter((e) => (nodeIds.includes(e.source_id) && nodeIds.includes(e.target_id)));
+    const edges = graph.edges.filter((e) => (nodeIds.includes(e.subject) && nodeIds.includes(e.object)));
 
     setSubgraph({ nodes, edges });
     setSelectedEdgeId(selectedEdge.edgeIdFromKG);
@@ -71,11 +71,11 @@ export default function AnswerExplorerInfo(props) {
     const edge = subgraph.edges.find((e) => e.id === selectedEdgeId);
     const urls = curieUrls(n.id);
     if (edge.source_database && edge.source_database.includes('ctd')) {
-      const urlObj = ctdUrls(n.type, n.equivalent_identifiers);
+      const urlObj = ctdUrls(n.category, n.equivalent_identifiers);
       urls.push(urlObj);
     }
-    const nodeTypeColorMap = getNodeTypeColorMap(concepts);
-    const backgroundColor = nodeTypeColorMap(n.type);
+    const nodeCategoryColorMap = getNodeCategoryColorMap(concepts);
+    const backgroundColor = nodeCategoryColorMap(n.category);
     const extraFields = Object.keys(n).filter((property) => !nodeBlocklist.includes(property));
     return (
       <Card>
@@ -95,7 +95,7 @@ export default function AnswerExplorerInfo(props) {
         </h3>
         <CardContent className="cardContent">
           <h5>
-            {`type: ${strings.displayType(n.type)}`}
+            {`category: ${strings.displayCategory(n.category)}`}
           </h5>
           <h5>
             {`id: ${n.id}`}
@@ -131,7 +131,7 @@ export default function AnswerExplorerInfo(props) {
     return (
       <Card>
         <h3 className="cardTitle greyBackground">
-          {edge.type}
+          {edge.predicate}
         </h3>
         <CardContent className="cardContent">
           {origin && (
@@ -173,8 +173,8 @@ export default function AnswerExplorerInfo(props) {
         );
       }
 
-      const sourceNode = subgraph.nodes.find((n) => n.id === edge.source_id);
-      const targetNode = subgraph.nodes.find((n) => n.id === edge.target_id);
+      const sourceNode = subgraph.nodes.find((n) => n.id === edge.subject);
+      const targetNode = subgraph.nodes.find((n) => n.id === edge.object);
       if ('publications' in edge && Array.isArray(edge.publications)) {
         ({ publications } = edge);
       }

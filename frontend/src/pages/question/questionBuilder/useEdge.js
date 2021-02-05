@@ -1,59 +1,62 @@
 import { useState } from 'react';
 
 export default function useEdgePanels() {
-  const [sourceId, setSourceId] = useState(null);
-  const [targetId, setTargetId] = useState(null);
-  const [type, setType] = useState([]);
+  const [subject, setSubject] = useState(null);
+  const [object, setObject] = useState(null);
+  const [predicate, setPredicate] = useState([]);
 
   const [isValidPredicate, setIsValidPredicate] = useState(false);
   const [isValid, setIsValid] = useState(false);
 
-  function updateSourceId(newSourceId) {
-    setSourceId(newSourceId);
-    setTargetId(null);
+  function updateSubject(newSubject) {
+    setSubject(newSubject);
+    setObject(null);
   }
 
-  function updateTargetId(newTargetId) {
-    setTargetId(newTargetId);
+  function updateObject(newObject) {
+    setObject(newObject);
   }
 
-  function switchSourceTarget() {
-    const target = sourceId;
-    const source = targetId;
-    setSourceId(source);
-    setTargetId(target);
-    setType([]);
-    return { source, target };
+  /**
+   * Switch edge subject and object properties
+   */
+  function switchSubjectObject() {
+    const newObject = subject;
+    const newSubject = object;
+    setSubject(newSubject);
+    setObject(newObject);
+    setPredicate([]);
+    return { newSubject, newObject };
   }
 
   function reset() {
-    setSourceId(null);
-    setTargetId(null);
-    setType([]);
+    setSubject(null);
+    setObject(null);
+    setPredicate([]);
   }
 
   function initialize(seed) {
     reset();
-    setSourceId(seed.source_id || null);
-    setTargetId(seed.target_id || null);
-    if (seed.type) {
-      if (!Array.isArray(seed.type)) {
-        seed.type = [seed.type];
+    setSubject(seed.subject || null);
+    setObject(seed.object || null);
+    if (seed.predicate) {
+      if (!Array.isArray(seed.predicate)) {
+        seed.predicate = [seed.predicate];
       }
-      setType(seed.type);
+      setPredicate(seed.predicate);
     } else {
-      setType([]);
+      setPredicate([]);
     }
   }
 
   return {
-    sourceId,
-    updateSourceId,
-    targetId,
-    updateTargetId,
+    subject,
+    updateSubject,
+    object,
+    updateObject,
 
-    type,
-    setType,
+    predicate,
+    setPredicate,
 
     isValid,
     setIsValid,
@@ -62,6 +65,6 @@ export default function useEdgePanels() {
 
     reset,
     initialize,
-    switchSourceTarget,
+    switchSubjectObject,
   };
 }

@@ -5,7 +5,7 @@ import _ from 'lodash';
 import BiolinkContext from '@/context/biolink';
 
 import AnswersetGraph from '@/components/shared/graphs/AnswersetGraph';
-import getNodeTypeColorMap from '@/utils/colorUtils';
+import getNodeCategoryColorMap from '@/utils/colorUtils';
 import getColumnWidth from '@/utils/rtColumnWidth';
 
 import useMessageStore from '@/stores/useMessageStore';
@@ -31,7 +31,7 @@ export default function NeightborhoodViewer(props) {
   }
 
   function getReactTableColumnSpec(columnHeaders, data) {
-    const bgColorMap = getNodeTypeColorMap(concepts);
+    const bgColorMap = getNodeCategoryColorMap(concepts);
     // Take columnHeaders from store and update it as needed
     const colHeaders = columnHeaders.map((col) => {
       const colSpecObj = _.cloneDeep(col);

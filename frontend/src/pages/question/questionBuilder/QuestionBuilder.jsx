@@ -7,12 +7,13 @@ import { GoRepoForked } from 'react-icons/go';
 import {
   Col, Form, FormGroup, FormControl, Panel, Jumbotron, Button,
 } from 'react-bootstrap';
-import _ from 'lodash';
 import slugify from 'slugify';
 
 import API from '@/API';
 
 import queryGraphUtils from '@/utils/queryGraph';
+import trapiUtils from '@/utils/trapiUtils';
+import strings from '@/utils/stringUtils';
 import { formatDateTimeShort } from '@/utils/cache';
 import HelpButton from '@/components/shared/HelpButton';
 
@@ -77,8 +78,9 @@ export default function QuestionBuilder(props) {
    * @param {Number} question.max_connectivity max connections for question
    */
   function onQuestionTemplate(question) {
-    Object.values(question.query_graph.edges).forEach(queryGraphUtils.standardizeType);
-    Object.values(question.query_graph.nodes).forEach(queryGraphUtils.standardizeType);
+    Object.values(question.query_graph.edges).forEach(queryGraphUtils.standardizePredicate);
+    Object.values(question.query_graph.nodes).forEach(queryGraphUtils.standardizeCategory);
+    Object.values(question.query_graph.nodes).forEach(queryGraphUtils.standardizeIDs);
     questionStore.updateQueryGraph(question.query_graph);
     questionStore.updateQuestionName(question.natural_question);
     setStep('build');
@@ -86,9 +88,9 @@ export default function QuestionBuilder(props) {
   }
 
   function validateAndParseFile(fileContents) {
-    let fileContentObj;
+    let message;
     try {
-      fileContentObj = JSON.parse(fileContents);
+      message = JSON.parse(fileContents);
     } catch (err) {
       displayAlert('error',
         'The provided file is not valid JSON. Please fix and try again.');
@@ -96,34 +98,25 @@ export default function QuestionBuilder(props) {
       return;
     }
 
-    if (!('query_graph' in fileContentObj)) {
-      displayAlert('error',
-        'The provided file does not have a query_graph object. Please ensure that the file format adheres to the Reasoner Standard API Query Schema.');
+    const validationErrors = trapiUtils.validateMessage(message);
+
+    if (validationErrors.length) {
+      displayAlert('error', `Found errors while parsing message: ${validationErrors.join(', ')}`);
       setStep('options');
       return;
     }
 
-    if (!_.isArray(fileContentObj.query_graph.nodes) ||
-       !_.isArray(fileContentObj.query_graph.edges)) {
-      displayAlert('error',
-        'The provided file does not have an array of nodes or edges. Please ensure that the file format adheres to the Reasoner Standard API Query Schema.');
-      setStep('options');
-      return;
-    }
+    const { query_graph } = message.message;
 
-    // TODO: this is pretty hacky
-    fileContentObj.query_graph.nodes.forEach((node) => {
-      if (!node.label) {
-        node.label = `${node.id}: ${node.name || node.curie || node.type}`;
+    Object.values(query_graph.nodes).forEach((node) => {
+      if (!node.name) {
+        node.name = `${node.id || strings.displayCategory(node.category)}`;
       }
-      queryGraphUtils.standardizeType(node);
+      queryGraphUtils.standardizeCategory(node);
     });
+    Object.values(query_graph.edges).forEach((e) => queryGraphUtils.standardizePredicate(e));
 
-    fileContentObj.query_graph.edges.forEach(queryGraphUtils.standardizeType);
-
-    questionStore.updateQueryGraph(
-      queryGraphUtils.convert.reasonerToInternal(fileContentObj.query_graph),
-    );
+    questionStore.updateQueryGraph(query_graph);
     setStep('build');
   }
 
@@ -163,12 +156,11 @@ export default function QuestionBuilder(props) {
     if (response.status === 'error') {
       displayAlert('error', response.message);
       setStep('options');
+      return;
     }
-    const { query_graph } = JSON.parse(response);
+    const { message } = JSON.parse(response);
 
-    questionStore.updateQueryGraph(
-      queryGraphUtils.convert.reasonerToInternal(query_graph),
-    );
+    questionStore.updateQueryGraph(message.query_graph);
     questionStore.updateQuestionName(name);
 
     setStep('build');
@@ -182,13 +174,10 @@ export default function QuestionBuilder(props) {
   }
 
   function onDownloadQuestion() {
-    const query_graph = queryGraphUtils.convert.internalToReasoner(
-      questionStore.query_graph,
-    );
-    const data = { query_graph };
+    const message = { message: { query_graph: questionStore.query_graph } };
 
-    // Transform the data into a json blob and give it a url
-    const json = JSON.stringify(data, null, 2);
+    // Transform the message into a json blob and give it a url
+    const json = JSON.stringify(message, null, 2);
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
 

@@ -3,22 +3,22 @@
   "query_graph": {
     "nodes": {
       "n0": {
-        "type": "biolink:ChemicalSubstance",
+        "category": "biolink:ChemicalSubstance",
         "$identifier2$": true
       },
       "n1": {
-        "type": "biolink:Gene"
+        "category": "biolink:Gene"
       },
       "n2": {
-        "type": "biolink:Disease",
-        "curie": "$identifier1$"
+        "category": "biolink:Disease",
+        "id": "$identifier1$"
       }
     },
     "edges": {
       "e0": {
-        "source_id": "n1",
-        "target_id": "n0",
-	      "type": "biolink:increases_degradation_of"
+        "subject": "n1",
+        "object": "n0",
+	      "predicate": "biolink:increases_degradation_of"
       }
     }
   }

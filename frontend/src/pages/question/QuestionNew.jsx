@@ -4,6 +4,7 @@ import {
 } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
+import _ from 'lodash';
 
 import UserContext from '@/context/user';
 import AlertContext from '@/context/alert';
@@ -12,7 +13,6 @@ import API from '@/API';
 
 import './newQuestion.css';
 
-import queryGraphUtils from '@/utils/queryGraph';
 import { useVisibility } from '@/utils/cache';
 import usePageStatus from '@/utils/usePageStatus';
 
@@ -73,12 +73,12 @@ export default function QuestionNew() {
     }
     const questionId = response.id;
 
-    // Convert to reasoner representation
-    const query_graph = queryGraphUtils.convert.internalToReasoner(
-      questionStore.query_graph,
-    );
+    // Strip labels from nodes
+    const prepared_query_graph = _.cloneDeep(questionStore.query_graph);
+    Object.values(prepared_query_graph.nodes).forEach((n) => delete n.label);
+
     // Upload question data
-    const questionData = JSON.stringify({ query_graph }, null, 2);
+    const questionData = JSON.stringify({ message: { query_graph: prepared_query_graph } }, null, 2);
     response = await API.cache.setQuestionData(questionId, questionData, user.id_token);
     if (response.status === 'error') {
       displayAlert('error', response.message);

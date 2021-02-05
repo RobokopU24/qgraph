@@ -55,9 +55,9 @@ export default function useBiolink() {
     setConcepts(newConcepts);
   }
 
-  function getEdgeTypes() {
+  function getEdgePredicates() {
     return Object.entries(biolink.slots).map(([identifier, predicate]) => ({
-      type: strings.edgeFromBiolink(identifier),
+      predicate: strings.edgeFromBiolink(identifier),
       domain: strings.nodeFromBiolink(predicate.domain),
       range: strings.nodeFromBiolink(predicate.range),
     }));
@@ -86,7 +86,7 @@ export default function useBiolink() {
   return {
     initialize,
     getHierarchy,
-    getEdgeTypes,
+    getEdgePredicates,
     concepts,
     hierarchies,
   };

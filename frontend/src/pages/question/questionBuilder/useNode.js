@@ -4,95 +4,95 @@ import strings from '@/utils/stringUtils';
 import BiolinkContext from '@/context/biolink';
 
 export default function useNodePanels() {
-  const [type, setType] = useState('');
-  const [label, setLabel] = useState('');
+  const [category, setCategory] = useState('');
+  const [name, setName] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  const [curie, setCurie] = useState([]);
-  const [set, setSet] = useState(false);
+  const [id, setId] = useState([]);
+  const [is_set, setSet] = useState(false);
   const [concepts, setConcepts] = useState([]);
   const [filteredConcepts, setFilteredConcepts] = useState([]);
-  const [curies, updateCuries] = useState([]);
+  const [ids, updateIDs] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const { concepts: biolinkConcepts } = useContext(BiolinkContext);
 
   function reset() {
-    setType('');
-    setLabel('');
+    setCategory('');
+    setName('');
     setSearchTerm('');
-    setCurie([]);
+    setId([]);
     setSet(false);
     setFilteredConcepts([]);
-    updateCuries([]);
+    updateIDs([]);
     setLoading(false);
   }
 
   function initialize(seed) {
     reset();
-    setType(seed.type || '');
-    setLabel(seed.label || strings.displayType(seed.type) || '');
-    setSearchTerm(seed.label || strings.displayType(seed.type) || '');
-    setSet(seed.set || false);
-    setCurie(seed.curie || []);
+    setCategory(seed.category || '');
+    setName(seed.name || strings.displayCategory(seed.category) || '');
+    setSearchTerm(seed.name || strings.displayCategory(seed.category) || '');
+    setSet(seed.is_set || false);
+    setId(seed.id || []);
   }
 
   /**
-   * Convert a list of types to a single type
+   * Convert a list of categories to a single category
    * by picking the first one in the list
-   * @param {array} curieTypes array of types for picked node
-   * @returns {string} single type string
+   * @param {array} curieCategories array of categories for picked node
+   * @returns {string} single category string
    */
-  function conceptListToString(curieTypes) {
-    let curieType = strings.toArray(curieTypes);
-    // Use the first type in the list of types of the node
-    curieType = curieType.find((concept) => biolinkConcepts.includes(concept));
-    return curieType || '';
+  function conceptListToString(curieCategories) {
+    let curieCategory = strings.toArray(curieCategories);
+    // Use the first category in the list of categories of the node
+    curieCategory = curieCategory.find((concept) => biolinkConcepts.includes(concept));
+    return curieCategory || '';
   }
 
   function select(entry) {
-    setSearchTerm(entry.label);
-    setLabel(entry.label);
-    if (entry.curie) {
-      setCurie([entry.curie]);
+    setSearchTerm(entry.name);
+    setName(entry.name);
+    if (entry.id) {
+      setId([entry.id]);
     }
-    if (entry.set) {
+    if (entry.is_set) {
       setSet(true);
     }
-    setType(conceptListToString(entry.type));
+    setCategory(conceptListToString(entry.category));
   }
 
   function clearSelection() {
-    setType('');
-    setLabel('');
+    setCategory('');
+    setName('');
     setSet(false);
-    setCurie([]);
+    setId([]);
   }
 
   function updateFilteredConcepts(value) {
     // Convert name to lowercase before searching
     const newFilteredConcepts = concepts
       .filter(
-        (concept) => concept.label.toLowerCase().includes(value.toLowerCase()),
+        (concept) => concept.name.toLowerCase().includes(value.toLowerCase()),
       );
     setFilteredConcepts(newFilteredConcepts);
   }
 
-  const isValid = !!type || !!curie.length;
+  const isValid = !!category || !!id.length;
 
   return {
-    label,
+    name,
     clearSelection,
-    updateCuries,
+    updateIDs,
     updateFilteredConcepts,
     setConcepts,
     setLoading,
     setSearchTerm,
     filteredConcepts,
-    curie,
-    curies,
+    id,
+    ids,
     searchTerm,
-    type,
-    set,
+    category,
+    is_set,
     initialize,
     reset,
     select,
