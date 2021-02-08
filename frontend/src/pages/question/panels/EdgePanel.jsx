@@ -6,9 +6,9 @@ import {
 import { FaSpinner } from 'react-icons/fa';
 import { Multiselect, DropdownList } from 'react-widgets';
 
-import strings from '@/utils/stringUtils';
-import usePageStatus from '@/utils/usePageStatus';
-import BiolinkContext from '@/context/biolink';
+import strings from '~/utils/stringUtils';
+import usePageStatus from '~/utils/usePageStatus';
+import BiolinkContext from '~/context/biolink';
 
 const listItem = ({ item }) => (
   <div className="listItem">

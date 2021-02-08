@@ -7,8 +7,8 @@ import {
 import shortid from 'shortid';
 import _ from 'lodash';
 
-import strings from '@/utils/stringUtils';
-import questionTemplates from '@/questionTemplates';
+import strings from '~/utils/stringUtils';
+import questionTemplates from '~/questionTemplates';
 
 import FillIdentifier from './subComponents/FillIdentifier';
 

@@ -11,8 +11,8 @@ import IconButton from '@material-ui/core/IconButton';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 
-import UserContext from '@/context/user';
-import AlertContext from '@/context/alert';
+import UserContext from '~/context/user';
+import AlertContext from '~/context/alert';
 
 import googleIcon from '../../../public/images/btn_google_light_normal_ios.svg';
 

@@ -6,13 +6,13 @@ import {
 import { FaDownload } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
-import UserContext from '@/context/user';
+import UserContext from '~/context/user';
 
-import API from '@/API';
+import API from '~/API';
 
-import AnswersetView from '@/components/shared/answersetView/AnswersetView';
-import usePageStatus from '@/utils/usePageStatus';
-import trapiUtils from '@/utils/trapiUtils';
+import AnswersetView from '~/components/shared/answersetView/AnswersetView';
+import usePageStatus from '~/utils/usePageStatus';
+import trapiUtils from '~/utils/trapiUtils';
 
 import './newQuestion.css';
 import QuestionBuilder from './questionBuilder/QuestionBuilder';

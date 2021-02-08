@@ -6,10 +6,10 @@ import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import _ from 'lodash';
 
-import AlertContext from '@/context/alert';
+import AlertContext from '~/context/alert';
 
-import strings from '@/utils/stringUtils';
-import getNodeCategoryColorMap from '@/utils/colorUtils';
+import strings from '~/utils/stringUtils';
+import getNodeCategoryColorMap from '~/utils/colorUtils';
 import Table from './Table';
 
 import './resultsTable.css';

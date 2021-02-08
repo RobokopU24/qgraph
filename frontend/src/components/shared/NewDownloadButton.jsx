@@ -3,7 +3,7 @@ import Button from '@material-ui/core/Button';
 import DescriptionIcon from '@material-ui/icons/Description';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import AlertContext from '@/context/alert';
+import AlertContext from '~/context/alert';
 
 export default function NewDownloadButton({ displayText, getData, fileName }) {
   const [loading, setLoading] = useState(false);

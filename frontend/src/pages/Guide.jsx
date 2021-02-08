@@ -5,7 +5,7 @@ import {
   Grid, Row, Col, ButtonToolbar, Button,
 } from 'react-bootstrap';
 
-import UserContext from '@/context/user';
+import UserContext from '~/context/user';
 
 /**
  * Robokop Guide Page

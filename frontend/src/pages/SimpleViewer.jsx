@@ -5,14 +5,14 @@ import Dropzone from 'react-dropzone';
 import { FaCloudUploadAlt } from 'react-icons/fa';
 import Button from '@material-ui/core/Button';
 
-import API from '@/API';
-import { useVisibility } from '@/utils/cache';
-import AlertContext from '@/context/alert';
-import UserContext from '@/context/user';
-import usePageStatus from '@/utils/usePageStatus';
-import trapiUtils from '@/utils/trapiUtils';
+import API from '~/API';
+import { useVisibility } from '~/utils/cache';
+import AlertContext from '~/context/alert';
+import UserContext from '~/context/user';
+import usePageStatus from '~/utils/usePageStatus';
+import trapiUtils from '~/utils/trapiUtils';
 
-import AnswersetView from '@/components/shared/answersetView/AnswersetView';
+import AnswersetView from '~/components/shared/answersetView/AnswersetView';
 
 export default function SimpleViewer() {
   const [messageSaved, setMessageSaved] = useState(false);

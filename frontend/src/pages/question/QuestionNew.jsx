@@ -6,15 +6,15 @@ import { useHistory } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import _ from 'lodash';
 
-import UserContext from '@/context/user';
-import AlertContext from '@/context/alert';
+import UserContext from '~/context/user';
+import AlertContext from '~/context/alert';
 
-import API from '@/API';
+import API from '~/API';
 
 import './newQuestion.css';
 
-import { useVisibility } from '@/utils/cache';
-import usePageStatus from '@/utils/usePageStatus';
+import { useVisibility } from '~/utils/cache';
+import usePageStatus from '~/utils/usePageStatus';
 
 import QuestionBuilder from './questionBuilder/QuestionBuilder';
 

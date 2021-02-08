@@ -3,13 +3,13 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import shortid from 'shortid';
 
-import BiolinkContext from '@/context/biolink';
-import SubGraphViewer from '@/components/shared/graphs/SubGraphViewer';
+import BiolinkContext from '~/context/biolink';
+import SubGraphViewer from '~/components/shared/graphs/SubGraphViewer';
 
-import curieUrls from '@/utils/curieUrls';
-import ctdUrls from '@/utils/ctdUrls';
-import getNodeCategoryColorMap from '@/utils/colorUtils';
-import strings from '@/utils/stringUtils';
+import curieUrls from '~/utils/curieUrls';
+import ctdUrls from '~/utils/ctdUrls';
+import getNodeCategoryColorMap from '~/utils/colorUtils';
+import strings from '~/utils/stringUtils';
 
 import PubmedList from './PubmedList';
 

@@ -9,16 +9,16 @@ import {
 } from 'react-bootstrap';
 import slugify from 'slugify';
 
-import API from '@/API';
+import API from '~/API';
 
-import queryGraphUtils from '@/utils/queryGraph';
-import trapiUtils from '@/utils/trapiUtils';
-import strings from '@/utils/stringUtils';
-import { formatDateTimeShort } from '@/utils/cache';
-import HelpButton from '@/components/shared/HelpButton';
+import queryGraphUtils from '~/utils/queryGraph';
+import trapiUtils from '~/utils/trapiUtils';
+import strings from '~/utils/stringUtils';
+import { formatDateTimeShort } from '~/utils/cache';
+import HelpButton from '~/components/shared/HelpButton';
 
-import AlertContext from '@/context/alert';
-import UserContext from '@/context/user';
+import AlertContext from '~/context/alert';
+import UserContext from '~/context/user';
 import NewQuestionButtons from './NewQuestionButtons';
 import QuestionGraphViewContainer from './QuestionGraphViewContainer';
 import QuestionTemplateModal from './questionTemplate/QuestionTemplate';

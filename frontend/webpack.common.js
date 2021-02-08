@@ -51,7 +51,7 @@ const config = {
       'node_modules',
     ],
     alias: {
-      '@': path.resolve(__dirname, 'src'),
+      '~': path.resolve(__dirname, 'src'),
     },
   },
   plugins: [

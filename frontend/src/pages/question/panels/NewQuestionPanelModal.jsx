@@ -2,9 +2,9 @@ import React, { useContext, useMemo } from 'react';
 import { Modal, ButtonGroup, Button } from 'react-bootstrap';
 import { FaSave, FaTrash, FaUndo } from 'react-icons/fa';
 
-import BiolinkContext from '@/context/biolink';
-import HelpButton from '@/components/shared/HelpButton';
-import getNodeCategoryColorMap from '@/utils/colorUtils';
+import BiolinkContext from '~/context/biolink';
+import HelpButton from '~/components/shared/HelpButton';
+import getNodeCategoryColorMap from '~/utils/colorUtils';
 import EdgePanel from './EdgePanel';
 import NodePanel from './NodePanel';
 import './panels.css';

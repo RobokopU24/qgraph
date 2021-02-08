@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import _ from 'lodash';
 
-import API from '@/API';
-import UserContext from '@/context/user';
-import usePageStatus from '@/utils/usePageStatus';
-import trapiUtils from '@/utils/trapiUtils';
+import API from '~/API';
+import UserContext from '~/context/user';
+import usePageStatus from '~/utils/usePageStatus';
+import trapiUtils from '~/utils/trapiUtils';
 
 import AnswersetView from './AnswersetView';
 

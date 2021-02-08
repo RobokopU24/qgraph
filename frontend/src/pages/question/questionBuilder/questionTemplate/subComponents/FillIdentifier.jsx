@@ -6,9 +6,9 @@ import {
   Glyphicon,
 } from 'react-bootstrap';
 
-import API from '@/API';
-import AlertContext from '@/context/alert';
-import CurieConceptSelector from '@/components/shared/curies/CurieConceptSelector';
+import API from '~/API';
+import AlertContext from '~/context/alert';
+import CurieConceptSelector from '~/components/shared/curies/CurieConceptSelector';
 
 export default function FillIdentifier({
   onSelect, category,
