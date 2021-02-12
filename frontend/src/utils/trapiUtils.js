@@ -64,14 +64,14 @@ function validateResults(results) {
   for (let i = 0; i < results.length; i += 1) {
     if (!('node_bindings' in results[i])) {
       errors.push('No node_bindings in result object');
-    } else if (!Array.isArray(results[i].node_bindings)) {
-      errors.push('Node bindings must be array');
+    } else if (results[i].node_bindings.constructor !== Object) {
+      errors.push('Results node_bindings is not a valid JSON object');
     }
 
     if (!('edge_bindings' in results[i])) {
       errors.push('No edge_bindings in result object');
-    } else if (!Array.isArray(results[i].edge_bindings)) {
-      errors.push('Edge bindings must be array');
+    } else if (results[i].edge_bindings.constructor !== Object) {
+      errors.push('Results edge_bindings is not a valid JSON object');
     }
     if (errors.length) {
       break;
