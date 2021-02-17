@@ -131,7 +131,7 @@ export default function AnswerExplorerInfo(props) {
     return (
       <Card>
         <h3 className="cardTitle greyBackground">
-          {edge.predicate}
+          {strings.displayPredicate(edge.predicate)}
         </h3>
         <CardContent className="cardContent">
           {origin && (
