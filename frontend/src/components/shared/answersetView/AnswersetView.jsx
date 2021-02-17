@@ -21,6 +21,7 @@ export const answerSetTabEnum = {
 };
 
 function bindingTrapiToStoreFormat(oldBinding) {
+  const newBindings = {};
   const convertedEdgeBindings = [];
   Object.keys(oldBinding.edge_bindings).forEach((qg_id) => {
     const kg_ids = [];
@@ -32,6 +33,7 @@ function bindingTrapiToStoreFormat(oldBinding) {
       kg_id: kg_ids,
     });
   });
+  newBindings.edge_bindings = convertedEdgeBindings;
   const convertedNodeBindings = [];
   Object.keys(oldBinding.node_bindings).forEach((qg_id) => {
     const kg_ids = [];
@@ -43,10 +45,11 @@ function bindingTrapiToStoreFormat(oldBinding) {
       kg_id: kg_ids,
     });
   });
-  return {
-    node_bindings: convertedNodeBindings,
-    edge_bindings: convertedEdgeBindings,
-  };
+  newBindings.node_bindings = convertedNodeBindings;
+  if ('score' in oldBinding) {
+    newBindings.score = oldBinding.score;
+  }
+  return newBindings;
 }
 
 /*
