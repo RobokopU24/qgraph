@@ -252,8 +252,8 @@ export default function SubGraphViewer(props) {
     });
 
     // Separate out support and regular edges to modify things differently
-    const edgesRegular = g.edges.filter((e) => e.type !== 'literature_co-occurrence');
-    const edgesSupport = g.edges.filter((e) => e.type === 'literature_co-occurrence');
+    const edgesRegular = g.edges.filter((e) => e.predicate !== 'biolink:literature_co_occurrence');
+    const edgesSupport = g.edges.filter((e) => e.predicate === 'biolink:literature_co_occurrence');
 
     edgesSupport.forEach((e) => {
       // Make sure support edges actually have publications
@@ -364,20 +364,23 @@ export default function SubGraphViewer(props) {
     // Add parameters to edges like curvature and labels and such
     g.edges = g.edges.map((e) => {
       let typeDependentParams = {};
-      let label = e.type;
+      let label = strings.displayPredicate(e.predicate);
+      if (Array.isArray(e.predicate) && e.predicate.length === 1) {
+        [e.predicate] = e.predicate;
+      }
       let nPublications = e.publications ? e.publications.length : 0;
       if (nPublications === 0 && 'nPublications' in e) {
         ({ nPublications } = e); // object destructure, grabs variable out of object
       }
       if (nPublications > 0) {
-        label = `${e.type} (${nPublications})`;
+        label = `${label} (${nPublications})`;
       }
 
       // const value = Math.ceil((Math.log(nPublications + 1) / Math.log(5)) * 2) + 1;
       // const value = Math.ceil((15 / (1 + Math.exp(-1 * (-1 + (0.02 * nPublications))))) - 3);
       const value = (4 / (1 + Math.exp(-1 * (-1 + (0.01 * nPublications))))) - 1;
 
-      if (e.type === 'literature_co-occurrence') {
+      if (e.predicate === 'biolink:literature_co_occurrence') {
         // Publication Edge
         label = `${nPublications}`; // Remove the type labeled to keep it small
 
@@ -446,7 +449,7 @@ export default function SubGraphViewer(props) {
       return { ...e, ...defaultParams, ...typeDependentParams };
     });
     if (!showSupport) {
-      g.edges = g.edges.filter((e) => e.type !== 'literature_co-occurrence');
+      g.edges = g.edges.filter((e) => e.predicate !== 'biolink:literature_co_occurrence');
     }
 
     return g;
