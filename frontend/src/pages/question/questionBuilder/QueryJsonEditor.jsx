@@ -20,7 +20,7 @@ import QuestionGraphView from '~/components/shared/graphs/QuestionGraphView';
 import AlertContext from '~/context/alert';
 import usePageStatus from '~/utils/usePageStatus';
 import trapiUtils from '~/utils/trapiUtils';
-import queryGraphUtils from '~/utils/queryGraph';
+import queryGraphUtils from '~/utils/queryGraphUtils';
 
 import './jsonEditor.css';
 

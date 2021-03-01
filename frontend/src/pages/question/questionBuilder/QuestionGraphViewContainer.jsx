@@ -4,7 +4,7 @@ import React, {
 import { FaPlusSquare } from 'react-icons/fa';
 import { Button } from 'react-bootstrap';
 
-import queryGraphUtils from '~/utils/queryGraph';
+import queryGraphUtils from '~/utils/queryGraphUtils';
 
 import QuestionGraphView from '~/components/shared/graphs/QuestionGraphView';
 import NewQuestionPanelModal from '../panels/NewQuestionPanelModal';

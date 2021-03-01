@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import queryGraphUtils from '~/utils/queryGraph';
+import queryGraphUtils from '~/utils/queryGraphUtils';
 
 export default function useQuestionStore() {
   const [question_name, updateQuestionName] = useState('');

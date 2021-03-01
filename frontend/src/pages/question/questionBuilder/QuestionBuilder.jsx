@@ -11,7 +11,7 @@ import slugify from 'slugify';
 
 import API from '~/API';
 
-import queryGraphUtils from '~/utils/queryGraph';
+import queryGraphUtils from '~/utils/queryGraphUtils';
 import trapiUtils from '~/utils/trapiUtils';
 import strings from '~/utils/stringUtils';
 import { formatDateTimeShort } from '~/utils/cache';
