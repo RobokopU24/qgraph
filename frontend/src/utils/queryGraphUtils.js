@@ -112,10 +112,28 @@ const convert = {
   },
 };
 
+/**
+ * Remove any empty node categories or ids or edge predicates
+ * @param {obj} q_graph query graph
+ * @returns query graph
+ */
+function prune(q_graph) {
+  const clonedQueryGraph = _.cloneDeep(q_graph);
+  Object.keys(clonedQueryGraph.nodes).forEach((n) => {
+    pruneEmptyArrays(clonedQueryGraph.nodes[n], 'category');
+    pruneEmptyArrays(clonedQueryGraph.nodes[n], 'id');
+  });
+  Object.keys(clonedQueryGraph.edges).forEach((e) => {
+    pruneEmptyArrays(clonedQueryGraph.edges[e], 'predicate');
+  });
+  return clonedQueryGraph;
+}
+
 export default {
   getEmptyGraph,
   convert,
   standardizeCategory,
   standardizePredicate,
   standardizeIDs,
+  prune,
 };

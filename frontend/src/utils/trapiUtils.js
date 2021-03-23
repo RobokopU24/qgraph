@@ -93,8 +93,8 @@ function validateMessage(message) {
     return ['The uploaded message should have a parent property of "message".'];
   }
 
-  let errors = validateGraph(message.message.knowledge_graph, 'Knowledge Graph');
-  errors = [...errors, ...validateGraph(message.message.query_graph, 'Query Graph')];
+  let errors = validateGraph(message.message.query_graph, 'Query Graph');
+  errors = [...errors, ...validateGraph(message.message.knowledge_graph, 'Knowledge Graph')];
   errors = [...errors, ...validateResults(message.message.results)];
 
   return errors;

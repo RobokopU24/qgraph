@@ -98,7 +98,7 @@ export default function QuestionBuilder(props) {
       return;
     }
 
-    const validationErrors = trapiUtils.validateMessage(message);
+    const validationErrors = trapiUtils.validateGraph(message.message.query_graph);
 
     if (validationErrors.length) {
       displayAlert('error', `Found errors while parsing message: ${validationErrors.join(', ')}`);
@@ -115,6 +115,8 @@ export default function QuestionBuilder(props) {
       queryGraphUtils.standardizeCategory(node);
     });
     Object.values(query_graph.edges).forEach((e) => queryGraphUtils.standardizePredicate(e));
+
+    console.log(Object.keys(query_graph.nodes));
 
     questionStore.updateQueryGraph(query_graph);
     setStep('build');

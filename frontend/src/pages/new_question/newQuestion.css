@@ -1,0 +1,27 @@
+#queryEditorContainer {
+    display: flex;
+}
+#queryTextEditor {
+    width: 60%;
+    padding: 20px;
+}
+#queryTextEditor > * {
+    padding: 12px;
+}
+#queryGraphEditor {
+    width: 40%;
+    padding: 20px;
+}
+.textEditorRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.textEditorRow > p {
+    margin: 0;
+    font-size: 16px;
+}
+.textEditorIconButton > span > svg {
+    font-size: 40px;
+    color: #b2b0b0;
+}

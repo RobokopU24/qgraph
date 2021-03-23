@@ -104,6 +104,14 @@ export default function Landing() {
               href="/simple/view"
             />
           </Row>
+          <Row>
+            <CustomComponent
+              glyph="screenshot"
+              header="New Question Builder"
+              text="Use text editor and a graph editor together."
+              href="/new_question"
+            />
+          </Row>
           {/*
           <Row>
             <CustomComponent

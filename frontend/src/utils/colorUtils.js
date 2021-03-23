@@ -1,7 +1,8 @@
 // Check out https://html-color.codes to pick new colors
 // This is hard to have this many contrasting colors that are within families leave text readable.
 // This should be periodically updated as new node categories are introduced to give them consistent colors
-const undefinedColor = '#cccccc';
+// const undefinedColor = '#cccccc';
+const undefinedColor = '#FFEEA3';
 
 const conceptColorMap = {
   'biolink:AnatomicalEntity': '#e5d8bd', // Brown
