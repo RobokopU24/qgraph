@@ -267,6 +267,13 @@ export default function queryGraph(svgRef, height, width, colorMap, nodeRadius) 
     // edges need to preserve some internal properties
     const edges = query_graph.edges.map((d) => ({ ...d }));
 
+    // simulation adds x and y properties to nodes
+    simulation.nodes(nodes);
+    // simulation converts source and target properties of
+    // edges to node objects
+    simulation.force('link').links(edges);
+    simulation.alpha(1).restart();
+
     node = node.data(nodes)
       .join(
         (enter) => enter
@@ -279,7 +286,7 @@ export default function queryGraph(svgRef, height, width, colorMap, nodeRadius) 
             // .attr('stroke-width', 2)
             .style('cursor', 'pointer')
             .on('click', function (e, d) {
-              const { id, x, y } = d;
+              const { id } = d;
               // only if we're currently making a connection
               if (makeConnection) {
                 d3.select(this)
@@ -305,7 +312,7 @@ export default function queryGraph(svgRef, height, width, colorMap, nodeRadius) 
           .call((e) => e.transition()
             .duration(1000)
             .attr('fill', 'red')
-            .attr('cy', 0)
+            .attr('cy', -40)
             // .attr('fill-opacity', 0)
             .remove()),
       );
@@ -328,7 +335,7 @@ export default function queryGraph(svgRef, height, width, colorMap, nodeRadius) 
         (exit) => exit
           .call((e) => e.transition()
             .duration(1000)
-            .attr('y', 0)
+            .attr('y', -40)
             .remove()),
       );
 
@@ -350,13 +357,6 @@ export default function queryGraph(svgRef, height, width, colorMap, nodeRadius) 
         // (u) => u.select('title')
         //   .text((d) => d.predicate.map((p) => strings.displayPredicate(p)).join(', ')),
       );
-
-    // simulation adds x and y properties to nodes
-    simulation.nodes(nodes);
-    // simulation converts source and target properties of
-    // edges to node objects
-    simulation.force('link').links(edges);
-    simulation.alpha(1).restart();
 
     // edge ends need the x and y of their attached nodes
     // must come after simulation
@@ -444,7 +444,7 @@ export default function queryGraph(svgRef, height, width, colorMap, nodeRadius) 
           .style('display', 'none')
           .attr('class', (d) => d.id)
           .on('click', (e, d) => {
-            const { id, x, y } = d;
+            const { id } = d;
             const nodeAnchor = d3.select(`#${id}`).node();
             editNode(id, nodeAnchor);
             d3.selectAll(`.${id}`)
