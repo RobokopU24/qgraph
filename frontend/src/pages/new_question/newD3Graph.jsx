@@ -90,7 +90,7 @@ export default function NewD3Graph({ queryBuilder }) {
       <div id="graphBottomButtons">
         <Button
           onClick={(e) => {
-            setNodeId(queryBuilder.addHop(convertedQueryGraph.edges[convertedQueryGraph.edges.length - 1].object));
+            setNodeId(queryBuilder.addHop());
             setAnchorEl(e.currentTarget);
             setPopoverType('newNode');
           }}

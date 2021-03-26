@@ -136,7 +136,7 @@ export default function useQueryBuilder() {
     });
 
     // Trim a node if it is floating and marked for deletion
-    const nodesToTrim = Object.keys(q_graph.nodes).filter((id) => (!notFloatingNodeIDs.has(id)));
+    const nodesToTrim = Object.keys(q_graph.nodes).filter((id) => (!notFloatingNodeIDs.has(id) && id !== rootNode));
 
     q_graph.nodes = _.omitBy(q_graph.nodes, (n, id) => nodesToTrim.includes(id));
     // q_graph.nodes = _.pick(q_graph.nodes, notFloatingNodeIDs);
@@ -164,15 +164,20 @@ export default function useQueryBuilder() {
 
   /**
    * Create new edge and node attached to subject node
-   * @param {string} subjectId node id
+   * @param {string} nodeId node id
    * @returns {string} node id of created object node
    */
-  function addHop(subjectId) {
+  function addHop(nodeId) {
     const newNodeId = getNextNodeID(query_graph);
     const newEdgeId = getNextEdgeID(query_graph);
     const clonedQueryGraph = _.cloneDeep(query_graph);
     clonedQueryGraph.nodes[newNodeId] = defaultNode();
     const newEdge = defaultEdge();
+    let subjectId = nodeId;
+    if (nodeId === undefined) {
+      const nodeKeys = Object.keys(query_graph.nodes);
+      subjectId = nodeKeys[nodeKeys.length - 1];
+    }
     newEdge.subject = subjectId;
     newEdge.object = newNodeId;
     clonedQueryGraph.edges[newEdgeId] = newEdge;
@@ -221,11 +226,7 @@ export default function useQueryBuilder() {
   function updateEdgePredicate(edgeId, predicateValue) {
     const clonedQueryGraph = _.cloneDeep(query_graph);
     const edge = clonedQueryGraph.edges[edgeId];
-    if (predicateValue.length) {
-      edge.predicate = predicateValue;
-    } else {
-      delete edge.predicate;
-    }
+    edge.predicate = predicateValue;
     updateQueryGraph(clonedQueryGraph);
   }
 
