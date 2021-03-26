@@ -4,21 +4,22 @@ import graphUtils from './graphUtils';
 import dragUtils from './dragUtils';
 
 let showEdit = '';
+const dispatch = d3.dispatch('delete');
 
 /**
  * Handle creation of nodes
  * @param {obj} node d3 node object
  * @param {obj} simulation d3 force simulation
- * @param {int} width width of svg container
- * @param {int} height height of svg container
- * @param {int} nodeRadius node radius
- * @param {func} colorMap function to get node background color
- * @param {func} makeConnection function to create edge between two selected nodes
  * @param {func} chooseNode function to select two nodes to connect
- * @param {obj} queryBuilder query builder hook
  * @param {func} openNodeEditor function to open node editor
+ * @param {obj} args object of mutable arguments
  */
-function enter(node, simulation, width, height, nodeRadius, colorMap, makeConnection, chooseNode, queryBuilder, openNodeEditor) {
+function enter(node, simulation, chooseNode, openNodeEditor, args) {
+  const {
+    width, height, nodeRadius,
+    colorMap, deleteNode,
+  } = args;
+  dispatch.on('delete', deleteNode);
   return node.append('g')
     .attr('class', 'node')
     .attr('id', (d) => d.id)
@@ -36,7 +37,7 @@ function enter(node, simulation, width, height, nodeRadius, colorMap, makeConnec
         // raise node to front of other nodes
         d3.select(`#${id}`).raise();
         // only if we're currently making a connection
-        if (makeConnection) {
+        if (args.connectTerms) {
           d3.select(this)
             .attr('stroke', '#e0dfdf')
             .attr('stroke-width', '5');
@@ -89,7 +90,7 @@ function enter(node, simulation, width, height, nodeRadius, colorMap, makeConnec
         d3.selectAll(`.${id}`)
           .style('display', 'none');
         showEdit = '';
-        queryBuilder.deleteNode(d.id);
+        dispatch.call('delete', null, d.id);
       }))
     .call((nodeDeleteLabel) => nodeDeleteLabel.append('text')
       .style('pointer-events', 'none')

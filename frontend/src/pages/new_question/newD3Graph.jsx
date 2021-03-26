@@ -35,6 +35,18 @@ export default function NewD3Graph({ queryBuilder }) {
   const [edgeId, setEdgeId] = useState('');
   // const [popupContent, setPopupContent] = useState({});
 
+  function openNodeEditor(id, anchor) {
+    setNodeId(id);
+    setAnchorEl(anchor);
+    setPopoverType('editNode');
+  }
+
+  function openEdgeEditor(id, anchor) {
+    setEdgeId(id);
+    setAnchorEl(anchor);
+    setPopoverType('editEdge');
+  }
+
   useEffect(() => {
     d3.select(svgRef.current)
       .attr('width', width)
@@ -42,33 +54,11 @@ export default function NewD3Graph({ queryBuilder }) {
       .attr('border', '1px solid black')
       .attr('preserveAspectRatio', 'xMinYMin meet')
       .attr('viewBox', [0, 0, width, height]);
-    updateGraph.current = queryGraph(svgRef, height, width, nodeCategoryColorMap, 40);
+    updateGraph.current = queryGraph(
+      svgRef, height, width, nodeCategoryColorMap, 40,
+      openNodeEditor, openEdgeEditor,
+    );
   }, []);
-
-  // function openNodeSelector(id, anchor, x, y) {
-  //   // setNodeId(id);
-  //   // console.log(x, y);
-  //   // setAnchorEl(anchor);
-  //   // setPopoverType('editNode');
-  //   setPopupContent({
-  //     pos: { x, y },
-  //     msg: (
-  //       <div>Test</div>
-  //     ),
-  //   });
-  // }
-
-  function editNode(id, anchor) {
-    setNodeId(id);
-    setAnchorEl(anchor);
-    setPopoverType('editNode');
-  }
-
-  function editEdge(id, anchor) {
-    setEdgeId(id);
-    setAnchorEl(anchor);
-    setPopoverType('editEdge');
-  }
 
   function drawGraph() {
     const { nodes, edges } = convertedQueryGraph;
@@ -77,7 +67,7 @@ export default function NewD3Graph({ queryBuilder }) {
       e.target = e.object;
     });
     // need to send updated queryBuilder instance to graph
-    updateGraph.current.update({ nodes, edges }, queryBuilder, editNode, editEdge);
+    updateGraph.current.update({ nodes, edges }, queryBuilder);
   }
 
   useEffect(() => {

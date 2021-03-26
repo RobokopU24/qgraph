@@ -27,7 +27,7 @@ function dragNode(simulation, width, height, nodeRadius) {
     .on('end', dragended);
 }
 
-function dragEdgeEnd(subject, simulation, width, height, nodeRadius, updateEdge) {
+function dragEdgeEnd(subject, simulation, width, height, nodeRadius, dispatch) {
   function dragstarted(event) {
     // stop simulation if user grabs an edge end
     if (!event.active) simulation.stop();
@@ -70,7 +70,7 @@ function dragEdgeEnd(subject, simulation, width, height, nodeRadius, updateEdge)
       };
       // no need to adjust anything internal because graph will be
       // redrawn
-      updateEdge(id, mapping[type], droppedCircle.id);
+      dispatch.call('update', null, id, mapping[type], droppedCircle.id);
     } else {
       // edge was dropped in space, put it back to previous nodes
       const inverseType = graphUtils.inverseEdgeType[type];

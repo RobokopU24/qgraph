@@ -4,6 +4,7 @@ import dragUtils from './dragUtils';
 import strings from '~/utils/stringUtils';
 
 let showEdit = '';
+const dispatch = d3.dispatch('update', 'delete');
 
 /**
  * Handle creation of edges
@@ -12,9 +13,15 @@ let showEdit = '';
  * @param {int} width width of svg container
  * @param {int} height height of svg container
  * @param {int} nodeRadius node radius
- * @param {obj} queryBuilder query builder hook
+ * @param {obj} args mutable edge args object
  */
-function enter(edge, simulation, width, height, nodeRadius, queryBuilder, openEdgeEditor) {
+function enter(edge, simulation, openEdgeEditor, args) {
+  const {
+    height, width, nodeRadius,
+    updateEdge, deleteEdge,
+  } = args;
+  dispatch.on('update', updateEdge);
+  dispatch.on('delete', deleteEdge);
   return edge.append('g')
     .attr('id', (d) => d.id)
     // visible line
@@ -73,7 +80,7 @@ function enter(edge, simulation, width, height, nodeRadius, queryBuilder, openEd
       .attr('class', 'source')
       .on('mouseover', graphUtils.show)
       .on('mouseout', graphUtils.hide)
-      .call(dragUtils.dragEdgeEnd(e, simulation, width, height, nodeRadius, queryBuilder.updateEdge)))
+      .call(dragUtils.dragEdgeEnd(e, simulation, width, height, nodeRadius, dispatch)))
     // target edge end circle
     .call((e) => e.append('circle')
       .attr('cx', (d) => d.targetNode.x)
@@ -89,7 +96,7 @@ function enter(edge, simulation, width, height, nodeRadius, queryBuilder, openEd
       .attr('class', 'target')
       .on('mouseover', graphUtils.show)
       .on('mouseout', graphUtils.hide)
-      .call(dragUtils.dragEdgeEnd(e, simulation, width, height, nodeRadius, queryBuilder.updateEdge)))
+      .call(dragUtils.dragEdgeEnd(e, simulation, width, height, nodeRadius, dispatch)))
     .call((e) => e.append('rect')
       .attr('x', (d) => graphUtils.getEdgeMiddle(d).x - 50)
       .attr('y', (d) => graphUtils.getEdgeMiddle(d).y - 50)
@@ -104,7 +111,7 @@ function enter(edge, simulation, width, height, nodeRadius, queryBuilder, openEd
         d3.selectAll(`.${id}`)
           .style('display', 'none');
         showEdit = '';
-        queryBuilder.removeHop(d.id);
+        dispatch.call('delete', null, d.id);
       }))
     .call((e) => e.append('text')
       .style('pointer-events', 'none')

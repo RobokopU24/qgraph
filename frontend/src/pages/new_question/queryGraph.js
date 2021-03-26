@@ -11,13 +11,34 @@ import edgeUtils from './edgeUtils';
  * @param {int} width width of the query graph element
  * @param {func} colorMap function to get node category color
  * @param {int} nodeRadius radius of each node
- * @param {func} updateEdge update edge function
+ * @param {func} openNodeEditor function to open node editor
+ * @param {func} openEdgeEditor function to open edge editor
  * @returns {func} update function
  */
-export default function queryGraph(svgRef, height, width, colorMap, nodeRadius) {
-  let queryBuilder = null;
+export default function queryGraph(
+  svgRef, height, width, colorMap, nodeRadius,
+  openNodeEditor, openEdgeEditor,
+) {
   let chosenNodes = [];
-  let makeConnection = null;
+  /**
+   * Common node and edge args
+   */
+  const edgeArgs = {
+    height,
+    width,
+    nodeRadius,
+    queryBuilder: null,
+  };
+  /**
+   * Mutable node args
+   * @property {func} colorMap function to get node background color
+   * @property {func} connectTerms function to create edge between two nodes
+   */
+  const nodeArgs = {
+    ...edgeArgs,
+    colorMap,
+    connectTerms: null,
+  };
   const svg = d3.select(svgRef.current);
   if (svg.select('#nodeContainer').empty()) {
     svg.append('g')
@@ -27,12 +48,8 @@ export default function queryGraph(svgRef, height, width, colorMap, nodeRadius) 
     svg.append('g')
       .attr('id', 'edgeContainer');
   }
-  const edgeContainer = svg.select('#edgeContainer');
-  const nodeContainer = svg.select('#nodeContainer');
-
-  let edge = edgeContainer.selectAll('line');
-
-  let node = nodeContainer.selectAll('circle');
+  let edge = svg.select('#edgeContainer').selectAll('g');
+  let node = svg.select('#nodeContainer').selectAll('g');
 
   if (svg.select('defs').empty()) {
     // edge arrow
@@ -189,12 +206,14 @@ export default function queryGraph(svgRef, height, width, colorMap, nodeRadius) 
     // .force('forceX', d3.forceX());
     .on('tick', ticked);
 
-  function update(query_graph, newQueryBuilder, openNodeEditor, openEdgeEditor) {
+  function update(query_graph, newQueryBuilder) {
     // we need to update this function internally to get an updated version
     // of the current query builder
-    queryBuilder = newQueryBuilder;
-    // clear out makeConnection whenever external updates happen.
-    makeConnection = null;
+    edgeArgs.updateEdge = newQueryBuilder.updateEdge;
+    edgeArgs.deleteEdge = newQueryBuilder.removeHop;
+    nodeArgs.deleteNode = newQueryBuilder.deleteNode;
+    // clear out connectTerms whenever external updates happen.
+    nodeArgs.connectTerms = null;
     // preserve node position by using the already existing nodes
     const oldNodes = new Map(node.data().map((d) => [d.id, { x: d.x, y: d.y }]));
     const nodes = query_graph.nodes.map((d) => Object.assign(oldNodes.get(d.id) || { x: Math.random() * width, y: Math.random() * height }, d));
@@ -210,7 +229,7 @@ export default function queryGraph(svgRef, height, width, colorMap, nodeRadius) 
 
     node = node.data(nodes)
       .join(
-        (n) => nodeUtils.enter(n, simulation, width, height, nodeRadius, colorMap, makeConnection, chooseNode, queryBuilder, openNodeEditor),
+        (n) => nodeUtils.enter(n, simulation, chooseNode, openNodeEditor, nodeArgs),
         (n) => nodeUtils.update(n, colorMap),
         nodeUtils.exit,
       );
@@ -224,7 +243,7 @@ export default function queryGraph(svgRef, height, width, colorMap, nodeRadius) 
 
     edge = edge.data(edges)
       .join(
-        (e) => edgeUtils.enter(e, simulation, width, height, nodeRadius, queryBuilder, openEdgeEditor),
+        (e) => edgeUtils.enter(e, simulation, openEdgeEditor, edgeArgs),
         edgeUtils.update,
         edgeUtils.exit,
       );
@@ -235,8 +254,8 @@ export default function queryGraph(svgRef, height, width, colorMap, nodeRadius) 
       chosenNodes.push(id);
     }
     if (chosenNodes.length === 2) {
-      makeConnection(...chosenNodes);
-      makeConnection = null;
+      nodeArgs.connectTerms(...chosenNodes);
+      nodeArgs.connectTerms = null;
       d3.selectAll('.node > .nodeCircle')
         .transition()
         .delay(2000)
@@ -246,7 +265,7 @@ export default function queryGraph(svgRef, height, width, colorMap, nodeRadius) 
   }
 
   function addNewConnection(func) {
-    makeConnection = func;
+    nodeArgs.connectTerms = func;
     chosenNodes = [];
   }
 
