@@ -74,7 +74,14 @@ export default function PredicateSelector({ queryBuilder, edgeId }) {
       onChange={(e, value) => {
         updateEdgePredicate(edgeId, value);
       }}
-      renderInput={(params) => <TextField {...params} label="Predicate" variant="outlined" />}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label="Predicate"
+          variant="outlined"
+          margin="dense"
+        />
+      )}
       getOptionLabel={(opt) => strings.displayPredicate(opt)}
       clearOnBlur={false}
       multiple
