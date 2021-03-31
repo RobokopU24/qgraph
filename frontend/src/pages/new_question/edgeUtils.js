@@ -20,7 +20,13 @@ function enter(edge, simulation, openEdgeEditor, args) {
     height, width, nodeRadius,
     updateEdge, deleteEdge,
   } = args;
-  dispatch.on('update', updateEdge);
+  dispatch.on('update', (edgeId, edgeType, nodeId) => {
+    const success = updateEdge(edgeId, edgeType, nodeId);
+    if (!success) {
+      // hacky, calls the tick function which moves the edge ends back
+      simulation.alpha(0.001).restart();
+    }
+  });
   dispatch.on('delete', deleteEdge);
   return edge.append('g')
     .attr('id', (d) => d.id)
@@ -37,15 +43,15 @@ function enter(edge, simulation, openEdgeEditor, args) {
       .attr('class', 'edgeTransparent')
       .on('click', (event, d) => {
         if (showEdit !== d.id) {
-          d3.selectAll('.edgeDelete,.edgeDeleteLabel,.edgeEdit,.edgeEditLabel')
+          event.stopPropagation();
+          d3.selectAll('.deleteRect,.deleteLabel,.editRect,.editLabel')
             .style('display', 'none');
           d3.selectAll(`.${d.id}`)
             .style('display', 'inherit')
             .raise();
           showEdit = d.id;
+          d3.select(`#${d.id}`).raise();
         } else {
-          d3.selectAll(`.${d.id}`)
-            .style('display', 'none');
           showEdit = '';
         }
       })
@@ -105,19 +111,17 @@ function enter(edge, simulation, openEdgeEditor, args) {
       .attr('stroke', 'black')
       .attr('fill', 'white')
       .style('display', 'none')
-      .attr('class', (d) => `${d.id} edgeDelete`)
+      .attr('class', (d) => `${d.id} deleteRect`)
       .on('click', (event, d) => {
         const { id } = d;
-        d3.selectAll(`.${id}`)
-          .style('display', 'none');
         showEdit = '';
-        dispatch.call('delete', null, d.id);
+        dispatch.call('delete', null, id);
       }))
     .call((e) => e.append('text')
       .style('pointer-events', 'none')
       .attr('text-anchor', 'middle')
       .attr('alignment-baseline', 'middle')
-      .attr('class', (d) => `${d.id} edgeDeleteLabel`)
+      .attr('class', (d) => `${d.id} deleteLabel`)
       .style('display', 'none')
       .text('delete'))
     .call((e) => e.append('rect')
@@ -128,20 +132,18 @@ function enter(edge, simulation, openEdgeEditor, args) {
       .attr('stroke', 'black')
       .attr('fill', 'white')
       .style('display', 'none')
-      .attr('class', (d) => `${d.id} edgeEdit`)
+      .attr('class', (d) => `${d.id} editRect`)
       .on('click', (event, d) => {
         const { id } = d;
-        // const edgeAnchor = d3.select(`#${id} > .edgeCircle`).node();
-        openEdgeEditor(id, event.target);
-        d3.selectAll(`.${id}`)
-          .style('display', 'none');
+        const edgeAnchor = d3.select(`#${id} > .source`).node();
         showEdit = '';
+        openEdgeEditor(id, edgeAnchor);
       }))
     .call((e) => e.append('text')
       .style('pointer-events', 'none')
       .attr('text-anchor', 'middle')
       .attr('alignment-baseline', 'middle')
-      .attr('class', (d) => `${d.id} edgeEditLabel`)
+      .attr('class', (d) => `${d.id} editLabel`)
       .style('display', 'none')
       .text('edit'));
 }

@@ -67,6 +67,11 @@ export default function queryGraph(
           .attr('fill', '#999');
   }
 
+  svg.on('click', () => {
+    d3.selectAll('.deleteRect,.deleteLabel,.editRect,.editLabel')
+      .style('display', 'none');
+  });
+
   /**
    * Move all nodes and edges on each simulation 'tick'
    */
@@ -81,22 +86,22 @@ export default function queryGraph(
         .attr('y', (d) => graphUtils.boundedNode(d.y, height, nodeRadius));
 
     node
-      .select('.nodeDelete')
+      .select('.deleteRect')
         .attr('x', (d) => d.x - 50)
         .attr('y', (d) => d.y - 90);
 
     node
-      .select('.nodeDeleteLabel')
+      .select('.deleteLabel')
         .attr('x', (d) => d.x - 25)
         .attr('y', (d) => d.y - 77);
 
     node
-      .select('.nodeEdit')
+      .select('.editRect')
         .attr('x', (d) => d.x)
         .attr('y', (d) => d.y - 90);
 
     node
-      .select('.nodeEditLabel')
+      .select('.editLabel')
         .attr('x', (d) => d.x + 25)
         .attr('y', (d) => d.y - 77);
 
@@ -173,22 +178,22 @@ export default function queryGraph(
         });
 
     edge
-      .select('.edgeDelete')
+      .select('.deleteRect')
         .attr('x', (d) => graphUtils.getEdgeMiddle(d).x - 50)
         .attr('y', (d) => graphUtils.getEdgeMiddle(d).y - 50);
 
     edge
-      .select('.edgeDeleteLabel')
+      .select('.deleteLabel')
         .attr('x', (d) => graphUtils.getEdgeMiddle(d).x - 25)
         .attr('y', (d) => graphUtils.getEdgeMiddle(d).y - 37);
 
     edge
-      .select('.edgeEdit')
+      .select('.editRect')
         .attr('x', (d) => graphUtils.getEdgeMiddle(d).x)
         .attr('y', (d) => graphUtils.getEdgeMiddle(d).y - 50);
 
     edge
-      .select('.edgeEditLabel')
+      .select('.editLabel')
         .attr('x', (d) => graphUtils.getEdgeMiddle(d).x + 25)
         .attr('y', (d) => graphUtils.getEdgeMiddle(d).y - 37);
   }
@@ -206,12 +211,17 @@ export default function queryGraph(
     // .force('forceX', d3.forceX());
     .on('tick', ticked);
 
-  function update(query_graph, newQueryBuilder) {
+  /**
+   * Update displayed query graph
+   * @param {object} query_graph query graph object
+   * @param {object} queryBuilder query builder hook
+   */
+  function update(query_graph, queryBuilder) {
     // we need to update this function internally to get an updated version
     // of the current query builder
-    edgeArgs.updateEdge = newQueryBuilder.updateEdge;
-    edgeArgs.deleteEdge = newQueryBuilder.removeHop;
-    nodeArgs.deleteNode = newQueryBuilder.deleteNode;
+    edgeArgs.updateEdge = queryBuilder.updateEdge;
+    edgeArgs.deleteEdge = queryBuilder.deleteEdge;
+    nodeArgs.deleteNode = queryBuilder.deleteNode;
     // clear out connectTerms whenever external updates happen.
     nodeArgs.connectTerms = null;
     // preserve node position by using the already existing nodes
@@ -227,11 +237,11 @@ export default function queryGraph(
     simulation.force('link').links(edges);
     simulation.alpha(1).restart();
 
-    node = node.data(nodes)
+    node = node.data(nodes, (d) => d.id)
       .join(
         (n) => nodeUtils.enter(n, simulation, chooseNode, openNodeEditor, nodeArgs),
         (n) => nodeUtils.update(n, colorMap),
-        nodeUtils.exit,
+        (n) => nodeUtils.exit(n),
       );
 
     // edge ends need the x and y of their attached nodes
@@ -241,7 +251,7 @@ export default function queryGraph(
       e.targetNode = graphUtils.getAdjustedXY(e.target.x, e.target.y, e.source.x, e.source.y, nodeRadius);
     });
 
-    edge = edge.data(edges)
+    edge = edge.data(edges, (d) => d.id)
       .join(
         (e) => edgeUtils.enter(e, simulation, openEdgeEditor, edgeArgs),
         edgeUtils.update,
@@ -249,11 +259,15 @@ export default function queryGraph(
       );
   }
 
+  /**
+   * Collect node ids to make a new edge connection
+   * @param {string} id node id
+   */
   function chooseNode(id) {
     if (chosenNodes.length < 2) {
       chosenNodes.push(id);
     }
-    if (chosenNodes.length === 2) {
+    if (chosenNodes.length >= 2) {
       nodeArgs.connectTerms(...chosenNodes);
       nodeArgs.connectTerms = null;
       d3.selectAll('.node > .nodeCircle')
@@ -264,6 +278,10 @@ export default function queryGraph(
     }
   }
 
+  /**
+   * Set callback function for creating a new edge
+   * @param {function} func callback function
+   */
   function addNewConnection(func) {
     nodeArgs.connectTerms = func;
     chosenNodes = [];

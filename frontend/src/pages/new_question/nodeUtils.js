@@ -35,6 +35,7 @@ function enter(node, simulation, chooseNode, openNodeEditor, args) {
       .on('click', function (e, d) {
         const { id } = d;
         // raise node to front of other nodes
+        d3.select('#nodeContainer').raise();
         d3.select(`#${id}`).raise();
         // only if we're currently making a connection
         if (args.connectTerms) {
@@ -43,7 +44,8 @@ function enter(node, simulation, chooseNode, openNodeEditor, args) {
             .attr('stroke-width', '5');
           chooseNode(id);
         } else if (showEdit !== id) {
-          d3.selectAll('.nodeDelete,.nodeDeleteLabel,.nodeEdit,.nodeEditLabel')
+          e.stopPropagation();
+          d3.selectAll('.deleteRect,.deleteLabel,.editRect,.editLabel')
             .style('display', 'none');
           // open node selector
           d3.selectAll(`.${id}`)
@@ -51,9 +53,9 @@ function enter(node, simulation, chooseNode, openNodeEditor, args) {
             .raise();
           showEdit = id;
         } else {
-          d3.selectAll(`.${id}`)
-            .style('display', 'none');
+          // svg listener will hide buttons
           showEdit = '';
+          d3.select('#edgeContainer').raise();
         }
       })
       .call((n) => n.append('title')
@@ -84,19 +86,18 @@ function enter(node, simulation, chooseNode, openNodeEditor, args) {
       .attr('stroke', 'black')
       .attr('fill', 'white')
       .style('display', 'none')
-      .attr('class', (d) => `${d.id} nodeDelete`)
+      .attr('class', (d) => `${d.id} deleteRect`)
       .on('click', (e, d) => {
         const { id } = d;
-        d3.selectAll(`.${id}`)
-          .style('display', 'none');
         showEdit = '';
-        dispatch.call('delete', null, d.id);
+        dispatch.call('delete', null, id);
+        d3.select('#edgeContainer').raise();
       }))
     .call((nodeDeleteLabel) => nodeDeleteLabel.append('text')
       .style('pointer-events', 'none')
       .attr('text-anchor', 'middle')
       .attr('alignment-baseline', 'middle')
-      .attr('class', (d) => `${d.id} nodeDeleteLabel`)
+      .attr('class', (d) => `${d.id} deleteLabel`)
       .style('display', 'none')
       .text('delete'))
     .call((nodeEdit) => nodeEdit.append('rect')
@@ -107,20 +108,19 @@ function enter(node, simulation, chooseNode, openNodeEditor, args) {
       .attr('stroke', 'black')
       .attr('fill', 'white')
       .style('display', 'none')
-      .attr('class', (d) => `${d.id} nodeEdit`)
+      .attr('class', (d) => `${d.id} editRect`)
       .on('click', (e, d) => {
         const { id } = d;
         const nodeAnchor = d3.select(`#${id} > .nodeCircle`).node();
         openNodeEditor(id, nodeAnchor);
-        d3.selectAll(`.${id}`)
-          .style('display', 'none');
         showEdit = '';
+        d3.select('#edgeContainer').raise();
       }))
     .call((nodeEditLabel) => nodeEditLabel.append('text')
       .style('pointer-events', 'none')
       .attr('text-anchor', 'middle')
       .attr('alignment-baseline', 'middle')
-      .attr('class', (d) => `${d.id} nodeEditLabel`)
+      .attr('class', (d) => `${d.id} editLabel`)
       .style('display', 'none')
       .text('edit'));
 }
