@@ -1,5 +1,5 @@
 import React, {
-  useState, useEffect, useContext,
+  useState, useEffect, useContext, useMemo,
 } from 'react';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
@@ -74,9 +74,13 @@ export default function NodeSelector({
       newOptions.push(...includedCategories);
     }
     // fetch matching curies from external services
-    if (includeCuries && searchTerm.length > 3) {
-      const fetchedCuries = await fetchCuries(debouncedSearchTerm, displayAlert);
-      newOptions.push(...fetchedCuries);
+    if (includeCuries && debouncedSearchTerm.length > 3) {
+      if (debouncedSearchTerm.includes(':')) { // user is typing a specific curie
+        newOptions.push({ name: debouncedSearchTerm, id: debouncedSearchTerm });
+      } else {
+        const fetchedCuries = await fetchCuries(debouncedSearchTerm, displayAlert);
+        newOptions.push(...fetchedCuries);
+      }
     }
     toggleLoading(false);
     setOptions(newOptions);
@@ -132,6 +136,12 @@ export default function NodeSelector({
     }
   }
 
+  const nodeValue = useMemo(() => (
+    (node.category && node.category.length && node) ||
+    (node.id && node.id.length && node) ||
+    null
+  ), [node]);
+
   return (
     <Autocomplete
       options={options}
@@ -144,7 +154,7 @@ export default function NodeSelector({
       blurOnSelect
       disableClearable={!clearable}
       inputValue={searchTerm}
-      value={node.category.length ? node : null}
+      value={nodeValue}
       getOptionSelected={(option, value) => option.name === value.name}
       open={open}
       onChange={handleUpdate}
