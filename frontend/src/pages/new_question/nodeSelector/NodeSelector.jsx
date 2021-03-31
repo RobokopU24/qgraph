@@ -16,21 +16,24 @@ import './nodeSelector.css';
 
 /**
  * Generic node selector component
- * @param {object} queryBuilder query builder custom hook
- * @param {string} edgeId edge id that we'll use to look up a specific node in the query graph
- * @param {string} type either subject or object to specify which id to look at on the edge
+ * @param {object} node node object from query graph
+ * @param {string} nodeId node id
+ * @param {boolean} original is node the original or a reference
+ * @param {function} changeNode function to change node reference
+ * @param {function} updateNode function to update node object
  * @param {object} nodeOptions node selector cannot create a brand new node
  * @param {boolean} nodeOptions.includeCuries node selector can include curies for a new node
  * @param {boolean} nodeOptions.includeExistingNodes node selector can include existing nodes
  * @param {boolean} nodeOptions.includeCategories node selector can include general categories
  */
 export default function NodeSelector({
-  nodeOptions = {}, node, nodeId,
-  updateEdge, updateNode,
+  node, nodeId, original,
+  changeNode, updateNode,
+  nodeOptions = {},
 }) {
   const {
     includeCuries = true, includeExistingNodes = true,
-    existingNodes,
+    existingNodes = [],
     includeCategories = true, clearable = true,
   } = nodeOptions;
   const [loading, toggleLoading] = useState(false);
@@ -48,10 +51,12 @@ export default function NodeSelector({
    * - includeExistingNodes
    * - includeCategories
    * - includeCuries
+   *
+   * Sets new dropdown options
    */
   async function getOptions() {
     toggleLoading(true);
-    const newOptions = [];
+    const newOptions = original ? [] : [{ name: 'Turn into new term', key: null }];
     // allow user to select an existing node
     if (includeExistingNodes) {
       newOptions.push(...existingNodes);
@@ -116,9 +121,11 @@ export default function NodeSelector({
    * @param {object|null} v value of selected option
    */
   function handleUpdate(e, v) {
+    // reset search term back when user selects something
+    updateSearchTerm('');
     if (v && 'key' in v) {
       // key will only be in v when switching to existing node
-      updateEdge(v.key);
+      changeNode(v.key);
     } else {
       // updating a node value
       updateNode(nodeId, v);
@@ -129,11 +136,14 @@ export default function NodeSelector({
     <Autocomplete
       options={options}
       loading={loading}
-      className="nodeSelector"
+      className={`nodeSelector${original ? '' : ' referenceNode'}`}
       getOptionLabel={getOptionLabel}
-      clearOnBlur={false}
+      autoComplete
+      autoHighlight
+      clearOnBlur
       blurOnSelect
       disableClearable={!clearable}
+      inputValue={searchTerm}
       value={node.category.length ? node : null}
       getOptionSelected={(option, value) => option.name === value.name}
       open={open}
@@ -145,6 +155,7 @@ export default function NodeSelector({
         <TextField
           {...params}
           variant="outlined"
+          className="nodeDropdown"
           // variant={includeExistingNodes ? 'filled' : 'outlined'}
           label={nodeId}
           margin="dense"
