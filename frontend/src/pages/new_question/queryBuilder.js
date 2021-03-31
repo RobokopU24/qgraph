@@ -92,8 +92,7 @@ export default function useQueryBuilder() {
       updateQueryGraph(trimmedQueryGraph);
       setRootNode(newRoot);
     } else {
-      console.log('Not a valid query graph');
-      displayAlert('error', 'You cannot delete this term. It would make this query invalid.');
+      displayAlert('error', 'You cannot delete this connection. It would make this query invalid.');
     }
   }
 
@@ -121,8 +120,7 @@ export default function useQueryBuilder() {
       setRootNode(newRoot);
       return true;
     }
-    console.log('Not a valid query graph');
-    displayAlert('error', 'You cannot delete this term. It would make this query invalid.');
+    displayAlert('error', 'You cannot change this connection. It would make this query invalid.');
     return false;
   }
 
@@ -161,10 +159,8 @@ export default function useQueryBuilder() {
       updateQueryGraph(trimmedQueryGraph);
       setRootNode(newRoot);
     } else {
-      console.log('Not a valid query graph');
       displayAlert('error', 'You cannot delete this term. It would make this query invalid.');
     }
-    // }
   }
 
   /**
@@ -198,11 +194,6 @@ export default function useQueryBuilder() {
     });
     setOriginalNodeList(rows);
   }, [sortedEdgeIds]);
-
-  useEffect(() => {
-    // const root = findRootNode(query_graph);
-    // setRootNode(root);
-  }, []);
 
   return {
     query_graph,
