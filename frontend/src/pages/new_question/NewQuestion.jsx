@@ -54,41 +54,37 @@ export default function NewQuestion() {
         <div id="queryTextEditor">
           {queryBuilder.edgeIds.map((edgeId, i) => {
             const edge = queryBuilder.query_graph.edges[edgeId];
+            const original = queryBuilder.originalNodeList[i] || {};
             return (
               <div
                 key={edgeId}
                 className="textEditorRow"
               >
-                {i === 0 ? (
-                  <p>Find</p>
-                ) : (
-                  <>
-                    <IconButton
-                      onClick={() => queryBuilder.removeHop(edgeId)}
-                      className="textEditorIconButton"
-                    >
-                      <IndeterminateCheckBoxOutlinedIcon />
-                    </IconButton>
-                    <p>{i === 1 ? 'where' : 'and where'}</p>
-                  </>
-                )}
-                {/*
-                  Node selector needs to know it's on the left
-                  except for first row, on clear will just clear itself out,
-                  not clear out the existing node
-                */}
+                <IconButton
+                  onClick={() => queryBuilder.deleteEdge(edgeId)}
+                  className="textEditorIconButton"
+                  disabled={queryBuilder.edgeIds.length < 2}
+                >
+                  <IndeterminateCheckBoxOutlinedIcon />
+                </IconButton>
+                <p>
+                  {i === 0 && 'Find'}
+                  {i === 1 && 'where'}
+                  {i > 1 && 'and where'}
+                </p>
                 <NodeSelector
                   nodeId={edge.subject}
                   node={queryBuilder.query_graph.nodes[edge.subject]}
-                  updateEdge={(nodeId) => queryBuilder.updateEdge(edgeId, 'subject', nodeId)}
-                  updateNode={queryBuilder.updateNode}
+                  changeNode={(nodeId) => queryBuilder.updateEdge(edgeId, 'subject', nodeId)}
+                  updateNode={original.subject ? queryBuilder.updateNode : () => queryBuilder.updateEdge(edgeId, 'subject', null)}
+                  original={original.subject}
                   nodeOptions={{
-                    // includeCuries: i === 0,
+                    includeCuries: original.subject,
+                    includeCategories: original.subject,
                     includeExistingNodes: i !== 0,
                     existingNodes: Object.keys(queryBuilder.query_graph.nodes).filter(
-                      (key) => key !== edge.object && key !== edge.subject,
+                      (key) => key !== edge.object,
                     ).map((key) => ({ ...queryBuilder.query_graph.nodes[key], key })),
-                    // includeCategories: i === 0,
                     // clearable: i !== 0,
                   }}
                 />
@@ -99,12 +95,15 @@ export default function NewQuestion() {
                 <NodeSelector
                   nodeId={edge.object}
                   node={queryBuilder.query_graph.nodes[edge.object]}
-                  updateEdge={(nodeId) => queryBuilder.updateEdge(edgeId, 'object', nodeId)}
-                  updateNode={queryBuilder.updateNode}
+                  changeNode={(nodeId) => queryBuilder.updateEdge(edgeId, 'object', nodeId)}
+                  updateNode={original.object ? queryBuilder.updateNode : () => queryBuilder.updateEdge(edgeId, 'object', null)}
+                  original={original.object}
                   nodeOptions={{
+                    includeCuries: original.object,
+                    includeCategories: original.object,
                     includeExistingNodes: i !== 0,
                     existingNodes: Object.keys(queryBuilder.query_graph.nodes).filter(
-                      (key) => key !== edge.subject && key !== edge.object,
+                      (key) => key !== edge.subject,
                     ).map((key) => ({ ...queryBuilder.query_graph.nodes[key], key })),
                   }}
                 />

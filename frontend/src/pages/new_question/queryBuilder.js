@@ -1,5 +1,10 @@
-import { useState, useEffect } from 'react';
+import {
+  useState, useEffect, useContext, useMemo,
+} from 'react';
 import _ from 'lodash';
+
+import AlertContext from '~/context/alert';
+import queryGraphUtils from './utils/queryGraphUtils';
 
 function defaultNode() {
   return {
@@ -29,138 +34,11 @@ const defaultQueryGraph = {
   },
 };
 
-/**
- * Parse an incoming query graph and find the "root" node
- * @param {object} q_graph valid query graph with nodes and edges
- * @returns {string} the key of the root node in the query graph
- */
-function findRootNode(q_graph) {
-  // create nodes object with pinned boolean property
-  const nodes = Object.entries(q_graph.nodes).map(([key, node]) => (
-    {
-      key,
-      pinned: node.id && Array.isArray(node.id) && node.id.length > 0,
-    }
-  ));
-  // split nodes into pinned and unpinned arrays
-  const unpinnedNodes = nodes.filter((node) => !node.pinned);
-  const pinnedNodes = nodes.filter((node) => node.pinned);
-  // create node map of total edge connections
-  const edgeNums = _.transform(q_graph.edges,
-    (result, value) => {
-      result[value.object] = result[value.object] ? result[value.object] + 1 : 1;
-      result[value.subject] = result[value.subject] ? result[value.subject] + 1 : 1;
-    });
-  // sort nodes by edge connections, then return the first one in the list
-  // is also first one inserted
-  let root = null;
-  if (unpinnedNodes.length) {
-    unpinnedNodes.sort((a, b) => edgeNums[a.key] - edgeNums[b.key]);
-    root = unpinnedNodes[0].key;
-  } else {
-    pinnedNodes.sort((a, b) => edgeNums[a.key] - edgeNums[b.key]);
-    root = pinnedNodes[0].key;
-  }
-  // console.log(root);
-  return root;
-}
-
 export default function useQueryBuilder() {
   const [query_graph, updateQueryGraph] = useState(defaultQueryGraph);
   const [rootNode, setRootNode] = useState('n0');
-
-  /**
-   * Get the next unused Node ID in the query_graph for insertion
-   */
-  function getNextNodeID(q_graph) {
-    let index = 0;
-    while (`n${index}` in q_graph.nodes) {
-      index += 1;
-    }
-    return `n${index}`;
-  }
-
-  /**
-   * Get the next unused Edge ID in the query_graph for insertion
-   */
-  function getNextEdgeID(q_graph) {
-    let index = 0;
-    while (`e${index}` in q_graph.edges) {
-      index += 1;
-    }
-    return `e${index}`;
-  }
-
-  /**
-   * Remove all detached sections of graph from root node
-   *
-   * Rules are:
-   * 1. sort by unpinned and then pinned nodes
-   * 2. sort by total number of edge connections
-   * 3. pick first node in insertion order
-   * @param {object} q_graph deep copy of the query_graph, modifies and returns
-   */
-  function trimDetached(q_graph) {
-    // all edges start out as disconnected and we'll remove them when we find a connection to root
-    const disconnectedEdges = new Set(Object.keys(q_graph.edges));
-    // we add to connected nodes, starting default with the root node
-    const connectedNodes = new Set([rootNode]);
-    let foundConnections = true;
-    // traverse graph and delete all edges not connected
-    while (foundConnections) {
-      let foundConnection = false;
-      // loop over all connected nodes to find edges that are connected to them
-      [...connectedNodes].forEach((nodeId) => {
-        [...disconnectedEdges].forEach((e) => {
-          const edge = q_graph.edges[e];
-          // if edge is connected to node
-          if (edge.subject === nodeId || edge.object === nodeId) {
-            connectedNodes.add(edge.subject);
-            connectedNodes.add(edge.object);
-            disconnectedEdges.delete(e);
-            foundConnection = true;
-          }
-        });
-      });
-      // no more connected edges, break out
-      if (!foundConnection) {
-        foundConnections = false;
-      }
-    }
-    q_graph.edges = _.omitBy(q_graph.edges, (e, id) => disconnectedEdges.has(id));
-    // delete all floating nodes
-    const notFloatingNodeIDs = new Set();
-    Object.values(q_graph.edges).forEach((e) => {
-      notFloatingNodeIDs.add(e.subject);
-      notFloatingNodeIDs.add(e.object);
-    });
-
-    // Trim a node if it is floating and marked for deletion
-    const nodesToTrim = Object.keys(q_graph.nodes).filter((id) => (!notFloatingNodeIDs.has(id) && id !== rootNode));
-
-    q_graph.nodes = _.omitBy(q_graph.nodes, (n, id) => nodesToTrim.includes(id));
-    // q_graph.nodes = _.pick(q_graph.nodes, notFloatingNodeIDs);
-    return q_graph;
-  }
-
-  /**
-   * After deleting a node, trim any edges connected to it
-   * @param {object} q_graph query graph
-   * @returns trimDetached query graph
-   */
-  function trimDetachedEdges(q_graph) {
-    const edgeIds = Object.keys(q_graph.edges).map((id) => id);
-    edgeIds.forEach((eId) => {
-      const currentEdge = q_graph.edges[eId];
-      if (
-        (currentEdge.subject !== rootNode && currentEdge.object !== rootNode) &&
-        (!q_graph.nodes[currentEdge.subject] || !q_graph.nodes[currentEdge.object])
-      ) {
-        delete q_graph.edges[eId];
-      }
-    });
-    return trimDetached(q_graph);
-  }
+  const [originalNodeList, setOriginalNodeList] = useState([]);
+  const displayAlert = useContext(AlertContext);
 
   /**
    * Create new edge and node attached to subject node
@@ -168,8 +46,8 @@ export default function useQueryBuilder() {
    * @returns {string} node id of created object node
    */
   function addHop(nodeId) {
-    const newNodeId = getNextNodeID(query_graph);
-    const newEdgeId = getNextEdgeID(query_graph);
+    const newNodeId = queryGraphUtils.getNextNodeID(query_graph);
+    const newEdgeId = queryGraphUtils.getNextEdgeID(query_graph);
     const clonedQueryGraph = _.cloneDeep(query_graph);
     clonedQueryGraph.nodes[newNodeId] = defaultNode();
     const newEdge = defaultEdge();
@@ -185,18 +63,38 @@ export default function useQueryBuilder() {
     return newNodeId;
   }
 
-  function removeHop(edgeId) {
+  /**
+   * Create edge between two existing nodes
+   * @param {string} subjectId node id
+   * @param {string} objectId node id
+   */
+  function addEdge(subjectId, objectId) {
     const clonedQueryGraph = _.cloneDeep(query_graph);
-    delete clonedQueryGraph.edges[edgeId];
-    const trimmedQueryGraph = trimDetached(clonedQueryGraph);
-    updateQueryGraph(trimmedQueryGraph);
+    const newEdgeId = queryGraphUtils.getNextEdgeID(clonedQueryGraph);
+    const newEdge = defaultEdge();
+    newEdge.subject = subjectId;
+    newEdge.object = objectId;
+    clonedQueryGraph.edges[newEdgeId] = newEdge;
+    updateQueryGraph(clonedQueryGraph);
   }
 
-  function updateNode(nodeId, updatedNode) {
+  /**
+   * Delete an edge and then trim any detached nodes
+   * @param {string} edgeId edge id
+   */
+  function deleteEdge(edgeId) {
     const clonedQueryGraph = _.cloneDeep(query_graph);
-    clonedQueryGraph.nodes[nodeId] = updatedNode || defaultNode();
-    const trimmedQueryGraph = trimDetached(clonedQueryGraph);
-    updateQueryGraph(trimmedQueryGraph);
+    delete clonedQueryGraph.edges[edgeId];
+    const keptRoot = queryGraphUtils.computeRootNode(clonedQueryGraph, rootNode);
+    const trimmedQueryGraph = queryGraphUtils.trimDetached(clonedQueryGraph, keptRoot);
+    const { isValid, newRoot } = queryGraphUtils.isValidGraph(trimmedQueryGraph, keptRoot);
+    if (isValid) {
+      updateQueryGraph(trimmedQueryGraph);
+      setRootNode(newRoot);
+    } else {
+      console.log('Not a valid query graph');
+      displayAlert('error', 'You cannot delete this term. It would make this query invalid.');
+    }
   }
 
   /**
@@ -204,18 +102,28 @@ export default function useQueryBuilder() {
    * @param {string} edgeId edge key
    * @param {string} edgeType subject or object of edge
    * @param {string} nodeId node id
+   * @returns boolean
    */
   function updateEdge(edgeId, edgeType, nodeId) {
     const clonedQueryGraph = _.cloneDeep(query_graph);
     if (!nodeId) {
-      const newNodeId = getNextNodeID(clonedQueryGraph);
+      const newNodeId = queryGraphUtils.getNextNodeID(clonedQueryGraph);
+      clonedQueryGraph.nodes[newNodeId] = defaultNode();
       clonedQueryGraph.edges[edgeId][edgeType] = newNodeId;
-      updateNode(newNodeId, null);
     } else {
       clonedQueryGraph.edges[edgeId][edgeType] = nodeId;
     }
-    const trimmedQueryGraph = trimDetached(clonedQueryGraph);
-    updateQueryGraph(trimmedQueryGraph);
+    const keptRoot = queryGraphUtils.computeRootNode(clonedQueryGraph, rootNode);
+    const trimmedQueryGraph = queryGraphUtils.trimDetached(clonedQueryGraph, keptRoot);
+    const { isValid, newRoot } = queryGraphUtils.isValidGraph(trimmedQueryGraph, keptRoot);
+    if (isValid) {
+      updateQueryGraph(trimmedQueryGraph);
+      setRootNode(newRoot);
+      return true;
+    }
+    console.log('Not a valid query graph');
+    displayAlert('error', 'You cannot delete this term. It would make this query invalid.');
+    return false;
   }
 
   /**
@@ -225,42 +133,82 @@ export default function useQueryBuilder() {
    */
   function updateEdgePredicate(edgeId, predicateValue) {
     const clonedQueryGraph = _.cloneDeep(query_graph);
-    const edge = clonedQueryGraph.edges[edgeId];
-    edge.predicate = predicateValue;
+    clonedQueryGraph.edges[edgeId].predicate = predicateValue;
     updateQueryGraph(clonedQueryGraph);
   }
 
-  function addEdge(subjectId, objectId) {
+  /**
+   * Update an existing node
+   * @param {string} nodeId node id
+   * @param {object|null} updatedNode updated node object
+   */
+  function updateNode(nodeId, updatedNode) {
     const clonedQueryGraph = _.cloneDeep(query_graph);
-    const newEdgeId = getNextEdgeID(clonedQueryGraph);
-    const newEdge = defaultEdge();
-    newEdge.subject = subjectId;
-    newEdge.object = objectId;
-    clonedQueryGraph.edges[newEdgeId] = newEdge;
+    clonedQueryGraph.nodes[nodeId] = updatedNode || defaultNode();
     updateQueryGraph(clonedQueryGraph);
   }
 
+  /**
+   * Delete an existing node and then trim the graph
+   * @param {string} nodeId node id
+   */
   function deleteNode(nodeId) {
-    if (nodeId !== rootNode) {
-      const clonedQueryGraph = _.cloneDeep(query_graph);
-      delete clonedQueryGraph.nodes[nodeId];
-      const trimmedQueryGraph = trimDetachedEdges(clonedQueryGraph);
+    const clonedQueryGraph = _.cloneDeep(query_graph);
+    delete clonedQueryGraph.nodes[nodeId];
+    const trimmedQueryGraph = queryGraphUtils.trimDetachedEdges(clonedQueryGraph, nodeId, rootNode);
+    const { isValid, newRoot } = queryGraphUtils.isValidGraph(trimmedQueryGraph, rootNode);
+    if (isValid) {
       updateQueryGraph(trimmedQueryGraph);
+      setRootNode(newRoot);
+    } else {
+      console.log('Not a valid query graph');
+      displayAlert('error', 'You cannot delete this term. It would make this query invalid.');
     }
+    // }
   }
 
-  // useEffect(() => {
-  //   console.log('query graph', query_graph);
-  // }, [query_graph]);
+  /**
+   * Edge list with the first edge with the root node as its subject first
+   */
+  const sortedEdgeIds = useMemo(() => {
+    const edgeIds = Object.keys(query_graph.edges);
+    const firstEdgeIndex = edgeIds.findIndex((eId) => query_graph.edges[eId].subject === rootNode);
+    const [firstEdgeId] = edgeIds.splice(firstEdgeIndex, 1);
+    edgeIds.unshift(firstEdgeId);
+    return edgeIds;
+  }, [query_graph, rootNode]);
 
-  // useEffect(() => {
-  //   const root = findRootNode(query_graph);
-  //   setRootNode(root);
-  // }, []);
+  /**
+   * Any time the query graph changes, recompute where the original nodes are
+   *
+   * Sets rows as: [ { subject: boolean, object: boolean } ]
+   */
+  useEffect(() => {
+    // rows are an array of objects
+    const rows = [];
+    const nodeList = new Set();
+    sortedEdgeIds.forEach((edgeId) => {
+      const row = {};
+      const edge = query_graph.edges[edgeId];
+      row.subject = !nodeList.has(edge.subject);
+      row.object = !nodeList.has(edge.object);
+      nodeList.add(edge.subject);
+      nodeList.add(edge.object);
+      rows.push(row);
+    });
+    setOriginalNodeList(rows);
+  }, [sortedEdgeIds]);
+
+  useEffect(() => {
+    // const root = findRootNode(query_graph);
+    // setRootNode(root);
+  }, []);
 
   return {
     query_graph,
-    edgeIds: Object.keys(query_graph.edges),
+    originalNodeList,
+    edgeIds: sortedEdgeIds,
+    rootNode,
 
     updateNode,
     updateEdge,
@@ -268,7 +216,7 @@ export default function useQueryBuilder() {
 
     addEdge,
     addHop,
-    removeHop,
+    deleteEdge,
     deleteNode,
   };
 }

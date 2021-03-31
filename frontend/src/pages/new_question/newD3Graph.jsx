@@ -133,6 +133,7 @@ export default function NewD3Graph({ queryBuilder }) {
           node={query_graph.nodes[nodeId]}
           nodeId={nodeId}
           updateNode={queryBuilder.updateNode}
+          original
           nodeOptions={{
             includeExistingNodes: false,
           }}

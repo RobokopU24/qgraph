@@ -25,3 +25,6 @@
     font-size: 40px;
     color: #b2b0b0;
 }
+.textEditorIconButton:disabled > span > svg {
+    color: #e0e0e0;
+}
