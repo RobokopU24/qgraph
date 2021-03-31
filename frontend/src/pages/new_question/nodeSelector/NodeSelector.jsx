@@ -65,11 +65,18 @@ export default function NodeSelector({
     if (includeCategories) {
       const includedCategories = concepts.filter(
         (category) => category.toLowerCase().includes(debouncedSearchTerm.toLowerCase()),
-      ).map((category) => (
-        {
-          category: [category],
-          name: strings.displayCategory(category),
-        }
+      ).flatMap((category) => (
+        [
+          {
+            category: [category],
+            name: strings.displayCategory(category),
+          },
+          {
+            category: [category],
+            name: strings.setify(category),
+            set: true,
+          },
+        ]
       ));
       newOptions.push(...includedCategories);
     }

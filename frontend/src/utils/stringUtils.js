@@ -79,6 +79,29 @@ function displayCategory(arg) {
   }
 }
 
+/**
+ * Readable version of 'Set of {category}'
+ * @param {string} category node category
+ * @returns Set of {category}
+ */
+function setify(category) {
+  let cat = displayCategory(category);
+  if (cat.endsWith('ay')) {
+    // Pathway
+    cat = `${cat}s`;
+  } else if (cat.endsWith('y')) {
+    cat = `${cat.slice(0, cat.length - 1)}ies`;
+  } else if (cat.endsWith('ms')) {
+    // Population Of Individual Organisms
+    cat = `${cat}`;
+  } else if (cat.endsWith('s')) {
+    cat = `${cat}es`;
+  } else {
+    cat = `${cat}s`;
+  }
+  return `Set of ${cat}`;
+}
+
 function displayPredicate(arg) {
   if (!arg) {
     return '';
@@ -127,4 +150,5 @@ export default {
   prettyDisplay,
   displayPredicate,
   displayCategory,
+  setify,
 };
