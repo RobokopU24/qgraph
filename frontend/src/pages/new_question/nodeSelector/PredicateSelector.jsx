@@ -1,10 +1,18 @@
-import React, { useMemo, useContext } from 'react';
-import _ from 'lodash';
+import React, { useMemo, useContext, useEffect } from 'react';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 
 import BiolinkContext from '~/context/biolink';
 import strings from '~/utils/stringUtils';
+
+/**
+ * Get first node category from list
+ * @param {array|undefined} category array of node categories
+ * @returns first node category or biolink:NamedThing
+ */
+function getCategory(category) {
+  return (Array.isArray(category) && category.length && category[0]) || 'biolink:NamedThing';
+}
 
 export default function PredicateSelector({ queryBuilder, edgeId }) {
   const biolink = useContext(BiolinkContext);
@@ -32,11 +40,8 @@ export default function PredicateSelector({ queryBuilder, edgeId }) {
     const subjectNode = query_graph.nodes[edge.subject];
     const objectNode = query_graph.nodes[edge.object];
 
-    // if (!subjectNode.category || !objectNode.category) {
-    //   return null;
-    // }
-    const subjectCategory = (Array.isArray(subjectNode.category) && subjectNode.category.length && subjectNode.category[0]) || 'biolink:NamedThing';
-    const objectCategory = (Array.isArray(objectNode.category) && objectNode.category.length && objectNode.category[0]) || 'biolink:NamedThing';
+    const subjectCategory = getCategory(subjectNode.category);
+    const objectCategory = getCategory(objectNode.category);
 
     const subjectNodeCategoryHierarchy = biolink.hierarchies[subjectCategory];
     const objectNodeCategoryHierarchy = biolink.hierarchies[objectCategory];
@@ -54,17 +59,19 @@ export default function PredicateSelector({ queryBuilder, edgeId }) {
   const filteredPredicateList = useMemo(
     getFilteredPredicateList,
     [
-      query_graph.nodes[edge.subject],
-      query_graph.nodes[edge.object],
+      getCategory(query_graph.nodes[edge.subject].category),
+      getCategory(query_graph.nodes[edge.object].category),
       biolink,
       predicateList,
     ],
   ) || [];
 
-  // const disabledSelect = useMemo(() => (
-  //   query_graph.nodes[edge.subject].category.length === 0 ||
-  //   query_graph.nodes[edge.object].category.length === 0
-  // ), [query_graph.nodes[edge.subject], query_graph.nodes[edge.object]]);
+  useEffect(() => {
+    if (filteredPredicateList.length) {
+      const keptPredicates = edge.predicate.filter((p) => filteredPredicateList.indexOf(p) > -1);
+      queryBuilder.updateEdgePredicate(edgeId, keptPredicates);
+    }
+  }, [filteredPredicateList]);
 
   return (
     <Autocomplete
@@ -86,7 +93,6 @@ export default function PredicateSelector({ queryBuilder, edgeId }) {
       clearOnBlur={false}
       multiple
       limitTags={1}
-      // disabled={disabledSelect}
       disableCloseOnSelect
       size="small"
     />
