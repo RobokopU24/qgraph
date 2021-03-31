@@ -67,9 +67,12 @@ export default function queryGraph(
           .attr('fill', '#999');
   }
 
-  svg.on('click', () => {
+  svg.on('click', (e) => {
     d3.selectAll('.deleteRect,.deleteLabel,.editRect,.editLabel')
       .style('display', 'none');
+    // stop click events from leaving svg area.
+    // clicks were closing any alerts immediately.
+    e.stopPropagation();
   });
 
   /**
