@@ -4,7 +4,7 @@ import {
 import _ from 'lodash';
 
 import AlertContext from '~/context/alert';
-import queryGraphUtils from './utils/queryGraphUtils';
+import queryBuilderUtils from './utils/queryBuilderUtils';
 
 function defaultNode() {
   return {
@@ -46,8 +46,8 @@ export default function useQueryBuilder() {
    * @returns {string} node id of created object node
    */
   function addHop(nodeId) {
-    const newNodeId = queryGraphUtils.getNextNodeID(query_graph);
-    const newEdgeId = queryGraphUtils.getNextEdgeID(query_graph);
+    const newNodeId = queryBuilderUtils.getNextNodeID(query_graph);
+    const newEdgeId = queryBuilderUtils.getNextEdgeID(query_graph);
     const clonedQueryGraph = _.cloneDeep(query_graph);
     clonedQueryGraph.nodes[newNodeId] = defaultNode();
     const newEdge = defaultEdge();
@@ -70,7 +70,7 @@ export default function useQueryBuilder() {
    */
   function addEdge(subjectId, objectId) {
     const clonedQueryGraph = _.cloneDeep(query_graph);
-    const newEdgeId = queryGraphUtils.getNextEdgeID(clonedQueryGraph);
+    const newEdgeId = queryBuilderUtils.getNextEdgeID(clonedQueryGraph);
     const newEdge = defaultEdge();
     newEdge.subject = subjectId;
     newEdge.object = objectId;
@@ -85,9 +85,9 @@ export default function useQueryBuilder() {
   function deleteEdge(edgeId) {
     const clonedQueryGraph = _.cloneDeep(query_graph);
     delete clonedQueryGraph.edges[edgeId];
-    const keptRoot = queryGraphUtils.computeRootNode(clonedQueryGraph, rootNode);
-    const trimmedQueryGraph = queryGraphUtils.trimDetached(clonedQueryGraph, keptRoot);
-    const { isValid, newRoot } = queryGraphUtils.isValidGraph(trimmedQueryGraph, keptRoot);
+    const keptRoot = queryBuilderUtils.computeRootNode(clonedQueryGraph, rootNode);
+    const trimmedQueryGraph = queryBuilderUtils.trimDetached(clonedQueryGraph, keptRoot);
+    const { isValid, newRoot } = queryBuilderUtils.isValidGraph(trimmedQueryGraph, keptRoot);
     if (isValid) {
       updateQueryGraph(trimmedQueryGraph);
       setRootNode(newRoot);
@@ -107,15 +107,15 @@ export default function useQueryBuilder() {
   function updateEdge(edgeId, edgeType, nodeId) {
     const clonedQueryGraph = _.cloneDeep(query_graph);
     if (!nodeId) {
-      const newNodeId = queryGraphUtils.getNextNodeID(clonedQueryGraph);
+      const newNodeId = queryBuilderUtils.getNextNodeID(clonedQueryGraph);
       clonedQueryGraph.nodes[newNodeId] = defaultNode();
       clonedQueryGraph.edges[edgeId][edgeType] = newNodeId;
     } else {
       clonedQueryGraph.edges[edgeId][edgeType] = nodeId;
     }
-    const keptRoot = queryGraphUtils.computeRootNode(clonedQueryGraph, rootNode);
-    const trimmedQueryGraph = queryGraphUtils.trimDetached(clonedQueryGraph, keptRoot);
-    const { isValid, newRoot } = queryGraphUtils.isValidGraph(trimmedQueryGraph, keptRoot);
+    const keptRoot = queryBuilderUtils.computeRootNode(clonedQueryGraph, rootNode);
+    const trimmedQueryGraph = queryBuilderUtils.trimDetached(clonedQueryGraph, keptRoot);
+    const { isValid, newRoot } = queryBuilderUtils.isValidGraph(trimmedQueryGraph, keptRoot);
     if (isValid) {
       updateQueryGraph(trimmedQueryGraph);
       setRootNode(newRoot);
@@ -155,8 +155,8 @@ export default function useQueryBuilder() {
   function deleteNode(nodeId) {
     const clonedQueryGraph = _.cloneDeep(query_graph);
     delete clonedQueryGraph.nodes[nodeId];
-    const trimmedQueryGraph = queryGraphUtils.trimDetachedEdges(clonedQueryGraph, nodeId, rootNode);
-    const { isValid, newRoot } = queryGraphUtils.isValidGraph(trimmedQueryGraph, rootNode);
+    const trimmedQueryGraph = queryBuilderUtils.trimDetachedEdges(clonedQueryGraph, nodeId, rootNode);
+    const { isValid, newRoot } = queryBuilderUtils.isValidGraph(trimmedQueryGraph, rootNode);
     if (isValid) {
       updateQueryGraph(trimmedQueryGraph);
       setRootNode(newRoot);
