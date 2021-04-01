@@ -134,6 +134,7 @@ function update(node, colorMap) {
   return node
     .call((n) => n.select('.nodeCircle')
       .attr('fill', (d) => colorMap((d.category && d.category[0]) || 'unknown')))
+      .style('filter', (d) => (d.is_set ? 'url(#setShadow)' : ''))
       .call((nodeCircle) => nodeCircle.select('title')
         .text((d) => {
           let title = d.id;
