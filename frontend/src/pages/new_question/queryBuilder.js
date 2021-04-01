@@ -5,6 +5,7 @@ import _ from 'lodash';
 
 import AlertContext from '~/context/alert';
 import queryBuilderUtils from './utils/queryBuilderUtils';
+import queryGraphUtils from '~/utils/queryGraphUtils';
 
 function defaultNode() {
   return {
@@ -39,6 +40,16 @@ export default function useQueryBuilder() {
   const [rootNode, setRootNode] = useState('n0');
   const [originalNodeList, setOriginalNodeList] = useState([]);
   const displayAlert = useContext(AlertContext);
+
+  function saveJson(q_graph) {
+    const { isValid, newRoot } = queryBuilderUtils.isValidGraph(q_graph);
+    if (isValid) {
+      setRootNode(newRoot);
+      updateQueryGraph(queryGraphUtils.ingest(q_graph));
+    } else {
+      displayAlert('error', 'Failed to load. This is an invalid query.');
+    }
+  }
 
   /**
    * Create new edge and node attached to subject node
@@ -209,5 +220,7 @@ export default function useQueryBuilder() {
     addHop,
     deleteEdge,
     deleteNode,
+
+    saveJson,
   };
 }

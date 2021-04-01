@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import stringUtils from './stringUtils';
 
 /**
  * Create a new query graph object
@@ -132,6 +133,25 @@ function prune(q_graph) {
   return clonedQueryGraph;
 }
 
+function ingest(q_graph) {
+  const clonedQueryGraph = _.cloneDeep(q_graph);
+  Object.keys(clonedQueryGraph.nodes).forEach((n) => {
+    const node = clonedQueryGraph.nodes[n];
+    standardizeIDs(node);
+    standardizeCategory(node);
+    if (!node.name) {
+      node.name =
+        (node.id && node.id.length && stringUtils.prettyDisplay(node.id)) ||
+        (node.category && node.category.length && stringUtils.displayCategory(node.category)) ||
+        '';
+    }
+  });
+  Object.keys(clonedQueryGraph.edges).forEach((e) => {
+    standardizePredicate(clonedQueryGraph.edges[e]);
+  });
+  return clonedQueryGraph;
+}
+
 export default {
   getEmptyGraph,
   convert,
@@ -139,4 +159,5 @@ export default {
   standardizePredicate,
   standardizeIDs,
   prune,
+  ingest,
 };
