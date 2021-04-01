@@ -84,22 +84,22 @@ function displayCategory(arg) {
  * @param {string} category node category
  * @returns Set of {category}
  */
-function setify(category) {
-  let cat = displayCategory(category);
-  if (cat.endsWith('ay')) {
+function setify(cat) {
+  let category = displayCategory(cat);
+  if (category.endsWith('ay')) {
     // Pathway
-    cat = `${cat}s`;
-  } else if (cat.endsWith('y')) {
-    cat = `${cat.slice(0, cat.length - 1)}ies`;
-  } else if (cat.endsWith('ms')) {
+    category = `${category}s`;
+  } else if (category.endsWith('y')) {
+    category = `${category.slice(0, category.length - 1)}ies`;
+  } else if (category.endsWith('ms')) {
     // Population Of Individual Organisms
-    cat = `${cat}`;
-  } else if (cat.endsWith('s')) {
-    cat = `${cat}es`;
+    category = `${category}`;
+  } else if (category.endsWith('s')) {
+    category = `${category}es`;
   } else {
-    cat = `${cat}s`;
+    category = `${category}s`;
   }
-  return `Set of ${cat}`;
+  return `Set of ${category}`;
 }
 
 function displayPredicate(arg) {

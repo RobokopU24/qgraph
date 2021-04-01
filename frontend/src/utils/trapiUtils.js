@@ -6,10 +6,12 @@
  * @property {Array} results an array of results
  */
 
-/*
+/**
  * Simple graph validity checks
- * Returns list of errors
-*/
+ * @param {object} graph object containing nodes and edges
+ * @param {string} graphType either query_graph or knowledge_graph
+ * @returns list of errors
+ */
 function validateGraph(graph, graphType) {
   const errors = [];
 
@@ -41,7 +43,7 @@ function validateGraph(graph, graphType) {
     // each edge should have a valid source and target id
     const edgesHaveIds = Object.keys(graph.edges).reduce((val, e) => val && graph.edges[e] && graph.edges[e].subject && graph.edges[e].object, true);
     if (!edgesHaveIds) {
-      errors.push(`Each ${graphType.toLowerCase()} edge must have a valid "subject" and a "object" property`);
+      errors.push(`Each ${graphType.toLowerCase()} edge must have a valid "subject" and "object" property`);
     }
   }
 
