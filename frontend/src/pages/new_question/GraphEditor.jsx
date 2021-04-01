@@ -15,9 +15,8 @@ import BiolinkContext from '~/context/biolink';
 import queryGraph from './queryGraph';
 import NodeSelector from './nodeSelector/NodeSelector';
 import PredicateSelector from './nodeSelector/PredicateSelector';
-// import GraphPopup from './graphPopup/GraphPopup';
 
-import './d3Graph.css';
+import './graphEditor.css';
 
 const width = 600;
 const height = 400;
@@ -75,88 +74,86 @@ export default function NewD3Graph({ queryBuilder }) {
   }, [convertedQueryGraph]);
 
   return (
-    <div id="graphContainer" style={{ height: height + 50, width }}>
-      <svg ref={svgRef} />
-      <div id="graphBottomButtons">
-        <Button
-          onClick={(e) => {
-            setNodeId(queryBuilder.addHop());
-            setAnchorEl(e.currentTarget);
-            setPopoverType('newNode');
-          }}
-        >
-          Add New Term
-        </Button>
-        <Popper
-          open={Boolean(anchorEl) && popoverType === 'newEdge'}
+    <div id="queryGraphEditor">
+      <div id="graphContainer" style={{ height: height + 50, width }}>
+        <svg ref={svgRef} />
+        <div id="graphBottomButtons">
+          <Button
+            onClick={(e) => {
+              setNodeId(queryBuilder.addHop());
+              setAnchorEl(e.currentTarget);
+              setPopoverType('newNode');
+            }}
+          >
+            Add New Term
+          </Button>
+          <Popper
+            open={Boolean(anchorEl) && popoverType === 'newEdge'}
+            anchorEl={anchorEl}
+            placement="top-start"
+          >
+            <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
+              <Paper style={{ padding: '10px' }}>
+                <p>Select two terms to connect!</p>
+              </Paper>
+            </ClickAwayListener>
+          </Popper>
+          <Button
+            onClick={(e) => {
+              updateGraph.current.addNewConnection(queryBuilder.addEdge);
+              setAnchorEl(e.currentTarget);
+              setPopoverType('newEdge');
+              // auto close after 5 seconds
+              setTimeout(() => {
+                setAnchorEl(null);
+              }, 5000);
+            }}
+          >
+            Connect Terms
+          </Button>
+        </div>
+        <Popover
+          open={Boolean(anchorEl) && (popoverType === 'newNode' || popoverType === 'editNode')}
           anchorEl={anchorEl}
-          placement="top-start"
-        >
-          <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
-            <Paper style={{ padding: '10px' }}>
-              <p>Select two terms to connect!</p>
-            </Paper>
-          </ClickAwayListener>
-        </Popper>
-        <Button
-          onClick={(e) => {
-            updateGraph.current.addNewConnection(queryBuilder.addEdge);
-            setAnchorEl(e.currentTarget);
-            setPopoverType('newEdge');
-            // auto close after 5 seconds
-            setTimeout(() => {
-              setAnchorEl(null);
-            }, 5000);
+          onClose={() => setAnchorEl(null)}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'left',
+          }}
+          transformOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
           }}
         >
-          Connect Terms
-        </Button>
+          <NodeSelector
+            node={query_graph.nodes[nodeId]}
+            nodeId={nodeId}
+            updateNode={queryBuilder.updateNode}
+            original
+            nodeOptions={{
+              includeExistingNodes: false,
+            }}
+          />
+        </Popover>
+        <Popover
+          open={Boolean(anchorEl) && popoverType === 'editEdge'}
+          anchorEl={anchorEl}
+          onClose={() => setAnchorEl(null)}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'left',
+          }}
+          transformOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+        >
+          <PredicateSelector
+            queryBuilder={queryBuilder}
+            edgeId={edgeId}
+          />
+        </Popover>
       </div>
-      {/* <GraphPopup
-        popup={popupContent}
-        close={() => setPopupContent('')}
-      /> */}
-      <Popover
-        open={Boolean(anchorEl) && (popoverType === 'newNode' || popoverType === 'editNode')}
-        anchorEl={anchorEl}
-        onClose={() => setAnchorEl(null)}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-        transformOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-      >
-        <NodeSelector
-          node={query_graph.nodes[nodeId]}
-          nodeId={nodeId}
-          updateNode={queryBuilder.updateNode}
-          original
-          nodeOptions={{
-            includeExistingNodes: false,
-          }}
-        />
-      </Popover>
-      <Popover
-        open={Boolean(anchorEl) && popoverType === 'editEdge'}
-        anchorEl={anchorEl}
-        onClose={() => setAnchorEl(null)}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-        transformOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-      >
-        <PredicateSelector
-          queryBuilder={queryBuilder}
-          edgeId={edgeId}
-        />
-      </Popover>
     </div>
   );
 }
