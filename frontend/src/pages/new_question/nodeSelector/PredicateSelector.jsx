@@ -68,7 +68,7 @@ export default function PredicateSelector({ queryBuilder, edgeId }) {
 
   useEffect(() => {
     if (filteredPredicateList.length) {
-      const keptPredicates = edge.predicate.filter((p) => filteredPredicateList.indexOf(p) > -1);
+      const keptPredicates = (edge.predicate && edge.predicate.filter((p) => filteredPredicateList.indexOf(p) > -1)) || [];
       queryBuilder.updateEdgePredicate(edgeId, keptPredicates);
     }
   }, [filteredPredicateList]);

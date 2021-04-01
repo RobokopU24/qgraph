@@ -74,7 +74,7 @@ export default function NodeSelector({
           {
             category: [category],
             name: strings.setify(category),
-            set: true,
+            is_set: true,
           },
         ]
       ));
