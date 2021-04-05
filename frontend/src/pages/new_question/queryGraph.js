@@ -1,8 +1,8 @@
 /* eslint-disable indent, no-use-before-define, func-names, no-return-assign */
 import * as d3 from 'd3';
-import graphUtils from './graphUtils';
-import nodeUtils from './nodeUtils';
-import edgeUtils from './edgeUtils';
+import graphUtils from './utils/graphUtils';
+import nodeUtils from './utils/nodeUtils';
+import edgeUtils from './utils/edgeUtils';
 
 /**
  * Initialize query graph and provide update method
