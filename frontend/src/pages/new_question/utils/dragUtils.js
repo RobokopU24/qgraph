@@ -44,7 +44,7 @@ function dragEdgeEnd(subject, simulation, width, height, nodeRadius, dispatch) {
     const mouseX = graphUtils.boundedEdge(event.x, width);
     const mouseY = graphUtils.boundedEdge(event.y, height);
     d3.select(`#${id}`)
-      .call((e) => e.selectAll('path')
+      .call((e) => e.selectAll('line')
         .attr('x1', type === 'source' ? mouseX : otherSideX)
         .attr('y1', type === 'source' ? mouseY : otherSideY)
         .attr('x2', type === 'source' ? otherSideX : mouseX)
@@ -81,7 +81,7 @@ function dragEdgeEnd(subject, simulation, width, height, nodeRadius, dispatch) {
       thisSideX = graphUtils.boundedEdge(thisSideX, width);
       thisSideY = graphUtils.boundedEdge(thisSideY, height);
       d3.select(`#${id}`)
-        .call((e) => e.selectAll('path')
+        .call((e) => e.selectAll('line')
           .attr('x1', type === 'source' ? thisSideX : otherSideX)
           .attr('y1', type === 'source' ? thisSideY : otherSideY)
           .attr('x2', type === 'source' ? otherSideX : thisSideX)

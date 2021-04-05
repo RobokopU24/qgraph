@@ -31,13 +31,13 @@ function enter(edge, simulation, openEdgeEditor, args) {
   return edge.append('g')
     .attr('id', (d) => d.id)
     // visible line
-    .call((e) => e.append('path')
+    .call((e) => e.append('line')
       .attr('stroke', '#999')
       .attr('stroke-width', 3)
       .attr('class', 'edge')
       .attr('marker-end', (d) => graphUtils.showArrow(d)))
     // wider clickable line
-    .call((e) => e.append('path')
+    .call((e) => e.append('line')
       .attr('stroke', 'transparent')
       .attr('stroke-width', 10)
       .attr('class', 'edgeTransparent')
