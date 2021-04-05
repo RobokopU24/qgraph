@@ -69,13 +69,13 @@ export default function NewQuestion() {
       >
         Edit JSON
       </Button>
-      <Button
+      {/* <Button
         onClick={onSubmit}
         variant="contained"
         style={{ marginLeft: '10px' }}
       >
         Submit
-      </Button>
+      </Button> */}
       <Button
         onClick={newTabJSON}
         variant="contained"
