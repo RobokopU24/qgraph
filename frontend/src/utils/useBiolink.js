@@ -8,6 +8,16 @@ export default function useBiolink() {
   const [biolink, setBiolink] = useState(null);
   const [concepts, setConcepts] = useState([]);
   const [hierarchies, setHierarchies] = useState({});
+  const [predicates, setPredicates] = useState([]);
+
+  function getEdgePredicates() {
+    const newPredicates = Object.entries(biolink.slots).map(([identifier, predicate]) => ({
+      predicate: strings.edgeFromBiolink(identifier),
+      domain: strings.nodeFromBiolink(predicate.domain),
+      range: strings.nodeFromBiolink(predicate.range),
+    }));
+    return newPredicates;
+  }
 
   /**
    * Given a biolink class build a list of parent classes
@@ -23,7 +33,7 @@ export default function useBiolink() {
 
     let currentType = className;
     const hierarchy = [currentType];
-    // Repeat until we hit the bottom of the hierarchy
+    // Repeat until we hit the top of the hierarchy
     while (
       standardizedClassDictionary[currentType] &&
       standardizedClassDictionary[currentType].is_a
@@ -43,24 +53,38 @@ export default function useBiolink() {
       obj[strings.nodeFromBiolink(item)] = hierarchy;
       return obj;
     }, {});
-    setHierarchies(newHierarchies);
+    return newHierarchies;
   }
 
   /**
    * Filter out concepts that are not derived classes of base class
    * @returns {array} list of valid concepts
    */
-  function getValidConcepts() {
-    const newConcepts = Object.keys(hierarchies).filter((key) => hierarchies[key].includes(baseClass));
-    setConcepts(newConcepts);
+  function getValidConcepts(allHierarchies) {
+    const newConcepts = Object.keys(allHierarchies).filter((key) => allHierarchies[key].includes(baseClass));
+    return newConcepts;
   }
 
-  function getEdgePredicates() {
-    return Object.entries(biolink.slots).map(([identifier, predicate]) => ({
-      predicate: strings.edgeFromBiolink(identifier),
-      domain: strings.nodeFromBiolink(predicate.domain),
-      range: strings.nodeFromBiolink(predicate.range),
-    }));
+  function dig(obj, keys, target) {
+    let types = [];
+    keys.forEach((key) => {
+      if (obj[key].is_a === target) {
+        types.push(key);
+        types = types.concat(dig(obj, keys, key));
+      }
+    });
+    return types;
+  }
+
+  function getDepthHierarchy(className) {
+    const standardizedClassDictionary = _.transform(biolink.classes,
+      (result, value, key) => { result[key] = value; });
+
+    // Repeat until we hit the bottom of the hierarchy
+    // depth-first search
+    const keys = Object.keys(standardizedClassDictionary);
+    const hierarchy = [className, ...dig(standardizedClassDictionary, keys, className)];
+    return hierarchy.map((h) => strings.nodeFromBiolink(h));
   }
 
   /**
@@ -73,15 +97,16 @@ export default function useBiolink() {
 
   useEffect(() => {
     if (biolink) {
-      makeHierarchies();
+      const allHierarchies = makeHierarchies();
+      const allConcepts = getValidConcepts(allHierarchies);
+      const newPredicates = getEdgePredicates();
+      const namedThingHierarchy = getDepthHierarchy('named thing');
+      allHierarchies['biolink:NamedThing'] = namedThingHierarchy;
+      setHierarchies(allHierarchies);
+      setConcepts(allConcepts);
+      setPredicates(newPredicates);
     }
   }, [biolink]);
-
-  useEffect(() => {
-    if (Object.keys(hierarchies).length) {
-      getValidConcepts();
-    }
-  }, [hierarchies]);
 
   return {
     initialize,
@@ -89,5 +114,6 @@ export default function useBiolink() {
     getEdgePredicates,
     concepts,
     hierarchies,
+    predicates,
   };
 }

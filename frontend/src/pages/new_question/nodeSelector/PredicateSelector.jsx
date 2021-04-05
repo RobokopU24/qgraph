@@ -19,16 +19,6 @@ export default function PredicateSelector({ queryBuilder, edgeId }) {
   const { query_graph, updateEdgePredicate } = queryBuilder;
   const edge = query_graph.edges[edgeId];
 
-  // Build a list of formatted predicates
-  function getPredicateList() {
-    if (!biolink || !biolink.concepts.length) {
-      return null;
-    }
-    return biolink.getEdgePredicates();
-  }
-
-  const predicateList = useMemo(getPredicateList, [biolink]) || [];
-
   // Filter predicates by the nodes given
   function getFilteredPredicateList() {
     if (!biolink || !biolink.concepts.length) {
@@ -50,7 +40,7 @@ export default function PredicateSelector({ queryBuilder, edgeId }) {
       return null;
     }
 
-    return predicateList.filter(
+    return biolink.predicates.filter(
       (p) => subjectNodeCategoryHierarchy.includes(p.domain) &&
              objectNodeCategoryHierarchy.includes(p.range),
     ).map((p) => p.predicate);
@@ -62,7 +52,6 @@ export default function PredicateSelector({ queryBuilder, edgeId }) {
       getCategory(query_graph.nodes[edge.subject].category),
       getCategory(query_graph.nodes[edge.object].category),
       biolink,
-      predicateList,
     ],
   ) || [];
 
