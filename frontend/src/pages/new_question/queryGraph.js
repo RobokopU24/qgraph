@@ -53,18 +53,38 @@ export default function queryGraph(
 
   if (svg.select('defs').empty()) {
     // edge arrow
-    svg.append('defs')
-      .append('marker')
-        .attr('id', 'arrow')
-        .attr('viewBox', [0, 0, 20, 13])
-        .attr('refX', 20)
-        .attr('refY', 6.5)
-        .attr('markerWidth', 6.5)
-        .attr('markerHeight', 25)
-        .attr('orient', 'auto-start-reverse')
-        .append('path')
-          .attr('d', d3.line()([[0, 0], [0, 13], [25, 6.5]]))
-          .attr('fill', '#999');
+    const defs = svg.append('defs');
+    defs.append('marker')
+      .attr('id', 'arrow')
+      .attr('viewBox', [0, 0, 20, 13])
+      .attr('refX', 20)
+      .attr('refY', 6.5)
+      .attr('markerWidth', 6.5)
+      .attr('markerHeight', 25)
+      .attr('orient', 'auto-start-reverse')
+      .append('path')
+        .attr('d', d3.line()([[0, 0], [0, 13], [25, 6.5]]))
+        .attr('fill', '#999');
+    // set nodes shadow
+    // http://bl.ocks.org/cpbotha/5200394
+    const shadow = defs.append('filter')
+      .attr('id', 'setShadow')
+      .attr('width', '250%')
+      .attr('height', '250%');
+    shadow.append('feGaussianBlur')
+      .attr('in', 'SourceAlpha')
+      .attr('stdDeviation', 5)
+      .attr('result', 'blur');
+    shadow.append('feOffset')
+      .attr('in', 'blur')
+      .attr('dx', 0)
+      .attr('dy', 0)
+      .attr('result', 'offsetBlur');
+    const feMerge = shadow.append('feMerge');
+    feMerge.append('feMergeNode')
+      .attr('in', 'offsetBlur');
+    feMerge.append('feMergeNode')
+      .attr('in', 'SourceGraphic');
   }
 
   svg.on('click', (e) => {
