@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import * as d3 from 'd3';
 import graphUtils from './graphUtils';
 import dragUtils from './dragUtils';
@@ -31,16 +32,29 @@ function enter(edge, simulation, openEdgeEditor, args) {
   return edge.append('g')
     .attr('id', (d) => d.id)
     // visible line
-    .call((e) => e.append('line')
+    .call((e) => e.append('path')
       .attr('stroke', '#999')
-      .attr('stroke-width', 3)
+      .attr('fill', 'none')
+      .attr('stroke-width', (d) => d.strokeWidth)
       .attr('class', 'edge')
       .attr('marker-end', (d) => graphUtils.showArrow(d)))
     // wider clickable line
-    .call((e) => e.append('line')
+    .call((e) => e.append('path')
       .attr('stroke', 'transparent')
+      .attr('fill', 'none')
       .attr('stroke-width', 10)
       .attr('class', 'edgeTransparent')
+      .attr('id', (d) => `edge${d.id}`)
+      .call(() => e.append('text')
+        .attr('class', 'edgeText')
+        .attr('pointer-events', 'none')
+        .style('text-anchor', 'middle')
+        .attr('dy', (d) => -d.strokeWidth)
+        .append('textPath')
+          .attr('pointer-events', 'none')
+          .attr('xlink:href', (d) => `#edge${d.id}`)
+          .attr('startOffset', '50%')
+          .text((d) => (d.predicate ? d.predicate.map((p) => strings.displayPredicate(p)).join(', ') : '')))
       .on('click', (event, d) => {
         if (showEdit !== d.id) {
           event.stopPropagation();
@@ -73,8 +87,6 @@ function enter(edge, simulation, openEdgeEditor, args) {
         .text((d) => (d.predicate ? d.predicate.map((p) => strings.displayPredicate(p)).join(', ') : ''))))
     // source edge end circle
     .call((e) => e.append('circle')
-      .attr('cx', (d) => d.sourceNode.x)
-      .attr('cy', (d) => d.sourceNode.y)
       .attr('r', 5)
       .attr('fill', '#B5D3E3')
       // .attr('fill', 'transparent')
@@ -89,8 +101,6 @@ function enter(edge, simulation, openEdgeEditor, args) {
       .call(dragUtils.dragEdgeEnd(e, simulation, width, height, nodeRadius, dispatch)))
     // target edge end circle
     .call((e) => e.append('circle')
-      .attr('cx', (d) => d.targetNode.x)
-      .attr('cy', (d) => d.targetNode.y)
       .attr('r', 5)
       .attr('fill', '#B5D3E3')
       // .attr('fill', 'transparent')
@@ -153,7 +163,12 @@ function update(edge) {
     .call((e) => e.select('title')
       .text((d) => (d.predicate ? d.predicate.map((p) => strings.displayPredicate(p)).join(', ') : '')))
     .call((e) => e.select('.edge')
-      .attr('marker-end', (d) => graphUtils.showArrow(d)));
+      // .attr('stroke-width', (d) => d.strokeWidth)
+      .attr('marker-end', (d) => graphUtils.showArrow(d)))
+    .call((e) => e.select('text')
+      .select('textPath')
+        .text((d) => (d.predicate ? d.predicate.map((p) => strings.displayPredicate(p)).join(', ') : '')));
+    //   .attr('dy', (d) => -d.strokeWidth));
 }
 
 function exit(edge) {

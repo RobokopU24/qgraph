@@ -12,26 +12,61 @@ const inverseEdgeType = {
  * @param {int} x attached node x position
  * @param {int} y attached node y position
  */
-function getAngle(cx, cy, x, y) {
-  const delta_x = x - cx;
-  const delta_y = y - cy;
+function getAngle(x1, y1, x2, y2) {
+  const delta_x = x2 - x1;
+  const delta_y = y2 - y1;
   const theta_radians = Math.atan2(delta_y, delta_x);
-  // const angle = theta_radians * (180 / Math.PI);
   return theta_radians;
 }
 
 function getAdjustedX(cx, cy, x, y, r) {
   const angle = getAngle(cx, cy, x, y);
   // cos takes radians
-  const adjusted_x = cx + r * Math.cos(angle);
+  const adjusted_x = cx + Math.cos(angle) * r;
   return adjusted_x;
 }
 
 function getAdjustedY(cx, cy, x, y, r) {
   const angle = getAngle(cx, cy, x, y);
   // sin takes radians
-  const adjusted_y = cy + r * Math.sin(angle);
+  const adjusted_y = cy + Math.sin(angle) * r;
   return adjusted_y;
+}
+
+function getRadialXY(sourceX, sourceY, targetX, targetY, numEdges, index, nodeRadius) {
+  const arcWidth = Math.PI / 3;
+  const edgeStep = arcWidth / 5;
+  // get angle between nodes
+  const theta = getAngle(sourceX, sourceY, targetX, targetY);
+  // get adjusted angle based on edge index
+  const arc_p1 = theta + (edgeStep * index);
+  const arc_p2 = theta + Math.PI - (edgeStep * index);
+  // compute x's and y's
+  const x1 = sourceX + Math.cos(arc_p1) * nodeRadius;
+  const y1 = sourceY + Math.sin(arc_p1) * nodeRadius;
+  const x2 = targetX + Math.cos(arc_p2) * nodeRadius;
+  const y2 = targetY + Math.sin(arc_p2) * nodeRadius;
+  const alpha = 50; // tuning param
+  let l = (index * 0.1) + (index * 0.3); // num of edge
+  // move first arced edges out just a smidge
+  if (index === 1 || index === -1) {
+    l += (index * 0.4);
+  }
+  const bx = ((x1 + x2) / 2);
+  const by = (y1 + y2) / 2;
+  const vx = x2 - x1;
+  const vy = y2 - y1;
+
+  const norm_v = Math.sqrt(vx ** 2 + vy ** 2);
+  const vx_norm = vx / norm_v;
+  const vy_norm = vy / norm_v;
+  const vx_perp = -vy_norm;
+  const vy_perp = vx_norm;
+  const qx = bx + alpha * l * vx_perp;
+  const qy = by + alpha * l * vy_perp;
+  return {
+    x1, y1, qx, qy, x2, y2,
+  };
 }
 
 /**
@@ -126,6 +161,7 @@ function hide() {
 export default {
   inverseEdgeType,
 
+  getRadialXY,
   getAdjustedXY,
   getAdjustedX,
   getAdjustedY,

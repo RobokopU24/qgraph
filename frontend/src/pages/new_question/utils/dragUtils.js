@@ -38,23 +38,27 @@ function dragEdgeEnd(subject, simulation, width, height, nodeRadius, dispatch) {
     const { id } = d;
     const type = d3.select(this).attr('class');
     const inverseType = graphUtils.inverseEdgeType[type];
-    const { x, y } = graphUtils.getAdjustedXY(d[inverseType].x, d[inverseType].y, event.x, event.y, nodeRadius);
-    const otherSideX = graphUtils.boundedEdge(x, width);
-    const otherSideY = graphUtils.boundedEdge(y, height);
+    const inverseX = d[inverseType].x;
+    const inverseY = d[inverseType].y;
+    const targetX = graphUtils.boundedEdge(inverseX, width);
+    const targetY = graphUtils.boundedEdge(inverseY, height);
     const mouseX = graphUtils.boundedEdge(event.x, width);
     const mouseY = graphUtils.boundedEdge(event.y, height);
+    const {
+      x: x2, y: y2,
+    } = graphUtils.getAdjustedXY(targetX, targetY, mouseX, mouseY, nodeRadius);
+    const source = type === 'source' ? `${mouseX},${mouseY}` : `${x2},${y2}`;
+    const target = type === 'source' ? `${x2},${y2}` : `${mouseX},${mouseY}`;
+    const path = `M${source} ${target}`;
     d3.select(`#${id}`)
-      .call((e) => e.selectAll('line')
-        .attr('x1', type === 'source' ? mouseX : otherSideX)
-        .attr('y1', type === 'source' ? mouseY : otherSideY)
-        .attr('x2', type === 'source' ? otherSideX : mouseX)
-        .attr('y2', type === 'source' ? otherSideY : mouseY))
+      .call((e) => e.selectAll('path')
+        .attr('d', path))
       .call((e) => e.select(`.${type}`)
         .attr('cx', mouseX)
         .attr('cy', mouseY))
       .call((e) => e.select(`.${inverseType}`)
-        .attr('cx', otherSideX)
-        .attr('cy', otherSideY));
+        .attr('cx', x2)
+        .attr('cy', y2));
   }
 
   function dragended(event, d) {
@@ -73,25 +77,25 @@ function dragEdgeEnd(subject, simulation, width, height, nodeRadius, dispatch) {
       dispatch.call('update', null, id, mapping[type], droppedCircle.id);
     } else {
       // edge was dropped in space, put it back to previous nodes
-      const inverseType = graphUtils.inverseEdgeType[type];
-      let { x: thisSideX, y: thisSideY } = graphUtils.getAdjustedXY(d[type].x, d[type].y, d[inverseType].x, d[inverseType].y, nodeRadius);
-      let { x: otherSideX, y: otherSideY } = graphUtils.getAdjustedXY(d[inverseType].x, d[inverseType].y, d[type].x, d[type].y, nodeRadius);
-      otherSideX = graphUtils.boundedEdge(otherSideX, width);
-      otherSideY = graphUtils.boundedEdge(otherSideY, height);
-      thisSideX = graphUtils.boundedEdge(thisSideX, width);
-      thisSideY = graphUtils.boundedEdge(thisSideY, height);
+      let {
+        x1, y1, qx, qy, x2, y2, // eslint-disable-line prefer-const
+      } = graphUtils.getRadialXY(d.source.x, d.source.y, d.target.x, d.target.y, d.numEdges, d.index, nodeRadius);
+      x2 = graphUtils.boundedEdge(x2, width);
+      y2 = graphUtils.boundedEdge(y2, height);
+      x1 = graphUtils.boundedEdge(x1, width);
+      y1 = graphUtils.boundedEdge(y1, height);
+      const source = `${x1},${y1}`;
+      const target = `${x2},${y2}`;
+      const path = `M${source}Q${qx},${qy} ${target}`;
       d3.select(`#${id}`)
-        .call((e) => e.selectAll('line')
-          .attr('x1', type === 'source' ? thisSideX : otherSideX)
-          .attr('y1', type === 'source' ? thisSideY : otherSideY)
-          .attr('x2', type === 'source' ? otherSideX : thisSideX)
-          .attr('y2', type === 'source' ? otherSideY : thisSideY))
-        .call((e) => e.select(`.${type}`)
-          .attr('cx', thisSideX)
-          .attr('cy', thisSideY))
-        .call((e) => e.select(`.${inverseType}`)
-          .attr('cx', otherSideX)
-          .attr('cy', otherSideY));
+        .call((e) => e.selectAll('path')
+          .attr('d', path))
+        .call((e) => e.select('.source')
+          .attr('cx', x1)
+          .attr('cy', y1))
+        .call((e) => e.select('.target')
+          .attr('cx', x2)
+          .attr('cy', y2));
     }
   }
 
