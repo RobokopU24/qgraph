@@ -125,6 +125,7 @@ export default function queryGraph(
   svg.on('click', (e) => {
     d3.selectAll('.deleteRect,.deleteLabel,.editRect,.editLabel')
       .style('display', 'none');
+    d3.select('#edgeContainer').raise();
     // stop click events from leaving svg area.
     // clicks were closing any alerts immediately.
     e.stopPropagation();
