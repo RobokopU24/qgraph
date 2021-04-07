@@ -39,6 +39,7 @@ function enter(node, simulation, chooseNode, openNodeEditor, args) {
         d3.select(`#${id}`).raise();
         // only if we're currently making a connection
         if (args.connectTerms) {
+          e.stopPropagation();
           d3.select(this)
             .attr('stroke', '#e0dfdf')
             .attr('stroke-width', '5');
