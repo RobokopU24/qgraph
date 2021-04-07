@@ -1,8 +1,4 @@
-.nodeSelector {
-    margin: 0px 10px;
-    min-width: 200px;
-}
-.predicateSelector {
+.textEditorSelector {
     margin: 0px 10px;
     min-width: 200px;
 }

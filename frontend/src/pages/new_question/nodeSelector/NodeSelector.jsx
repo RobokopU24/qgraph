@@ -11,6 +11,7 @@ import strings from '~/utils/stringUtils';
 import useDebounce from '~/utils/useDebounce';
 
 import fetchCuries from '~/utils/fetchCuries';
+import highlighter from '../utils/highlighter';
 
 import './nodeSelector.css';
 
@@ -153,7 +154,7 @@ export default function NodeSelector({
     <Autocomplete
       options={options}
       loading={loading}
-      className={`nodeSelector${original ? '' : ' referenceNode'}`}
+      className={`textEditorSelector${original ? '' : ' referenceNode'} highlight-${nodeId}`}
       getOptionLabel={getOptionLabel}
       autoComplete
       autoHighlight
@@ -173,11 +174,21 @@ export default function NodeSelector({
           {...params}
           variant="outlined"
           className="nodeDropdown"
-          // variant={includeExistingNodes ? 'filled' : 'outlined'}
           label={nodeId}
           margin="dense"
+          onFocus={() => {
+            highlighter.highlightGraphNode(nodeId);
+            highlighter.highlightTextEditorNode(nodeId);
+          }}
+          onBlur={() => {
+            highlighter.clearGraphNode(nodeId);
+            highlighter.clearTextEditorNode(nodeId);
+          }}
           InputProps={{
             ...params.InputProps,
+            classes: {
+              root: `nodeSelector nodeSelector-${nodeId}`,
+            },
             endAdornment: (
               <>
                 {loading ? <CircularProgress color="inherit" size={20} /> : null}

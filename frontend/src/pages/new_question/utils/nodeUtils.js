@@ -2,8 +2,8 @@
 import * as d3 from 'd3';
 import graphUtils from './graphUtils';
 import dragUtils from './dragUtils';
+import highlighter from './highlighter';
 
-let showEdit = '';
 const dispatch = d3.dispatch('delete');
 
 /**
@@ -17,7 +17,7 @@ const dispatch = d3.dispatch('delete');
 function enter(node, simulation, chooseNode, openNodeEditor, args) {
   const {
     width, height, nodeRadius,
-    colorMap, deleteNode,
+    colorMap, deleteNode, edit,
   } = args;
   dispatch.on('delete', deleteNode);
   return node.append('g')
@@ -26,7 +26,7 @@ function enter(node, simulation, chooseNode, openNodeEditor, args) {
     .call(dragUtils.dragNode(simulation, width, height, nodeRadius))
     // create node circle
     .call((nodeCircle) => nodeCircle.append('circle')
-      .attr('class', 'nodeCircle')
+      .attr('class', (d) => `nodeCircle node-${d.id}`)
       .attr('r', nodeRadius)
       // .attr('stroke', '#999')
       // .attr('stroke-width', 2)
@@ -43,7 +43,7 @@ function enter(node, simulation, chooseNode, openNodeEditor, args) {
             .attr('stroke', '#e0dfdf')
             .attr('stroke-width', '5');
           chooseNode(id);
-        } else if (showEdit !== id) {
+        } else if (edit.active !== id) {
           e.stopPropagation();
           d3.selectAll('.deleteRect,.deleteLabel,.editRect,.editLabel')
             .style('display', 'none');
@@ -51,11 +51,27 @@ function enter(node, simulation, chooseNode, openNodeEditor, args) {
           d3.selectAll(`.${id}`)
             .style('display', 'inherit')
             .raise();
-          showEdit = id;
+          edit.active = id;
+          highlighter.clearAllNodes();
+          highlighter.clearAllEdges();
+          highlighter.highlightTextEditorNode(d.id);
+          highlighter.highlightGraphNode(d.id);
         } else {
           // svg listener will hide buttons
-          showEdit = '';
+          edit.active = '';
           d3.select('#edgeContainer').raise();
+        }
+      })
+      .on('mouseover', (e, d) => {
+        if (!args.connectTerms && (edit.active === d.id || !edit.active)) {
+          highlighter.highlightTextEditorNode(d.id);
+          highlighter.highlightGraphNode(d.id);
+        }
+      })
+      .on('mouseout', (e, d) => {
+        if (!args.connectTerms && (edit.active !== d.id || !edit.active)) {
+          highlighter.clearTextEditorNode(d.id);
+          highlighter.clearGraphNode(d.id);
         }
       })
       .call((n) => n.append('title')
@@ -89,7 +105,7 @@ function enter(node, simulation, chooseNode, openNodeEditor, args) {
       .attr('class', (d) => `${d.id} deleteRect`)
       .on('click', (e, d) => {
         const { id } = d;
-        showEdit = '';
+        edit.active = '';
         dispatch.call('delete', null, id);
         d3.select('#edgeContainer').raise();
       }))
@@ -113,7 +129,7 @@ function enter(node, simulation, chooseNode, openNodeEditor, args) {
         const { id } = d;
         const nodeAnchor = d3.select(`#${id} > .nodeCircle`).node();
         openNodeEditor(id, nodeAnchor);
-        showEdit = '';
+        edit.active = '';
         d3.select('#edgeContainer').raise();
       }))
     .call((nodeEditLabel) => nodeEditLabel.append('text')

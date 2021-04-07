@@ -3,6 +3,7 @@ import * as d3 from 'd3';
 import graphUtils from './utils/graphUtils';
 import nodeUtils from './utils/nodeUtils';
 import edgeUtils from './utils/edgeUtils';
+import highlighter from './utils/highlighter';
 
 function findKey(obj, prop) {
   const [s, t] = prop.split('--');
@@ -55,6 +56,7 @@ export default function queryGraph(
   openNodeEditor, openEdgeEditor,
 ) {
   let chosenNodes = [];
+  const edit = { active: '' };
   /**
    * Common node and edge args
    */
@@ -62,6 +64,7 @@ export default function queryGraph(
     height,
     width,
     nodeRadius,
+    edit,
     queryBuilder: null,
   };
   /**
@@ -126,6 +129,9 @@ export default function queryGraph(
     d3.selectAll('.deleteRect,.deleteLabel,.editRect,.editLabel')
       .style('display', 'none');
     d3.select('#edgeContainer').raise();
+    highlighter.clearAllNodes();
+    highlighter.clearAllEdges();
+    edit.active = '';
     // stop click events from leaving svg area.
     // clicks were closing any alerts immediately.
     e.stopPropagation();

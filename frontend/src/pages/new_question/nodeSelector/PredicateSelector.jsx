@@ -4,6 +4,7 @@ import TextField from '@material-ui/core/TextField';
 
 import BiolinkContext from '~/context/biolink';
 import strings from '~/utils/stringUtils';
+import highlighter from '../utils/highlighter';
 
 /**
  * Get first node category from list
@@ -65,7 +66,7 @@ export default function PredicateSelector({ queryBuilder, edgeId }) {
   return (
     <Autocomplete
       options={filteredPredicateList}
-      className="predicateSelector"
+      className={`textEditorSelector highlight-${edgeId}`}
       value={edge.predicate || []}
       onChange={(e, value) => {
         updateEdgePredicate(edgeId, value);
@@ -75,7 +76,22 @@ export default function PredicateSelector({ queryBuilder, edgeId }) {
           {...params}
           label="Predicate"
           variant="outlined"
+          className="edgeDropdown"
           margin="dense"
+          onFocus={() => {
+            highlighter.highlightGraphEdge(edgeId);
+            highlighter.highlightTextEditorEdge(edgeId);
+          }}
+          onBlur={() => {
+            highlighter.clearGraphEdge(edgeId);
+            highlighter.clearTextEditorEdge(edgeId);
+          }}
+          InputProps={{
+            ...params.InputProps,
+            classes: {
+              root: `edgeSelector edgeSelector-${edgeId}`,
+            },
+          }}
         />
       )}
       getOptionLabel={(opt) => strings.displayPredicate(opt)}

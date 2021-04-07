@@ -3,8 +3,8 @@ import * as d3 from 'd3';
 import graphUtils from './graphUtils';
 import dragUtils from './dragUtils';
 import strings from '~/utils/stringUtils';
+import highlighter from './highlighter';
 
-let showEdit = '';
 const dispatch = d3.dispatch('update', 'delete');
 
 /**
@@ -19,7 +19,7 @@ const dispatch = d3.dispatch('update', 'delete');
 function enter(edge, simulation, openEdgeEditor, args) {
   const {
     height, width, nodeRadius,
-    updateEdge, deleteEdge,
+    updateEdge, deleteEdge, edit,
   } = args;
   dispatch.on('update', (edgeId, edgeType, nodeId) => {
     const success = updateEdge(edgeId, edgeType, nodeId);
@@ -43,7 +43,7 @@ function enter(edge, simulation, openEdgeEditor, args) {
       .attr('stroke', 'transparent')
       .attr('fill', 'none')
       .attr('stroke-width', 10)
-      .attr('class', 'edgeTransparent')
+      .attr('class', (d) => `edgeTransparent edge-${d.id}`)
       .attr('id', (d) => `edge${d.id}`)
       .call(() => e.append('text')
         .attr('class', 'edgeText')
@@ -56,17 +56,21 @@ function enter(edge, simulation, openEdgeEditor, args) {
           .attr('startOffset', '50%')
           .text((d) => (d.predicate ? d.predicate.map((p) => strings.displayPredicate(p)).join(', ') : '')))
       .on('click', (event, d) => {
-        if (showEdit !== d.id) {
+        if (edit.active !== d.id) {
           event.stopPropagation();
           d3.selectAll('.deleteRect,.deleteLabel,.editRect,.editLabel')
             .style('display', 'none');
           d3.selectAll(`.${d.id}`)
             .style('display', 'inherit')
             .raise();
-          showEdit = d.id;
+          edit.active = d.id;
           d3.select(`#${d.id}`).raise();
+          highlighter.clearAllEdges();
+          highlighter.clearAllNodes();
+          highlighter.highlightTextEditorEdge(d.id);
+          highlighter.highlightGraphEdge(d.id);
         } else {
-          showEdit = '';
+          edit.active = '';
         }
       })
       .on('mouseover', (event, d) => {
@@ -75,6 +79,10 @@ function enter(edge, simulation, openEdgeEditor, args) {
           .transition()
           .duration(500)
           .style('opacity', 1);
+        if (edit.active === id || !edit.active) {
+          highlighter.highlightTextEditorEdge(id);
+          highlighter.highlightGraphEdge(id);
+        }
       })
       .on('mouseout', (event, d) => {
         const { id } = d;
@@ -82,6 +90,10 @@ function enter(edge, simulation, openEdgeEditor, args) {
           .transition()
           .duration(1000)
           .style('opacity', 0);
+        if (edit.active !== id || !edit.active) {
+          highlighter.clearTextEditorEdge(id);
+          highlighter.clearGraphEdge(id);
+        }
       })
       .call((eLabel) => eLabel.append('title')
         .text((d) => (d.predicate ? d.predicate.map((p) => strings.displayPredicate(p)).join(', ') : ''))))
@@ -124,7 +136,7 @@ function enter(edge, simulation, openEdgeEditor, args) {
       .attr('class', (d) => `${d.id} deleteRect`)
       .on('click', (event, d) => {
         const { id } = d;
-        showEdit = '';
+        edit.active = '';
         dispatch.call('delete', null, id);
       }))
     .call((e) => e.append('text')
@@ -146,7 +158,7 @@ function enter(edge, simulation, openEdgeEditor, args) {
       .on('click', (event, d) => {
         const { id } = d;
         const edgeAnchor = d3.select(`#${id} > .source`).node();
-        showEdit = '';
+        edit.active = '';
         openEdgeEditor(id, edgeAnchor);
       }))
     .call((e) => e.append('text')
