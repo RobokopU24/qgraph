@@ -9,7 +9,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import CheckIcon from '@material-ui/icons/Check';
-import UndoIcon from '@material-ui/icons/Undo';
+// import UndoIcon from '@material-ui/icons/Undo';
 import CloseIcon from '@material-ui/icons/Close';
 
 import trapiUtils from '~/utils/trapiUtils';

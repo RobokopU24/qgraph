@@ -4,8 +4,8 @@ import Button from '@material-ui/core/Button';
 
 import './newQuestion.css';
 
-import API from '~/API';
-import trapiUtils from '~/utils/trapiUtils';
+// import API from '~/API';
+// import trapiUtils from '~/utils/trapiUtils';
 import queryGraphUtils from '~/utils/queryGraphUtils';
 import useQueryBuilder from './queryBuilder';
 import GraphEditor from './GraphEditor';
@@ -31,22 +31,22 @@ export default function NewQuestion() {
   /**
    * Submit this query to an ARA and then navigate to the answer page
    */
-  async function onSubmit() {
-    const prunedQueryGraph = queryGraphUtils.prune(queryBuilder.query_graph);
-    const response = await API.ara.getAnswer({ message: { query_graph: prunedQueryGraph } });
-    if (response.status === 'error') {
-      console.log('error', response);
-      return;
-    }
+  // async function onSubmit() {
+  //   const prunedQueryGraph = queryGraphUtils.prune(queryBuilder.query_graph);
+  //   const response = await API.ara.getAnswer({ message: { query_graph: prunedQueryGraph } });
+  //   if (response.status === 'error') {
+  //     console.log('error', response);
+  //     return;
+  //   }
 
-    const validationErrors = trapiUtils.validateMessage(response);
-    if (validationErrors.length) {
-      console.log('error', validationErrors.join(', '));
-      return;
-    }
+  //   const validationErrors = trapiUtils.validateMessage(response);
+  //   if (validationErrors.length) {
+  //     console.log('error', validationErrors.join(', '));
+  //     return;
+  //   }
 
-    console.log(response.message);
-  }
+  //   console.log(response.message);
+  // }
 
   return (
     <>
