@@ -21,7 +21,11 @@ import './graphEditor.css';
 const width = 600;
 const height = 400;
 
-export default function NewD3Graph({ queryBuilder }) {
+/**
+ * Query Builder graph editor interface
+ * @param {obj} queryBuilder query builder custom hook
+ */
+export default function GraphEditor({ queryBuilder }) {
   const { query_graph } = queryBuilder;
   const convertedQueryGraph = useMemo(() => queryGraphUtils.convert.internalToReasoner(query_graph), [query_graph]);
   const svgRef = useRef();
@@ -32,7 +36,6 @@ export default function NewD3Graph({ queryBuilder }) {
   const [popoverType, setPopoverType] = useState('');
   const [nodeId, setNodeId] = useState('');
   const [edgeId, setEdgeId] = useState('');
-  // const [popupContent, setPopupContent] = useState({});
 
   function openNodeEditor(id, anchor) {
     setNodeId(id);
