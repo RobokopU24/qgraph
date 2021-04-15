@@ -8,7 +8,14 @@ import {
 import UserContext from '~/context/user';
 import './simplecss.css';
 
-function CustomComponent({
+/**
+ * Landing Page Options Button
+ * @param {string} glyph bootstrap glyph type
+ * @param {string} header Title of the option
+ * @param {string} text Short description of the option
+ * @param {string} href option url
+ */
+function OptionButton({
   glyph, header, text, href,
 }) {
   return (
@@ -91,13 +98,13 @@ export default function Landing() {
         <h2>Robokop Apps</h2>
         <ListGroup>
           <Row>
-            <CustomComponent
+            <OptionButton
               glyph="question-sign"
               header="Quick Question"
               text="Ask a question and get an answerset back. This question will not be stored and you don&apos;t have to be signed in."
               href="/simple/question"
             />
-            <CustomComponent
+            <OptionButton
               glyph="import"
               header="Answerset Explorer"
               text="Easily upload JSON files of answersets to view them in Robokop&apos;s graphical interface."
@@ -105,7 +112,7 @@ export default function Landing() {
             />
           </Row>
           <Row>
-            <CustomComponent
+            <OptionButton
               glyph="screenshot"
               header="New Question Builder"
               text="Use text editor and a graph editor together."
@@ -114,7 +121,7 @@ export default function Landing() {
           </Row>
           {/*
           <Row>
-            <CustomComponent
+            <OptionButton
               glyph="screenshot"
               header="Neighborhood"
               text="Explore many sources and one-hop neighbors from specified node."
