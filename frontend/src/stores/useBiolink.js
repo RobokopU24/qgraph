@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import _ from 'lodash';
-import strings from './stringUtils';
+import strings from '~/utils/strings';
 
 const baseClass = 'biolink:BiologicalEntity';
 

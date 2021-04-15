@@ -3,7 +3,7 @@ import {
   ListGroup, ListGroupItem, Panel, Row, Col,
 } from 'react-bootstrap';
 import shortid from 'shortid';
-import strings from '~/utils/stringUtils';
+import strings from '~/utils/strings';
 
 export default function NodeDetails(props) {
   const { details, sources, sourceNode } = props;

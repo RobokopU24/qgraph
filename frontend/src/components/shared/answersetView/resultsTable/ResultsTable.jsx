@@ -8,8 +8,8 @@ import _ from 'lodash';
 
 import AlertContext from '~/context/alert';
 
-import strings from '~/utils/stringUtils';
-import getNodeCategoryColorMap from '~/utils/colorUtils';
+import strings from '~/utils/strings';
+import getNodeCategoryColorMap from '~/utils/colors';
 import Table from './Table';
 
 import './resultsTable.css';

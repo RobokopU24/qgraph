@@ -11,8 +11,8 @@ import UserContext from '~/context/user';
 import API from '~/API';
 
 import AnswersetView from '~/components/shared/answersetView/AnswersetView';
-import usePageStatus from '~/utils/usePageStatus';
-import trapiUtils from '~/utils/trapiUtils';
+import usePageStatus from '~/stores/usePageStatus';
+import trapiUtils from '~/utils/trapi';
 
 import './newQuestion.css';
 import QuestionBuilder from './questionBuilder/QuestionBuilder';

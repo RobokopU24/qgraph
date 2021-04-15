@@ -18,7 +18,7 @@ import './questionList.css';
 
 import UserContext from '~/context/user';
 
-import usePageStatus from '~/utils/usePageStatus';
+import usePageStatus from '~/stores/usePageStatus';
 
 import QuestionTableRow from './subComponents/QuestionTableRow';
 

@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import graphUtils from './graphUtils';
+import graphUtils from './graph';
 /**
  * Handle node dragging
  */

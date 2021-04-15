@@ -2,7 +2,7 @@
 import { useState, useRef } from 'react';
 import _ from 'lodash';
 
-import strings from '../utils/stringUtils';
+import strings from '~/utils/strings';
 
 const makeEmptyArray = (len, init) => {
   const array = new Array(len);

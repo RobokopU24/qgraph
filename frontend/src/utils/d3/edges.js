@@ -1,8 +1,8 @@
 /* eslint-disable indent */
 import * as d3 from 'd3';
-import graphUtils from './graphUtils';
-import dragUtils from './dragUtils';
-import strings from '~/utils/stringUtils';
+import graphUtils from './graph';
+import dragUtils from './drag';
+import strings from '~/utils/strings';
 import highlighter from './highlighter';
 
 const dispatch = d3.dispatch('update', 'delete');

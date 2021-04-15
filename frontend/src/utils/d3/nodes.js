@@ -1,7 +1,7 @@
 /* eslint-disable indent, no-use-before-define, func-names, no-return-assign */
 import * as d3 from 'd3';
-import graphUtils from './graphUtils';
-import dragUtils from './dragUtils';
+import graphUtils from './graph';
+import dragUtils from './drag';
 import highlighter from './highlighter';
 
 const dispatch = d3.dispatch('delete');

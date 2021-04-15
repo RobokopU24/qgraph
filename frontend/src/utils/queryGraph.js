@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import stringUtils from './stringUtils';
+import stringUtils from './strings';
 
 /**
  * Create a new query graph object

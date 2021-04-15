@@ -7,11 +7,11 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import AlertContext from '~/context/alert';
 import BiolinkContext from '~/context/biolink';
-import strings from '~/utils/stringUtils';
-import useDebounce from '~/utils/useDebounce';
+import strings from '~/utils/strings';
+import useDebounce from '~/stores/useDebounce';
 
 import fetchCuries from '~/utils/fetchCuries';
-import highlighter from '../utils/highlighter';
+import highlighter from '~/utils/d3/highlighter';
 
 import './nodeSelector.css';
 

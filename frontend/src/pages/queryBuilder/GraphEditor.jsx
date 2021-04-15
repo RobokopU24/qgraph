@@ -8,8 +8,8 @@ import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 
-import queryGraphUtils from '~/utils/queryGraphUtils';
-import getNodeCategoryColorMap from '~/utils/colorUtils';
+import queryGraphUtils from '~/utils/queryGraph';
+import getNodeCategoryColorMap from '~/utils/colors';
 import BiolinkContext from '~/context/biolink';
 
 import queryGraph from './queryGraph';

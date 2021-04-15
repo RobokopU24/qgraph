@@ -8,8 +8,8 @@ import Select from '@material-ui/core/Select';
 import { FaClone } from 'react-icons/fa';
 
 import BiolinkContext from '~/context/biolink';
-import getNodeCategoryColorMap from '~/utils/colorUtils';
-import strings from '~/utils/stringUtils';
+import getNodeCategoryColorMap from '~/utils/colors';
+import strings from '~/utils/strings';
 import getColumnWidth from '~/utils/rtColumnWidth';
 import Cell from './Cell';
 import SubTable from './SubTable';

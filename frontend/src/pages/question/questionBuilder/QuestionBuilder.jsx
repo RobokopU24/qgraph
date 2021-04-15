@@ -11,9 +11,9 @@ import slugify from 'slugify';
 
 import API from '~/API';
 
-import queryGraphUtils from '~/utils/queryGraphUtils';
-import trapiUtils from '~/utils/trapiUtils';
-import strings from '~/utils/stringUtils';
+import queryGraphUtils from '~/utils/queryGraph';
+import trapiUtils from '~/utils/trapi';
+import strings from '~/utils/strings';
 import { formatDateTimeShort } from '~/utils/cache';
 import HelpButton from '~/components/shared/HelpButton';
 

@@ -4,8 +4,8 @@ import {
 import _ from 'lodash';
 
 import AlertContext from '~/context/alert';
-import queryBuilderUtils from './utils/queryBuilderUtils';
-import queryGraphUtils from '~/utils/queryGraphUtils';
+import queryBuilderUtils from '~/utils/queryBuilder';
+import queryGraphUtils from '~/utils/queryGraph';
 
 function defaultNode() {
   return {

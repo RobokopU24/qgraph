@@ -7,8 +7,8 @@ import {
 import _ from 'lodash';
 
 import useMessageStore from '~/stores/useMessageStore';
-import queryGraphUtils from '~/utils/queryGraphUtils';
-import strings from '~/utils/stringUtils';
+import queryGraphUtils from '~/utils/queryGraph';
+import strings from '~/utils/strings';
 import KnowledgeGraph from '../graphs/KnowledgeGraph';
 import ResultsTable from './resultsTable/ResultsTable';
 import QuestionGraphContainer from '../graphs/QuestionGraphContainer';

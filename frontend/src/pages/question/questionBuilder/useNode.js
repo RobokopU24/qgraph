@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react';
 
-import strings from '~/utils/stringUtils';
+import strings from '~/utils/strings';
 import BiolinkContext from '~/context/biolink';
 
 export default function useNodePanels() {

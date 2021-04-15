@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 
 import Button from '@material-ui/core/Button';
 
-import './newQuestion.css';
+import './queryBuilder.css';
 
 // import API from '~/API';
-// import trapiUtils from '~/utils/trapiUtils';
-import queryGraphUtils from '~/utils/queryGraphUtils';
-import useQueryBuilder from './queryBuilder';
+// import trapiUtils from '~/utils/trapi';
+import queryGraphUtils from '~/utils/queryGraph';
+import useQueryBuilder from './useQueryBuilder';
 import GraphEditor from './GraphEditor';
 import TextEditor from './TextEditor';
 import JsonEditor from './JsonEditor';

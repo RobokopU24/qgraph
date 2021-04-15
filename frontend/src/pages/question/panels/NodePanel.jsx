@@ -12,7 +12,7 @@ import AlertContext from '~/context/alert';
 import API from '~/API';
 
 import BiolinkContext from '~/context/biolink';
-import strings from '~/utils/stringUtils';
+import strings from '~/utils/strings';
 
 import CurieConceptSelector from '~/components/shared/curies/CurieConceptSelector';
 

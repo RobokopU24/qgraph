@@ -6,8 +6,8 @@ import {
 import { FaSpinner } from 'react-icons/fa';
 import { Multiselect, DropdownList } from 'react-widgets';
 
-import strings from '~/utils/stringUtils';
-import usePageStatus from '~/utils/usePageStatus';
+import strings from '~/utils/strings';
+import usePageStatus from '~/stores/usePageStatus';
 import BiolinkContext from '~/context/biolink';
 
 const listItem = ({ item }) => (

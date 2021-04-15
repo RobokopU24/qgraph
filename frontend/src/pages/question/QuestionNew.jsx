@@ -14,7 +14,7 @@ import API from '~/API';
 import './newQuestion.css';
 
 import { useVisibility } from '~/utils/cache';
-import usePageStatus from '~/utils/usePageStatus';
+import usePageStatus from '~/stores/usePageStatus';
 
 import QuestionBuilder from './questionBuilder/QuestionBuilder';
 

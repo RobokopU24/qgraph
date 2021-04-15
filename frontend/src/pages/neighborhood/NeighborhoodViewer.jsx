@@ -5,7 +5,7 @@ import _ from 'lodash';
 import BiolinkContext from '~/context/biolink';
 
 import AnswersetGraph from '~/components/shared/graphs/AnswersetGraph';
-import getNodeCategoryColorMap from '~/utils/colorUtils';
+import getNodeCategoryColorMap from '~/utils/colors';
 import getColumnWidth from '~/utils/rtColumnWidth';
 
 import useMessageStore from '~/stores/useMessageStore';

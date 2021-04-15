@@ -1,9 +1,9 @@
 /* eslint-disable indent, no-use-before-define, func-names, no-return-assign */
 import * as d3 from 'd3';
-import graphUtils from './utils/graphUtils';
-import nodeUtils from './utils/nodeUtils';
-import edgeUtils from './utils/edgeUtils';
-import highlighter from './utils/highlighter';
+import graphUtils from '~/utils/d3/graph';
+import nodeUtils from '~/utils/d3/nodes';
+import edgeUtils from '~/utils/d3/edges';
+import highlighter from '~/utils/d3/highlighter';
 
 function findKey(obj, prop) {
   const [s, t] = prop.split('--');

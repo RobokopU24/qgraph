@@ -12,8 +12,8 @@ import CheckIcon from '@material-ui/icons/Check';
 // import UndoIcon from '@material-ui/icons/Undo';
 import CloseIcon from '@material-ui/icons/Close';
 
-import trapiUtils from '~/utils/trapiUtils';
-import usePageStatus from '~/utils/usePageStatus';
+import trapiUtils from '~/utils/trapi';
+import usePageStatus from '~/stores/usePageStatus';
 import AlertContext from '~/context/alert';
 
 export default function JsonEditor({ queryBuilder, show, close }) {

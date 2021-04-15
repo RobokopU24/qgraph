@@ -27,7 +27,7 @@ import UserContext from '~/context/user';
 import AlertContext from '~/context/alert';
 import BiolinkContext from '~/context/biolink';
 
-import useBiolink from '~/utils/useBiolink';
+import useBiolink from '~/stores/useBiolink';
 
 export default function App() {
   const [user, setUser] = useState(null);

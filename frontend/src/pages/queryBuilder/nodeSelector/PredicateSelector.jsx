@@ -3,8 +3,8 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 
 import BiolinkContext from '~/context/biolink';
-import strings from '~/utils/stringUtils';
-import highlighter from '../utils/highlighter';
+import strings from '~/utils/strings';
+import highlighter from '~/utils/d3/highlighter';
 
 /**
  * Get first node category from list

@@ -15,7 +15,7 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-import strings from '~/utils/stringUtils';
+import strings from '~/utils/strings';
 
 export default function AnswersetFilter(props) {
   // Store comes from props in Table component
