@@ -10,7 +10,7 @@ import TermsofService from '~/pages/TermsofService';
 import SimpleViewer from '~/pages/SimpleViewer';
 import SimpleQuestion from '~/pages/question/SimpleQuestion';
 import QuestionNew from '~/pages/question/QuestionNew';
-import NewQuestion from '~/pages/new_question/NewQuestion';
+import QueryBuilder from '~/pages/queryBuilder/QueryBuilder';
 
 import Neighborhood from '~/pages/neighborhood/Neighborhood';
 import QuestionList from '~/pages/questionList/QuestionList';
@@ -96,7 +96,7 @@ export default function App() {
                         <QuestionNew />
                       </Route>
                       <Route path="/new_question">
-                        <NewQuestion />
+                        <QueryBuilder />
                       </Route>
                       <Route path="/">
                         <Landing />

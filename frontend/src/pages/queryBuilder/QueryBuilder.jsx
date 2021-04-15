@@ -12,7 +12,7 @@ import GraphEditor from './GraphEditor';
 import TextEditor from './TextEditor';
 import JsonEditor from './JsonEditor';
 
-export default function NewQuestion() {
+export default function QueryBuilder() {
   const queryBuilder = useQueryBuilder();
   const [showJson, toggleJson] = useState(false);
 
