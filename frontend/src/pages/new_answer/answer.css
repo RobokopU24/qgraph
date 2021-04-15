@@ -1,0 +1,6 @@
+#resultsTable {
+    width: 600px;
+    height: 400px;
+    display: inline-block;
+    overflow-y: auto;
+}
