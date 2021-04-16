@@ -13,20 +13,25 @@ import useDebounce from '~/stores/useDebounce';
 import fetchCuries from '~/utils/fetchCuries';
 import highlighter from '~/utils/d3/highlighter';
 
+function isValidNode(properties) {
+  return (properties.category && properties.category.length) ||
+    (properties.id && properties.id.length);
+}
+
 /**
  * Generic node selector component
- * @param {object} node node object from query graph
- * @param {string} nodeId node id
- * @param {boolean} original is node the original or a reference
- * @param {function} changeNode function to change node reference
- * @param {function} updateNode function to update node object
- * @param {object} nodeOptions node selector cannot create a brand new node
+ * @param {object} properties node properties from query graph
+ * @param {string} id node id
+ * @param {boolean} isReference is node the original or a reference
+ * @param {function} changeReference function to change node reference
+ * @param {function} update function to update node properties
+ * @param {object} nodeOptions
  * @param {boolean} nodeOptions.includeCuries node selector can include curies for a new node
  * @param {boolean} nodeOptions.includeExistingNodes node selector can include existing nodes
  * @param {boolean} nodeOptions.includeCategories node selector can include general categories
  */
 export default function NodeSelector({
-  id, properties, original,
+  id, properties, isReference,
   changeReference, update,
   options: nodeOptions = {},
 }) {
@@ -36,12 +41,12 @@ export default function NodeSelector({
     includeCategories = true, clearable = true,
   } = nodeOptions;
   const [loading, toggleLoading] = useState(false);
-  const [searchTerm, updateSearchTerm] = useState('');
+  const [inputText, updateInputText] = useState('');
   const [open, toggleOpen] = useState(false);
   const [options, setOptions] = useState([]);
   const displayAlert = useContext(AlertContext);
   const { concepts } = useContext(BiolinkContext);
-  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const searchTerm = useDebounce(inputText, 500);
 
   /**
    * Get dropdown options for node selector
@@ -55,7 +60,7 @@ export default function NodeSelector({
    */
   async function getOptions() {
     toggleLoading(true);
-    const newOptions = original ? [] : [{ name: 'Turn into new term', key: null }];
+    const newOptions = isReference ? [{ name: 'New Term', key: null }] : [];
     // allow user to select an existing node
     if (includeExistingNodes) {
       newOptions.push(...existingNodes);
@@ -63,7 +68,7 @@ export default function NodeSelector({
     // add general concepts to options
     if (includeCategories) {
       const includedCategories = concepts.filter(
-        (category) => category.toLowerCase().includes(debouncedSearchTerm.toLowerCase()),
+        (category) => category.toLowerCase().includes(searchTerm.toLowerCase()),
       ).flatMap((category) => (
         [
           {
@@ -80,25 +85,29 @@ export default function NodeSelector({
       newOptions.push(...includedCategories);
     }
     // fetch matching curies from external services
-    if (includeCuries && debouncedSearchTerm.length > 3) {
-      if (debouncedSearchTerm.includes(':')) { // user is typing a specific curie
-        newOptions.push({ name: debouncedSearchTerm, id: debouncedSearchTerm });
+    if (includeCuries && searchTerm.length > 3) {
+      if (searchTerm.includes(':')) { // user is typing a specific curie
+        newOptions.push({ name: searchTerm, id: searchTerm });
       } else {
-        const fetchedCuries = await fetchCuries(debouncedSearchTerm, displayAlert);
-        newOptions.push(...fetchedCuries);
+        const curies = await fetchCuries(searchTerm, displayAlert);
+        newOptions.push(...curies);
       }
     }
     toggleLoading(false);
     setOptions(newOptions);
   }
 
+  /**
+   * Get node options when dropdown opens or search term changes
+   * after debounce
+   */
   useEffect(() => {
     if (open) {
       getOptions();
     } else {
       setOptions([]);
     }
-  }, [open, debouncedSearchTerm]);
+  }, [open, searchTerm]);
 
   /**
    * Create a human-readable label for every option
@@ -120,7 +129,7 @@ export default function NodeSelector({
       if (opt.category.length) {
         return label + opt.category.join(', ');
       }
-      return `${label} Any`;
+      return `${label} Something`;
     }
     return '';
   }
@@ -132,7 +141,7 @@ export default function NodeSelector({
    */
   function handleUpdate(e, v) {
     // reset search term back when user selects something
-    updateSearchTerm('');
+    updateInputText('');
     if (v && 'key' in v) {
       // key will only be in v when switching to existing node
       changeReference(v.key);
@@ -142,31 +151,35 @@ export default function NodeSelector({
     }
   }
 
-  const nodeValue = useMemo(() => (
-    (properties.category && properties.category.length && properties) ||
-    (properties.id && properties.id.length && properties) ||
-    null
-  ), [properties]);
+  /**
+   * Compute current value of selector
+   */
+  const selectorValue = useMemo(() => {
+    if (isValidNode(properties)) {
+      return properties;
+    }
+    return null;
+  }, [properties]);
 
   return (
     <Autocomplete
       options={options}
       loading={loading}
-      className={`textEditorSelector${original ? '' : ' referenceNode'} highlight-${id}`}
+      className={`textEditorSelector${isReference ? ' referenceNode' : ''} highlight-${id}`}
       getOptionLabel={getOptionLabel}
       autoComplete
       autoHighlight
       clearOnBlur
       blurOnSelect
       disableClearable={!clearable}
-      inputValue={searchTerm}
-      value={nodeValue}
+      inputValue={inputText}
+      value={selectorValue}
       getOptionSelected={(option, value) => option.name === value.name}
       open={open}
       onChange={handleUpdate}
       onOpen={() => toggleOpen(true)}
       onClose={() => toggleOpen(false)}
-      onInputChange={(e, v) => updateSearchTerm(v)}
+      onInputChange={(e, v) => updateInputText(v)}
       renderInput={(params) => (
         <TextField
           {...params}

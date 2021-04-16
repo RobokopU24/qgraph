@@ -16,7 +16,6 @@ export default function TextEditorRow({ edgeId, index }) {
 
   return (
     <div
-      key={edgeId}
       className="textEditorRow"
     >
       <IconButton
@@ -36,7 +35,7 @@ export default function TextEditorRow({ edgeId, index }) {
         properties={queryBuilder.query_graph.nodes[edge.subject]}
         changeReference={(nodeId) => queryBuilder.updateEdge(edgeId, 'subject', nodeId)}
         update={original.subject ? queryBuilder.updateNode : () => queryBuilder.updateEdge(edgeId, 'subject', null)}
-        original={original.subject}
+        isReference={!original.subject}
         options={{
           includeCuries: original.subject,
           includeCategories: original.subject,
@@ -54,7 +53,7 @@ export default function TextEditorRow({ edgeId, index }) {
         properties={queryBuilder.query_graph.nodes[edge.object]}
         changeReference={(nodeId) => queryBuilder.updateEdge(edgeId, 'object', nodeId)}
         update={original.object ? queryBuilder.updateNode : () => queryBuilder.updateEdge(edgeId, 'object', null)}
-        original={original.object}
+        isReference={!original.object}
         options={{
           includeCuries: original.object,
           includeCategories: original.object,

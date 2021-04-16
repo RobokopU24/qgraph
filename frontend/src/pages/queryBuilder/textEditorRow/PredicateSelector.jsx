@@ -21,7 +21,6 @@ export default function PredicateSelector({ id }) {
   const queryBuilder = useContext(QueryBuilderContext);
   const { query_graph, updateEdgePredicate } = queryBuilder;
   const edge = query_graph.edges[id];
-  console.log(id);
 
   // Filter predicates by the nodes given
   function getFilteredPredicateList() {

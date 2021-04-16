@@ -92,7 +92,7 @@ function enter(node, simulation, chooseNode, openNodeEditor, args) {
       .attr('alignment-baseline', 'middle')
       .text((d) => {
         const { name } = d;
-        return name || 'Any';
+        return name || 'Something';
       })
       .each(graphUtils.ellipseOverflow))
     .call((nodeDelete) => nodeDelete.append('rect')
@@ -163,7 +163,7 @@ function update(node, colorMap) {
     .call((l) => l.select('.nodeLabel')
       .text((d) => {
         const { name } = d;
-        return name || 'Any';
+        return name || 'Something';
       })
       .each(graphUtils.ellipseOverflow));
 }
