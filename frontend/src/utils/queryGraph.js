@@ -78,7 +78,7 @@ const standardizeCategory = (o) => standardizeArrayProperty(o, 'category');
  * @param {object} obj object to prune
  * @param {string} property property of object to prune
 */
-function pruneEmptyArrays(obj, property) {
+function pruneEmptyArray(obj, property) {
   if (obj[property] && _.isArray(obj[property]) &&
       obj[property].length === 0) {
     delete obj[property];
@@ -117,14 +117,14 @@ const convert = {
     reasonerRepresentation.edges = dictToListWithIds(q.edges);
 
     reasonerRepresentation.nodes.forEach((node) => {
-      pruneEmptyArrays(node, 'id');
-      pruneEmptyArrays(node, 'category');
+      pruneEmptyArray(node, 'id');
+      pruneEmptyArray(node, 'category');
       node.id = node.key;
       delete node.key;
     });
 
     reasonerRepresentation.edges.forEach((edge) => {
-      pruneEmptyArrays(edge, 'predicate');
+      pruneEmptyArray(edge, 'predicate');
       edge.id = edge.key;
       delete edge.key;
     });
@@ -179,14 +179,14 @@ function getGraphEditorFormat(q_graph) {
 function prune(q_graph) {
   const clonedQueryGraph = _.cloneDeep(q_graph);
   Object.keys(clonedQueryGraph.nodes).forEach((n) => {
-    pruneEmptyArrays(clonedQueryGraph.nodes[n], 'category');
-    pruneEmptyArrays(clonedQueryGraph.nodes[n], 'id');
+    pruneEmptyArray(clonedQueryGraph.nodes[n], 'category');
+    pruneEmptyArray(clonedQueryGraph.nodes[n], 'id');
     if (clonedQueryGraph.nodes[n].id && clonedQueryGraph.nodes[n].category) {
       delete clonedQueryGraph.nodes[n].category;
     }
   });
   Object.keys(clonedQueryGraph.edges).forEach((e) => {
-    pruneEmptyArrays(clonedQueryGraph.edges[e], 'predicate');
+    pruneEmptyArray(clonedQueryGraph.edges[e], 'predicate');
   });
   return clonedQueryGraph;
 }
