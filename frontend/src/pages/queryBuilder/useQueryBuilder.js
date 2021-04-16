@@ -7,13 +7,13 @@ import AlertContext from '~/context/alert';
 import queryBuilderUtils from '~/utils/queryBuilder';
 import queryGraphUtils from '~/utils/queryGraph';
 
-function defaultNode() {
+function getDefaultNode() {
   return {
     category: [],
     id: [],
   };
 }
-function defaultEdge() {
+function getDefaultEdge() {
   return {
     subject: '',
     object: '',
@@ -23,8 +23,8 @@ function defaultEdge() {
 
 const defaultQueryGraph = {
   nodes: {
-    n0: defaultNode(),
-    n1: defaultNode(),
+    n0: getDefaultNode(),
+    n1: getDefaultNode(),
   },
   edges: {
     e0: {
@@ -66,8 +66,8 @@ export default function useQueryBuilder() {
     const newNodeId = queryBuilderUtils.getNextNodeID(query_graph);
     const newEdgeId = queryBuilderUtils.getNextEdgeID(query_graph);
     const clonedQueryGraph = _.cloneDeep(query_graph);
-    clonedQueryGraph.nodes[newNodeId] = defaultNode();
-    const newEdge = defaultEdge();
+    clonedQueryGraph.nodes[newNodeId] = getDefaultNode();
+    const newEdge = getDefaultEdge();
     let subjectId = nodeId;
     if (nodeId === undefined) {
       const nodeKeys = Object.keys(query_graph.nodes);
@@ -88,7 +88,7 @@ export default function useQueryBuilder() {
   function addEdge(subjectId, objectId) {
     const clonedQueryGraph = _.cloneDeep(query_graph);
     const newEdgeId = queryBuilderUtils.getNextEdgeID(clonedQueryGraph);
-    const newEdge = defaultEdge();
+    const newEdge = getDefaultEdge();
     newEdge.subject = subjectId;
     newEdge.object = objectId;
     clonedQueryGraph.edges[newEdgeId] = newEdge;
@@ -124,7 +124,7 @@ export default function useQueryBuilder() {
     const clonedQueryGraph = _.cloneDeep(query_graph);
     if (!nodeId) {
       const newNodeId = queryBuilderUtils.getNextNodeID(clonedQueryGraph);
-      clonedQueryGraph.nodes[newNodeId] = defaultNode();
+      clonedQueryGraph.nodes[newNodeId] = getDefaultNode();
       clonedQueryGraph.edges[edgeId][edgeType] = newNodeId;
     } else {
       clonedQueryGraph.edges[edgeId][edgeType] = nodeId;
@@ -159,7 +159,7 @@ export default function useQueryBuilder() {
    */
   function updateNode(nodeId, updatedNode) {
     const clonedQueryGraph = _.cloneDeep(query_graph);
-    clonedQueryGraph.nodes[nodeId] = updatedNode || defaultNode();
+    clonedQueryGraph.nodes[nodeId] = updatedNode || getDefaultNode();
     updateQueryGraph(clonedQueryGraph);
   }
 
