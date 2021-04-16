@@ -27,9 +27,6 @@ export default function PredicateSelector({ id }) {
     if (!biolink || !biolink.concepts.length) {
       return null;
     }
-    if (!edge.subject || !edge.object) {
-      return null;
-    }
     const subjectNode = query_graph.nodes[edge.subject];
     const objectNode = query_graph.nodes[edge.object];
 
