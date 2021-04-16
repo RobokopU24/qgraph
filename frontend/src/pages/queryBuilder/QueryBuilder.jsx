@@ -86,7 +86,7 @@ export default function QueryBuilder() {
         variant="contained"
         style={{ marginLeft: '10px' }}
       >
-        Create JSON
+        View JSON
       </Button>
     </>
   );
