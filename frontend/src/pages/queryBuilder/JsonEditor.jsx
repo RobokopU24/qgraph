@@ -15,6 +15,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import trapiUtils from '~/utils/trapi';
 import usePageStatus from '~/stores/usePageStatus';
 import AlertContext from '~/context/alert';
+import QueryBuilderContext from '~/context/queryBuilder';
 
 /**
  * Query Builder json editor interface
@@ -22,7 +23,8 @@ import AlertContext from '~/context/alert';
  * @param {bool} show whether to show the json editor or not
  * @param {func} close close the json editor
  */
-export default function JsonEditor({ queryBuilder, show, close }) {
+export default function JsonEditor({ show, close }) {
+  const queryBuilder = useContext(QueryBuilderContext);
   const [errorMessages, setErrorMessages] = useState('');
   const [queryGraph, updateQueryGraph] = useState(queryBuilder.query_graph);
   const pageStatus = usePageStatus(false);

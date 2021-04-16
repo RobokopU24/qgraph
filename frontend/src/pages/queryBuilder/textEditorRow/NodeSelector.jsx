@@ -13,8 +13,6 @@ import useDebounce from '~/stores/useDebounce';
 import fetchCuries from '~/utils/fetchCuries';
 import highlighter from '~/utils/d3/highlighter';
 
-import './nodeSelector.css';
-
 /**
  * Generic node selector component
  * @param {object} node node object from query graph

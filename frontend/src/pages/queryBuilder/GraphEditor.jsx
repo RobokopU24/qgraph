@@ -11,10 +11,11 @@ import Paper from '@material-ui/core/Paper';
 import queryGraphUtils from '~/utils/queryGraph';
 import getNodeCategoryColorMap from '~/utils/colors';
 import BiolinkContext from '~/context/biolink';
+import QueryBuilderContext from '~/context/queryBuilder';
 
 import queryGraph from './queryGraph';
-import NodeSelector from './nodeSelector/NodeSelector';
-import PredicateSelector from './nodeSelector/PredicateSelector';
+import NodeSelector from './textEditorRow/NodeSelector';
+import PredicateSelector from './textEditorRow/PredicateSelector';
 
 import './graphEditor.css';
 
@@ -25,7 +26,8 @@ const height = 400;
  * Query Builder graph editor interface
  * @param {obj} queryBuilder query builder custom hook
  */
-export default function GraphEditor({ queryBuilder }) {
+export default function GraphEditor() {
+  const queryBuilder = useContext(QueryBuilderContext);
   const { query_graph } = queryBuilder;
   const graphEditorGraph = useMemo(() => queryGraphUtils.getGraphEditorFormat(query_graph), [query_graph]);
   const svgRef = useRef();

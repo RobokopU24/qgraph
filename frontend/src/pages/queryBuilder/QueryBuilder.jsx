@@ -6,6 +6,7 @@ import './queryBuilder.css';
 
 // import API from '~/API';
 // import trapiUtils from '~/utils/trapi';
+import QueryBuilderContext from '~/context/queryBuilder';
 import queryGraphUtils from '~/utils/queryGraph';
 import useQueryBuilder from './useQueryBuilder';
 import GraphEditor from './GraphEditor';
@@ -56,17 +57,16 @@ export default function QueryBuilder() {
   return (
     <>
       <div id="queryEditorContainer">
-        <TextEditor
-          queryBuilder={queryBuilder}
-        />
-        <GraphEditor
-          queryBuilder={queryBuilder}
-        />
-        <JsonEditor
-          queryBuilder={queryBuilder}
-          show={showJson}
-          close={() => toggleJson(false)}
-        />
+        <QueryBuilderContext.Provider value={queryBuilder}>
+          <TextEditor
+            edgeIds={queryBuilder.edgeIds}
+          />
+          <GraphEditor />
+          <JsonEditor
+            show={showJson}
+            close={() => toggleJson(false)}
+          />
+        </QueryBuilderContext.Provider>
       </div>
       <Button
         onClick={() => toggleJson(true)}
