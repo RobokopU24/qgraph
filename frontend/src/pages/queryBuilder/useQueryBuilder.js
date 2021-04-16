@@ -35,6 +35,12 @@ const defaultQueryGraph = {
   },
 };
 
+/**
+ * Query builder main store
+ *
+ * **The main source for the query graph**
+ * - Handles all adding, deleting, modifying of nodes and edges
+ */
 export default function useQueryBuilder() {
   const [query_graph, updateQueryGraph] = useState(defaultQueryGraph);
   const [rootNode, setRootNode] = useState('n0');

@@ -12,6 +12,11 @@ import GraphEditor from './GraphEditor';
 import TextEditor from './TextEditor';
 import JsonEditor from './JsonEditor';
 
+/**
+ * Query Builder parent component
+ *
+ * Displays the text, graph, and json editors
+ */
 export default function QueryBuilder() {
   const queryBuilder = useQueryBuilder();
   const [showJson, toggleJson] = useState(false);

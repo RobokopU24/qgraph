@@ -16,6 +16,12 @@ import trapiUtils from '~/utils/trapi';
 import usePageStatus from '~/stores/usePageStatus';
 import AlertContext from '~/context/alert';
 
+/**
+ * Query Builder json editor interface
+ * @param {obj} queryBuilder query builder custom hook
+ * @param {bool} show whether to show the json editor or not
+ * @param {func} close close the json editor
+ */
 export default function JsonEditor({ queryBuilder, show, close }) {
   const [errorMessages, setErrorMessages] = useState('');
   const [queryGraph, updateQueryGraph] = useState(queryBuilder.query_graph);

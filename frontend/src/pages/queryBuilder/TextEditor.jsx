@@ -7,6 +7,10 @@ import IndeterminateCheckBoxOutlinedIcon from '@material-ui/icons/IndeterminateC
 import NodeSelector from './nodeSelector/NodeSelector';
 import PredicateSelector from './nodeSelector/PredicateSelector';
 
+/**
+ * Query Builder text editor interface
+ * @param {obj} queryBuilder query builder custom hook
+ */
 export default function TextEditor({ queryBuilder }) {
   return (
     <div id="queryTextEditor">

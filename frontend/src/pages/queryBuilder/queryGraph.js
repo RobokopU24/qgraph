@@ -41,7 +41,7 @@ const edgeHandler = {
 };
 
 /**
- * Initialize query graph and provide update method
+ * Main D3 query graph component
  * @param {*} svgRef DOM ref to svg element
  * @param {int} height height of the query graph element
  * @param {int} width width of the query graph element
