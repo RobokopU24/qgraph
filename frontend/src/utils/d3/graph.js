@@ -6,11 +6,11 @@ const inverseEdgeType = {
 };
 
 /**
- * Get radian angle of edge from node
- * @param {int} cx connected node x position
- * @param {int} cy connected node y position
- * @param {int} x attached node x position
- * @param {int} y attached node y position
+ * Get angle of line connecting points, in radians
+ * @param {int} x1 x of first point
+ * @param {int} y1 y of first point
+ * @param {int} x2 x of second point
+ * @param {int} y2 y of second point
  */
 function getAngle(x1, y1, x2, y2) {
   const delta_x = x2 - x1;
@@ -19,6 +19,15 @@ function getAngle(x1, y1, x2, y2) {
   return theta_radians;
 }
 
+/**
+ * Get the X position of a point on the circumference of a circle
+ * @param {int} cx x of center of circle
+ * @param {int} cy y of center of circle
+ * @param {int} x x of point outside circle
+ * @param {int} y y of point outside circle
+ * @param {int} r radius of circle
+ * @returns x of point on circumference of circle
+ */
 function getAdjustedX(cx, cy, x, y, r) {
   const angle = getAngle(cx, cy, x, y);
   // cos takes radians
@@ -26,6 +35,15 @@ function getAdjustedX(cx, cy, x, y, r) {
   return adjusted_x;
 }
 
+/**
+ * Get the Y position of a point on the circumference of a circle
+ * @param {int} cx x of center of circle
+ * @param {int} cy y of center of circle
+ * @param {int} x x of point outside circle
+ * @param {int} y y of point outside circle
+ * @param {int} r radius of circle
+ * @returns y of point on circumference of circle
+ */
 function getAdjustedY(cx, cy, x, y, r) {
   const angle = getAngle(cx, cy, x, y);
   // sin takes radians
@@ -33,6 +51,18 @@ function getAdjustedY(cx, cy, x, y, r) {
   return adjusted_y;
 }
 
+/**
+ * Calculate the x and y of both edge ends as well as the quadratic curve point
+ * to make the edge curve
+ * @param {int} sourceX x of source node
+ * @param {int} sourceY y of source node
+ * @param {int} targetX x of target node
+ * @param {int} targetY y of target node
+ * @param {int} numEdges number of total edges
+ * @param {int} index index of edge to find its curve position
+ * @param {int} nodeRadius node radius
+ * @returns {obj} all the necessary points to make a curvy edge
+ */
 function getRadialXY(sourceX, sourceY, targetX, targetY, numEdges, index, nodeRadius) {
   const arcWidth = Math.PI / 3;
   const edgeStep = arcWidth / 5;
@@ -104,7 +134,10 @@ function boundedNode(pos, bound, r) {
   return Math.max(r, Math.min(bound - r, pos));
 }
 
-function ellipseOverflow() {
+/**
+ * Trim and add an ellipsis to the end of long node labels
+ */
+function ellipsisOverflow() {
   const el = d3.select(this);
   let textLength = el.node().getComputedTextLength();
   let text = el.text();
@@ -115,6 +148,11 @@ function ellipseOverflow() {
   }
 }
 
+/**
+ * Get the middle of two points
+ * @param {obj} edge edge object
+ * @returns {obj} the x and y of the middle of two points
+ */
 function getEdgeMiddle(edge) {
   const { source, target } = edge;
   const midX = (source.x + target.x) / 2;
@@ -144,6 +182,9 @@ function showArrow(edge) {
   return edge.predicate && edge.predicate.findIndex((p) => p !== 'biolink:related_to') > -1 ? 'url(#arrow)' : '';
 }
 
+/**
+ * Fade a DOM element in to view
+ */
 function show() {
   d3.select(this)
     .transition()
@@ -151,6 +192,9 @@ function show() {
     .style('opacity', 1);
 }
 
+/**
+ * Fade a DOM element out of view
+ */
 function hide() {
   d3.select(this)
     .transition()
@@ -169,7 +213,7 @@ export default {
   boundedNode,
   boundedEdge,
 
-  ellipseOverflow,
+  ellipsisOverflow,
   getEdgeMiddle,
 
   isInside,
