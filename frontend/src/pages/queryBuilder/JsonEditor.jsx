@@ -57,7 +57,7 @@ export default function JsonEditor({ queryBuilder, show, close }) {
           }
           updateQueryGraph(graph);
         } catch (err) {
-          displayAlert('error', 'Failed to read this query graph. Are you sure this is valid json?');
+          displayAlert('error', 'Failed to read this query graph. Are you sure this is valid JSON?');
         }
       };
       fr.onerror = () => {
