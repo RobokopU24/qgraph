@@ -32,32 +32,30 @@ export default function TextEditorRow({ edgeId, index }) {
         {index > 1 && 'and where'}
       </p>
       <NodeSelector
-        nodeId={edge.subject}
-        node={queryBuilder.query_graph.nodes[edge.subject]}
-        changeNode={(nodeId) => queryBuilder.updateEdge(edgeId, 'subject', nodeId)}
-        updateNode={original.subject ? queryBuilder.updateNode : () => queryBuilder.updateEdge(edgeId, 'subject', null)}
+        id={edge.subject}
+        properties={queryBuilder.query_graph.nodes[edge.subject]}
+        changeReference={(nodeId) => queryBuilder.updateEdge(edgeId, 'subject', nodeId)}
+        update={original.subject ? queryBuilder.updateNode : () => queryBuilder.updateEdge(edgeId, 'subject', null)}
         original={original.subject}
-        nodeOptions={{
+        options={{
           includeCuries: original.subject,
           includeCategories: original.subject,
           includeExistingNodes: index !== 0,
           existingNodes: Object.keys(queryBuilder.query_graph.nodes).filter(
             (key) => key !== edge.object,
           ).map((key) => ({ ...queryBuilder.query_graph.nodes[key], key })),
-          // clearable: index !== 0,
         }}
       />
       <PredicateSelector
-        queryBuilder={queryBuilder}
-        edgeId={edgeId}
+        id={edgeId}
       />
       <NodeSelector
-        nodeId={edge.object}
-        node={queryBuilder.query_graph.nodes[edge.object]}
-        changeNode={(nodeId) => queryBuilder.updateEdge(edgeId, 'object', nodeId)}
-        updateNode={original.object ? queryBuilder.updateNode : () => queryBuilder.updateEdge(edgeId, 'object', null)}
+        id={edge.object}
+        properties={queryBuilder.query_graph.nodes[edge.object]}
+        changeReference={(nodeId) => queryBuilder.updateEdge(edgeId, 'object', nodeId)}
+        update={original.object ? queryBuilder.updateNode : () => queryBuilder.updateEdge(edgeId, 'object', null)}
         original={original.object}
-        nodeOptions={{
+        options={{
           includeCuries: original.object,
           includeCategories: original.object,
           includeExistingNodes: index !== 0,

@@ -26,9 +26,9 @@ import highlighter from '~/utils/d3/highlighter';
  * @param {boolean} nodeOptions.includeCategories node selector can include general categories
  */
 export default function NodeSelector({
-  node, nodeId, original,
-  changeNode, updateNode,
-  nodeOptions = {},
+  id, properties, original,
+  changeReference, update,
+  options: nodeOptions = {},
 }) {
   const {
     includeCuries = true, includeExistingNodes = true,
@@ -135,24 +135,24 @@ export default function NodeSelector({
     updateSearchTerm('');
     if (v && 'key' in v) {
       // key will only be in v when switching to existing node
-      changeNode(v.key);
+      changeReference(v.key);
     } else {
       // updating a node value
-      updateNode(nodeId, v);
+      update(id, v);
     }
   }
 
   const nodeValue = useMemo(() => (
-    (node.category && node.category.length && node) ||
-    (node.id && node.id.length && node) ||
+    (properties.category && properties.category.length && properties) ||
+    (properties.id && properties.id.length && properties) ||
     null
-  ), [node]);
+  ), [properties]);
 
   return (
     <Autocomplete
       options={options}
       loading={loading}
-      className={`textEditorSelector${original ? '' : ' referenceNode'} highlight-${nodeId}`}
+      className={`textEditorSelector${original ? '' : ' referenceNode'} highlight-${id}`}
       getOptionLabel={getOptionLabel}
       autoComplete
       autoHighlight
@@ -172,20 +172,20 @@ export default function NodeSelector({
           {...params}
           variant="outlined"
           className="nodeDropdown"
-          label={nodeId}
+          label={id}
           margin="dense"
           onFocus={() => {
-            highlighter.highlightGraphNode(nodeId);
-            highlighter.highlightTextEditorNode(nodeId);
+            highlighter.highlightGraphNode(id);
+            highlighter.highlightTextEditorNode(id);
           }}
           onBlur={() => {
-            highlighter.clearGraphNode(nodeId);
-            highlighter.clearTextEditorNode(nodeId);
+            highlighter.clearGraphNode(id);
+            highlighter.clearTextEditorNode(id);
           }}
           InputProps={{
             ...params.InputProps,
             classes: {
-              root: `nodeSelector nodeSelector-${nodeId}`,
+              root: `nodeSelector nodeSelector-${id}`,
             },
             endAdornment: (
               <>

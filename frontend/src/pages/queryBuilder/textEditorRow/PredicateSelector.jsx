@@ -3,6 +3,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 
 import BiolinkContext from '~/context/biolink';
+import QueryBuilderContext from '~/context/queryBuilder';
 import strings from '~/utils/strings';
 import highlighter from '~/utils/d3/highlighter';
 
@@ -15,10 +16,12 @@ function getCategory(category) {
   return (Array.isArray(category) && category.length && category[0]) || 'biolink:NamedThing';
 }
 
-export default function PredicateSelector({ queryBuilder, edgeId }) {
+export default function PredicateSelector({ id }) {
   const biolink = useContext(BiolinkContext);
+  const queryBuilder = useContext(QueryBuilderContext);
   const { query_graph, updateEdgePredicate } = queryBuilder;
-  const edge = query_graph.edges[edgeId];
+  const edge = query_graph.edges[id];
+  console.log(id);
 
   // Filter predicates by the nodes given
   function getFilteredPredicateList() {
@@ -59,17 +62,17 @@ export default function PredicateSelector({ queryBuilder, edgeId }) {
   useEffect(() => {
     if (filteredPredicateList.length) {
       const keptPredicates = (edge.predicate && edge.predicate.filter((p) => filteredPredicateList.indexOf(p) > -1)) || [];
-      queryBuilder.updateEdgePredicate(edgeId, keptPredicates);
+      queryBuilder.updateEdgePredicate(id, keptPredicates);
     }
   }, [filteredPredicateList]);
 
   return (
     <Autocomplete
       options={filteredPredicateList}
-      className={`textEditorSelector highlight-${edgeId}`}
+      className={`textEditorSelector highlight-${id}`}
       value={edge.predicate || []}
       onChange={(e, value) => {
-        updateEdgePredicate(edgeId, value);
+        updateEdgePredicate(id, value);
       }}
       renderInput={(params) => (
         <TextField
@@ -79,17 +82,17 @@ export default function PredicateSelector({ queryBuilder, edgeId }) {
           className="edgeDropdown"
           margin="dense"
           onFocus={() => {
-            highlighter.highlightGraphEdge(edgeId);
-            highlighter.highlightTextEditorEdge(edgeId);
+            highlighter.highlightGraphEdge(id);
+            highlighter.highlightTextEditorEdge(id);
           }}
           onBlur={() => {
-            highlighter.clearGraphEdge(edgeId);
-            highlighter.clearTextEditorEdge(edgeId);
+            highlighter.clearGraphEdge(id);
+            highlighter.clearTextEditorEdge(id);
           }}
           InputProps={{
             ...params.InputProps,
             classes: {
-              root: `edgeSelector edgeSelector-${edgeId}`,
+              root: `edgeSelector edgeSelector-${id}`,
             },
           }}
         />
