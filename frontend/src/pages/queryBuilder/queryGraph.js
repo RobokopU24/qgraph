@@ -296,12 +296,12 @@ export default function queryGraph(
     // must come after simulation
     const edgeIndices = new Proxy({}, edgeHandler);
     edges.forEach((e, i) => {
-      const edgeObj = edgeIndices[`${e.subject}--${e.object}`];
+      const edgeObj = edgeIndices[`${e.source.id}--${e.target.id}`];
       edgeObj.indices.push(i);
-      edgeIndices[`${e.subject}--${e.object}`] = edgeObj.indices;
+      edgeIndices[`${e.source.id}--${e.target.id}`] = edgeObj.indices;
     });
     edges.forEach((e, i) => {
-      const edgeObj = edgeIndices[`${e.subject}--${e.object}`];
+      const edgeObj = edgeIndices[`${e.source.id}--${e.target.id}`];
       e.numEdges = edgeObj.indices.length;
       const edgeIndex = edgeObj.indices.indexOf(i);
       e.index = edgeIndex;

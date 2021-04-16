@@ -27,7 +27,7 @@ const height = 400;
  */
 export default function GraphEditor({ queryBuilder }) {
   const { query_graph } = queryBuilder;
-  const convertedQueryGraph = useMemo(() => queryGraphUtils.convert.internalToReasoner(query_graph), [query_graph]);
+  const graphEditorGraph = useMemo(() => queryGraphUtils.getGraphEditorFormat(query_graph), [query_graph]);
   const svgRef = useRef();
   const { concepts } = useContext(BiolinkContext);
   const nodeCategoryColorMap = useMemo(() => getNodeCategoryColorMap(concepts), [concepts]);
@@ -63,18 +63,14 @@ export default function GraphEditor({ queryBuilder }) {
   }, []);
 
   function drawGraph() {
-    const { nodes, edges } = convertedQueryGraph;
-    edges.forEach((e) => {
-      e.source = e.subject;
-      e.target = e.object;
-    });
+    const { nodes, edges } = graphEditorGraph;
     // need to send updated queryBuilder instance to graph
     updateGraph.current.update({ nodes, edges }, queryBuilder);
   }
 
   useEffect(() => {
     drawGraph();
-  }, [convertedQueryGraph]);
+  }, [graphEditorGraph]);
 
   return (
     <div id="queryGraphEditor">

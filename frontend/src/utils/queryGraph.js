@@ -49,6 +49,26 @@ function standardizeArrayProperty(obj, property) {
   }
 }
 
+/**
+ * Make the input an array
+ * @param {(string|array)} value input to make into array
+ * @throws {TypeError}
+ * @returns {(array|null)} array of the value or null
+ */
+function makeArray(value) {
+  if (Array.isArray(value)) {
+    // return copy of array
+    return [...value];
+  }
+  if (typeof value === 'string') {
+    return [value];
+  }
+  if (value === null || value === undefined) {
+    return value;
+  }
+  throw TypeError('Unexpected input. Should be either an array or string.');
+}
+
 const standardizeIDs = (o) => standardizeArrayProperty(o, 'id');
 const standardizePredicate = (o) => standardizeArrayProperty(o, 'predicate');
 const standardizeCategory = (o) => standardizeArrayProperty(o, 'category');
@@ -114,6 +134,44 @@ const convert = {
 };
 
 /**
+ * Convert nodes and edges objects to lists for d3
+ * @param {obj} q_graph
+ * @returns {obj} query graph with node and edge lists
+ */
+function getGraphEditorFormat(q_graph) {
+  const graphWithLists = {
+    nodes: [],
+    edges: [],
+  };
+  Object.entries(q_graph.nodes).forEach(([nodeId, nodeObj]) => {
+    // nodes have an id property already, we need to reassign
+    const curie = makeArray(nodeObj.id);
+    const category = makeArray(nodeObj.category);
+    graphWithLists.nodes.push({
+      ...nodeObj,
+      category,
+      curie,
+      id: nodeId,
+    });
+  });
+  Object.entries(q_graph.edges).forEach(([edgeId, edgeObj]) => {
+    // remove subject and object from edge object
+    const { subject, object, ...edge } = edgeObj;
+    const predicate = makeArray(edgeObj.predicate);
+    const source = subject;
+    const target = object;
+    graphWithLists.edges.push({
+      ...edge,
+      source,
+      target,
+      predicate,
+      id: edgeId,
+    });
+  });
+  return graphWithLists;
+}
+
+/**
  * Remove any empty node categories or ids or edge predicates
  * @param {obj} q_graph query graph
  * @returns query graph
@@ -160,4 +218,5 @@ export default {
   standardizeIDs,
   prune,
   ingest,
+  getGraphEditorFormat,
 };
