@@ -122,17 +122,14 @@ function trimDetached(q_graph, rootNode) {
   const disconnectedEdges = findDisconnectedEdges(q_graph, rootNode);
   q_graph.edges = _.omitBy(q_graph.edges, (e, id) => disconnectedEdges.indexOf(id) > -1);
   // delete all floating nodes
-  const notFloatingNodeIDs = new Set();
+  const connectedNodes = new Set();
   Object.values(q_graph.edges).forEach((e) => {
-    notFloatingNodeIDs.add(e.subject);
-    notFloatingNodeIDs.add(e.object);
+    connectedNodes.add(e.subject);
+    connectedNodes.add(e.object);
   });
 
-  // Trim a node if it is floating and marked for deletion
-  const nodesToTrim = Object.keys(q_graph.nodes).filter((id) => (!notFloatingNodeIDs.has(id) && id !== rootNode));
-
-  q_graph.nodes = _.omitBy(q_graph.nodes, (n, id) => nodesToTrim.includes(id));
-  // q_graph.nodes = _.pick(q_graph.nodes, notFloatingNodeIDs);
+  // keep all nodes that are attached to existing edges
+  q_graph.nodes = _.pick(q_graph.nodes, [...connectedNodes]);
   return q_graph;
 }
 
