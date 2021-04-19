@@ -47,13 +47,17 @@ export default function useQueryBuilder() {
   const [originalNodeList, setOriginalNodeList] = useState([]);
   const displayAlert = useContext(AlertContext);
 
+  /**
+   * Validate and save a query graph from the json editor
+   * @param {obj} q_graph query graph object
+   */
   function saveGraphFromJsonEditor(q_graph) {
     const { isValid, newRoot } = queryBuilderUtils.isValidGraph(q_graph);
     if (isValid) {
       setRootNode(newRoot);
       updateQueryGraph(queryGraphUtils.ingest(q_graph));
     } else {
-      displayAlert('error', 'Failed to load. This is an invalid query.');
+      displayAlert('error', 'Failed to save. This is an invalid query graph.');
     }
   }
 
