@@ -22,7 +22,12 @@ function getNextEdgeID(q_graph) {
   return `e${index}`;
 }
 
-function getNumAttachedEdges(q_graph) {
+/**
+ * Get number of edges for each node
+ * @param {obj} q_graph query graph object with edges
+ * @returns {obj} an object with keys as node ids and values as number of edges
+ */
+function getNumEdgesPerNode(q_graph) {
   const edgeNums = _.transform(q_graph.edges,
     (result, value) => {
       result[value.object] = result[value.object] ? result[value.object] + 1 : 1;
@@ -50,7 +55,7 @@ function findRootNode(q_graph) {
     }
   ));
   // create node map of total edge connections
-  const edgeNums = getNumAttachedEdges(q_graph);
+  const edgeNums = getNumEdgesPerNode(q_graph);
   // split nodes into pinned and unpinned arrays
   const unpinnedNodes = nodes.filter((node) => !node.pinned && node.key in edgeNums);
   const pinnedNodes = nodes.filter((node) => node.pinned && node.key in edgeNums);
@@ -190,7 +195,7 @@ function isValidGraph(q_graph, rootNode) {
 export default {
   getNextNodeID,
   getNextEdgeID,
-  getNumAttachedEdges,
+  getNumEdgesPerNode,
   trimDetached,
   trimDetachedEdges,
   findRootNode,
