@@ -37,7 +37,7 @@ function enter(edge, simulation, openEdgeEditor, args) {
       .attr('fill', 'none')
       .attr('stroke-width', (d) => d.strokeWidth)
       .attr('class', 'edge')
-      .attr('marker-end', (d) => graphUtils.showArrow(d)))
+      .attr('marker-end', (d) => (graphUtils.shouldShowArrow(d) ? 'url(#arrow)' : '')))
     // wider clickable line
     .call((e) => e.append('path')
       .attr('stroke', 'transparent')
@@ -176,7 +176,7 @@ function update(edge) {
       .text((d) => (d.predicate ? d.predicate.map((p) => strings.displayPredicate(p)).join(', ') : '')))
     .call((e) => e.select('.edge')
       // .attr('stroke-width', (d) => d.strokeWidth)
-      .attr('marker-end', (d) => graphUtils.showArrow(d)))
+      .attr('marker-end', (d) => (graphUtils.shouldShowArrow(d) ? 'url(#arrow)' : '')))
     .call((e) => e.select('text')
       .select('textPath')
         .text((d) => (d.predicate ? d.predicate.map((p) => strings.displayPredicate(p)).join(', ') : '')));

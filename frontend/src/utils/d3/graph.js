@@ -174,12 +174,12 @@ function isInside(x, y, cx, cy, r) {
 }
 
 /**
- * Is edge directed and should show an arrow
+ * Should an edge have an arrow
  * @param {obj} edge edge object
  * @returns {str} url(#arrow) or empty string
  */
-function showArrow(edge) {
-  return edge.predicate && edge.predicate.findIndex((p) => p !== 'biolink:related_to') > -1 ? 'url(#arrow)' : '';
+function shouldShowArrow(edge) {
+  return edge.predicate && edge.predicate.findIndex((p) => p !== 'biolink:related_to') > -1;
 }
 
 /**
@@ -217,7 +217,7 @@ export default {
   getEdgeMiddle,
 
   isInside,
-  showArrow,
+  shouldShowArrow,
 
   showElement,
   hideElement,
