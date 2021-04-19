@@ -175,7 +175,7 @@ export default function queryGraph(
         .attr('d', (d) => {
           const {
             x1, y1, qx, qy, x2, y2,
-          } = graphUtils.getRadialXY(d.source.x, d.source.y, d.target.x, d.target.y, d.numEdges, d.index, nodeRadius);
+          } = graphUtils.getCurvedEdgePos(d.source.x, d.source.y, d.target.x, d.target.y, d.numEdges, d.index, nodeRadius);
           return `M${x1},${y1}Q${qx},${qy} ${x2},${y2}`;
         });
 
@@ -184,7 +184,7 @@ export default function queryGraph(
         .attr('d', (d) => {
           const {
             x1, y1, qx, qy, x2, y2,
-          } = graphUtils.getRadialXY(d.source.x, d.source.y, d.target.x, d.target.y, d.numEdges, d.index, nodeRadius);
+          } = graphUtils.getCurvedEdgePos(d.source.x, d.source.y, d.target.x, d.target.y, d.numEdges, d.index, nodeRadius);
           // if necessary, flip transparent path so text is always right side up
           const leftNode = x1 > x2 ? `${x2},${y2}` : `${x1},${y1}`;
           const rightNode = x1 > x2 ? `${x1},${y1}` : `${x2},${y2}`;
@@ -194,14 +194,14 @@ export default function queryGraph(
     edge
       .select('.source')
         .attr('cx', (d) => {
-          const { x1 } = graphUtils.getRadialXY(d.source.x, d.source.y, d.target.x, d.target.y, d.numEdges, d.index, nodeRadius);
+          const { x1 } = graphUtils.getCurvedEdgePos(d.source.x, d.source.y, d.target.x, d.target.y, d.numEdges, d.index, nodeRadius);
           const boundedVal = graphUtils.boundedEdge(x1, width);
           // set internal x value of edge end
           d.x = boundedVal;
           return boundedVal;
         })
         .attr('cy', (d) => {
-          const { y1 } = graphUtils.getRadialXY(d.source.x, d.source.y, d.target.x, d.target.y, d.numEdges, d.index, nodeRadius);
+          const { y1 } = graphUtils.getCurvedEdgePos(d.source.x, d.source.y, d.target.x, d.target.y, d.numEdges, d.index, nodeRadius);
           const boundedVal = graphUtils.boundedEdge(y1, height);
           // set internal y value of edge end
           d.y = boundedVal;
@@ -211,14 +211,14 @@ export default function queryGraph(
     edge
       .select('.target')
         .attr('cx', (d) => {
-          const { x2 } = graphUtils.getRadialXY(d.source.x, d.source.y, d.target.x, d.target.y, d.numEdges, d.index, nodeRadius);
+          const { x2 } = graphUtils.getCurvedEdgePos(d.source.x, d.source.y, d.target.x, d.target.y, d.numEdges, d.index, nodeRadius);
           const boundedVal = graphUtils.boundedEdge(x2, width);
           // set internal x value of edge end
           d.x = boundedVal;
           return boundedVal;
         })
         .attr('cy', (d) => {
-          const { y2 } = graphUtils.getRadialXY(d.source.x, d.source.y, d.target.x, d.target.y, d.numEdges, d.index, nodeRadius);
+          const { y2 } = graphUtils.getCurvedEdgePos(d.source.x, d.source.y, d.target.x, d.target.y, d.numEdges, d.index, nodeRadius);
           const boundedVal = graphUtils.boundedEdge(y2, height);
           // set internal y value of edge end
           d.y = boundedVal;

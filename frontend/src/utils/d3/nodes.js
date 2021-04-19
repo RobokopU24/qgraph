@@ -94,7 +94,7 @@ function enter(node, simulation, chooseNode, openNodeEditor, args) {
         const { name } = d;
         return name || 'Something';
       })
-      .each(graphUtils.ellipseOverflow))
+      .each(graphUtils.ellipsisOverflow))
     .call((nodeDelete) => nodeDelete.append('rect')
       .attr('x', (d) => d.x - 50)
       .attr('y', (d) => d.y - 90)
@@ -165,7 +165,7 @@ function update(node, colorMap) {
         const { name } = d;
         return name || 'Something';
       })
-      .each(graphUtils.ellipseOverflow));
+      .each(graphUtils.ellipsisOverflow));
 }
 
 /**
