@@ -28,7 +28,7 @@ function getAngle(x1, y1, x2, y2) {
  * @param {int} r radius of circle
  * @returns x of point on circumference of circle
  */
-function getAdjustedX(cx, cy, x, y, r) {
+function getXonCircumference(cx, cy, x, y, r) {
   const angle = getAngle(cx, cy, x, y);
   // cos takes radians
   const adjusted_x = cx + Math.cos(angle) * r;
@@ -44,7 +44,7 @@ function getAdjustedX(cx, cy, x, y, r) {
  * @param {int} r radius of circle
  * @returns y of point on circumference of circle
  */
-function getAdjustedY(cx, cy, x, y, r) {
+function getYonCircumference(cx, cy, x, y, r) {
   const angle = getAngle(cx, cy, x, y);
   // sin takes radians
   const adjusted_y = cy + Math.sin(angle) * r;
@@ -63,7 +63,7 @@ function getAdjustedY(cx, cy, x, y, r) {
  * @param {int} nodeRadius node radius
  * @returns {obj} all the necessary points to make a curvy edge
  */
-function getRadialXY(sourceX, sourceY, targetX, targetY, numEdges, index, nodeRadius) {
+function getCurvedEdgePos(sourceX, sourceY, targetX, targetY, numEdges, index, nodeRadius) {
   const arcWidth = Math.PI / 3;
   const edgeStep = arcWidth / 5;
   // get angle between nodes
@@ -108,9 +108,9 @@ function getRadialXY(sourceX, sourceY, targetX, targetY, numEdges, index, nodeRa
  * @param {int} r node radius
  * @returns {obj} x and y postions on circumference of node
  */
-function getAdjustedXY(cx, cy, x, y, r) {
-  const adjusted_x = getAdjustedX(cx, cy, x, y, r);
-  const adjusted_y = getAdjustedY(cx, cy, x, y, r);
+function getXYonCircumference(cx, cy, x, y, r) {
+  const adjusted_x = getXonCircumference(cx, cy, x, y, r);
+  const adjusted_y = getYonCircumference(cx, cy, x, y, r);
   return { x: adjusted_x, y: adjusted_y };
 }
 
@@ -170,7 +170,7 @@ function getEdgeMiddle(edge) {
  * @returns {bool} Is point within circle
  */
 function isInside(x, y, cx, cy, r) {
-  return (x - cx) * (x - cx) + (y - cy) * (y - cy) <= r ** 2;
+  return (x - cx) ** 2 + (y - cy) ** 2 <= r ** 2;
 }
 
 /**
@@ -185,7 +185,7 @@ function showArrow(edge) {
 /**
  * Fade a DOM element in to view
  */
-function show() {
+function showElement() {
   d3.select(this)
     .transition()
     .duration(500)
@@ -195,7 +195,7 @@ function show() {
 /**
  * Fade a DOM element out of view
  */
-function hide() {
+function hideElement() {
   d3.select(this)
     .transition()
     .duration(1000)
@@ -205,10 +205,10 @@ function hide() {
 export default {
   inverseEdgeType,
 
-  getRadialXY,
-  getAdjustedXY,
-  getAdjustedX,
-  getAdjustedY,
+  getCurvedEdgePos,
+  getXYonCircumference,
+  getXonCircumference,
+  getYonCircumference,
 
   boundedNode,
   boundedEdge,
@@ -219,6 +219,6 @@ export default {
   isInside,
   showArrow,
 
-  show,
-  hide,
+  showElement,
+  hideElement,
 };

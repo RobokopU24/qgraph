@@ -108,8 +108,8 @@ function enter(edge, simulation, openEdgeEditor, args) {
       .style('cursor', 'pointer')
       // class is how we grab the attached node later
       .attr('class', 'source')
-      .on('mouseover', graphUtils.show)
-      .on('mouseout', graphUtils.hide)
+      .on('mouseover', graphUtils.showElement)
+      .on('mouseout', graphUtils.hideElement)
       .call(dragUtils.dragEdgeEnd(e, simulation, width, height, nodeRadius, dispatch)))
     // target edge end circle
     .call((e) => e.append('circle')
