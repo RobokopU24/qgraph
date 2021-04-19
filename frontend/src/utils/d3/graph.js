@@ -20,38 +20,6 @@ function getAngle(x1, y1, x2, y2) {
 }
 
 /**
- * Get the X position of a point on the circumference of a circle
- * @param {int} cx x of center of circle
- * @param {int} cy y of center of circle
- * @param {int} x x of point outside circle
- * @param {int} y y of point outside circle
- * @param {int} r radius of circle
- * @returns x of point on circumference of circle
- */
-function getXonCircumference(cx, cy, x, y, r) {
-  const angle = getAngle(cx, cy, x, y);
-  // cos takes radians
-  const adjusted_x = cx + Math.cos(angle) * r;
-  return adjusted_x;
-}
-
-/**
- * Get the Y position of a point on the circumference of a circle
- * @param {int} cx x of center of circle
- * @param {int} cy y of center of circle
- * @param {int} x x of point outside circle
- * @param {int} y y of point outside circle
- * @param {int} r radius of circle
- * @returns y of point on circumference of circle
- */
-function getYonCircumference(cx, cy, x, y, r) {
-  const angle = getAngle(cx, cy, x, y);
-  // sin takes radians
-  const adjusted_y = cy + Math.sin(angle) * r;
-  return adjusted_y;
-}
-
-/**
  * Calculate the x and y of both edge ends as well as the quadratic curve point
  * to make the edge curve
  * @param {int} sourceX x of source node
@@ -108,9 +76,10 @@ function getCurvedEdgePos(sourceX, sourceY, targetX, targetY, numEdges, index, n
  * @param {int} r node radius
  * @returns {obj} x and y postions on circumference of node
  */
-function getXYonCircumference(cx, cy, x, y, r) {
-  const adjusted_x = getXonCircumference(cx, cy, x, y, r);
-  const adjusted_y = getYonCircumference(cx, cy, x, y, r);
+function getCircleAndLineIntersect(cx, cy, x, y, r) {
+  const angle = getAngle(cx, cy, x, y);
+  const adjusted_x = cx + Math.cos(angle) * r;
+  const adjusted_y = cy + Math.sin(angle) * r;
   return { x: adjusted_x, y: adjusted_y };
 }
 
@@ -206,9 +175,7 @@ export default {
   inverseEdgeType,
 
   getCurvedEdgePos,
-  getXYonCircumference,
-  getXonCircumference,
-  getYonCircumference,
+  getCircleAndLineIntersect,
 
   boundedNode,
   boundedEdge,

@@ -46,7 +46,7 @@ function dragEdgeEnd(subject, simulation, width, height, nodeRadius, dispatch) {
     const mouseY = graphUtils.boundedEdge(event.y, height);
     const {
       x: x2, y: y2,
-    } = graphUtils.getAdjustedXY(targetX, targetY, mouseX, mouseY, nodeRadius);
+    } = graphUtils.getCircleAndLineIntersect(targetX, targetY, mouseX, mouseY, nodeRadius);
     const source = type === 'source' ? `${mouseX},${mouseY}` : `${x2},${y2}`;
     const target = type === 'source' ? `${x2},${y2}` : `${mouseX},${mouseY}`;
     const path = `M${source} ${target}`;
@@ -79,7 +79,7 @@ function dragEdgeEnd(subject, simulation, width, height, nodeRadius, dispatch) {
       // edge was dropped in space, put it back to previous nodes
       let {
         x1, y1, qx, qy, x2, y2, // eslint-disable-line prefer-const
-      } = graphUtils.getRadialXY(d.source.x, d.source.y, d.target.x, d.target.y, d.numEdges, d.index, nodeRadius);
+      } = graphUtils.getCurvedEdgePos(d.source.x, d.source.y, d.target.x, d.target.y, d.numEdges, d.index, nodeRadius);
       x2 = graphUtils.boundedEdge(x2, width);
       y2 = graphUtils.boundedEdge(y2, height);
       x1 = graphUtils.boundedEdge(x1, width);
