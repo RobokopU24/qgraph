@@ -24,7 +24,7 @@ function getNextEdgeID(q_graph) {
 
 /**
  * Get number of edges for each node
- * @param {obj} q_graph query graph object with edges
+ * @param {obj} q_graph - query graph object with edges
  * @returns {obj} an object with keys as node ids and values as number of edges
  */
 function getNumEdgesPerNode(q_graph) {
@@ -43,7 +43,7 @@ function getNumEdgesPerNode(q_graph) {
  * 1. sort by unpinned and then pinned nodes
  * 2. sort by total number of edge connections
  * 3. pick first node in insertion order
- * @param {object} q_graph valid query graph with nodes and edges
+ * @param {object} q_graph - valid query graph with nodes and edges
  * @returns {string} the id of the root node in the query graph
  */
 function findRootNode(q_graph) {
@@ -74,8 +74,8 @@ function findRootNode(q_graph) {
 
 /**
  * Remove all detached sections of graph from root node
- * @param {object} q_graph deep copy of the query_graph, modifies and returns
- * @param {string} rootNode root node of graph
+ * @param {object} q_graph - deep copy of the query_graph, modifies and returns
+ * @param {string} rootNode - root node of graph
  */
 function trimDetached(q_graph, rootNode) {
   // all edges start out as disconnected and we'll remove them when we find a connection to root
@@ -120,9 +120,9 @@ function trimDetached(q_graph, rootNode) {
 
 /**
  * After deleting a node, trim any edges connected to it
- * @param {object} q_graph query graph
- * @param {string} deletedNode deleted node id
- * @param {string} rootNode root node id
+ * @param {object} q_graph - query graph
+ * @param {string} deletedNode - deleted node id
+ * @param {string} rootNode - root node id
  * @returns trimDetached query graph
  */
 function trimDetachedEdges(q_graph, deletedNode, rootNode) {
@@ -142,8 +142,8 @@ function trimDetachedEdges(q_graph, deletedNode, rootNode) {
 
 /**
  * Get a unique list of all edges connected to specified node
- * @param {object} edges query graph edges object
- * @param {string} nodeId node id
+ * @param {object} edges - query graph edges object
+ * @param {string} nodeId - node id
  * @returns Set of edge ids
  */
 function getConnectedEdges(edges, nodeId) {
@@ -161,8 +161,8 @@ function computeRootNode(q_graph, rootNode) {
 
 /**
  * Starting at root node, is this query graph valid? Is there at least one hop in the graph?
- * @param {object} q_graph query graph object
- * @param {string|undefined} rootNode node id
+ * @param {object} q_graph - query graph object
+ * @param {string|undefined} rootNode - node id
  * @returns boolean
  */
 function isValidGraph(q_graph, rootNode) {
