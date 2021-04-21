@@ -178,7 +178,7 @@ export default function JsonEditor({ show, close }) {
           }}
           title="Save Changes"
           onClick={() => {
-            queryBuilder.saveGraphFromJsonEditor(queryGraph);
+            queryBuilder.saveGraph(queryGraph);
             close();
           }}
         >

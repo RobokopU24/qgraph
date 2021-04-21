@@ -48,10 +48,10 @@ export default function useQueryBuilder() {
   const displayAlert = useContext(AlertContext);
 
   /**
-   * Validate and save a query graph from the json editor
+   * Validate and save a query graph
    * @param {obj} q_graph query graph object
    */
-  function saveGraphFromJsonEditor(q_graph) {
+  function saveGraph(q_graph) {
     const { isValid, newRoot } = queryBuilderUtils.isValidGraph(q_graph);
     if (isValid) {
       setRootNode(newRoot);
@@ -231,6 +231,6 @@ export default function useQueryBuilder() {
     deleteEdge,
     deleteNode,
 
-    saveGraphFromJsonEditor,
+    saveGraph,
   };
 }
