@@ -73,14 +73,13 @@ function findRootNode(q_graph) {
 }
 
 /**
- * Find list of edges disconnected from root node
- * @param {object} q_graph query graph object
+ * Remove all detached sections of graph from root node
+ * @param {object} q_graph deep copy of the query_graph, modifies and returns
  * @param {string} rootNode root node of graph
- * @returns {array} list of disconnected edge ids
  */
-function findDisconnectedEdges(q_graph, rootNode) {
+function trimDetached(q_graph, rootNode) {
   // all edges start out as disconnected and we'll remove them when we find a connection to root
-  let disconnectedEdges = Object.keys(q_graph.edges);
+  const disconnectedEdges = Object.keys(q_graph.edges);
   // we add to connected nodes, starting default with the root node
   const connectedNodes = [rootNode];
   let foundConnections = true;
@@ -92,44 +91,30 @@ function findDisconnectedEdges(q_graph, rootNode) {
       const nodeId = connectedNodes[i];
       for (let j = 0; j < disconnectedEdges.length; j += 1) {
         const edgeId = disconnectedEdges[j];
-        const edge = q_graph.edges[disconnectedEdges[j]];
+        const edge = q_graph.edges[edgeId];
         // if edge is connected to node
         if (edge.subject === nodeId || edge.object === nodeId) {
           // add nodes to connected list
-          if (connectedNodes.indexOf(edge.subject) > -1) {
+          if (!(connectedNodes.indexOf(edge.subject) > -1)) {
             connectedNodes.push(edge.subject);
           }
-          if (connectedNodes.indexOf(edge.object) > -1) {
+          if (!(connectedNodes.indexOf(edge.object) > -1)) {
             connectedNodes.push(edge.object);
           }
           // remove connected edge from disconnected list
-          disconnectedEdges = disconnectedEdges.filter((e) => e !== edgeId);
+          const index = disconnectedEdges.indexOf(edgeId);
+          disconnectedEdges.splice(index, 1);
+          j -= 1;
           // loop again with added nodes
           foundConnections = true;
         }
       }
     }
   }
-  return disconnectedEdges;
-}
-
-/**
- * Remove all detached sections of graph from root node
- * @param {object} q_graph deep copy of the query_graph, modifies and returns
- * @param {string} rootNode root node of graph
- */
-function trimDetached(q_graph, rootNode) {
-  const disconnectedEdges = findDisconnectedEdges(q_graph, rootNode);
+  // remove any edges still in the disconnectedEdges list
   q_graph.edges = _.omitBy(q_graph.edges, (e, id) => disconnectedEdges.indexOf(id) > -1);
-  // delete all floating nodes
-  const connectedNodes = new Set();
-  Object.values(q_graph.edges).forEach((e) => {
-    connectedNodes.add(e.subject);
-    connectedNodes.add(e.object);
-  });
-
   // keep all nodes that are attached to existing edges
-  q_graph.nodes = _.pick(q_graph.nodes, [...connectedNodes]);
+  q_graph.nodes = _.pick(q_graph.nodes, connectedNodes);
   return q_graph;
 }
 
