@@ -46,7 +46,7 @@ function dragEdgeEnd(subject, simulation, width, height, nodeRadius, dispatch) {
     const mouseY = graphUtils.boundedEdge(event.y, height);
     const {
       x: x2, y: y2,
-    } = graphUtils.getCircleAndLineIntersect(targetX, targetY, targetX, targetY, mouseX, mouseY, nodeRadius);
+    } = graphUtils.getShortenedLineEnd(targetX, targetY, mouseX, mouseY, nodeRadius);
     const source = type === 'source' ? `${mouseX},${mouseY}` : `${x2},${y2}`;
     const target = type === 'source' ? `${x2},${y2}` : `${mouseX},${mouseY}`;
     const path = `M${source} ${target}`;

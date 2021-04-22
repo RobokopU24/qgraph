@@ -68,21 +68,22 @@ function getCurvedEdgePos(sourceX, sourceY, targetX, targetY, numEdges, index, n
 }
 
 /**
- * Get x and y positions of line and circle intersection
- * @param {int} cx circle center x
- * @param {int} cy circle center y
- * @param {int} x1 line start x
- * @param {int} y1 line start y
- * @param {int} x2 line end x
- * @param {int} y2 line end y
- * @param {int} r circle radius
- * @returns {obj} x and y postions of intersection
+ * Get x and y positions of shortened line end
+ *
+ * Given a line, we will find the new line end according
+ * to the line angle and offset
+ * @param {int} x1 - line start x
+ * @param {int} y1 - line start y
+ * @param {int} x2 - line end x
+ * @param {int} y2 - line end y
+ * @param {int} offset - offset for current line end
+ * @returns {obj} x and y postions of new line end
  */
-function getCircleAndLineIntersect(cx, cy, x1, y1, x2, y2, r) {
+function getShortenedLineEnd(x1, y1, x2, y2, offset) {
   const angle = getAngle(x1, y1, x2, y2);
-  const adjusted_x = cx + Math.cos(angle) * r;
-  const adjusted_y = cy + Math.sin(angle) * r;
-  return { x: adjusted_x, y: adjusted_y };
+  const x = x1 + Math.cos(angle) * offset;
+  const y = y1 + Math.sin(angle) * offset;
+  return { x, y };
 }
 
 /**
@@ -177,7 +178,7 @@ export default {
   inverseEdgeType,
 
   getCurvedEdgePos,
-  getCircleAndLineIntersect,
+  getShortenedLineEnd,
 
   boundedNode,
   boundedEdge,
