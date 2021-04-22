@@ -39,7 +39,6 @@ function enter(node, simulation, chooseNode, openNodeEditor, args) {
         d3.select('#nodeContainer').raise();
         d3.select(`#${id}`).raise();
         // only if we're currently making a connection
-        console.log(creatingEdge);
         if (creatingEdge.current) {
           e.stopPropagation();
           d3.select(this)
