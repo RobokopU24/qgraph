@@ -50,9 +50,16 @@ function dragEdgeEnd(subject, simulation, width, height, nodeRadius, dispatch) {
     const source = type === 'source' ? `${mouseX},${mouseY}` : `${x2},${y2}`;
     const target = type === 'source' ? `${x2},${y2}` : `${mouseX},${mouseY}`;
     const path = `M${source} ${target}`;
+    let labelPath = path;
+    // this is just to keep the predicate label right side up
+    if ((type === 'source' && mouseX > x2) || (type === 'target' && mouseX < x2)) {
+      labelPath = `M${target} ${source}`;
+    }
     d3.select(`#${id}`)
-      .call((e) => e.selectAll('path')
+      .call((e) => e.select('.edge')
         .attr('d', path))
+      .call((e) => e.select('.edgeTransparent')
+        .attr('d', labelPath))
       .call((e) => e.select(`.${type}`)
         .attr('cx', mouseX)
         .attr('cy', mouseY))
@@ -87,9 +94,16 @@ function dragEdgeEnd(subject, simulation, width, height, nodeRadius, dispatch) {
       const source = `${x1},${y1}`;
       const target = `${x2},${y2}`;
       const path = `M${source}Q${qx},${qy} ${target}`;
+      // make the predicate label right side up
+      let labelPath = path;
+      if (x1 > x2) {
+        labelPath = `M${target}Q${qx},${qy} ${source}`;
+      }
       d3.select(`#${id}`)
-        .call((e) => e.selectAll('path')
+        .call((e) => e.select('.edge')
           .attr('d', path))
+        .call((e) => e.select('.edgeTransparent')
+          .attr('d', labelPath))
         .call((e) => e.select('.source')
           .attr('cx', x1)
           .attr('cy', y1))
