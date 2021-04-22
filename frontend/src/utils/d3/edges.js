@@ -56,21 +56,21 @@ function enter(edge, simulation, openEdgeEditor, args) {
           .attr('startOffset', '50%')
           .text((d) => (d.predicate ? d.predicate.map((p) => strings.displayPredicate(p)).join(', ') : '')))
       .on('click', (event, d) => {
-        if (edit.active !== d.id) {
+        if (edit.current !== d.id) {
           event.stopPropagation();
           d3.selectAll('.deleteRect,.deleteLabel,.editRect,.editLabel')
             .style('display', 'none');
           d3.selectAll(`.${d.id}`)
             .style('display', 'inherit')
             .raise();
-          edit.active = d.id;
+          edit.current = d.id;
           d3.select(`#${d.id}`).raise();
           highlighter.clearAllEdges();
           highlighter.clearAllNodes();
           highlighter.highlightTextEditorEdge(d.id);
           highlighter.highlightGraphEdge(d.id);
         } else {
-          edit.active = '';
+          edit.current = '';
         }
       })
       .on('mouseover', (event, d) => {
@@ -79,7 +79,7 @@ function enter(edge, simulation, openEdgeEditor, args) {
           .transition()
           .duration(500)
           .style('opacity', 1);
-        if (edit.active === id || !edit.active) {
+        if (edit.current === id || !edit.current) {
           highlighter.highlightTextEditorEdge(id);
           highlighter.highlightGraphEdge(id);
         }
@@ -90,7 +90,7 @@ function enter(edge, simulation, openEdgeEditor, args) {
           .transition()
           .duration(1000)
           .style('opacity', 0);
-        if (edit.active !== id || !edit.active) {
+        if (edit.current !== id || !edit.current) {
           highlighter.clearTextEditorEdge(id);
           highlighter.clearGraphEdge(id);
         }
@@ -136,7 +136,7 @@ function enter(edge, simulation, openEdgeEditor, args) {
       .attr('class', (d) => `${d.id} deleteRect`)
       .on('click', (event, d) => {
         const { id } = d;
-        edit.active = '';
+        edit.current = '';
         dispatch.call('delete', null, id);
       }))
     .call((e) => e.append('text')
@@ -158,7 +158,7 @@ function enter(edge, simulation, openEdgeEditor, args) {
       .on('click', (event, d) => {
         const { id } = d;
         const edgeAnchor = d3.select(`#${id} > .source`).node();
-        edit.active = '';
+        edit.current = '';
         openEdgeEditor(id, edgeAnchor);
       }))
     .call((e) => e.append('text')

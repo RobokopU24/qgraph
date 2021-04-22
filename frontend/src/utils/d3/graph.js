@@ -68,16 +68,18 @@ function getCurvedEdgePos(sourceX, sourceY, targetX, targetY, numEdges, index, n
 }
 
 /**
- * Get x and y positions on edge of node
- * @param {int} cx connected node x position
- * @param {int} cy connected node y position
- * @param {int} x attached node x position
- * @param {int} y attached node y position
- * @param {int} r node radius
- * @returns {obj} x and y postions on circumference of node
+ * Get x and y positions of line and circle intersection
+ * @param {int} cx circle center x
+ * @param {int} cy circle center y
+ * @param {int} x1 line start x
+ * @param {int} y1 line start y
+ * @param {int} x2 line end x
+ * @param {int} y2 line end y
+ * @param {int} r circle radius
+ * @returns {obj} x and y postions of intersection
  */
-function getCircleAndLineIntersect(cx, cy, x, y, r) {
-  const angle = getAngle(cx, cy, x, y);
+function getCircleAndLineIntersect(cx, cy, x1, y1, x2, y2, r) {
+  const angle = getAngle(x1, y1, x2, y2);
   const adjusted_x = cx + Math.cos(angle) * r;
   const adjusted_y = cy + Math.sin(angle) * r;
   return { x: adjusted_x, y: adjusted_y };
