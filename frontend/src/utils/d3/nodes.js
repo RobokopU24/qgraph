@@ -5,6 +5,22 @@ import dragUtils from './drag';
 import highlighter from './highlighter';
 
 const dispatch = d3.dispatch('delete');
+const deleteRectOffset = {
+  x: -50,
+  y: -90,
+};
+const deleteTextOffset = {
+  x: -25,
+  y: -77,
+};
+const editRectOffset = {
+  x: 0,
+  y: -90,
+};
+const editTextOffset = {
+  x: 25,
+  y: -77,
+};
 
 /**
  * Handle creation of nodes
@@ -97,8 +113,7 @@ function enter(node, simulation, chooseNode, openNodeEditor, args) {
       })
       .each(graphUtils.ellipsisOverflow))
     .call((nodeDelete) => nodeDelete.append('rect')
-      .attr('x', (d) => d.x - 50)
-      .attr('y', (d) => d.y - 90)
+      .attr('transform', `translate(${deleteRectOffset.x},${deleteRectOffset.y})`)
       .attr('width', 50)
       .attr('height', 25)
       .attr('stroke', 'black')
@@ -112,6 +127,8 @@ function enter(node, simulation, chooseNode, openNodeEditor, args) {
         d3.select('#edgeContainer').raise();
       }))
     .call((nodeDeleteLabel) => nodeDeleteLabel.append('text')
+      .attr('dx', deleteTextOffset.x)
+      .attr('dy', deleteTextOffset.y)
       .style('pointer-events', 'none')
       .attr('text-anchor', 'middle')
       .attr('alignment-baseline', 'middle')
@@ -119,8 +136,7 @@ function enter(node, simulation, chooseNode, openNodeEditor, args) {
       .style('display', 'none')
       .text('delete'))
     .call((nodeEdit) => nodeEdit.append('rect')
-      .attr('x', (d) => d.x)
-      .attr('y', (d) => d.y - 90)
+      .attr('transform', `translate(${editRectOffset.x},${editRectOffset.y})`)
       .attr('width', 50)
       .attr('height', 25)
       .attr('stroke', 'black')
@@ -135,6 +151,8 @@ function enter(node, simulation, chooseNode, openNodeEditor, args) {
         d3.select('#edgeContainer').raise();
       }))
     .call((nodeEditLabel) => nodeEditLabel.append('text')
+      .attr('dx', editTextOffset.x)
+      .attr('dy', editTextOffset.y)
       .style('pointer-events', 'none')
       .attr('text-anchor', 'middle')
       .attr('alignment-baseline', 'middle')

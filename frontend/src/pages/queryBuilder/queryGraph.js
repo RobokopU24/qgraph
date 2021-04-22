@@ -211,33 +211,11 @@ export default function QueryGraph({
    */
   function ticked() {
     node.current
-      .select('.nodeCircle')
-        .attr('cx', (d) => d.x = graphUtils.boundedNode(d.x, width, nodeRadius))
-        .attr('cy', (d) => d.y = graphUtils.boundedNode(d.y, height, nodeRadius));
-    node.current
-      .select('.nodeLabel')
-        .attr('x', (d) => graphUtils.boundedNode(d.x, width, nodeRadius))
-        .attr('y', (d) => graphUtils.boundedNode(d.y, height, nodeRadius));
-
-    node.current
-      .select('.deleteRect')
-        .attr('x', (d) => d.x - 50)
-        .attr('y', (d) => d.y - 90);
-
-    node.current
-      .select('.deleteLabel')
-        .attr('x', (d) => d.x - 25)
-        .attr('y', (d) => d.y - 77);
-
-    node.current
-      .select('.editRect')
-        .attr('x', (d) => d.x)
-        .attr('y', (d) => d.y - 90);
-
-    node.current
-      .select('.editLabel')
-        .attr('x', (d) => d.x + 25)
-        .attr('y', (d) => d.y - 77);
+      .attr('transform', (d) => {
+        d.x = graphUtils.boundedNode(d.x, width, nodeRadius);
+        d.y = graphUtils.boundedNode(d.y, height, nodeRadius);
+        return `translate(${d.x},${d.y})`;
+      });
 
     edge.current
       .select('.edge')
