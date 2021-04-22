@@ -1,9 +1,17 @@
 /* eslint-disable indent, no-use-before-define, func-names, no-return-assign */
+import React, {
+  useEffect, useContext, useRef, useMemo,
+} from 'react';
 import * as d3 from 'd3';
 import graphUtils from '~/utils/d3/graph';
 import nodeUtils from '~/utils/d3/nodes';
 import edgeUtils from '~/utils/d3/edges';
 import highlighter from '~/utils/d3/highlighter';
+
+import BiolinkContext from '~/context/biolink';
+import QueryBuilderContext from '~/context/queryBuilder';
+import getNodeCategoryColorMap from '~/utils/colors';
+import queryGraphUtils from '~/utils/queryGraph';
 
 function findKey(obj, prop) {
   const [s, t] = prop.split('--');
@@ -40,137 +48,198 @@ const edgeHandler = {
   },
 };
 
+const nodeRadius = 40;
+
 /**
  * Main D3 query graph component
- * @param {*} svgRef DOM ref to svg element
- * @param {int} height height of the query graph element
- * @param {int} width width of the query graph element
- * @param {func} colorMap function to get node category color
- * @param {int} nodeRadius radius of each node
- * @param {func} openNodeEditor function to open node editor
- * @param {func} openEdgeEditor function to open edge editor
- * @returns {func} update function
+ * @param {int} height - height of the query graph element
+ * @param {int} width - width of the query graph element
+ * @param {func} openEditor - function to open node or edge editor
+ * @param {bool} creatingEdge - is the user currently trying to create a new edge
  */
-export default function queryGraph(
-  svgRef, height, width, colorMap, nodeRadius,
-  openNodeEditor, openEdgeEditor,
-) {
-  let chosenNodes = [];
-  const edit = { active: '' };
+export default function QueryGraph({
+  height, width,
+  openEditor, creatingEdge,
+}) {
+  const { concepts } = useContext(BiolinkContext);
+  const queryBuilder = useContext(QueryBuilderContext);
+  const nodeCategoryColorMap = useMemo(() => getNodeCategoryColorMap(concepts), [concepts]);
+  const { query_graph } = queryBuilder;
+  const queryGraph = useMemo(() => queryGraphUtils.getGraphEditorFormat(query_graph), [query_graph]);
+  const node = useRef({});
+  const edge = useRef({});
+  const chosenNodes = useRef([]);
+  const edit = useRef('');
+  const svgRef = useRef();
+  const svg = useRef();
+  const simulation = useRef();
   /**
    * Common node and edge args
    */
-  const edgeArgs = {
+  const commonArgs = useRef({
     height,
     width,
     nodeRadius,
     edit,
-    queryBuilder: null,
-  };
+    queryBuilder,
+  });
   /**
-   * Mutable node args
+   * Node args
    * @property {func} colorMap function to get node background color
    * @property {func} connectTerms function to create edge between two nodes
    */
-  const nodeArgs = {
-    ...edgeArgs,
-    colorMap,
-    connectTerms: null,
-  };
-  const svg = d3.select(svgRef.current);
-  if (svg.select('#nodeContainer').empty()) {
-    svg.append('g')
-      .attr('id', 'nodeContainer');
-  }
-  if (svg.select('#edgeContainer').empty()) {
-    svg.append('g')
-      .attr('id', 'edgeContainer');
-  }
-  let edge = svg.select('#edgeContainer').selectAll('g');
-  let node = svg.select('#nodeContainer').selectAll('g');
-
-  if (svg.select('defs').empty()) {
-    // edge arrow
-    const defs = svg.append('defs');
-    defs.append('marker')
-      .attr('id', 'arrow')
-      .attr('viewBox', [0, 0, 20, 13])
-      .attr('refX', 20)
-      .attr('refY', 6.5)
-      .attr('markerWidth', 6.5)
-      .attr('markerHeight', 25)
-      .attr('orient', 'auto-start-reverse')
-      .append('path')
-        .attr('d', d3.line()([[0, 0], [0, 13], [25, 6.5]]))
-        .attr('fill', '#999');
-    // set nodes shadow
-    // http://bl.ocks.org/cpbotha/5200394
-    const shadow = defs.append('filter')
-      .attr('id', 'setShadow')
-      .attr('width', '250%')
-      .attr('height', '250%');
-    shadow.append('feGaussianBlur')
-      .attr('in', 'SourceAlpha')
-      .attr('stdDeviation', 5)
-      .attr('result', 'blur');
-    shadow.append('feOffset')
-      .attr('in', 'blur')
-      .attr('dx', 0)
-      .attr('dy', 0)
-      .attr('result', 'offsetBlur');
-    const feMerge = shadow.append('feMerge');
-    feMerge.append('feMergeNode')
-      .attr('in', 'offsetBlur');
-    feMerge.append('feMergeNode')
-      .attr('in', 'SourceGraphic');
-  }
-
-  svg.on('click', (e) => {
-    d3.selectAll('.deleteRect,.deleteLabel,.editRect,.editLabel')
-      .style('display', 'none');
-    d3.select('#edgeContainer').raise();
-    highlighter.clearAllNodes();
-    highlighter.clearAllEdges();
-    edit.active = '';
-    // stop click events from leaving svg area.
-    // clicks were closing any alerts immediately.
-    e.stopPropagation();
+  const nodeArgs = useRef({
+    ...commonArgs.current,
+    connectTerms: (id) => chosenNodes.current.push(id),
+    creatingEdge,
+    colorMap: nodeCategoryColorMap,
   });
+
+  /**
+   * Initialize the svg
+   */
+   useEffect(() => {
+    svg.current = d3.select(svgRef.current)
+      .attr('width', width)
+      .attr('height', height)
+      .attr('border', '1px solid black')
+      .attr('preserveAspectRatio', 'xMinYMin meet')
+      .attr('viewBox', [0, 0, width, height]);
+  }, []);
+
+  /**
+   * Attach global svg click listener
+   */
+  useEffect(() => {
+    svg.current.on('click', (e) => {
+      d3.selectAll('.deleteRect,.deleteLabel,.editRect,.editLabel')
+        .style('display', 'none');
+      d3.select('#edgeContainer').raise();
+      highlighter.clearAllNodes();
+      highlighter.clearAllEdges();
+      edit.current = '';
+      // stop click events from leaving svg area.
+      // clicks were closing any alerts immediately.
+      e.stopPropagation();
+    });
+
+    // return () => {
+    //   svg.current.on('click', null);
+    // };
+  }, []);
+
+  /**
+   * Initialize node and edge containers
+   */
+  useEffect(() => {
+    if (svg.current.select('#nodeContainer').empty()) {
+      svg.current.append('g')
+        .attr('id', 'nodeContainer');
+    }
+    if (svg.current.select('#edgeContainer').empty()) {
+      svg.current.append('g')
+        .attr('id', 'edgeContainer');
+    }
+    edge.current = svg.current.select('#edgeContainer').selectAll('g');
+    node.current = svg.current.select('#nodeContainer').selectAll('g');
+  }, []);
+
+  /**
+   * Create special svg effects on initialization
+   *
+   * - Edge arrows
+   * - Shading for 'Set' nodes
+   */
+  useEffect(() => {
+    if (svg.current.select('defs').empty()) {
+      // edge arrow
+      const defs = svg.current.append('defs');
+      defs.append('marker')
+        .attr('id', 'arrow')
+        .attr('viewBox', [0, 0, 20, 13])
+        .attr('refX', 20)
+        .attr('refY', 6.5)
+        .attr('markerWidth', 6.5)
+        .attr('markerHeight', 25)
+        .attr('orient', 'auto-start-reverse')
+        .append('path')
+          .attr('d', d3.line()([[0, 0], [0, 13], [25, 6.5]]))
+          .attr('fill', '#999');
+      // set nodes shadow
+      // http://bl.ocks.org/cpbotha/5200394
+      const shadow = defs.append('filter')
+        .attr('id', 'setShadow')
+        .attr('width', '250%')
+        .attr('height', '250%');
+      shadow.append('feGaussianBlur')
+        .attr('in', 'SourceAlpha')
+        .attr('stdDeviation', 5)
+        .attr('result', 'blur');
+      shadow.append('feOffset')
+        .attr('in', 'blur')
+        .attr('dx', 0)
+        .attr('dy', 0)
+        .attr('result', 'offsetBlur');
+      const feMerge = shadow.append('feMerge');
+      feMerge.append('feMergeNode')
+        .attr('in', 'offsetBlur');
+      feMerge.append('feMergeNode')
+        .attr('in', 'SourceGraphic');
+    }
+  }, []);
+
+  /**
+   * Base d3 force simulation initialization
+   */
+  useEffect(() => {
+    simulation.current = d3.forceSimulation()
+      .force('collide', d3.forceCollide().radius(nodeRadius))
+      .force('link', d3.forceLink().id((d) => d.id).distance(200).strength(1))
+      // .force('charge', d3.forceManyBody().strength(200))
+      .force('center', d3.forceCenter(width / 2, height / 2).strength(0.05))
+      // force y towards middle, more linear
+      // .force('forceY', d3.forceY(height / 2).strength(0.15))
+      // .force('forceX', d3.forceX());
+      .on('tick', ticked);
+    // return () => {
+    //   simulation.current.stop();
+    // };
+  }, []);
 
   /**
    * Move all nodes and edges on each simulation 'tick'
    */
   function ticked() {
-    node
+    node.current
       .select('.nodeCircle')
         .attr('cx', (d) => d.x = graphUtils.boundedNode(d.x, width, nodeRadius))
         .attr('cy', (d) => d.y = graphUtils.boundedNode(d.y, height, nodeRadius));
-    node
+    node.current
       .select('.nodeLabel')
         .attr('x', (d) => graphUtils.boundedNode(d.x, width, nodeRadius))
         .attr('y', (d) => graphUtils.boundedNode(d.y, height, nodeRadius));
 
-    node
+    node.current
       .select('.deleteRect')
         .attr('x', (d) => d.x - 50)
         .attr('y', (d) => d.y - 90);
 
-    node
+    node.current
       .select('.deleteLabel')
         .attr('x', (d) => d.x - 25)
         .attr('y', (d) => d.y - 77);
 
-    node
+    node.current
       .select('.editRect')
         .attr('x', (d) => d.x)
         .attr('y', (d) => d.y - 90);
 
-    node
+    node.current
       .select('.editLabel')
         .attr('x', (d) => d.x + 25)
         .attr('y', (d) => d.y - 77);
 
-    edge
+    edge.current
       .select('.edge')
         .attr('d', (d) => {
           const {
@@ -179,7 +248,7 @@ export default function queryGraph(
           return `M${x1},${y1}Q${qx},${qy} ${x2},${y2}`;
         });
 
-    edge
+    edge.current
       .select('.edgeTransparent')
         .attr('d', (d) => {
           const {
@@ -191,7 +260,7 @@ export default function queryGraph(
           return `M${leftNode}Q${qx},${qy} ${rightNode}`;
         });
 
-    edge
+    edge.current
       .select('.source')
         .attr('cx', (d) => {
           const { x1 } = graphUtils.getCurvedEdgePos(d.source.x, d.source.y, d.target.x, d.target.y, d.numEdges, d.index, nodeRadius);
@@ -208,7 +277,7 @@ export default function queryGraph(
           return boundedVal;
         });
 
-    edge
+    edge.current
       .select('.target')
         .attr('cx', (d) => {
           const { x2 } = graphUtils.getCurvedEdgePos(d.source.x, d.source.y, d.target.x, d.target.y, d.numEdges, d.index, nodeRadius);
@@ -225,70 +294,48 @@ export default function queryGraph(
           return boundedVal;
         });
 
-    edge
+    edge.current
       .select('.deleteRect')
         .attr('x', (d) => graphUtils.getEdgeMiddle(d).x - 50)
         .attr('y', (d) => graphUtils.getEdgeMiddle(d).y - 50);
 
-    edge
+    edge.current
       .select('.deleteLabel')
         .attr('x', (d) => graphUtils.getEdgeMiddle(d).x - 25)
         .attr('y', (d) => graphUtils.getEdgeMiddle(d).y - 37);
 
-    edge
+    edge.current
       .select('.editRect')
         .attr('x', (d) => graphUtils.getEdgeMiddle(d).x)
         .attr('y', (d) => graphUtils.getEdgeMiddle(d).y - 50);
 
-    edge
+    edge.current
       .select('.editLabel')
         .attr('x', (d) => graphUtils.getEdgeMiddle(d).x + 25)
         .attr('y', (d) => graphUtils.getEdgeMiddle(d).y - 37);
   }
 
   /**
-   * Base d3 force simulation initialization
-   */
-  const simulation = d3.forceSimulation()
-    .force('collide', d3.forceCollide().radius(nodeRadius))
-    .force('link', d3.forceLink().id((d) => d.id).distance(200).strength(1))
-    // .force('charge', d3.forceManyBody().strength(200))
-    .force('center', d3.forceCenter(width / 2, height / 2).strength(0.05))
-    // force y towards middle, more linear
-    // .force('forceY', d3.forceY(height / 2).strength(0.15))
-    // .force('forceX', d3.forceX());
-    .on('tick', ticked);
-
-  /**
    * Update displayed query graph
-   * @param {object} query_graph query graph object
-   * @param {object} queryBuilder query builder hook
    */
-  function update(query_graph, queryBuilder) {
-    // we need to update this function internally to get an updated version
-    // of the current query builder
-    edgeArgs.updateEdge = queryBuilder.updateEdge;
-    edgeArgs.deleteEdge = queryBuilder.deleteEdge;
-    nodeArgs.deleteNode = queryBuilder.deleteNode;
-    // clear out connectTerms whenever external updates happen.
-    nodeArgs.connectTerms = null;
+  useEffect(() => {
     // preserve node position by using the already existing nodes
-    const oldNodes = new Map(node.data().map((d) => [d.id, { x: d.x, y: d.y }]));
-    const nodes = query_graph.nodes.map((d) => Object.assign(oldNodes.get(d.id) || { x: Math.random() * width, y: Math.random() * height }, d));
+    const oldNodes = new Map(node.current.data().map((d) => [d.id, { x: d.x, y: d.y }]));
+    const nodes = queryGraph.nodes.map((d) => Object.assign(oldNodes.get(d.id) || { x: Math.random() * width, y: Math.random() * height }, d));
     // edges need to preserve some internal properties
-    const edges = query_graph.edges.map((d) => ({ ...d }));
+    const edges = queryGraph.edges.map((d) => ({ ...d }));
 
     // simulation adds x and y properties to nodes
-    simulation.nodes(nodes);
+    simulation.current.nodes(nodes);
     // simulation converts source and target properties of
     // edges to node objects
-    simulation.force('link').links(edges);
-    simulation.alpha(1).restart();
+    simulation.current.force('link').links(edges);
+    simulation.current.alpha(1).restart();
 
-    node = node.data(nodes, (d) => d.id)
+    node.current = node.current.data(nodes, (d) => d.id)
       .join(
-        (n) => nodeUtils.enter(n, simulation, chooseNode, openNodeEditor, nodeArgs),
-        (n) => nodeUtils.update(n, colorMap),
+        (n) => nodeUtils.enter(n, simulation.current, chooseNode, openEditor, nodeArgs),
+        (n) => nodeUtils.update(n, nodeArgs.current.colorMap),
         (n) => nodeUtils.exit(n),
       );
 
@@ -328,25 +375,25 @@ export default function queryGraph(
       e.strokeWidth = '3';
     });
 
-    edge = edge.data(edges, (d) => d.id)
+    edge.current = edge.current.data(edges, (d) => d.id)
       .join(
-        (e) => edgeUtils.enter(e, simulation, openEdgeEditor, edgeArgs),
+        (e) => edgeUtils.enter(e, simulation.current, openEditor, commonArgs.current),
         edgeUtils.update,
         edgeUtils.exit,
       );
-  }
+  }, [queryGraph]);
 
   /**
    * Collect node ids to make a new edge connection
-   * @param {string} id node id
+   * @param {string} id - node id
    */
   function chooseNode(id) {
-    if (chosenNodes.length < 2) {
-      chosenNodes.push(id);
+    if (chosenNodes.current.length < 2) {
+      chosenNodes.current.push(id);
     }
-    if (chosenNodes.length >= 2) {
-      nodeArgs.connectTerms(...chosenNodes);
-      nodeArgs.connectTerms = null;
+    if (chosenNodes.current.length >= 2) {
+      queryBuilder.addEdge(...chosenNodes.current);
+      creatingEdge.current = false;
       d3.selectAll('.node > .nodeCircle')
         .transition()
         .delay(2000)
@@ -356,16 +403,13 @@ export default function queryGraph(
   }
 
   /**
-   * Set callback function for creating a new edge
-   * @param {function} func callback function
+   * Clear out chosen nodes list when creatingEdge changes
    */
-  function addNewConnection(func) {
-    nodeArgs.connectTerms = func;
-    chosenNodes = [];
-  }
+  useEffect(() => {
+    chosenNodes.current = [];
+  }, [creatingEdge.current]);
 
-  return {
-    update,
-    addNewConnection,
-  };
+  return (
+    <svg ref={svgRef} />
+  );
 }

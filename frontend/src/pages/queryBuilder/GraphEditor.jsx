@@ -1,19 +1,13 @@
 import React, {
-  useEffect, useMemo, useRef, useContext, useState,
+  useContext, useState, useRef,
 } from 'react';
-import * as d3 from 'd3';
 import Popover from '@material-ui/core/Popover';
-import Popper from '@material-ui/core/Popper';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 
-import queryGraphUtils from '~/utils/queryGraph';
-import getNodeCategoryColorMap from '~/utils/colors';
-import BiolinkContext from '~/context/biolink';
 import QueryBuilderContext from '~/context/queryBuilder';
 
-import queryGraph from './queryGraph';
+import QueryGraph from './QueryGraph';
 import NodeSelector from './textEditorRow/NodeSelector';
 import PredicateSelector from './textEditorRow/PredicateSelector';
 
@@ -29,81 +23,48 @@ const height = 400;
 export default function GraphEditor() {
   const queryBuilder = useContext(QueryBuilderContext);
   const { query_graph } = queryBuilder;
-  const graphEditorGraph = useMemo(() => queryGraphUtils.getGraphEditorFormat(query_graph), [query_graph]);
-  const svgRef = useRef();
-  const { concepts } = useContext(BiolinkContext);
-  const nodeCategoryColorMap = useMemo(() => getNodeCategoryColorMap(concepts), [concepts]);
-  const updateGraph = useRef(() => {});
   const [anchorEl, setAnchorEl] = useState(null);
   const [popoverType, setPopoverType] = useState('');
-  const [nodeId, setNodeId] = useState('');
-  const [edgeId, setEdgeId] = useState('');
+  const [editorId, setEditorId] = useState('');
+  /**
+   * Is the user currently creating an edge?
+   * *This property can be changed in the child Query Graph component*
+   */
+  const creatingEdge = useRef(false);
 
-  function openNodeEditor(id, anchor) {
-    setNodeId(id);
+  /**
+   * Open Popover editor
+   * @param {string} id - node or edge id
+   * @param {HTMLElement} anchor - DOM Element to attach popover
+   * @param {string} type - type of popover
+   */
+  function openEditor(id, anchor, type) {
+    setEditorId(id);
     setAnchorEl(anchor);
-    setPopoverType('editNode');
+    setPopoverType(type);
   }
-
-  function openEdgeEditor(id, anchor) {
-    setEdgeId(id);
-    setAnchorEl(anchor);
-    setPopoverType('editEdge');
-  }
-
-  useEffect(() => {
-    d3.select(svgRef.current)
-      .attr('width', width)
-      .attr('height', height)
-      .attr('border', '1px solid black')
-      .attr('preserveAspectRatio', 'xMinYMin meet')
-      .attr('viewBox', [0, 0, width, height]);
-    updateGraph.current = queryGraph(
-      svgRef, height, width, nodeCategoryColorMap, 40,
-      openNodeEditor, openEdgeEditor,
-    );
-  }, []);
-
-  function drawGraph() {
-    const { nodes, edges } = graphEditorGraph;
-    // need to send updated queryBuilder instance to graph
-    updateGraph.current.update({ nodes, edges }, queryBuilder);
-  }
-
-  useEffect(() => {
-    drawGraph();
-  }, [graphEditorGraph]);
 
   return (
     <div id="queryGraphEditor">
       <div id="graphContainer" style={{ height: height + 50, width }}>
-        <svg ref={svgRef} />
+        <QueryGraph
+          height={height}
+          width={width}
+          openEditor={openEditor}
+          creatingEdge={creatingEdge}
+        />
         <div id="graphBottomButtons">
           <Button
             onClick={(e) => {
-              setNodeId(queryBuilder.addHop());
-              setAnchorEl(e.currentTarget);
-              setPopoverType('newNode');
+              openEditor(queryBuilder.addHop(), e.currentTarget, 'newNode');
             }}
           >
             Add New Term
           </Button>
-          <Popper
-            open={Boolean(anchorEl) && popoverType === 'newEdge'}
-            anchorEl={anchorEl}
-            placement="top-start"
-          >
-            <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
-              <Paper style={{ padding: '10px' }}>
-                <p>Select two terms to connect!</p>
-              </Paper>
-            </ClickAwayListener>
-          </Popper>
           <Button
             onClick={(e) => {
-              updateGraph.current.addNewConnection(queryBuilder.addEdge);
-              setAnchorEl(e.currentTarget);
-              setPopoverType('newEdge');
+              creatingEdge.current = true;
+              openEditor('', e.currentTarget, 'newEdge');
               // auto close after 5 seconds
               setTimeout(() => {
                 setAnchorEl(null);
@@ -114,7 +75,7 @@ export default function GraphEditor() {
           </Button>
         </div>
         <Popover
-          open={Boolean(anchorEl) && (popoverType === 'newNode' || popoverType === 'editNode')}
+          open={Boolean(anchorEl)}
           anchorEl={anchorEl}
           onClose={() => setAnchorEl(null)}
           anchorOrigin={{
@@ -126,33 +87,28 @@ export default function GraphEditor() {
             horizontal: 'left',
           }}
         >
-          <NodeSelector
-            node={query_graph.nodes[nodeId]}
-            nodeId={nodeId}
-            updateNode={queryBuilder.updateNode}
-            original
-            nodeOptions={{
-              includeExistingNodes: false,
-            }}
-          />
-        </Popover>
-        <Popover
-          open={Boolean(anchorEl) && popoverType === 'editEdge'}
-          anchorEl={anchorEl}
-          onClose={() => setAnchorEl(null)}
-          anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'left',
-          }}
-          transformOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-          }}
-        >
-          <PredicateSelector
-            queryBuilder={queryBuilder}
-            edgeId={edgeId}
-          />
+          {(popoverType === 'editNode' || popoverType === 'newNode') && (
+            <NodeSelector
+              properties={query_graph.nodes[editorId]}
+              id={editorId}
+              update={queryBuilder.updateNode}
+              isReference={false}
+              options={{
+                includeExistingNodes: false,
+              }}
+            />
+          )}
+          {popoverType === 'editEdge' && (
+            <PredicateSelector
+              queryBuilder={queryBuilder}
+              edgeId={editorId}
+            />
+          )}
+          {popoverType === 'newEdge' && (
+            <Paper style={{ padding: '10px' }}>
+              <p>Select two terms to connect!</p>
+            </Paper>
+          )}
         </Popover>
       </div>
     </div>
