@@ -116,8 +116,6 @@ export default function QuestionBuilder(props) {
     });
     Object.values(query_graph.edges).forEach((e) => queryGraphUtils.standardizePredicate(e));
 
-    console.log(Object.keys(query_graph.nodes));
-
     questionStore.updateQueryGraph(query_graph);
     setStep('build');
   }
