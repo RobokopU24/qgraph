@@ -39,6 +39,7 @@ export default function NodeSelector({
     includeCuries = true, includeExistingNodes = true,
     existingNodes = [],
     includeCategories = true, clearable = true,
+    includeSets = false,
   } = nodeOptions;
   const [loading, toggleLoading] = useState(false);
   const [inputText, updateInputText] = useState('');
@@ -67,21 +68,26 @@ export default function NodeSelector({
     }
     // add general concepts to options
     if (includeCategories) {
-      const includedCategories = concepts.filter(
+      let includedCategories = concepts.filter(
         (category) => category.toLowerCase().includes(searchTerm.toLowerCase()),
-      ).flatMap((category) => (
-        [
-          {
-            category: [category],
-            name: strings.displayCategory(category),
-          },
-          {
-            category: [category],
-            name: strings.setify(category),
-            is_set: true,
-          },
-        ]
-      ));
+      );
+      if (includeSets) {
+        includedCategories = includedCategories.flatMap((category) => (
+          [
+            {
+              category: [category],
+              name: strings.displayCategory(category),
+            },
+            {
+              category: [category],
+              name: strings.setify(category),
+              is_set: true,
+            },
+          ]
+        ));
+      } else {
+        includedCategories = includedCategories.map((category) => ({ category: [category], name: strings.displayCategory(category) }));
+      }
       newOptions.push(...includedCategories);
     }
     // fetch matching curies from external services
