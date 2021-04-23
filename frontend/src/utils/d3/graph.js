@@ -1,9 +1,13 @@
 import * as d3 from 'd3';
 
-const inverseEdgeType = {
-  source: 'target',
-  target: 'source',
-};
+/**
+ * Get the opposite edge end name
+ * @param {string} edgeEnd - edge end, either source or target
+ * @returns other edge end
+ */
+function getOtherEdgeEnd(edgeEnd) {
+  return edgeEnd === 'target' ? 'source' : 'target';
+}
 
 /**
  * Get angle of line connecting points, in radians
@@ -175,7 +179,7 @@ function hideElement() {
 }
 
 export default {
-  inverseEdgeType,
+  getOtherEdgeEnd,
 
   getCurvedEdgePos,
   getShortenedLineEnd,

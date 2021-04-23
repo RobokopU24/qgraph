@@ -37,11 +37,11 @@ function dragEdgeEnd(subject, simulation, width, height, nodeRadius, updateEdge)
   function dragged(event, d) {
     const { id } = d;
     const type = d3.select(this).attr('class').split(' ')[0];
-    const inverseType = graphUtils.inverseEdgeType[type];
-    const inverseX = d[inverseType].x;
-    const inverseY = d[inverseType].y;
-    const targetX = graphUtils.boundedEdge(inverseX, width);
-    const targetY = graphUtils.boundedEdge(inverseY, height);
+    const otherEdgeEnd = graphUtils.getOtherEdgeEnd(type);
+    const otherEndX = d[otherEdgeEnd].x;
+    const otherEndY = d[otherEdgeEnd].y;
+    const targetX = graphUtils.boundedEdge(otherEndX, width);
+    const targetY = graphUtils.boundedEdge(otherEndY, height);
     const mouseX = graphUtils.boundedEdge(event.x, width);
     const mouseY = graphUtils.boundedEdge(event.y, height);
     const {
@@ -63,7 +63,7 @@ function dragEdgeEnd(subject, simulation, width, height, nodeRadius, updateEdge)
       .call((e) => e.select(`.${type}`)
         .attr('cx', mouseX)
         .attr('cy', mouseY))
-      .call((e) => e.select(`.${inverseType}`)
+      .call((e) => e.select(`.${otherEdgeEnd}`)
         .attr('cx', x2)
         .attr('cy', y2));
   }
