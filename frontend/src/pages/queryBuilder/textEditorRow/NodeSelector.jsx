@@ -20,19 +20,19 @@ function isValidNode(properties) {
 
 /**
  * Generic node selector component
- * @param {object} properties node properties from query graph
- * @param {string} id node id
- * @param {boolean} isReference is node the original or a reference
- * @param {function} changeReference function to change node reference
- * @param {function} update function to update node properties
+ * @param {string} id - node id
+ * @param {object} properties - node properties from query graph
+ * @param {boolean} isReference - is the node a reference
+ * @param {function} setReference - function to set node selector reference
+ * @param {function} update - function to update node properties
  * @param {object} nodeOptions
- * @param {boolean} nodeOptions.includeCuries node selector can include curies for a new node
- * @param {boolean} nodeOptions.includeExistingNodes node selector can include existing nodes
- * @param {boolean} nodeOptions.includeCategories node selector can include general categories
+ * @param {boolean} nodeOptions.includeCuries - node selector can include curies for a new node
+ * @param {boolean} nodeOptions.includeExistingNodes - node selector can include existing nodes
+ * @param {boolean} nodeOptions.includeCategories - node selector can include general categories
  */
 export default function NodeSelector({
   id, properties, isReference,
-  changeReference, update,
+  setReference, update,
   options: nodeOptions = {},
 }) {
   const {
@@ -150,7 +150,7 @@ export default function NodeSelector({
     updateInputText('');
     if (v && 'key' in v) {
       // key will only be in v when switching to existing node
-      changeReference(v.key);
+      setReference(v.key);
     } else {
       // updating a node value
       update(id, v);

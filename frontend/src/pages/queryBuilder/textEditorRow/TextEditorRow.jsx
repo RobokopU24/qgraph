@@ -33,7 +33,7 @@ export default function TextEditorRow({ edgeId, index }) {
       <NodeSelector
         id={edge.subject}
         properties={queryBuilder.query_graph.nodes[edge.subject]}
-        changeReference={(nodeId) => queryBuilder.updateEdge(edgeId, 'subject', nodeId)}
+        setReference={(nodeId) => queryBuilder.updateEdge(edgeId, 'subject', nodeId)}
         update={original.subject ? queryBuilder.updateNode : () => queryBuilder.updateEdge(edgeId, 'subject', null)}
         isReference={!original.subject}
         options={{
@@ -51,7 +51,7 @@ export default function TextEditorRow({ edgeId, index }) {
       <NodeSelector
         id={edge.object}
         properties={queryBuilder.query_graph.nodes[edge.object]}
-        changeReference={(nodeId) => queryBuilder.updateEdge(edgeId, 'object', nodeId)}
+        setReference={(nodeId) => queryBuilder.updateEdge(edgeId, 'object', nodeId)}
         update={original.object ? queryBuilder.updateNode : () => queryBuilder.updateEdge(edgeId, 'object', null)}
         isReference={!original.object}
         options={{
