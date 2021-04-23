@@ -8,42 +8,42 @@
 
 /**
  * Simple graph validity checks
- * @param {object} graph object containing nodes and edges
- * @param {string} graphType either query_graph or knowledge_graph
+ * @param {object} graph - object containing nodes and edges
+ * @param {string} graphName - name of graph for error messages
  * @returns list of errors
  */
-function validateGraph(graph, graphType) {
+function validateGraph(graph, graphName) {
   const errors = [];
 
   if (!graph || graph.constructor !== Object) {
-    errors.push(`${graphType} is not a valid JSON object`);
+    errors.push(`${graphName} is not a valid JSON object`);
     return errors;
   }
 
   // Check for nodes
   if (!graph.nodes) {
-    errors.push(`${graphType} requires a "nodes" property`);
+    errors.push(`${graphName} requires a "nodes" property`);
   } else if (Array.isArray(graph.nodes)) {
-    errors.push(`${graphType} nodes should be an object`);
+    errors.push(`${graphName} nodes should be an object`);
   } else {
     // Since every node has an id we can check if they are unique
     const nodeIds = new Set(Object.keys(graph.nodes));
     const hasUniqueNodeIds = nodeIds.size === Object.keys(graph.nodes).length;
     if (!hasUniqueNodeIds) {
-      errors.push(`There are multiple ${graphType.toLowerCase()} nodes with the same ID`);
+      errors.push(`There are multiple ${graphName.toLowerCase()} nodes with the same ID`);
     }
   }
 
   // Check for edges
   if (!graph.edges) {
-    errors.push(`${graphType} requires an "edges" property`);
+    errors.push(`${graphName} requires an "edges" property`);
   } else if (Array.isArray(graph.edges)) {
-    errors.push(`${graphType} edges should be an object`);
+    errors.push(`${graphName} edges should be an object`);
   } else {
     // each edge should have a valid source and target id
     const edgesHaveIds = Object.keys(graph.edges).reduce((val, e) => val && graph.edges[e] && graph.edges[e].subject && graph.edges[e].object, true);
     if (!edgesHaveIds) {
-      errors.push(`Each ${graphType.toLowerCase()} edge must have a valid "subject" and "object" property`);
+      errors.push(`Each ${graphName.toLowerCase()} edge must have a valid "subject" and "object" property`);
     }
   }
 
