@@ -24,7 +24,7 @@ module.exports = {
     files: ['*.jsx', '*.js'],
   }],
   rules: {
-    indent: ['error', 2],
+    indent: ['error', 2, { SwitchCase: 1 }],
     'max-len': 'off',
     camelcase: 'off',
     'no-return-assign': ['error', 'except-parens'],

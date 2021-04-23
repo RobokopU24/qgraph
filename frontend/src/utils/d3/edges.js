@@ -5,38 +5,20 @@ import dragUtils from './drag';
 import strings from '~/utils/strings';
 import highlighter from './highlighter';
 
-const dispatch = d3.dispatch('update', 'delete');
-
 /**
  * Handle creation of edges
- * @param {obj} edge d3 edge object
- * @param {obj} simulation d3 force simulation
- * @param {int} width width of svg container
- * @param {int} height height of svg container
- * @param {int} nodeRadius node radius
- * @param {obj} args mutable edge args object
+ * @param {obj} edge - d3 edge object
  */
-function enter(edge, simulation, openEdgeEditor, args) {
-  const {
-    height, width, nodeRadius,
-    updateEdge, deleteEdge, edit,
-  } = args;
-  dispatch.on('update', (edgeId, edgeType, nodeId) => {
-    const success = updateEdge(edgeId, edgeType, nodeId);
-    if (!success) {
-      // hacky, calls the tick function which moves the edge ends back
-      simulation.alpha(0.001).restart();
-    }
-  });
-  dispatch.on('delete', deleteEdge);
+function enter(edge) {
   return edge.append('g')
     .attr('id', (d) => d.id)
+    .attr('class', 'edge')
     // visible line
     .call((e) => e.append('path')
       .attr('stroke', '#999')
       .attr('fill', 'none')
       .attr('stroke-width', (d) => d.strokeWidth)
-      .attr('class', 'edge')
+      .attr('class', 'edgePath')
       .attr('marker-end', (d) => (graphUtils.shouldShowArrow(d) ? 'url(#arrow)' : '')))
     // wider clickable line
     .call((e) => e.append('path')
@@ -55,46 +37,6 @@ function enter(edge, simulation, openEdgeEditor, args) {
           .attr('xlink:href', (d) => `#edge${d.id}`)
           .attr('startOffset', '50%')
           .text((d) => (d.predicate ? d.predicate.map((p) => strings.displayPredicate(p)).join(', ') : '')))
-      .on('click', (event, d) => {
-        if (edit.current !== d.id) {
-          event.stopPropagation();
-          d3.selectAll('.deleteRect,.deleteLabel,.editRect,.editLabel')
-            .style('display', 'none');
-          d3.selectAll(`.${d.id}`)
-            .style('display', 'inherit')
-            .raise();
-          edit.current = d.id;
-          d3.select(`#${d.id}`).raise();
-          highlighter.clearAllEdges();
-          highlighter.clearAllNodes();
-          highlighter.highlightTextEditorEdge(d.id);
-          highlighter.highlightGraphEdge(d.id);
-        } else {
-          edit.current = '';
-        }
-      })
-      .on('mouseover', (event, d) => {
-        const { id } = d;
-        d3.selectAll(`#${id} > .source, #${id} > .target`)
-          .transition()
-          .duration(500)
-          .style('opacity', 1);
-        if (edit.current === id || !edit.current) {
-          highlighter.highlightTextEditorEdge(id);
-          highlighter.highlightGraphEdge(id);
-        }
-      })
-      .on('mouseout', (event, d) => {
-        const { id } = d;
-        d3.selectAll(`#${id} > .source, #${id} > .target`)
-          .transition()
-          .duration(1000)
-          .style('opacity', 0);
-        if (edit.current !== id || !edit.current) {
-          highlighter.clearTextEditorEdge(id);
-          highlighter.clearGraphEdge(id);
-        }
-      })
       .call((eLabel) => eLabel.append('title')
         .text((d) => (d.predicate ? d.predicate.map((p) => strings.displayPredicate(p)).join(', ') : ''))))
     // source edge end circle
@@ -107,10 +49,9 @@ function enter(edge, simulation, openEdgeEditor, args) {
       .style('opacity', 0)
       .style('cursor', 'pointer')
       // class is how we grab the attached node later
-      .attr('class', 'source')
+      .attr('class', 'source edgeEnd')
       .on('mouseover', graphUtils.showElement)
-      .on('mouseout', graphUtils.hideElement)
-      .call(dragUtils.dragEdgeEnd(e, simulation, width, height, nodeRadius, dispatch)))
+      .on('mouseout', graphUtils.hideElement))
     // target edge end circle
     .call((e) => e.append('circle')
       .attr('r', 5)
@@ -121,10 +62,9 @@ function enter(edge, simulation, openEdgeEditor, args) {
       .style('opacity', 0)
       .style('cursor', 'pointer')
       // class is how we grab the attached node later
-      .attr('class', 'target')
+      .attr('class', 'target edgeEnd')
       .on('mouseover', graphUtils.showElement)
-      .on('mouseout', graphUtils.hideElement)
-      .call(dragUtils.dragEdgeEnd(e, simulation, width, height, nodeRadius, dispatch)))
+      .on('mouseout', graphUtils.hideElement))
     .call((e) => e.append('rect')
       .attr('x', (d) => graphUtils.getEdgeMiddle(d).x - 50)
       .attr('y', (d) => graphUtils.getEdgeMiddle(d).y - 50)
@@ -133,12 +73,7 @@ function enter(edge, simulation, openEdgeEditor, args) {
       .attr('stroke', 'black')
       .attr('fill', 'white')
       .style('display', 'none')
-      .attr('class', (d) => `${d.id} deleteRect`)
-      .on('click', (event, d) => {
-        const { id } = d;
-        edit.current = '';
-        dispatch.call('delete', null, id);
-      }))
+      .attr('class', (d) => `${d.id} deleteRect`))
     .call((e) => e.append('text')
       .style('pointer-events', 'none')
       .attr('text-anchor', 'middle')
@@ -154,13 +89,7 @@ function enter(edge, simulation, openEdgeEditor, args) {
       .attr('stroke', 'black')
       .attr('fill', 'white')
       .style('display', 'none')
-      .attr('class', (d) => `${d.id} editRect`)
-      .on('click', (event, d) => {
-        const { id } = d;
-        const edgeAnchor = d3.select(`#${id} > .source`).node();
-        edit.current = '';
-        openEdgeEditor(id, edgeAnchor);
-      }))
+      .attr('class', (d) => `${d.id} editRect`))
     .call((e) => e.append('text')
       .style('pointer-events', 'none')
       .attr('text-anchor', 'middle')
@@ -170,11 +99,15 @@ function enter(edge, simulation, openEdgeEditor, args) {
       .text('edit'));
 }
 
+/**
+ * Update an edge label, arrow, and tooltip
+ * @param {object} edge - d3 edge object
+ */
 function update(edge) {
   return edge
     .call((e) => e.select('title')
       .text((d) => (d.predicate ? d.predicate.map((p) => strings.displayPredicate(p)).join(', ') : '')))
-    .call((e) => e.select('.edge')
+    .call((e) => e.select('.edgePath')
       // .attr('stroke-width', (d) => d.strokeWidth)
       .attr('marker-end', (d) => (graphUtils.shouldShowArrow(d) ? 'url(#arrow)' : '')))
     .call((e) => e.select('text')
@@ -183,12 +116,142 @@ function update(edge) {
     //   .attr('dy', (d) => -d.strokeWidth));
 }
 
+/**
+ * Remove and edge
+ * @param {object} edge - d3 edge object
+ */
 function exit(edge) {
   return edge.remove();
+}
+
+/**
+ * Add click listener to edge
+ * @param {string} editId - current edit id
+ * @param {function} setEditId - set current edit id
+ */
+function attachEdgeClick(editId, setEditId) {
+  d3.selectAll('.edgeTransparent')
+    .on('click', (event, d) => {
+      if (editId !== d.id) {
+        event.stopPropagation();
+        d3.selectAll('.deleteRect,.deleteLabel,.editRect,.editLabel')
+          .style('display', 'none');
+        d3.selectAll(`.${d.id}`)
+          .style('display', 'inherit')
+          .raise();
+        setEditId(d.id);
+        d3.select(`#${d.id}`).raise();
+        highlighter.clearAllEdges();
+        highlighter.clearAllNodes();
+        highlighter.highlightTextEditorEdge(d.id);
+        highlighter.highlightGraphEdge(d.id);
+      } else {
+        setEditId('');
+      }
+    });
+}
+
+/**
+ * Attach delete function to button
+ * @param {function} deleteEdge - delete an edge
+ * @param {function} setEditId - set current edit id
+ */
+function attachDeleteClick(deleteEdge, setEditId) {
+  d3.selectAll('.edge > .deleteRect')
+    .on('click', (event, d) => {
+      const { id } = d;
+      setEditId('');
+      deleteEdge(id);
+    });
+}
+
+/**
+ * Attach listener to edit button
+ * @param {function} openEditor - open the edge editor
+ * @param {function} setEditId - set current edit id
+ */
+function attachEditClick(openEditor, setEditId) {
+  d3.selectAll('.edge > .editRect')
+    .on('click', (event, d) => {
+      const { id } = d;
+      const edgeAnchor = d3.select(`#${id} > .source`).node();
+      setEditId('');
+      openEditor(id, edgeAnchor, 'editEdge');
+    });
+}
+
+/**
+ * Attach hover functionality to edge
+ * @param {string} editId - current edit id
+ */
+function attachMouseHover(editId) {
+  d3.selectAll('.edgeTransparent')
+    .on('mouseover', (event, d) => {
+      const { id } = d;
+      d3.selectAll(`#${id} > .source, #${id} > .target`)
+        .transition()
+        .duration(500)
+        .style('opacity', 1);
+      if (editId === id || !editId) {
+        highlighter.highlightTextEditorEdge(id);
+        highlighter.highlightGraphEdge(id);
+      }
+    })
+    .on('mouseout', (event, d) => {
+      const { id } = d;
+      d3.selectAll(`#${id} > .source, #${id} > .target`)
+        .transition()
+        .duration(1000)
+        .style('opacity', 0);
+      if (editId !== id || !editId) {
+        highlighter.clearTextEditorEdge(id);
+        highlighter.clearGraphEdge(id);
+      }
+    });
+}
+
+/**
+ * Attach drag handlers to edge ends
+ * @param {object} simulation - d3 simulation
+ * @param {integer} width - width of svg
+ * @param {integer} height - height of svg
+ * @param {integer} nodeRadius - radius of node circles
+ * @param {function} updateEdge - update edge in query graph
+ */
+function attachDrag(simulation, width, height, nodeRadius, updateEdge) {
+  d3.selectAll('.edge')
+    .call((e) => e.selectAll('.edgeEnd')
+      .call(dragUtils.dragEdgeEnd(e, simulation, width, height, nodeRadius, updateEdge)));
+}
+
+/**
+ * Remove all hover edge effects
+ */
+function removeMouseHover() {
+  d3.selectAll('.edgeTransparent')
+    .on('mouseover', null)
+    .on('mouseout', null);
+}
+
+/**
+ * Remove all edge click listeners
+ */
+function removeClicks() {
+  d3.selectAll('.edgeTransparent')
+    .on('click', null);
 }
 
 export default {
   enter,
   update,
   exit,
+
+  attachEdgeClick,
+  attachDeleteClick,
+  attachEditClick,
+  attachMouseHover,
+  attachDrag,
+
+  removeClicks,
+  removeMouseHover,
 };

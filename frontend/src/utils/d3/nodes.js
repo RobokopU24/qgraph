@@ -4,7 +4,6 @@ import graphUtils from './graph';
 import dragUtils from './drag';
 import highlighter from './highlighter';
 
-const dispatch = d3.dispatch('delete');
 const deleteRectOffset = {
   x: -50,
   y: -90,
@@ -24,74 +23,23 @@ const editTextOffset = {
 
 /**
  * Handle creation of nodes
- * @param {obj} node d3 node object
- * @param {obj} simulation d3 force simulation
- * @param {func} chooseNode function to select two nodes to connect
- * @param {func} openNodeEditor function to open node editor
- * @param {obj} args object of mutable arguments
+ * @param {obj} node - d3 node object
+ * @param {obj} args - object of node properties
  */
-function enter(node, simulation, chooseNode, openNodeEditor, args) {
+function enter(node, args) {
   const {
-    width, height, nodeRadius,
-    colorMap, deleteNode, edit,
-    creatingEdge,
-  } = args.current;
-  dispatch.on('delete', deleteNode);
+    nodeRadius,
+    colorMap,
+  } = args;
   return node.append('g')
     .attr('class', 'node')
     .attr('id', (d) => d.id)
-    .call(dragUtils.dragNode(simulation, width, height, nodeRadius))
     // create node circle
     .call((nodeCircle) => nodeCircle.append('circle')
       .attr('class', (d) => `nodeCircle node-${d.id}`)
       .attr('r', nodeRadius)
-      // .attr('stroke', '#999')
-      // .attr('stroke-width', 2)
       .attr('fill', (d) => colorMap((d.category && d.category[0]) || 'unknown'))
       .style('cursor', 'pointer')
-      .on('click', function (e, d) {
-        const { id } = d;
-        // raise node to front of other nodes
-        d3.select('#nodeContainer').raise();
-        d3.select(`#${id}`).raise();
-        // only if we're currently making a connection
-        if (creatingEdge.current) {
-          e.stopPropagation();
-          d3.select(this)
-            .attr('stroke', '#e0dfdf')
-            .attr('stroke-width', '5');
-          chooseNode(id);
-        } else if (edit.current !== id) {
-          e.stopPropagation();
-          d3.selectAll('.deleteRect,.deleteLabel,.editRect,.editLabel')
-            .style('display', 'none');
-          // open node selector
-          d3.selectAll(`.${id}`)
-            .style('display', 'inherit')
-            .raise();
-          edit.current = id;
-          highlighter.clearAllNodes();
-          highlighter.clearAllEdges();
-          highlighter.highlightTextEditorNode(d.id);
-          highlighter.highlightGraphNode(d.id);
-        } else {
-          // svg listener will hide buttons
-          edit.current = '';
-          d3.select('#edgeContainer').raise();
-        }
-      })
-      .on('mouseover', (e, d) => {
-        if (!creatingEdge.current && (edit.current === d.id || !edit.current)) {
-          highlighter.highlightTextEditorNode(d.id);
-          highlighter.highlightGraphNode(d.id);
-        }
-      })
-      .on('mouseout', (e, d) => {
-        if (!creatingEdge.current && (edit.current !== d.id || !edit.current)) {
-          highlighter.clearTextEditorNode(d.id);
-          highlighter.clearGraphNode(d.id);
-        }
-      })
       .call((n) => n.append('title')
         .text((d) => {
           let title = d.id;
@@ -112,6 +60,7 @@ function enter(node, simulation, chooseNode, openNodeEditor, args) {
         return name || 'Something';
       })
       .each(graphUtils.ellipsisOverflow))
+    // create delete button
     .call((nodeDelete) => nodeDelete.append('rect')
       .attr('transform', `translate(${deleteRectOffset.x},${deleteRectOffset.y})`)
       .attr('width', 50)
@@ -119,13 +68,8 @@ function enter(node, simulation, chooseNode, openNodeEditor, args) {
       .attr('stroke', 'black')
       .attr('fill', 'white')
       .style('display', 'none')
-      .attr('class', (d) => `${d.id} deleteRect`)
-      .on('click', (e, d) => {
-        const { id } = d;
-        edit.current = '';
-        dispatch.call('delete', null, id);
-        d3.select('#edgeContainer').raise();
-      }))
+      .attr('class', (d) => `${d.id} deleteRect`))
+    // add delete button label
     .call((nodeDeleteLabel) => nodeDeleteLabel.append('text')
       .attr('dx', deleteTextOffset.x)
       .attr('dy', deleteTextOffset.y)
@@ -135,6 +79,7 @@ function enter(node, simulation, chooseNode, openNodeEditor, args) {
       .attr('class', (d) => `${d.id} deleteLabel`)
       .style('display', 'none')
       .text('delete'))
+    // create edit button
     .call((nodeEdit) => nodeEdit.append('rect')
       .attr('transform', `translate(${editRectOffset.x},${editRectOffset.y})`)
       .attr('width', 50)
@@ -142,14 +87,8 @@ function enter(node, simulation, chooseNode, openNodeEditor, args) {
       .attr('stroke', 'black')
       .attr('fill', 'white')
       .style('display', 'none')
-      .attr('class', (d) => `${d.id} editRect`)
-      .on('click', (e, d) => {
-        const { id } = d;
-        const nodeAnchor = d3.select(`#${id} > .nodeCircle`).node();
-        openNodeEditor(id, nodeAnchor);
-        edit.current = '';
-        d3.select('#edgeContainer').raise();
-      }))
+      .attr('class', (d) => `${d.id} editRect`))
+    // add edit button label
     .call((nodeEditLabel) => nodeEditLabel.append('text')
       .attr('dx', editTextOffset.x)
       .attr('dy', editTextOffset.y)
@@ -163,10 +102,11 @@ function enter(node, simulation, chooseNode, openNodeEditor, args) {
 
 /**
  * Handle node updates
- * @param {obj} node d3 node object
- * @param {func} colorMap function to get node background color
+ * @param {obj} node - d3 node object
+ * @param {obj} args - node circle properties
  */
-function update(node, colorMap) {
+function update(node, args) {
+  const { colorMap } = args;
   return node
     .call((n) => n.select('.nodeCircle')
       .attr('fill', (d) => colorMap((d.category && d.category[0]) || 'unknown')))
@@ -189,7 +129,7 @@ function update(node, colorMap) {
 
 /**
  * Handle node deletion
- * @param {obj} node d3 node object
+ * @param {obj} node - d3 node object
  */
 function exit(node) {
   return node
@@ -211,8 +151,158 @@ function exit(node) {
       .remove());
 }
 
+/**
+ * Set node circle click listener to be able to add an edge
+ * @param {function} addNodeToConnection - add node to edge connection
+ */
+function attachConnectionClick(addNodeToConnection) {
+  d3.selectAll('.nodeCircle')
+    .on('click', function (e, d) {
+      e.stopPropagation();
+      d3.select(this)
+        .attr('stroke', '#e0dfdf')
+        .attr('stroke-width', '5');
+      addNodeToConnection(d.id);
+    });
+}
+
+/**
+ * Set node click listener to show or hide buttons
+ * @param {string} editId - current id being edited
+ * @param {function} setEditId - set current edit id
+ */
+function attachNodeClick(editId, setEditId) {
+  d3.selectAll('.nodeCircle')
+    .on('click', (e, d) => {
+      const { id } = d;
+      // raise node to front of other nodes
+      d3.select('#nodeContainer').raise();
+      d3.select(`#${id}`).raise();
+      if (editId !== id) {
+        e.stopPropagation();
+        d3.selectAll('.deleteRect,.deleteLabel,.editRect,.editLabel')
+          .style('display', 'none');
+        // open node selector
+        d3.selectAll(`.${id}`)
+          .style('display', 'inherit')
+          .raise();
+        setEditId(id);
+        highlighter.clearAllNodes();
+        highlighter.clearAllEdges();
+        highlighter.highlightTextEditorNode(d.id);
+        highlighter.highlightGraphNode(d.id);
+      } else {
+        // svg listener will hide buttons
+        setEditId('');
+        d3.select('#edgeContainer').raise();
+      }
+    });
+}
+
+/**
+ * Attach delete function to button
+ * @param {function} deleteNode - delete node from graph
+ * @param {function} setEditId - set current edit id
+ */
+function attachDeleteClick(deleteNode, setEditId) {
+  d3.selectAll('.deleteRect')
+    .on('click', (e, d) => {
+      const { id } = d;
+      d3.select('#edgeContainer').raise();
+      setEditId('');
+      deleteNode(id);
+    });
+}
+
+/**
+ * Attach edit function to button
+ * @param {function} openNodeEditor - open the node editor
+ * @param {string} setEditId - set current edit id
+ */
+function attachEditClick(openEditor, setEditId) {
+  d3.selectAll('.editRect')
+    .on('click', (e, d) => {
+      const { id } = d;
+      const nodeAnchor = d3.select(`#${id} > .nodeCircle`).node();
+      d3.select('#edgeContainer').raise();
+      setEditId('');
+      openEditor(id, nodeAnchor, 'editNode');
+    });
+}
+
+/**
+ * Show and hide node border on hover
+ * @param {string} editId - current edit id
+ */
+function attachMouseHover(editId) {
+  d3.selectAll('.nodeCircle')
+    .on('mouseover', (e, d) => {
+      if ((editId === d.id || !editId)) {
+        highlighter.highlightTextEditorNode(d.id);
+        highlighter.highlightGraphNode(d.id);
+      }
+    })
+    .on('mouseout', (e, d) => {
+      if ((editId !== d.id || !editId)) {
+        highlighter.clearTextEditorNode(d.id);
+        highlighter.clearGraphNode(d.id);
+      }
+    });
+}
+
+/**
+ * Attach drag handler to nodes
+ * @param {obj} simulation - d3 simulation
+ * @param {int} width - width of the svg
+ * @param {int} height - height of the svg
+ * @param {int} nodeRadius - radius of node circles
+ */
+function attachDrag(simulation, width, height, nodeRadius) {
+  d3.selectAll('.node')
+    .call(dragUtils.dragNode(simulation, width, height, nodeRadius));
+}
+
+/**
+ * Remove all click listeners from nodes
+ */
+function removeClicks() {
+  d3.selectAll('.nodeCircle')
+    .on('click', null);
+}
+
+/**
+ * Clear out all node hover listeners
+ */
+function removeMouseHover() {
+  d3.selectAll('.nodeCircle')
+    .on('mouseover', null)
+    .on('mouseout', null);
+}
+
+/**
+ * Remove node border after 2 seconds
+ */
+function removeBorder() {
+  d3.selectAll('.nodeCircle')
+    .transition()
+    .delay(2000)
+    .duration(1000)
+    .attr('stroke-width', '0');
+}
+
 export default {
   enter,
   update,
   exit,
+
+  attachConnectionClick,
+  attachNodeClick,
+  attachEditClick,
+  attachDeleteClick,
+  attachMouseHover,
+  attachDrag,
+
+  removeClicks,
+  removeMouseHover,
+  removeBorder,
 };

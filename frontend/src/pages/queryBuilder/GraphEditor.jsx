@@ -1,11 +1,12 @@
 import React, {
-  useContext, useState, useRef,
+  useContext, useState, useReducer, useEffect,
 } from 'react';
 import Popover from '@material-ui/core/Popover';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 
 import QueryBuilderContext from '~/context/queryBuilder';
+import nodeUtils from '~/utils/d3/nodes';
 
 import QueryGraph from './QueryGraph';
 import NodeSelector from './textEditorRow/NodeSelector';
@@ -15,6 +16,21 @@ import './graphEditor.css';
 
 const width = 600;
 const height = 400;
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'startConnection':
+      return { ...state, creatingConnection: action.value };
+    case 'connectTerm':
+      return { ...state, chosenTerms: [...state.chosenTerms, action.value] };
+    case 'connectionMade':
+      return { ...state, creatingConnection: false, chosenTerms: [] };
+    case 'setEditId':
+      return { ...state, editId: action.value };
+    default:
+      return state;
+  }
+}
 
 /**
  * Query Builder graph editor interface
@@ -26,11 +42,33 @@ export default function GraphEditor() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [popoverType, setPopoverType] = useState('');
   const [editorId, setEditorId] = useState('');
+
+  const [graphClickState, updateClickState] = useReducer(reducer, {
+    creatingConnection: false,
+    chosenTerms: [],
+    editId: '',
+  });
+
   /**
-   * Is the user currently creating an edge?
-   * *This property can be changed in the child Query Graph component*
+   * When user selects two nodes while creating an edge, make a new edge
+   * and reset click state
    */
-  const creatingEdge = useRef(false);
+  useEffect(() => {
+    if (graphClickState.creatingConnection && graphClickState.chosenTerms.length >= 2) {
+      queryBuilder.addEdge(...graphClickState.chosenTerms);
+      updateClickState({ type: 'connectionMade' });
+      // remove border from connected nodes
+      nodeUtils.removeBorder();
+    }
+  }, [graphClickState]);
+
+  /**
+   * Close popover editor and reset popover type
+   */
+  function closeEditor() {
+    setAnchorEl(null);
+    setPopoverType('');
+  }
 
   /**
    * Open Popover editor
@@ -51,7 +89,8 @@ export default function GraphEditor() {
           height={height}
           width={width}
           openEditor={openEditor}
-          creatingEdge={creatingEdge}
+          graphClickState={graphClickState}
+          updateClickState={updateClickState}
         />
         <div id="graphBottomButtons">
           <Button
@@ -63,11 +102,11 @@ export default function GraphEditor() {
           </Button>
           <Button
             onClick={(e) => {
-              creatingEdge.current = true;
+              updateClickState({ type: 'startConnection', value: true });
               openEditor('', e.currentTarget, 'newEdge');
               // auto close after 5 seconds
               setTimeout(() => {
-                setAnchorEl(null);
+                closeEditor();
               }, 5000);
             }}
           >
@@ -77,7 +116,7 @@ export default function GraphEditor() {
         <Popover
           open={Boolean(anchorEl)}
           anchorEl={anchorEl}
-          onClose={() => setAnchorEl(null)}
+          onClose={closeEditor}
           anchorOrigin={{
             vertical: 'top',
             horizontal: 'left',
@@ -100,8 +139,7 @@ export default function GraphEditor() {
           )}
           {popoverType === 'editEdge' && (
             <PredicateSelector
-              queryBuilder={queryBuilder}
-              edgeId={editorId}
+              id={editorId}
             />
           )}
           {popoverType === 'newEdge' && (

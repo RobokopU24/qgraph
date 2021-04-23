@@ -27,7 +27,7 @@ function dragNode(simulation, width, height, nodeRadius) {
     .on('end', dragended);
 }
 
-function dragEdgeEnd(subject, simulation, width, height, nodeRadius, dispatch) {
+function dragEdgeEnd(subject, simulation, width, height, nodeRadius, updateEdge) {
   function dragstarted(event) {
     // stop simulation if user grabs an edge end
     if (!event.active) simulation.stop();
@@ -36,7 +36,7 @@ function dragEdgeEnd(subject, simulation, width, height, nodeRadius, dispatch) {
 
   function dragged(event, d) {
     const { id } = d;
-    const type = d3.select(this).attr('class');
+    const type = d3.select(this).attr('class').split(' ')[0];
     const inverseType = graphUtils.inverseEdgeType[type];
     const inverseX = d[inverseType].x;
     const inverseY = d[inverseType].y;
@@ -56,7 +56,7 @@ function dragEdgeEnd(subject, simulation, width, height, nodeRadius, dispatch) {
       labelPath = `M${target} ${source}`;
     }
     d3.select(`#${id}`)
-      .call((e) => e.select('.edge')
+      .call((e) => e.select('.edgePath')
         .attr('d', path))
       .call((e) => e.select('.edgeTransparent')
         .attr('d', labelPath))
@@ -72,7 +72,7 @@ function dragEdgeEnd(subject, simulation, width, height, nodeRadius, dispatch) {
     // see if edge was dropped on an edge
     const droppedCircle = d3.selectAll('.nodeCircle').data().find((n) => graphUtils.isInside(event.x, event.y, n.x, n.y, nodeRadius));
     const { id } = d;
-    const type = d3.select(this).attr('class');
+    const type = d3.select(this).attr('class').split(' ')[0];
     if (droppedCircle) {
       // edge was on a node
       const mapping = {
@@ -81,7 +81,7 @@ function dragEdgeEnd(subject, simulation, width, height, nodeRadius, dispatch) {
       };
       // no need to adjust anything internal because graph will be
       // redrawn
-      dispatch.call('update', null, id, mapping[type], droppedCircle.id);
+      updateEdge(id, mapping[type], droppedCircle.id);
     } else {
       // edge was dropped in space, put it back to previous nodes
       let {
@@ -100,7 +100,7 @@ function dragEdgeEnd(subject, simulation, width, height, nodeRadius, dispatch) {
         labelPath = `M${target}Q${qx},${qy} ${source}`;
       }
       d3.select(`#${id}`)
-        .call((e) => e.select('.edge')
+        .call((e) => e.select('.edgePath')
           .attr('d', path))
         .call((e) => e.select('.edgeTransparent')
           .attr('d', labelPath))
