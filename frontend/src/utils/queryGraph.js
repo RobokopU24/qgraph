@@ -134,6 +134,95 @@ const convert = {
 };
 
 /**
+ * Find curve id regardless of node id order
+ * @param {object[]} edgeCurves - list of edges with curve properties
+ * @param {string} id - `{nodeId}--{nodeId}`
+ * @returns {string} `{nodeId}--{nodeId}`
+ */
+function findCurveId(edgeCurves, id) {
+  const [subject, object] = id.split('--');
+  const curveId = Object.keys(edgeCurves).find((curve) => {
+    const nodeIds = curve.split('--');
+    if (nodeIds.indexOf(subject) > -1 && nodeIds.indexOf(object) > -1) {
+      return true;
+    }
+    return false;
+  });
+  return curveId;
+}
+
+const edgeCurveProps = {
+  get: (edgeCurves, id) => {
+    const curveId = findCurveId(edgeCurves, id);
+    let flip = false;
+    if (curveId) {
+      // n0--n1 != n1--n0
+      // we need to flip in order to have all edges right side up
+      if (curveId !== id) {
+        flip = true;
+      }
+      // return existing edge curve props
+      return { indices: edgeCurves[curveId], flip };
+    }
+    // return new edge curve props
+    return { indices: [], flip };
+  },
+  set: (edgeCurves, id, val) => {
+    const curveId = findCurveId(edgeCurves, id);
+    if (curveId) {
+      edgeCurves[curveId] = val;
+    } else {
+      edgeCurves[id] = val;
+    }
+    return true;
+  },
+};
+
+/**
+ * Add numEdges, index, and strokeWidth to edge objects
+ *
+ * **Must modify the existing edges array to keep the same reference for d3**
+ * @param {object[]} edges - list of graph edges
+ * @returns {object[]} list of edges with properties for d3 curves
+ */
+function addEdgeCurveProperties(edges) {
+  const curveProps = new Proxy({}, edgeCurveProps);
+  edges.forEach((e, i) => {
+    const curve = curveProps[`${e.source.id}--${e.target.id}`];
+    curve.indices.push(i);
+    curveProps[`${e.source.id}--${e.target.id}`] = curve.indices;
+  });
+  edges.forEach((e, i) => {
+    const curve = curveProps[`${e.source.id}--${e.target.id}`];
+    e.numEdges = curve.indices.length;
+    const edgeIndex = curve.indices.indexOf(i);
+    e.index = edgeIndex;
+    // if an even number of edges, move first middle edge to outside
+    // to keep edges symmetrical
+    if (curve.indices.length % 2 === 0 && edgeIndex === 0) {
+      e.index = curve.indices.length - 1;
+    }
+    // if not the first index (0)
+    if (edgeIndex) {
+      // all even index should be one less and odd indices
+      // should be flipped
+      const edgeL = edgeIndex % 2;
+      if (!edgeL) {
+        e.index -= 1;
+      } else {
+        e.index = -e.index;
+      }
+    }
+    // flip curve on any inverse edges
+    if (curve.flip) {
+      e.index = -e.index;
+    }
+    e.strokeWidth = '3';
+  });
+  return edges;
+}
+
+/**
  * Convert nodes and edges objects to lists for d3
  * @param {obj} q_graph
  * @returns {obj} query graph with node and edge lists
@@ -216,6 +305,7 @@ export default {
   standardizeCategory,
   standardizePredicate,
   standardizeIDs,
+  addEdgeCurveProperties,
   prune,
   ingest,
   getGraphEditorFormat,
