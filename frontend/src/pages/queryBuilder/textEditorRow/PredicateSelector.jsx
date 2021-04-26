@@ -8,12 +8,12 @@ import strings from '~/utils/strings';
 import highlighter from '~/utils/d3/highlighter';
 
 /**
- * Get first node category from list
- * @param {array|undefined} category array of node categories
- * @returns first node category or biolink:NamedThing
+ * Get a list of categories
+ * @param {array|undefined} categories array of node categories
+ * @returns list of categories or biolink:NamedThing
  */
-function getCategory(category) {
-  return (Array.isArray(category) && category.length && category[0]) || 'biolink:NamedThing';
+function getCategories(categories) {
+  return (Array.isArray(categories) && categories.length && categories) || ['biolink:NamedThing'];
 }
 
 export default function PredicateSelector({ id }) {
@@ -22,7 +22,10 @@ export default function PredicateSelector({ id }) {
   const { query_graph, updateEdgePredicate } = queryBuilder;
   const edge = query_graph.edges[id];
 
-  // Filter predicates by the nodes given
+  /**
+   * Get list of valid predicates from selected node categories
+   * @returns {string[]|null} list of valid predicates
+   */
   function getFilteredPredicateList() {
     if (!biolink || !biolink.concepts.length) {
       return null;
@@ -30,12 +33,15 @@ export default function PredicateSelector({ id }) {
     const subjectNode = query_graph.nodes[edge.subject];
     const objectNode = query_graph.nodes[edge.object];
 
-    const subjectCategory = getCategory(subjectNode.category);
-    const objectCategory = getCategory(objectNode.category);
+    // get list of categories from each node
+    const subjectCategories = getCategories(subjectNode.category);
+    const objectCategories = getCategories(objectNode.category);
 
-    const subjectNodeCategoryHierarchy = biolink.hierarchies[subjectCategory];
-    const objectNodeCategoryHierarchy = biolink.hierarchies[objectCategory];
+    // get hierarchies of all involved node categories
+    const subjectNodeCategoryHierarchy = subjectCategories.flatMap((subjectCategory) => biolink.hierarchies[subjectCategory]);
+    const objectNodeCategoryHierarchy = objectCategories.flatMap((objectCategory) => biolink.hierarchies[objectCategory]);
 
+    // if we get categories back that aren't in the biolink model
     if (!subjectNodeCategoryHierarchy || !objectNodeCategoryHierarchy) {
       return null;
     }
@@ -49,8 +55,9 @@ export default function PredicateSelector({ id }) {
   const filteredPredicateList = useMemo(
     getFilteredPredicateList,
     [
-      getCategory(query_graph.nodes[edge.subject].category),
-      getCategory(query_graph.nodes[edge.object].category),
+      // recompute if node categories change
+      JSON.stringify(query_graph.nodes[edge.subject].category),
+      JSON.stringify(query_graph.nodes[edge.object].category),
       biolink,
     ],
   ) || [];
