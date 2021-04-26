@@ -4,6 +4,11 @@ import graphUtils from './graph';
 import dragUtils from './drag';
 import highlighter from './highlighter';
 
+const rectSize = {
+  w: 50,
+  h: 25,
+};
+
 const deleteRectOffset = {
   x: -50,
   y: -90,
@@ -63,8 +68,8 @@ function enter(node, args) {
     // create delete button
     .call((nodeDelete) => nodeDelete.append('rect')
       .attr('transform', `translate(${deleteRectOffset.x},${deleteRectOffset.y})`)
-      .attr('width', 50)
-      .attr('height', 25)
+      .attr('width', rectSize.w)
+      .attr('height', rectSize.h)
       .attr('stroke', 'black')
       .attr('fill', 'white')
       .style('display', 'none')
@@ -82,8 +87,8 @@ function enter(node, args) {
     // create edit button
     .call((nodeEdit) => nodeEdit.append('rect')
       .attr('transform', `translate(${editRectOffset.x},${editRectOffset.y})`)
-      .attr('width', 50)
-      .attr('height', 25)
+      .attr('width', rectSize.w)
+      .attr('height', rectSize.h)
       .attr('stroke', 'black')
       .attr('fill', 'white')
       .style('display', 'none')

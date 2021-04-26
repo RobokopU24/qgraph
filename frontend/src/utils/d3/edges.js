@@ -5,6 +5,28 @@ import dragUtils from './drag';
 import strings from '~/utils/strings';
 import highlighter from './highlighter';
 
+const rectSize = {
+  w: 50,
+  h: 25,
+};
+
+const deleteRectOffset = {
+  x: -50,
+  y: -50,
+};
+const deleteTextOffset = {
+  x: -25,
+  y: -37,
+};
+const editRectOffset = {
+  x: 0,
+  y: -50,
+};
+const editTextOffset = {
+  x: 25,
+  y: -37,
+};
+
 /**
  * Handle creation of edges
  * @param {obj} edge - d3 edge object
@@ -65,38 +87,43 @@ function enter(edge) {
       .attr('class', 'target edgeEnd')
       .on('mouseover', graphUtils.showElement)
       .on('mouseout', graphUtils.hideElement))
-    .call((e) => e.append('rect')
-      .attr('x', (d) => graphUtils.getEdgeMiddle(d).x - 50)
-      .attr('y', (d) => graphUtils.getEdgeMiddle(d).y - 50)
-      .attr('width', 50)
-      .attr('height', 25)
-      .attr('stroke', 'black')
-      .attr('fill', 'white')
-      .style('display', 'none')
-      .attr('class', (d) => `${d.id} deleteRect`))
-    .call((e) => e.append('text')
-      .style('pointer-events', 'none')
-      .attr('text-anchor', 'middle')
-      .attr('alignment-baseline', 'middle')
-      .attr('class', (d) => `${d.id} deleteLabel`)
-      .style('display', 'none')
-      .text('delete'))
-    .call((e) => e.append('rect')
-      .attr('x', (d) => graphUtils.getEdgeMiddle(d).x)
-      .attr('y', (d) => graphUtils.getEdgeMiddle(d).y - 50)
-      .attr('width', 50)
-      .attr('height', 25)
-      .attr('stroke', 'black')
-      .attr('fill', 'white')
-      .style('display', 'none')
-      .attr('class', (d) => `${d.id} editRect`))
-    .call((e) => e.append('text')
-      .style('pointer-events', 'none')
-      .attr('text-anchor', 'middle')
-      .attr('alignment-baseline', 'middle')
-      .attr('class', (d) => `${d.id} editLabel`)
-      .style('display', 'none')
-      .text('edit'));
+    // edge button group
+    .call((eg) => eg.append('g')
+      .attr('class', 'edgeButtons')
+      .call((e) => e.append('rect')
+        .attr('transform', `translate(${deleteRectOffset.x},${deleteRectOffset.y})`)
+        .attr('width', rectSize.w)
+        .attr('height', rectSize.h)
+        .attr('stroke', 'black')
+        .attr('fill', 'white')
+        .style('display', 'none')
+        .attr('class', (d) => `${d.id} deleteRect`))
+      .call((e) => e.append('text')
+        .attr('dx', deleteTextOffset.x)
+        .attr('dy', deleteTextOffset.y)
+        .style('pointer-events', 'none')
+        .attr('text-anchor', 'middle')
+        .attr('alignment-baseline', 'middle')
+        .attr('class', (d) => `${d.id} deleteLabel`)
+        .style('display', 'none')
+        .text('delete'))
+      .call((e) => e.append('rect')
+        .attr('transform', `translate(${editRectOffset.x},${editRectOffset.y})`)
+        .attr('width', rectSize.w)
+        .attr('height', rectSize.h)
+        .attr('stroke', 'black')
+        .attr('fill', 'white')
+        .style('display', 'none')
+        .attr('class', (d) => `${d.id} editRect`))
+      .call((e) => e.append('text')
+        .attr('dx', editTextOffset.x)
+        .attr('dy', editTextOffset.y)
+        .style('pointer-events', 'none')
+        .attr('text-anchor', 'middle')
+        .attr('alignment-baseline', 'middle')
+        .attr('class', (d) => `${d.id} editLabel`)
+        .style('display', 'none')
+        .text('edit')));
 }
 
 /**
@@ -157,7 +184,7 @@ function attachEdgeClick(editId, setEditId) {
  * @param {function} setEditId - set current edit id
  */
 function attachDeleteClick(deleteEdge, setEditId) {
-  d3.selectAll('.edge > .deleteRect')
+  d3.selectAll('.edgeButtons > .deleteRect')
     .on('click', (event, d) => {
       const { id } = d;
       setEditId('');
@@ -171,7 +198,7 @@ function attachDeleteClick(deleteEdge, setEditId) {
  * @param {function} setEditId - set current edit id
  */
 function attachEditClick(openEditor, setEditId) {
-  d3.selectAll('.edge > .editRect')
+  d3.selectAll('.edgeButtons > .editRect')
     .on('click', (event, d) => {
       const { id } = d;
       const edgeAnchor = d3.select(`#${id} > .source`).node();

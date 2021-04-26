@@ -198,24 +198,11 @@ export default function QueryGraph({
         });
 
     edge.current
-      .select('.deleteRect')
-        .attr('x', (d) => graphUtils.getEdgeMiddle(d).x - 50)
-        .attr('y', (d) => graphUtils.getEdgeMiddle(d).y - 50);
-
-    edge.current
-      .select('.deleteLabel')
-        .attr('x', (d) => graphUtils.getEdgeMiddle(d).x - 25)
-        .attr('y', (d) => graphUtils.getEdgeMiddle(d).y - 37);
-
-    edge.current
-      .select('.editRect')
-        .attr('x', (d) => graphUtils.getEdgeMiddle(d).x)
-        .attr('y', (d) => graphUtils.getEdgeMiddle(d).y - 50);
-
-    edge.current
-      .select('.editLabel')
-        .attr('x', (d) => graphUtils.getEdgeMiddle(d).x + 25)
-        .attr('y', (d) => graphUtils.getEdgeMiddle(d).y - 37);
+      .select('.edgeButtons')
+        .attr('transform', (d) => {
+          const { x, y } = graphUtils.getEdgeMiddle(d);
+          return `translate(${x},${y})`;
+        });
   }
 
   /**
