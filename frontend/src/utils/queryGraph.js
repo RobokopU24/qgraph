@@ -280,7 +280,15 @@ function prune(q_graph) {
   return clonedQueryGraph;
 }
 
-function ingest(q_graph) {
+/**
+ * Standardize properties in a valid query graph
+ *
+ * - wraps ids, categories, and predicates in arrays
+ * - adds a 'name' property to nodes
+ * @param {object} q_graph - query graph object
+ * @returns {{}} query graph
+ */
+function standardize(q_graph) {
   const clonedQueryGraph = _.cloneDeep(q_graph);
   Object.keys(clonedQueryGraph.nodes).forEach((n) => {
     const node = clonedQueryGraph.nodes[n];
@@ -307,6 +315,6 @@ export default {
   standardizeIDs,
   addEdgeCurveProperties,
   prune,
-  ingest,
+  standardize,
   getGraphEditorFormat,
 };
