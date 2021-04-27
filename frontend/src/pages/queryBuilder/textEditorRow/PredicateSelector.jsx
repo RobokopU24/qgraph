@@ -27,7 +27,7 @@ export default function PredicateSelector({ id }) {
    * @returns {string[]|null} list of valid predicates
    */
   function getFilteredPredicateList() {
-    if (!biolink || !biolink.concepts.length) {
+    if (!biolink || !biolink.predicates.length) {
       return null;
     }
     const subjectNode = query_graph.nodes[edge.subject];
@@ -38,17 +38,17 @@ export default function PredicateSelector({ id }) {
     const objectCategories = getCategories(objectNode.category);
 
     // get hierarchies of all involved node categories
-    const subjectNodeCategoryHierarchy = subjectCategories.flatMap((subjectCategory) => biolink.hierarchies[subjectCategory]);
-    const objectNodeCategoryHierarchy = objectCategories.flatMap((objectCategory) => biolink.hierarchies[objectCategory]);
+    const subjectNodeCategoryDescendants = subjectCategories.flatMap((subjectCategory) => biolink.descendancies[subjectCategory]);
+    const objectNodeCategoryDescendants = objectCategories.flatMap((objectCategory) => biolink.descendancies[objectCategory]);
 
     // if we get categories back that aren't in the biolink model
-    if (!subjectNodeCategoryHierarchy || !objectNodeCategoryHierarchy) {
+    if (!subjectNodeCategoryDescendants || !objectNodeCategoryDescendants) {
       return null;
     }
 
     return biolink.predicates.filter(
-      (p) => subjectNodeCategoryHierarchy.includes(p.domain) &&
-             objectNodeCategoryHierarchy.includes(p.range),
+      (p) => subjectNodeCategoryDescendants.includes(p.domain) &&
+             objectNodeCategoryDescendants.includes(p.range),
     ).map((p) => p.predicate);
   }
 

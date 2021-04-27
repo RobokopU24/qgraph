@@ -46,7 +46,7 @@ export default function App() {
         'Failed to contact server to download biolink model. You will not be able to select general nodes or predicates. Please try again later.');
       return;
     }
-    biolink.initialize(response);
+    biolink.setBiolink(response);
   }
   useEffect(() => { fetchBiolink(); }, []);
 
