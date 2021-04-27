@@ -114,11 +114,6 @@ export default function Header({ setUser }) {
       <Toolbar id="headerToolbar">
         <Link to="/" id="robokopBrand">Robokop</Link>
         <Link to="/questions">Question Library</Link>
-        {user ? (
-          <Link to="/q/new">Ask a Question</Link>
-        ) : (
-          <Link to="/simple/question">Ask a Quick Question</Link>
-        )}
         <div className="grow" />
         <Link to="/about">About</Link>
         <Link to="/help">Help</Link>

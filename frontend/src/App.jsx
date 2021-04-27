@@ -8,11 +8,8 @@ import Help from '~/pages/Help';
 import Guide from '~/pages/Guide';
 import TermsofService from '~/pages/TermsofService';
 import SimpleViewer from '~/pages/SimpleViewer';
-import SimpleQuestion from '~/pages/question/SimpleQuestion';
-import QuestionNew from '~/pages/question/QuestionNew';
 import QueryBuilder from '~/pages/queryBuilder/QueryBuilder';
 
-import Neighborhood from '~/pages/neighborhood/Neighborhood';
 import QuestionList from '~/pages/questionList/QuestionList';
 import QuestionAnswerViewer from '~/pages/questionAnswerViewer/QuestionAnswerViewer';
 
@@ -74,9 +71,6 @@ export default function App() {
                       <Route path="/guide">
                         <Guide />
                       </Route>
-                      <Route path="/neighborhood">
-                        <Neighborhood />
-                      </Route>
                       <Route path="/questions">
                         <QuestionList />
                       </Route>
@@ -89,13 +83,7 @@ export default function App() {
                       <Route path="/simple/view">
                         <SimpleViewer />
                       </Route>
-                      <Route path="/simple/question">
-                        <SimpleQuestion />
-                      </Route>
-                      <Route path="/q/new">
-                        <QuestionNew />
-                      </Route>
-                      <Route path="/new_question">
+                      <Route path="/question">
                         <QueryBuilder />
                       </Route>
                       <Route path="/">

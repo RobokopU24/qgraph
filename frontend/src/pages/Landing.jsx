@@ -1,11 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import {
   Grid, Jumbotron, ButtonToolbar, Button, ListGroup,
   ListGroupItem, Glyphicon, Col, Row,
 } from 'react-bootstrap';
 
-import UserContext from '~/context/user';
 import './simplecss.css';
 
 /**
@@ -47,7 +46,6 @@ function OptionButton({
  * Home page
  */
 export default function Landing() {
-  const user = useContext(UserContext);
   return (
     <Grid>
       <Jumbotron>
@@ -75,23 +73,6 @@ export default function Landing() {
               Browse Questions
             </Button>
           </Link>
-          {user ? (
-            <Link to="/q/new">
-              <Button
-                bsSize="large"
-              >
-                Ask a Question
-              </Button>
-            </Link>
-          ) : (
-            <Link to="/simple/question">
-              <Button
-                bsSize="large"
-              >
-                Ask a Quick Question
-              </Button>
-            </Link>
-          )}
         </ButtonToolbar>
       </Jumbotron>
       <Jumbotron id="landingOptions">
@@ -99,24 +80,16 @@ export default function Landing() {
         <ListGroup>
           <Row>
             <OptionButton
-              glyph="question-sign"
-              header="Quick Question"
-              text="Ask a question and get an answerset back. This question will not be stored and you don&apos;t have to be signed in."
-              href="/simple/question"
+              glyph="screenshot"
+              header="Question Builder"
+              text="Build a new question."
+              href="/question"
             />
             <OptionButton
               glyph="import"
               header="Answerset Explorer"
               text="Easily upload JSON files of answersets to view them in Robokop&apos;s graphical interface."
               href="/simple/view"
-            />
-          </Row>
-          <Row>
-            <OptionButton
-              glyph="screenshot"
-              header="New Question Builder"
-              text="Use text editor and a graph editor together."
-              href="/new_question"
             />
           </Row>
           {/*
