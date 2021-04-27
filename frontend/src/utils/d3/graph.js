@@ -91,23 +91,14 @@ function getShortenedLineEnd(x1, y1, x2, y2, offset) {
 }
 
 /**
- * Find bounded value within graph bounds
- * @param {int} pos position to bound
- * @param {int} bound bound
+ * Find bounded value within a lower and upper bound
+ * @param {int} value - value to bound
+ * @param {int} upperBound - upper bound of value
+ * @param {int} lowerBound - lower bound of value; default: 0
  * @returns {int} bounded value
  */
-function boundedEdge(pos, bound) {
-  return Math.max(0, Math.min(pos, bound));
-}
-
-/**
- * Find bounded value within graph bounds
- * @param {int} pos position to bound
- * @param {int} bound bound
- * @returns {int} bounded value
- */
-function boundedNode(pos, bound, r) {
-  return Math.max(r, Math.min(bound - r, pos));
+function getBoundedValue(value, upperBound, lowerBound = 0) {
+  return Math.max(lowerBound, Math.min(value, upperBound));
 }
 
 /**
@@ -183,9 +174,7 @@ export default {
 
   getCurvedEdgePos,
   getShortenedLineEnd,
-
-  boundedNode,
-  boundedEdge,
+  getBoundedValue,
 
   ellipsisOverflow,
   getEdgeMiddle,

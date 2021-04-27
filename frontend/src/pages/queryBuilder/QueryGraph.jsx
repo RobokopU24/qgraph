@@ -137,8 +137,8 @@ export default function QueryGraph({
   function ticked() {
     node.current
       .attr('transform', (d) => {
-        d.x = graphUtils.boundedNode(d.x, width, nodeRadius);
-        d.y = graphUtils.boundedNode(d.y, height, nodeRadius);
+        d.x = graphUtils.getBoundedValue(d.x, width - nodeRadius, nodeRadius);
+        d.y = graphUtils.getBoundedValue(d.y, height - nodeRadius, nodeRadius);
         return `translate(${d.x},${d.y})`;
       });
 
@@ -167,14 +167,14 @@ export default function QueryGraph({
       .select('.source')
         .attr('cx', (d) => {
           const { x1 } = graphUtils.getCurvedEdgePos(d.source.x, d.source.y, d.target.x, d.target.y, d.numEdges, d.index, nodeRadius);
-          const boundedVal = graphUtils.boundedEdge(x1, width);
+          const boundedVal = graphUtils.getBoundedValue(x1, width);
           // set internal x value of edge end
           d.x = boundedVal;
           return boundedVal;
         })
         .attr('cy', (d) => {
           const { y1 } = graphUtils.getCurvedEdgePos(d.source.x, d.source.y, d.target.x, d.target.y, d.numEdges, d.index, nodeRadius);
-          const boundedVal = graphUtils.boundedEdge(y1, height);
+          const boundedVal = graphUtils.getBoundedValue(y1, height);
           // set internal y value of edge end
           d.y = boundedVal;
           return boundedVal;
@@ -184,14 +184,14 @@ export default function QueryGraph({
       .select('.target')
         .attr('cx', (d) => {
           const { x2 } = graphUtils.getCurvedEdgePos(d.source.x, d.source.y, d.target.x, d.target.y, d.numEdges, d.index, nodeRadius);
-          const boundedVal = graphUtils.boundedEdge(x2, width);
+          const boundedVal = graphUtils.getBoundedValue(x2, width);
           // set internal x value of edge end
           d.x = boundedVal;
           return boundedVal;
         })
         .attr('cy', (d) => {
           const { y2 } = graphUtils.getCurvedEdgePos(d.source.x, d.source.y, d.target.x, d.target.y, d.numEdges, d.index, nodeRadius);
-          const boundedVal = graphUtils.boundedEdge(y2, height);
+          const boundedVal = graphUtils.getBoundedValue(y2, height);
           // set internal y value of edge end
           d.y = boundedVal;
           return boundedVal;

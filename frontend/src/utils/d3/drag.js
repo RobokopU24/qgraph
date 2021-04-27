@@ -11,8 +11,8 @@ function dragNode(simulation, width, height, nodeRadius) {
   }
 
   function dragged(event, d) {
-    d.fx = graphUtils.boundedNode(event.x, width, nodeRadius);
-    d.fy = graphUtils.boundedNode(event.y, height, nodeRadius);
+    d.fx = graphUtils.getBoundedValue(event.x, width - nodeRadius, nodeRadius);
+    d.fy = graphUtils.getBoundedValue(event.y, height - nodeRadius, nodeRadius);
   }
 
   function dragended(event, d) {
@@ -40,10 +40,10 @@ function dragEdgeEnd(subject, simulation, width, height, nodeRadius, updateEdge)
     const otherEdgeEnd = graphUtils.getOtherEdgeEnd(type);
     const otherEndX = d[otherEdgeEnd].x;
     const otherEndY = d[otherEdgeEnd].y;
-    const targetX = graphUtils.boundedEdge(otherEndX, width);
-    const targetY = graphUtils.boundedEdge(otherEndY, height);
-    const mouseX = graphUtils.boundedEdge(event.x, width);
-    const mouseY = graphUtils.boundedEdge(event.y, height);
+    const targetX = graphUtils.getBoundedValue(otherEndX, width);
+    const targetY = graphUtils.getBoundedValue(otherEndY, height);
+    const mouseX = graphUtils.getBoundedValue(event.x, width);
+    const mouseY = graphUtils.getBoundedValue(event.y, height);
     const {
       x: x2, y: y2,
     } = graphUtils.getShortenedLineEnd(targetX, targetY, mouseX, mouseY, nodeRadius);
@@ -87,10 +87,10 @@ function dragEdgeEnd(subject, simulation, width, height, nodeRadius, updateEdge)
       let {
         x1, y1, qx, qy, x2, y2, // eslint-disable-line prefer-const
       } = graphUtils.getCurvedEdgePos(d.source.x, d.source.y, d.target.x, d.target.y, d.numEdges, d.index, nodeRadius);
-      x2 = graphUtils.boundedEdge(x2, width);
-      y2 = graphUtils.boundedEdge(y2, height);
-      x1 = graphUtils.boundedEdge(x1, width);
-      y1 = graphUtils.boundedEdge(y1, height);
+      x2 = graphUtils.getBoundedValue(x2, width);
+      y2 = graphUtils.getBoundedValue(y2, height);
+      x1 = graphUtils.getBoundedValue(x1, width);
+      y1 = graphUtils.getBoundedValue(y1, height);
       const source = `${x1},${y1}`;
       const target = `${x2},${y2}`;
       const path = `M${source}Q${qx},${qy} ${target}`;
