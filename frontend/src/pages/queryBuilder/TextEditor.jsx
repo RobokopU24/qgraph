@@ -5,13 +5,13 @@ import TextEditorRow from './textEditorRow/TextEditorRow';
 /**
  * Query Builder text editor interface
  */
-export default function TextEditor({ edgeIds }) {
+export default function TextEditor({ rows }) {
   return (
     <div id="queryTextEditor">
-      {edgeIds.map((edgeId, i) => (
+      {rows.map((row, i) => (
         <TextEditorRow
-          key={edgeId}
-          edgeId={edgeId}
+          key={row.edgeId}
+          row={row}
           index={i}
         />
       ))}

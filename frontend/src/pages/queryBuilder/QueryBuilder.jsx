@@ -59,7 +59,7 @@ export default function QueryBuilder() {
       <div id="queryEditorContainer">
         <QueryBuilderContext.Provider value={queryBuilder}>
           <TextEditor
-            edgeIds={queryBuilder.edgeIds}
+            rows={queryBuilder.textEditorRows}
           />
           <GraphEditor />
           <JsonEditor

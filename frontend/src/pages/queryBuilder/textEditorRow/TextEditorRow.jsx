@@ -9,10 +9,10 @@ import PredicateSelector from './PredicateSelector';
 
 import './textEditorRow.css';
 
-export default function TextEditorRow({ edgeId, index }) {
+export default function TextEditorRow({ row, index }) {
   const queryBuilder = useContext(QueryBuilderContext);
-  const edge = queryBuilder.query_graph.edges[edgeId];
-  const original = queryBuilder.originalNodeList[index] || {};
+  const edge = queryBuilder.query_graph.edges[row.edgeId];
+  const { edgeId, subjectIsReference, objectIsReference } = row;
 
   return (
     <div
@@ -21,7 +21,7 @@ export default function TextEditorRow({ edgeId, index }) {
       <IconButton
         onClick={() => queryBuilder.deleteEdge(edgeId)}
         className="textEditorIconButton"
-        disabled={queryBuilder.edgeIds.length < 2}
+        disabled={queryBuilder.textEditorRows.length < 2}
       >
         <IndeterminateCheckBoxOutlinedIcon />
       </IconButton>
@@ -34,11 +34,11 @@ export default function TextEditorRow({ edgeId, index }) {
         id={edge.subject}
         properties={queryBuilder.query_graph.nodes[edge.subject]}
         setReference={(nodeId) => queryBuilder.updateEdge(edgeId, 'subject', nodeId)}
-        update={original.subject ? queryBuilder.updateNode : () => queryBuilder.updateEdge(edgeId, 'subject', null)}
-        isReference={!original.subject}
+        update={subjectIsReference ? () => queryBuilder.updateEdge(edgeId, 'subject', null) : queryBuilder.updateNode}
+        isReference={subjectIsReference}
         options={{
-          includeCuries: original.subject,
-          includeCategories: original.subject,
+          includeCuries: !subjectIsReference,
+          includeCategories: !subjectIsReference,
           includeExistingNodes: index !== 0,
           existingNodes: Object.keys(queryBuilder.query_graph.nodes).filter(
             (key) => key !== edge.object,
@@ -52,11 +52,11 @@ export default function TextEditorRow({ edgeId, index }) {
         id={edge.object}
         properties={queryBuilder.query_graph.nodes[edge.object]}
         setReference={(nodeId) => queryBuilder.updateEdge(edgeId, 'object', nodeId)}
-        update={original.object ? queryBuilder.updateNode : () => queryBuilder.updateEdge(edgeId, 'object', null)}
-        isReference={!original.object}
+        update={objectIsReference ? () => queryBuilder.updateEdge(edgeId, 'object', null) : queryBuilder.updateNode}
+        isReference={objectIsReference}
         options={{
-          includeCuries: original.object,
-          includeCategories: original.object,
+          includeCuries: !objectIsReference,
+          includeCategories: !objectIsReference,
           includeExistingNodes: index !== 0,
           existingNodes: Object.keys(queryBuilder.query_graph.nodes).filter(
             (key) => key !== edge.subject,

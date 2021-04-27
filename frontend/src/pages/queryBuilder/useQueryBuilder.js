@@ -1,5 +1,5 @@
 import {
-  useState, useEffect, useContext, useMemo,
+  useState, useEffect, useContext,
 } from 'react';
 import _ from 'lodash';
 
@@ -44,7 +44,7 @@ const defaultQueryGraph = {
 export default function useQueryBuilder() {
   const [query_graph, updateQueryGraph] = useState(defaultQueryGraph);
   const [rootNode, setRootNode] = useState('n0');
-  const [originalNodeList, setOriginalNodeList] = useState([]);
+  const [textEditorRows, setTextEditorRows] = useState([]);
   const displayAlert = useContext(AlertContext);
 
   /**
@@ -185,18 +185,7 @@ export default function useQueryBuilder() {
   }
 
   /**
-   * Edge list with the first edge with the root node as its subject first
-   */
-  const sortedEdgeIds = useMemo(() => {
-    const edgeIds = Object.keys(query_graph.edges);
-    const firstEdgeIndex = edgeIds.findIndex((eId) => query_graph.edges[eId].subject === rootNode);
-    const [firstEdgeId] = edgeIds.splice(firstEdgeIndex, 1);
-    edgeIds.unshift(firstEdgeId);
-    return edgeIds;
-  }, [query_graph, rootNode]);
-
-  /**
-   * Any time the query graph changes, recompute where the original nodes are
+   * Any time the query graph changes, recompute the text editor rows
    *
    * Sets rows as: [ { subject: boolean, object: boolean } ]
    */
@@ -204,22 +193,26 @@ export default function useQueryBuilder() {
     // rows are an array of objects
     const rows = [];
     const nodeList = new Set();
-    sortedEdgeIds.forEach((edgeId) => {
+    const edgeIds = Object.keys(query_graph.edges);
+    const firstEdgeIndex = edgeIds.findIndex((eId) => query_graph.edges[eId].subject === rootNode);
+    const [firstEdgeId] = edgeIds.splice(firstEdgeIndex, 1);
+    edgeIds.unshift(firstEdgeId);
+    edgeIds.forEach((edgeId) => {
       const row = {};
       const edge = query_graph.edges[edgeId];
-      row.subject = !nodeList.has(edge.subject);
-      row.object = !nodeList.has(edge.object);
+      row.edgeId = edgeId;
+      row.subjectIsReference = nodeList.has(edge.subject);
+      row.objectIsReference = nodeList.has(edge.object);
       nodeList.add(edge.subject);
       nodeList.add(edge.object);
       rows.push(row);
     });
-    setOriginalNodeList(rows);
-  }, [sortedEdgeIds]);
+    setTextEditorRows(rows);
+  }, [query_graph, rootNode]);
 
   return {
     query_graph,
-    originalNodeList,
-    edgeIds: sortedEdgeIds,
+    textEditorRows,
     rootNode,
 
     updateNode,
