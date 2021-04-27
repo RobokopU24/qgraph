@@ -55,7 +55,7 @@ export default function useQueryBuilder() {
     const { isValid, newRoot } = queryBuilderUtils.isValidGraph(q_graph);
     if (isValid) {
       setRootNode(newRoot);
-      updateQueryGraph(queryGraphUtils.ingest(q_graph));
+      updateQueryGraph(queryGraphUtils.standardize(q_graph));
     } else {
       displayAlert('error', 'Failed to save. This is an invalid query graph.');
     }
