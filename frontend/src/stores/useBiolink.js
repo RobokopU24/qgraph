@@ -7,7 +7,7 @@ const baseClass = 'biolink:BiologicalEntity';
 export default function useBiolink() {
   const [biolink, setBiolink] = useState(null);
   const [concepts, setConcepts] = useState([]);
-  const [descendancies, setDescendancies] = useState({});
+  const [hierarchies, setHierarchies] = useState({});
   const [predicates, setPredicates] = useState([]);
 
   function getEdgePredicates() {
@@ -31,7 +31,7 @@ export default function useBiolink() {
    * @param {object} biolinkClasses - object of all biolink classes
    * @returns {string[]} list of related biolink classes
    */
-  function getDescendants(childClass, classes) {
+  function getAscendants(childClass, classes) {
     let currentClass = childClass;
     const descendantList = [currentClass];
     // Repeat until we hit the top of the classes
@@ -51,11 +51,11 @@ export default function useBiolink() {
    * @param {object} biolinkClasses - object of all biolink classes
    * @returns {{}} Object with classes as keys and descendant lists as values
    */
-  function getAllDescendancies(biolinkClasses) {
+  function getAllAscendancies(biolinkClasses) {
     const newHierarchies = Object.keys(biolinkClasses).reduce((obj, item) => {
-      let hierarchy = getDescendants(item, biolinkClasses);
-      hierarchy = hierarchy.map((h) => strings.nodeFromBiolink(h));
-      obj[strings.nodeFromBiolink(item)] = hierarchy;
+      let ascendants = getAscendants(item, biolinkClasses);
+      ascendants = ascendants.map((h) => strings.nodeFromBiolink(h));
+      obj[strings.nodeFromBiolink(item)] = ascendants;
       return obj;
     }, {});
     return newHierarchies;
@@ -77,12 +77,12 @@ export default function useBiolink() {
    * @param {*} targetClass - class we want to find the descendants of
    * @returns {[]} list of descendants
    */
-  function getDirectDescendantsRecursive(classes, targetClass) {
+  function getDirectDescendants(classes, targetClass) {
     let descendants = [];
     Object.keys(classes).forEach((key) => {
       if (classes[key].is_a === targetClass) {
         descendants.push(key);
-        descendants = descendants.concat(getDirectDescendantsRecursive(classes, key));
+        descendants = descendants.concat(getDirectDescendants(classes, key));
       }
     });
     return descendants;
@@ -90,12 +90,12 @@ export default function useBiolink() {
 
   /**
    * Get all descendants by getting direct descendants recursively
-   * @param {string} currentClass - biolink class to get all descendants of
+   * @param {string} targetClass - biolink class to get all descendants of
    * @param {object} classes - object of all biolink classes
    * @returns {[]} list of all descendants
    */
-  function getAllDescendants(currentClass, classes) {
-    const descendants = [currentClass, ...getDirectDescendantsRecursive(classes, currentClass)];
+  function getAllDescendants(classes, targetClass) {
+    const descendants = [targetClass, ...getDirectDescendants(classes, targetClass)];
     return descendants.map((h) => strings.nodeFromBiolink(h));
   }
 
@@ -103,12 +103,12 @@ export default function useBiolink() {
     if (biolink) {
       const biolinkClasses = _.transform(biolink.classes,
         (result, value, key) => { result[key] = value; });
-      const allDescendancies = getAllDescendancies(biolinkClasses);
-      const allConcepts = getValidConcepts(allDescendancies);
+      const allHierarchies = getAllAscendancies(biolinkClasses);
+      const allConcepts = getValidConcepts(allHierarchies);
       const allPredicates = getEdgePredicates();
-      const namedThingDescendants = getAllDescendants('named thing', biolinkClasses);
-      allDescendancies['biolink:NamedThing'] = namedThingDescendants;
-      setDescendancies(allDescendancies);
+      const namedThingDescendants = getAllDescendants(biolinkClasses, 'named thing');
+      allHierarchies['biolink:NamedThing'] = namedThingDescendants;
+      setHierarchies(allHierarchies);
       setConcepts(allConcepts);
       setPredicates(allPredicates);
     }
@@ -116,9 +116,8 @@ export default function useBiolink() {
 
   return {
     setBiolink,
-    getEdgePredicates,
     concepts,
-    descendancies,
+    hierarchies,
     predicates,
   };
 }
