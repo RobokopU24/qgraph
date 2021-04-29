@@ -38,17 +38,17 @@ export default function PredicateSelector({ id }) {
     const objectCategories = getCategories(objectNode.category);
 
     // get hierarchies of all involved node categories
-    const subjectNodeCategoryDescendants = subjectCategories.flatMap((subjectCategory) => biolink.descendancies[subjectCategory]);
-    const objectNodeCategoryDescendants = objectCategories.flatMap((objectCategory) => biolink.descendancies[objectCategory]);
+    const subjectNodeCategoryHierarchy = subjectCategories.flatMap((subjectCategory) => biolink.hierarchies[subjectCategory]);
+    const objectNodeCategoryHierarchy = objectCategories.flatMap((objectCategory) => biolink.hierarchies[objectCategory]);
 
     // if we get categories back that aren't in the biolink model
-    if (!subjectNodeCategoryDescendants || !objectNodeCategoryDescendants) {
+    if (!subjectNodeCategoryHierarchy || !objectNodeCategoryHierarchy) {
       return null;
     }
 
     return biolink.predicates.filter(
-      (p) => subjectNodeCategoryDescendants.includes(p.domain) &&
-             objectNodeCategoryDescendants.includes(p.range),
+      (p) => subjectNodeCategoryHierarchy.includes(p.domain) &&
+             objectNodeCategoryHierarchy.includes(p.range),
     ).map((p) => p.predicate);
   }
 
