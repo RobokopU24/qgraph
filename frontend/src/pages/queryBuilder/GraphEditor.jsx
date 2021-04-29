@@ -127,7 +127,7 @@ export default function GraphEditor() {
         />
         <div id="graphBottomButtons">
           <Button
-            onClick={(e) => {
+            onClick={() => {
               addHop();
               clickNode();
             }}
