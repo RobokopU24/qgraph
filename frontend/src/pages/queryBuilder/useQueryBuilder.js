@@ -152,8 +152,10 @@ export default function useQueryBuilder() {
     const nodeList = new Set();
     const edgeIds = Object.keys(query_graph.edges);
     const firstEdgeIndex = edgeIds.findIndex((eId) => query_graph.edges[eId].subject === rootNode);
-    const [firstEdgeId] = edgeIds.splice(firstEdgeIndex, 1);
-    edgeIds.unshift(firstEdgeId);
+    if (firstEdgeIndex !== -1) {
+      const [firstEdgeId] = edgeIds.splice(firstEdgeIndex, 1);
+      edgeIds.unshift(firstEdgeId);
+    }
     edgeIds.forEach((edgeId) => {
       const row = {};
       const edge = query_graph.edges[edgeId];
