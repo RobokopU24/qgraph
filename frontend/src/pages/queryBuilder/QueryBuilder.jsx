@@ -26,7 +26,7 @@ export default function QueryBuilder() {
    * Open iframe in new tab and display query graph json
    */
   function newTabJSON() {
-    const prunedQueryGraph = queryGraphUtils.prune(queryBuilder.query_graph);
+    const prunedQueryGraph = queryGraphUtils.prune(queryBuilder.state.query_graph);
     const win = window.open();
     win.document.write(`
       <iframe src="data:text/json,${encodeURIComponent(JSON.stringify(prunedQueryGraph, null, 2))}"

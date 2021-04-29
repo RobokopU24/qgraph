@@ -1,7 +1,6 @@
 import {
-  useState, useEffect, useContext,
+  useEffect, useContext, useReducer, useMemo,
 } from 'react';
-import _ from 'lodash';
 
 import AlertContext from '~/context/alert';
 import queryBuilderUtils from '~/utils/queryBuilder';
@@ -13,10 +12,10 @@ function getDefaultNode() {
     id: [],
   };
 }
-function getDefaultEdge() {
+function getDefaultEdge(subject, object) {
   return {
-    subject: '',
-    object: '',
+    subject: subject || '',
+    object: object || '',
     predicate: ['biolink:related_to'],
   };
 }
@@ -27,13 +26,99 @@ const defaultQueryGraph = {
     n1: getDefaultNode(),
   },
   edges: {
-    e0: {
-      subject: 'n0',
-      object: 'n1',
-      predicate: ['biolink:related_to'],
-    },
+    e0: getDefaultEdge('n0', 'n1'),
   },
 };
+
+const initialState = {
+  query_graph: defaultQueryGraph,
+  rootNode: 'n0',
+  isValid: true,
+  errMessage: '',
+};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'addEdge': {
+      const [subjectId, objectId] = action.payload;
+      const newEdgeId = queryBuilderUtils.getNextEdgeID(state.query_graph);
+      state.query_graph.edges[newEdgeId] = getDefaultEdge(subjectId, objectId);
+      break;
+    }
+    case 'editEdge': {
+      const { edgeId, endpoint, nodeId } = action.payload;
+      if (!nodeId) {
+        const newNodeId = queryBuilderUtils.getNextNodeID(state.query_graph);
+        state.query_graph.nodes[newNodeId] = getDefaultNode();
+        state.query_graph.edges[edgeId][endpoint] = newNodeId;
+      } else {
+        state.query_graph.edges[edgeId][endpoint] = nodeId;
+      }
+      state.rootNode = queryBuilderUtils.computeRootNode(state.query_graph, state.rootNode);
+      state.query_graph = queryBuilderUtils.removeDetachedFromRoot(state.query_graph, state.rootNode);
+      break;
+    }
+    case 'editPredicate': {
+      const { id, predicate } = action.payload;
+      state.query_graph.edges[id].predicate = predicate;
+      break;
+    }
+    case 'deleteEdge': {
+      const { id } = action.payload;
+      delete state.query_graph.edges[id];
+      state.rootNode = queryBuilderUtils.computeRootNode(state.query_graph, state.rootNode);
+      state.query_graph = queryBuilderUtils.removeDetachedFromRoot(state.query_graph, state.rootNode);
+      break;
+    }
+    case 'addHop': {
+      const { nodeId } = action.payload;
+      const newNodeId = queryBuilderUtils.getNextNodeID(state.query_graph);
+      const newEdgeId = queryBuilderUtils.getNextEdgeID(state.query_graph);
+      let subjectId = nodeId;
+      if (nodeId === undefined) {
+        const nodeKeys = Object.keys(state.query_graph.nodes);
+        subjectId = nodeKeys[nodeKeys.length - 1];
+      }
+      state.query_graph.edges[newEdgeId] = getDefaultEdge(subjectId, newNodeId);
+      state.query_graph.nodes[newNodeId] = getDefaultNode();
+      break;
+    }
+    case 'addNode': {
+      const newNodeId = queryBuilderUtils.getNextNodeID(state.query_graph);
+      state.query_graph.nodes[newNodeId] = getDefaultNode();
+      break;
+    }
+    case 'editNode': {
+      const { id, node } = action.payload;
+      state.query_graph.nodes[id] = node || getDefaultNode();
+      break;
+    }
+    case 'deleteNode': {
+      const { id } = action.payload;
+      delete state.query_graph.nodes[id];
+      const trimmedQueryGraph = queryBuilderUtils.removeAttachedEdges(state.query_graph, id);
+      if (
+        id === state.rootNode || // root node is deleted
+        queryBuilderUtils.getConnectedEdges(trimmedQueryGraph.edges, state.rootNode).size === 0 // root node is detached
+      ) {
+        state.rootNode = queryBuilderUtils.findRootNode(trimmedQueryGraph);
+      }
+      state.query_graph = queryBuilderUtils.removeDetachedFromRoot(trimmedQueryGraph, state.rootNode);
+      break;
+    }
+    case 'saveGraph': {
+      state.query_graph = queryGraphUtils.standardize(action.payload);
+      break;
+    }
+    default: {
+      return state;
+    }
+  }
+  const { isValid, errMsg } = queryBuilderUtils.isValidGraph(state.query_graph);
+  state.isValid = isValid;
+  state.errMessage = errMsg;
+  return { ...state };
+}
 
 /**
  * Query builder main store
@@ -42,156 +127,28 @@ const defaultQueryGraph = {
  * - Handles all adding, deleting, modifying of nodes and edges
  */
 export default function useQueryBuilder() {
-  const [query_graph, updateQueryGraph] = useState(defaultQueryGraph);
-  const [rootNode, setRootNode] = useState('n0');
-  const [textEditorRows, setTextEditorRows] = useState([]);
   const displayAlert = useContext(AlertContext);
 
-  /**
-   * Validate and save a query graph
-   * @param {obj} q_graph query graph object
-   */
-  function saveGraph(q_graph) {
-    const { isValid, newRoot } = queryBuilderUtils.isValidGraph(q_graph);
-    if (isValid) {
-      setRootNode(newRoot);
-      updateQueryGraph(queryGraphUtils.standardize(q_graph));
-    } else {
-      displayAlert('error', 'Failed to save. This is an invalid query graph.');
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  useEffect(() => {
+    if (!state.isValid && state.errMessage) {
+      displayAlert('error', state.errMessage);
     }
-  }
-
-  /**
-   * Create new edge and node attached to subject node
-   * @param {string} nodeId node id
-   * @returns {string} node id of created object node
-   */
-  function addHop(nodeId) {
-    const newNodeId = queryBuilderUtils.getNextNodeID(query_graph);
-    const newEdgeId = queryBuilderUtils.getNextEdgeID(query_graph);
-    const clonedQueryGraph = _.cloneDeep(query_graph);
-    clonedQueryGraph.nodes[newNodeId] = getDefaultNode();
-    const newEdge = getDefaultEdge();
-    let subjectId = nodeId;
-    if (nodeId === undefined) {
-      const nodeKeys = Object.keys(query_graph.nodes);
-      subjectId = nodeKeys[nodeKeys.length - 1];
-    }
-    newEdge.subject = subjectId;
-    newEdge.object = newNodeId;
-    clonedQueryGraph.edges[newEdgeId] = newEdge;
-    updateQueryGraph(clonedQueryGraph);
-    return newNodeId;
-  }
-
-  /**
-   * Create edge between two existing nodes
-   * @param {string} subjectId node id
-   * @param {string} objectId node id
-   */
-  function addEdge(subjectId, objectId) {
-    const clonedQueryGraph = _.cloneDeep(query_graph);
-    const newEdgeId = queryBuilderUtils.getNextEdgeID(clonedQueryGraph);
-    const newEdge = getDefaultEdge();
-    newEdge.subject = subjectId;
-    newEdge.object = objectId;
-    clonedQueryGraph.edges[newEdgeId] = newEdge;
-    updateQueryGraph(clonedQueryGraph);
-  }
-
-  /**
-   * Delete an edge and then trim any detached nodes
-   * @param {string} edgeId edge id
-   */
-  function deleteEdge(edgeId) {
-    const clonedQueryGraph = _.cloneDeep(query_graph);
-    delete clonedQueryGraph.edges[edgeId];
-    const keptRoot = queryBuilderUtils.computeRootNode(clonedQueryGraph, rootNode);
-    const trimmedQueryGraph = queryBuilderUtils.trimDetached(clonedQueryGraph, keptRoot);
-    const { isValid, newRoot } = queryBuilderUtils.isValidGraph(trimmedQueryGraph, keptRoot);
-    if (isValid) {
-      updateQueryGraph(trimmedQueryGraph);
-      setRootNode(newRoot);
-    } else {
-      displayAlert('error', 'You cannot delete this connection. It would make this query invalid.');
-    }
-  }
-
-  /**
-   * Update an edge in the query graph
-   * @param {string} edgeId edge key
-   * @param {string} edgeType subject or object of edge
-   * @param {string} nodeId node id
-   * @returns boolean
-   */
-  function updateEdge(edgeId, edgeType, nodeId) {
-    const clonedQueryGraph = _.cloneDeep(query_graph);
-    if (!nodeId) {
-      const newNodeId = queryBuilderUtils.getNextNodeID(clonedQueryGraph);
-      clonedQueryGraph.nodes[newNodeId] = getDefaultNode();
-      clonedQueryGraph.edges[edgeId][edgeType] = newNodeId;
-    } else {
-      clonedQueryGraph.edges[edgeId][edgeType] = nodeId;
-    }
-    const keptRoot = queryBuilderUtils.computeRootNode(clonedQueryGraph, rootNode);
-    const trimmedQueryGraph = queryBuilderUtils.trimDetached(clonedQueryGraph, keptRoot);
-    const { isValid, newRoot } = queryBuilderUtils.isValidGraph(trimmedQueryGraph, keptRoot);
-    if (isValid) {
-      updateQueryGraph(trimmedQueryGraph);
-      setRootNode(newRoot);
-      return true;
-    }
-    displayAlert('error', 'You cannot change this connection. It would make this query invalid.');
-    return false;
-  }
-
-  /**
-   * Update an edge predicate
-   * @param {string} edgeId edge id in the query graph edges
-   * @param {array} predicateValue an array containing selected edge predicates
-   */
-  function updateEdgePredicate(edgeId, predicateValue) {
-    const clonedQueryGraph = _.cloneDeep(query_graph);
-    clonedQueryGraph.edges[edgeId].predicate = predicateValue;
-    updateQueryGraph(clonedQueryGraph);
-  }
-
-  /**
-   * Update an existing node
-   * @param {string} nodeId node id
-   * @param {object|null} updatedNode updated node object
-   */
-  function updateNode(nodeId, updatedNode) {
-    const clonedQueryGraph = _.cloneDeep(query_graph);
-    clonedQueryGraph.nodes[nodeId] = updatedNode || getDefaultNode();
-    updateQueryGraph(clonedQueryGraph);
-  }
-
-  /**
-   * Delete an existing node and then trim the graph
-   * @param {string} nodeId node id
-   */
-  function deleteNode(nodeId) {
-    const clonedQueryGraph = _.cloneDeep(query_graph);
-    delete clonedQueryGraph.nodes[nodeId];
-    const trimmedQueryGraph = queryBuilderUtils.trimDetachedEdges(clonedQueryGraph, nodeId, rootNode);
-    const { isValid, newRoot } = queryBuilderUtils.isValidGraph(trimmedQueryGraph, rootNode);
-    if (isValid) {
-      updateQueryGraph(trimmedQueryGraph);
-      setRootNode(newRoot);
-    } else {
-      displayAlert('error', 'You cannot delete this term. It would make this query invalid.');
-    }
-  }
+  }, [state.isValid, state.errMessage]);
 
   /**
    * Any time the query graph changes, recompute the text editor rows
    *
    * Sets rows as: [ { subject: boolean, object: boolean } ]
    */
-  useEffect(() => {
+  const textEditorRows = useMemo(() => {
+    if (!state.isValid) {
+      return [];
+    }
     // rows are an array of objects
     const rows = [];
+    const { query_graph, rootNode } = state;
     const nodeList = new Set();
     const edgeIds = Object.keys(query_graph.edges);
     const firstEdgeIndex = edgeIds.findIndex((eId) => query_graph.edges[eId].subject === rootNode);
@@ -202,28 +159,17 @@ export default function useQueryBuilder() {
       const edge = query_graph.edges[edgeId];
       row.edgeId = edgeId;
       row.subjectIsReference = nodeList.has(edge.subject);
-      row.objectIsReference = nodeList.has(edge.object);
       nodeList.add(edge.subject);
+      row.objectIsReference = nodeList.has(edge.object);
       nodeList.add(edge.object);
       rows.push(row);
     });
-    setTextEditorRows(rows);
-  }, [query_graph, rootNode]);
+    return rows;
+  }, [state]);
 
   return {
-    query_graph,
+    state,
     textEditorRows,
-    rootNode,
-
-    updateNode,
-    updateEdge,
-    updateEdgePredicate,
-
-    addEdge,
-    addHop,
-    deleteEdge,
-    deleteNode,
-
-    saveGraph,
+    dispatch,
   };
 }

@@ -61,7 +61,7 @@ function findRootNode(q_graph) {
   const pinnedNodes = nodes.filter((node) => node.pinned && node.key in edgeNums);
   // sort nodes by edge connections, then return the first one in the list
   // is also first one inserted
-  let root = null;
+  let root = (nodes.length && nodes[0].key) || null;
   if (unpinnedNodes.length) {
     unpinnedNodes.sort((a, b) => edgeNums[b.key] - edgeNums[a.key]);
     root = unpinnedNodes[0].key;
@@ -77,7 +77,7 @@ function findRootNode(q_graph) {
  * @param {object} q_graph - deep copy of the query_graph, modifies and returns
  * @param {string} rootNode - root node of graph
  */
-function trimDetached(q_graph, rootNode) {
+function removeDetachedFromRoot(q_graph, rootNode) {
   // all edges start out as disconnected and we'll remove them when we find a connection to root
   const disconnectedEdges = Object.keys(q_graph.edges);
   // we add to connected nodes, starting default with the root node
@@ -125,7 +125,7 @@ function trimDetached(q_graph, rootNode) {
  * @param {string} rootNode - root node id
  * @returns trimDetached query graph
  */
-function trimDetachedEdges(q_graph, deletedNode, rootNode) {
+function removeAttachedEdges(q_graph, deletedNode) {
   const edgeIds = Object.keys(q_graph.edges).map((id) => id);
   edgeIds.forEach((eId) => {
     const currentEdge = q_graph.edges[eId];
@@ -133,11 +133,7 @@ function trimDetachedEdges(q_graph, deletedNode, rootNode) {
       delete q_graph.edges[eId];
     }
   });
-  let root = rootNode;
-  if (root === deletedNode) {
-    root = findRootNode(q_graph);
-  }
-  return trimDetached(q_graph, root);
+  return q_graph;
 }
 
 /**
@@ -147,11 +143,18 @@ function trimDetachedEdges(q_graph, deletedNode, rootNode) {
  * @returns Set of edge ids
  */
 function getConnectedEdges(edges, nodeId) {
-  return new Set(Object.keys(edges).filter((eId) => (
+  const connectedEdges = new Set(Object.keys(edges).filter((eId) => (
     edges[eId].subject === nodeId || edges[eId].object === nodeId
   )));
+  return connectedEdges;
 }
 
+/**
+ * Keep current attached root node or find the new root
+ * @param {object} q_graph - query graph object
+ * @param {string} rootNode - graph root node
+ * @returns {string} new root node
+ */
 function computeRootNode(q_graph, rootNode) {
   if (getConnectedEdges(q_graph.edges, rootNode).size > 0) {
     return rootNode;
@@ -161,41 +164,35 @@ function computeRootNode(q_graph, rootNode) {
 
 /**
  * Starting at root node, is this query graph valid? Is there at least one hop in the graph?
- * @param {object} q_graph - query graph object
- * @param {string|undefined} rootNode - node id
- * @returns boolean
+ * @param {object} query_graph - query graph object
+ * @returns isValid boolean and an error message
  */
-function isValidGraph(q_graph, rootNode) {
-  const clonedQueryGraph = _.cloneDeep(q_graph);
-  let isValid = false;
-  let root = rootNode;
-  while (!isValid) {
-    if (root === undefined) {
-      root = findRootNode(clonedQueryGraph);
-    }
-    if (getConnectedEdges(clonedQueryGraph.edges, root).size > 0) {
-      isValid = true;
-    } else {
-      delete clonedQueryGraph.nodes[root];
-      root = undefined;
-      if (Object.keys(clonedQueryGraph.nodes) < 1) {
-        break;
-      }
-    }
-  }
-  // If only one node with an edge to itself
-  if (Object.keys(clonedQueryGraph.nodes).length === 1) {
+function isValidGraph(query_graph) {
+  let isValid = true;
+  let errMsg = '';
+  const nodeIds = Object.keys(query_graph.nodes);
+  if (!nodeIds.length) {
     isValid = false;
+    errMsg = 'There are no terms left. Please add a new term to continue.';
   }
-  return { isValid, newRoot: root };
+  for (let i = 0; i < nodeIds.length; i += 1) {
+    const id = nodeIds[i];
+    if (getConnectedEdges(query_graph.edges, id).size === 0) {
+      isValid = false;
+      errMsg = 'There is at least one disconnected term in this question.';
+      break;
+    }
+  }
+  return { isValid, errMsg };
 }
 
 export default {
   getNextNodeID,
   getNextEdgeID,
   getNumEdgesPerNode,
-  trimDetached,
-  trimDetachedEdges,
+  getConnectedEdges,
+  removeDetachedFromRoot,
+  removeAttachedEdges,
   findRootNode,
   computeRootNode,
   isValidGraph,

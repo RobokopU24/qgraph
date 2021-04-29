@@ -26,7 +26,8 @@ import QueryBuilderContext from '~/context/queryBuilder';
 export default function JsonEditor({ show, close }) {
   const queryBuilder = useContext(QueryBuilderContext);
   const [errorMessages, setErrorMessages] = useState('');
-  const [queryGraph, updateQueryGraph] = useState(queryBuilder.query_graph);
+  const { query_graph } = queryBuilder.state;
+  const [internalQueryGraph, updateInternalQueryGraph] = useState(query_graph);
   const pageStatus = usePageStatus(false);
   const displayAlert = useContext(AlertContext);
 
@@ -34,7 +35,7 @@ export default function JsonEditor({ show, close }) {
     // updated_src is the updated graph RJV gives back
     const data = e.updated_src;
     setErrorMessages(trapiUtils.validateGraph(data, 'Query Graph'));
-    updateQueryGraph(data);
+    updateInternalQueryGraph(data);
   }
 
   function onUpload(event) {
@@ -57,7 +58,7 @@ export default function JsonEditor({ show, close }) {
           } else {
             setErrorMessages(trapiUtils.validateGraph(graph, 'Query Graph'));
           }
-          updateQueryGraph(graph);
+          updateInternalQueryGraph(graph);
         } catch (err) {
           displayAlert('error', 'Failed to read this query graph. Are you sure this is valid JSON?');
         }
@@ -73,9 +74,13 @@ export default function JsonEditor({ show, close }) {
 
   useEffect(() => {
     if (show) {
-      updateQueryGraph(queryBuilder.query_graph);
+      updateInternalQueryGraph(query_graph);
     }
   }, [show]);
+
+  function saveGraph() {
+    queryBuilder.dispatch({ type: 'saveGraph', payload: internalQueryGraph });
+  }
 
   return (
     <Dialog
@@ -93,7 +98,7 @@ export default function JsonEditor({ show, close }) {
               disabled={!pageStatus.displayPage}
               onClick={() => {
                 setErrorMessages(trapiUtils.validateGraph(initialQueryGraph.current));
-                updateQueryGraph(initialQueryGraph.current);
+                updateInternalQueryGraph(initialQueryGraph.current);
               }}
             >
               <UndoIcon />
@@ -151,7 +156,7 @@ export default function JsonEditor({ show, close }) {
                 displayObjectSize={false}
                 displayDataTypes={false}
                 defaultValue=""
-                src={queryGraph}
+                src={internalQueryGraph}
                 onEdit={updateJson}
                 onAdd={updateJson}
                 onDelete={updateJson}
@@ -178,7 +183,7 @@ export default function JsonEditor({ show, close }) {
           }}
           title="Save Changes"
           onClick={() => {
-            queryBuilder.saveGraph(queryGraph);
+            saveGraph();
             close();
           }}
         >

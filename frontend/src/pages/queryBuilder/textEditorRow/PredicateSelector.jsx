@@ -19,7 +19,7 @@ function getCategories(categories) {
 export default function PredicateSelector({ id }) {
   const biolink = useContext(BiolinkContext);
   const queryBuilder = useContext(QueryBuilderContext);
-  const { query_graph, updateEdgePredicate } = queryBuilder;
+  const { query_graph } = queryBuilder.state;
   const edge = query_graph.edges[id];
 
   /**
@@ -62,10 +62,14 @@ export default function PredicateSelector({ id }) {
     ],
   ) || [];
 
+  function editPredicate(predicate) {
+    queryBuilder.dispatch({ type: 'editPredicate', payload: { id, predicate } });
+  }
+
   useEffect(() => {
     if (filteredPredicateList.length) {
       const keptPredicates = (edge.predicate && edge.predicate.filter((p) => filteredPredicateList.indexOf(p) > -1)) || [];
-      queryBuilder.updateEdgePredicate(id, keptPredicates);
+      editPredicate(keptPredicates);
     }
   }, [filteredPredicateList]);
 
@@ -74,9 +78,7 @@ export default function PredicateSelector({ id }) {
       options={filteredPredicateList}
       className={`textEditorSelector highlight-${id}`}
       value={edge.predicate || []}
-      onChange={(e, value) => {
-        updateEdgePredicate(id, value);
-      }}
+      onChange={(e, value) => editPredicate(value)}
       renderInput={(params) => (
         <TextField
           {...params}

@@ -28,3 +28,13 @@
 .textEditorIconButton:disabled > span > svg {
     color: #e0e0e0;
 }
+
+#jsonEditorTitle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+}
+#uploadIconLabel {
+    margin-bottom: 0;
+}

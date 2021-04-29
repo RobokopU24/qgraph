@@ -11,15 +11,32 @@ import './textEditorRow.css';
 
 export default function TextEditorRow({ row, index }) {
   const queryBuilder = useContext(QueryBuilderContext);
-  const edge = queryBuilder.query_graph.edges[row.edgeId];
+  const { query_graph } = queryBuilder.state;
+  const edge = query_graph.edges[row.edgeId];
   const { edgeId, subjectIsReference, objectIsReference } = row;
+
+  function deleteEdge() {
+    queryBuilder.dispatch({ type: 'deleteEdge', payload: { id: edgeId } });
+  }
+
+  function setReference(edgeEnd, nodeId) {
+    queryBuilder.dispatch({ type: 'editEdge', payload: { edgeId, endpoint: edgeEnd, nodeId } });
+  }
+
+  function editNode(id, node) {
+    queryBuilder.dispatch({ type: 'editNode', payload: { id, node } });
+  }
+
+  function addHop() {
+    queryBuilder.dispatch({ type: 'addHop', payload: { nodeId: edge.object } });
+  }
 
   return (
     <div
       className="textEditorRow"
     >
       <IconButton
-        onClick={() => queryBuilder.deleteEdge(edgeId)}
+        onClick={deleteEdge}
         className="textEditorIconButton"
         disabled={queryBuilder.textEditorRows.length < 2}
       >
@@ -32,17 +49,21 @@ export default function TextEditorRow({ row, index }) {
       </p>
       <NodeSelector
         id={edge.subject}
-        properties={queryBuilder.query_graph.nodes[edge.subject]}
-        setReference={(nodeId) => queryBuilder.updateEdge(edgeId, 'subject', nodeId)}
-        update={subjectIsReference ? () => queryBuilder.updateEdge(edgeId, 'subject', null) : queryBuilder.updateNode}
+        properties={query_graph.nodes[edge.subject]}
+        setReference={(nodeId) => setReference('subject', nodeId)}
+        update={subjectIsReference ? (
+          () => setReference('subject', null)
+        ) : (
+          editNode
+        )}
         isReference={subjectIsReference}
         options={{
           includeCuries: !subjectIsReference,
           includeCategories: !subjectIsReference,
           includeExistingNodes: index !== 0,
-          existingNodes: Object.keys(queryBuilder.query_graph.nodes).filter(
+          existingNodes: Object.keys(query_graph.nodes).filter(
             (key) => key !== edge.object,
-          ).map((key) => ({ ...queryBuilder.query_graph.nodes[key], key })),
+          ).map((key) => ({ ...query_graph.nodes[key], key })),
         }}
       />
       <PredicateSelector
@@ -50,21 +71,25 @@ export default function TextEditorRow({ row, index }) {
       />
       <NodeSelector
         id={edge.object}
-        properties={queryBuilder.query_graph.nodes[edge.object]}
-        setReference={(nodeId) => queryBuilder.updateEdge(edgeId, 'object', nodeId)}
-        update={objectIsReference ? () => queryBuilder.updateEdge(edgeId, 'object', null) : queryBuilder.updateNode}
+        properties={query_graph.nodes[edge.object]}
+        setReference={(nodeId) => setReference('object', nodeId)}
+        update={objectIsReference ? (
+          () => setReference('object', null)
+        ) : (
+          editNode
+        )}
         isReference={objectIsReference}
         options={{
           includeCuries: !objectIsReference,
           includeCategories: !objectIsReference,
           includeExistingNodes: index !== 0,
-          existingNodes: Object.keys(queryBuilder.query_graph.nodes).filter(
+          existingNodes: Object.keys(query_graph.nodes).filter(
             (key) => key !== edge.subject,
-          ).map((key) => ({ ...queryBuilder.query_graph.nodes[key], key })),
+          ).map((key) => ({ ...query_graph.nodes[key], key })),
         }}
       />
       <IconButton
-        onClick={() => queryBuilder.addHop(edge.object)}
+        onClick={addHop}
         className="textEditorIconButton"
       >
         <AddBoxOutlinedIcon />
