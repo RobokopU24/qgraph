@@ -19,20 +19,18 @@ const nodeRadius = 40;
  * Main D3 query graph component
  * @param {int} height - height of the query graph element
  * @param {int} width - width of the query graph element
- * @param {func} openEditor - function to open node or edge editor
- * @param {obj} graphClickState - dict of graph click state properties
+ * @param {obj} clickState - dict of graph click state properties
  * @param {func} updateClickState - reducer to update graph click state
  */
 export default function QueryGraph({
   height, width,
-  openEditor,
-  graphClickState, updateClickState,
+  clickState, updateClickState,
 }) {
   const { concepts } = useContext(BiolinkContext);
   const queryBuilder = useContext(QueryBuilderContext);
   const nodeCategoryColorMap = useMemo(() => getNodeCategoryColorMap(concepts), [concepts]);
-  const { query_graph } = queryBuilder;
-  const queryGraph = useMemo(() => queryGraphUtils.getGraphEditorFormat(query_graph), [query_graph]);
+  const { query_graph } = queryBuilder.state;
+  const queryGraph = useMemo(() => queryGraphUtils.getGraphEditorFormat(query_graph), [queryBuilder.state]);
   const node = useRef({});
   const edge = useRef({});
   const svgRef = useRef();
@@ -241,39 +239,40 @@ export default function QueryGraph({
       );
   }, [queryGraph]);
 
-  function updateEdge(edgeId, edgeType, nodeId) {
-    const success = queryBuilder.updateEdge(edgeId, edgeType, nodeId);
-    if (!success) {
+  function updateEdge(edgeId, endpoint, nodeId) {
+    queryBuilder.dispatch({ type: 'editEdge', payload: { edgeId, endpoint, nodeId } });
+    if (!queryBuilder.state.isValid) {
       // hacky, calls the tick function which moves the edge ends back
       simulation.current.alpha(0.001).restart();
     }
   }
 
   /**
-   * Set click and hover listeners when graphClickState or query graph changes
+   * Set click and hover listeners when clickState or query graph changes
    */
   useEffect(() => {
-    if (graphClickState.creatingConnection) {
+    if (clickState.creatingConnection) {
       // creating a new edge
-      const addNodeToConnection = (id) => updateClickState({ type: 'connectTerm', value: id });
+      const addNodeToConnection = (id) => updateClickState({ type: 'connectTerm', payload: { id } });
       nodeUtils.attachConnectionClick(addNodeToConnection);
       nodeUtils.removeMouseHover();
       // edges shouldn't react when creating a new edge
       edgeUtils.removeClicks();
       edgeUtils.removeMouseHover();
     } else {
-      const { editId } = graphClickState;
-      const setEditId = (id) => updateClickState({ type: 'setEditId', value: id });
-      nodeUtils.attachNodeClick(editId, setEditId);
-      nodeUtils.attachEditClick(openEditor, setEditId);
-      nodeUtils.attachDeleteClick(queryBuilder.deleteNode, setEditId);
-      nodeUtils.attachMouseHover(editId);
+      const { clickedId } = clickState;
+      const setClickedId = (id) => updateClickState({ type: 'click', payload: { id } });
+      const openEditor = (id, anchor, type) => updateClickState({ type: 'openEditor', payload: { id, anchor, type } });
+      nodeUtils.attachNodeClick(clickedId, setClickedId);
+      nodeUtils.attachEditClick(openEditor, setClickedId);
+      nodeUtils.attachDeleteClick((id) => queryBuilder.dispatch({ type: 'deleteNode', payload: { id } }), setClickedId);
+      nodeUtils.attachMouseHover(clickedId);
       nodeUtils.attachDrag(simulation.current, width, height, nodeRadius);
 
-      edgeUtils.attachEdgeClick(editId, setEditId);
-      edgeUtils.attachEditClick(openEditor, setEditId);
-      edgeUtils.attachDeleteClick(queryBuilder.deleteEdge, setEditId);
-      edgeUtils.attachMouseHover(editId);
+      edgeUtils.attachEdgeClick(clickedId, setClickedId);
+      edgeUtils.attachEditClick(openEditor, setClickedId);
+      edgeUtils.attachDeleteClick((id) => queryBuilder.dispatch({ type: 'deleteEdge', payload: { id } }), setClickedId);
+      edgeUtils.attachMouseHover(clickedId);
       edgeUtils.attachDrag(simulation.current, width, height, nodeRadius, updateEdge);
     }
     // set svg global click listener for highlighting
@@ -283,14 +282,14 @@ export default function QueryGraph({
       d3.select('#edgeContainer').raise();
       highlighter.clearAllNodes();
       highlighter.clearAllEdges();
-      if (graphClickState.editId !== '') {
-        updateClickState({ type: 'setEditId', value: '' });
+      if (clickState.clickedId !== '') {
+        updateClickState({ type: 'click', payload: { id: '' } });
       }
       // stop click events from leaving svg area.
       // clicks were closing any alerts immediately.
       e.stopPropagation();
     });
-  }, [graphClickState, queryGraph]);
+  }, [clickState, queryGraph]);
 
   return (
     <svg ref={svgRef} />

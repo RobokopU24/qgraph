@@ -138,22 +138,13 @@ function update(node, args) {
  */
 function exit(node) {
   return node
-    .call((nodeCircle) => nodeCircle.select('.nodeCircle')
-      .transition()
-      .ease(d3.easeCircle)
-      .duration(1000)
-      .attr('fill', 'red')
-      .attr('cy', -40)
-      .remove())
-    .call((nodeLabel) => nodeLabel.select('.nodeLabel')
-      .transition()
-      .ease(d3.easeCircle)
-      .duration(1000)
-      .attr('y', -40)
-      .remove())
-    .call((n) => n.transition()
-      .duration(1000)
-      .remove());
+    .transition()
+    .ease(d3.easeCircle)
+    .duration(1000)
+    .attr('transform', (d) => `translate(${d.x},-40)`)
+    .call((e) => e.select('circle')
+      .attr('fill', 'red'))
+    .remove();
 }
 
 /**
@@ -173,17 +164,17 @@ function attachConnectionClick(addNodeToConnection) {
 
 /**
  * Set node click listener to show or hide buttons
- * @param {string} editId - current id being edited
- * @param {function} setEditId - set current edit id
+ * @param {string} clickedId - current clicked id
+ * @param {function} setClickedId - set current clicked id
  */
-function attachNodeClick(editId, setEditId) {
+function attachNodeClick(clickedId, setClickedId) {
   d3.selectAll('.nodeCircle')
     .on('click', (e, d) => {
       const { id } = d;
       // raise node to front of other nodes
       d3.select('#nodeContainer').raise();
       d3.select(`#${id}`).raise();
-      if (editId !== id) {
+      if (clickedId !== id) {
         e.stopPropagation();
         d3.selectAll('.deleteRect,.deleteLabel,.editRect,.editLabel')
           .style('display', 'none');
@@ -191,30 +182,35 @@ function attachNodeClick(editId, setEditId) {
         d3.selectAll(`.${id}`)
           .style('display', 'inherit')
           .raise();
-        setEditId(id);
+        setClickedId(id);
         highlighter.clearAllNodes();
         highlighter.clearAllEdges();
         highlighter.highlightTextEditorNode(d.id);
         highlighter.highlightGraphNode(d.id);
       } else {
         // svg listener will hide buttons
-        setEditId('');
+        setClickedId('');
         d3.select('#edgeContainer').raise();
       }
     });
 }
 
+function clickNode(id) {
+  d3.select(`.nodeCircle.node-${id}`)
+    .dispatch('click');
+}
+
 /**
  * Attach delete function to button
  * @param {function} deleteNode - delete node from graph
- * @param {function} setEditId - set current edit id
+ * @param {function} setClickedId - set current clicked id
  */
-function attachDeleteClick(deleteNode, setEditId) {
+function attachDeleteClick(deleteNode, setClickedId) {
   d3.selectAll('.deleteRect')
     .on('click', (e, d) => {
       const { id } = d;
       d3.select('#edgeContainer').raise();
-      setEditId('');
+      setClickedId('');
       deleteNode(id);
     });
 }
@@ -222,33 +218,33 @@ function attachDeleteClick(deleteNode, setEditId) {
 /**
  * Attach edit function to button
  * @param {function} openNodeEditor - open the node editor
- * @param {string} setEditId - set current edit id
+ * @param {string} setClickedId - set current clicked id
  */
-function attachEditClick(openEditor, setEditId) {
+function attachEditClick(openEditor, setClickedId) {
   d3.selectAll('.editRect')
     .on('click', (e, d) => {
       const { id } = d;
       const nodeAnchor = d3.select(`#${id} > .nodeCircle`).node();
       d3.select('#edgeContainer').raise();
-      setEditId('');
+      setClickedId('');
       openEditor(id, nodeAnchor, 'editNode');
     });
 }
 
 /**
  * Show and hide node border on hover
- * @param {string} editId - current edit id
+ * @param {string} clickedId - current edit id
  */
-function attachMouseHover(editId) {
+function attachMouseHover(clickedId) {
   d3.selectAll('.nodeCircle')
     .on('mouseover', (e, d) => {
-      if ((editId === d.id || !editId)) {
+      if ((clickedId === d.id || !clickedId)) {
         highlighter.highlightTextEditorNode(d.id);
         highlighter.highlightGraphNode(d.id);
       }
     })
     .on('mouseout', (e, d) => {
-      if ((editId !== d.id || !editId)) {
+      if ((clickedId !== d.id || !clickedId)) {
         highlighter.clearTextEditorNode(d.id);
         highlighter.clearGraphNode(d.id);
       }
@@ -310,4 +306,6 @@ export default {
   removeClicks,
   removeMouseHover,
   removeBorder,
+
+  clickNode,
 };

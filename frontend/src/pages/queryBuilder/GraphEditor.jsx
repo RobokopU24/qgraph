@@ -1,5 +1,5 @@
 import React, {
-  useContext, useState, useReducer, useEffect,
+  useContext, useReducer, useEffect,
 } from 'react';
 import Popover from '@material-ui/core/Popover';
 import Button from '@material-ui/core/Button';
@@ -19,17 +19,47 @@ const height = 400;
 
 function reducer(state, action) {
   switch (action.type) {
-    case 'startConnection':
-      return { ...state, creatingConnection: action.value };
-    case 'connectTerm':
-      return { ...state, chosenTerms: [...state.chosenTerms, action.value] };
-    case 'connectionMade':
-      return { ...state, creatingConnection: false, chosenTerms: [] };
-    case 'setEditId':
-      return { ...state, editId: action.value };
-    default:
+    case 'startConnection': {
+      const { anchor } = action.payload;
+      state.creatingConnection = true;
+      state.popoverId = '';
+      state.popoverAnchor = anchor;
+      state.popoverType = 'newEdge';
+      break;
+    }
+    case 'connectTerm': {
+      const { id } = action.payload;
+      state.chosenTerms = [...state.chosenTerms, id];
+      break;
+    }
+    case 'connectionMade': {
+      state.creatingConnection = false;
+      state.chosenTerms = [];
+      break;
+    }
+    case 'click': {
+      const { id } = action.payload;
+      state.clickedId = id;
+      break;
+    }
+    case 'openEditor': {
+      const { id, type, anchor } = action.payload;
+      state.popoverId = id;
+      state.popoverType = type;
+      state.popoverAnchor = anchor;
+      break;
+    }
+    case 'closeEditor': {
+      state.popoverId = '';
+      state.popoverType = '';
+      state.popoverAnchor = null;
+      break;
+    }
+    default: {
       return state;
+    }
   }
+  return { ...state };
 }
 
 /**
@@ -38,49 +68,53 @@ function reducer(state, action) {
  */
 export default function GraphEditor() {
   const queryBuilder = useContext(QueryBuilderContext);
-  const { query_graph } = queryBuilder;
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [popoverType, setPopoverType] = useState('');
-  const [editorId, setEditorId] = useState('');
+  const { query_graph } = queryBuilder.state;
 
-  const [graphClickState, updateClickState] = useReducer(reducer, {
+  const [state, dispatch] = useReducer(reducer, {
     creatingConnection: false,
     chosenTerms: [],
-    editId: '',
+    clickedId: '',
+    popoverId: '',
+    popoverAnchor: null,
+    popoverType: '',
   });
+
+  function addEdge() {
+    queryBuilder.dispatch({ type: 'addEdge', payload: state.chosenTerms });
+  }
+
+  function addHop() {
+    if (!Object.keys(query_graph.nodes).length) {
+      // add a node to an empty graph
+      queryBuilder.dispatch({ type: 'addNode', payload: {} });
+    } else {
+      // add a node and edge
+      queryBuilder.dispatch({ type: 'addHop', payload: {} });
+    }
+  }
+
+  function editNode(id, node) {
+    queryBuilder.dispatch({ type: 'editNode', payload: { id, node } });
+  }
+
+  function clickNode() {
+    const nodeIds = Object.keys(query_graph);
+    const lastNodeId = nodeIds[nodeIds.length - 1];
+    nodeUtils.clickNode(lastNodeId);
+  }
 
   /**
    * When user selects two nodes while creating an edge, make a new edge
    * and reset click state
    */
   useEffect(() => {
-    if (graphClickState.creatingConnection && graphClickState.chosenTerms.length >= 2) {
-      queryBuilder.addEdge(...graphClickState.chosenTerms);
-      updateClickState({ type: 'connectionMade' });
+    if (state.creatingConnection && state.chosenTerms.length >= 2) {
+      addEdge();
+      dispatch({ type: 'connectionMade' });
       // remove border from connected nodes
       nodeUtils.removeBorder();
     }
-  }, [graphClickState]);
-
-  /**
-   * Close popover editor and reset popover type
-   */
-  function closeEditor() {
-    setAnchorEl(null);
-    setPopoverType('');
-  }
-
-  /**
-   * Open Popover editor
-   * @param {string} id - node or edge id
-   * @param {HTMLElement} anchor - DOM Element to attach popover
-   * @param {string} type - type of popover
-   */
-  function openEditor(id, anchor, type) {
-    setEditorId(id);
-    setAnchorEl(anchor);
-    setPopoverType(type);
-  }
+  }, [state]);
 
   return (
     <div id="queryGraphEditor">
@@ -88,25 +122,24 @@ export default function GraphEditor() {
         <QueryGraph
           height={height}
           width={width}
-          openEditor={openEditor}
-          graphClickState={graphClickState}
-          updateClickState={updateClickState}
+          clickState={state}
+          updateClickState={dispatch}
         />
         <div id="graphBottomButtons">
           <Button
             onClick={(e) => {
-              openEditor(queryBuilder.addHop(), e.currentTarget, 'newNode');
+              addHop();
+              clickNode();
             }}
           >
             Add New Term
           </Button>
           <Button
             onClick={(e) => {
-              updateClickState({ type: 'startConnection', value: true });
-              openEditor('', e.currentTarget, 'newEdge');
+              dispatch({ type: 'startConnection', payload: { anchor: e.currentTarget } });
               // auto close after 5 seconds
               setTimeout(() => {
-                closeEditor();
+                dispatch({ type: 'closeEditor' });
               }, 5000);
             }}
           >
@@ -114,9 +147,9 @@ export default function GraphEditor() {
           </Button>
         </div>
         <Popover
-          open={Boolean(anchorEl)}
-          anchorEl={anchorEl}
-          onClose={closeEditor}
+          open={Boolean(state.popoverAnchor)}
+          anchorEl={state.popoverAnchor}
+          onClose={() => dispatch({ type: 'closeEditor' })}
           anchorOrigin={{
             vertical: 'top',
             horizontal: 'left',
@@ -126,23 +159,23 @@ export default function GraphEditor() {
             horizontal: 'left',
           }}
         >
-          {(popoverType === 'editNode' || popoverType === 'newNode') && (
+          {(state.popoverType === 'editNode' || state.popoverType === 'newNode') && (
             <NodeSelector
-              properties={query_graph.nodes[editorId]}
-              id={editorId}
-              update={queryBuilder.updateNode}
+              properties={query_graph.nodes[state.popoverId]}
+              id={state.popoverId}
+              update={editNode}
               isReference={false}
               options={{
                 includeExistingNodes: false,
               }}
             />
           )}
-          {popoverType === 'editEdge' && (
+          {state.popoverType === 'editEdge' && (
             <PredicateSelector
-              id={editorId}
+              id={state.popoverId}
             />
           )}
-          {popoverType === 'newEdge' && (
+          {state.popoverType === 'newEdge' && (
             <Paper style={{ padding: '10px' }}>
               <p>Select two terms to connect!</p>
             </Paper>
