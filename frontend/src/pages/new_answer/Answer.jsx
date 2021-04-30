@@ -5,11 +5,12 @@ import usePageStatus from '~/stores/usePageStatus';
 import AlertContext from '~/context/alert';
 import BiolinkContext from '~/context/biolink';
 
-import useAnswerStore from './answerStore';
+import useAnswerStore from './useAnswerStore';
 import useDisplayState from './useDisplayState';
 
 import LeftDrawer from './LeftDrawer';
 import KgBubble from './KgBubble';
+import KgFull from './KgFull';
 import QueryGraph from './QueryGraph';
 import ResultsTable from './ResultsTable';
 
@@ -62,7 +63,6 @@ export default function Answer() {
       <LeftDrawer
         displayState={displayState}
         onUpload={onUpload}
-        uploadDisabled={!pageStatus.displayPage}
       />
       <div style={{ marginLeft: '200px' }}>
         <pageStatus.Display />
@@ -76,6 +76,11 @@ export default function Answer() {
             {displayState.state.kg.show && (
               <KgBubble
                 nodes={answerStore.kgNodes}
+                knowledge_graph={answerStore.message.knowledge_graph}
+              />
+            )}
+            {displayState.state.kgFull.show && (
+              <KgFull
                 knowledge_graph={answerStore.message.knowledge_graph}
               />
             )}

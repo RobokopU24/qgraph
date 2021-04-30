@@ -10,7 +10,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import UploadButton from './UploadButton';
 import './leftDrawer.css';
 
-export default function LeftDrawer({ onUpload, uploadDisabled, displayState }) {
+export default function LeftDrawer({ onUpload, displayState }) {
   function toggleDisplay(component, show) {
     displayState.dispatch({ type: 'toggle', payload: { component, show } });
   }
@@ -42,7 +42,6 @@ export default function LeftDrawer({ onUpload, uploadDisabled, displayState }) {
           <ListItemIcon>
             <UploadButton
               onUpload={onUpload}
-              disabled={uploadDisabled}
             />
           </ListItemIcon>
           <ListItemText primary="Upload Answer" />

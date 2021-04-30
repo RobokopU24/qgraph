@@ -3,7 +3,7 @@ import IconButton from '@material-ui/core/IconButton';
 
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
-export default function UploadButton({ onUpload, disabled }) {
+export default function UploadButton({ onUpload }) {
   return (
     <label htmlFor="jsonEditorUpload" id="uploadIconLabel">
       <input
@@ -12,11 +12,9 @@ export default function UploadButton({ onUpload, disabled }) {
         type="file"
         id="jsonEditorUpload"
         onChange={(e) => onUpload(e)}
-        disabled={disabled}
       />
       <IconButton
         component="span"
-        disabled={disabled}
         style={{ fontSize: '18px' }}
         title="Load"
       >

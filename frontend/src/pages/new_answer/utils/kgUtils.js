@@ -51,6 +51,50 @@ function makeDisplayNodes(message) {
   return Object.values(displayNodes);
 }
 
+function removeNamedThing(categories) {
+  const categoriesWithoutNamedThing = [...categories];
+  const namedThingIndex = categories.indexOf('biolink:NamedThing');
+  if (namedThingIndex > -1) {
+    categoriesWithoutNamedThing.splice(namedThingIndex, 1);
+  }
+  return categoriesWithoutNamedThing;
+}
+
+function getRankedCategories(hierarchies, category) {
+  const rankedCategories = category.sort((a, b) => {
+    const aLength = (hierarchies[a] && hierarchies[a].length) || 0;
+    const bLength = (hierarchies[b] && hierarchies[b].length) || 0;
+    return bLength - aLength;
+  });
+  return rankedCategories;
+}
+
+function getFullDisplay(knowledge_graph) {
+  let { nodes, edges } = knowledge_graph;
+  nodes = Object.entries(nodes).map(([nodeId, nodeProps]) => {
+    const node = {};
+    node.id = nodeId;
+    node.name = nodeProps.name;
+    node.category = nodeProps.category;
+    if (node.category && !Array.isArray(node.category)) {
+      node.category = [node.category];
+    }
+    return node;
+  });
+  edges = Object.entries(edges).map(([edgeId, edgeProps]) => {
+    const edge = {};
+    edge.id = edgeId;
+    edge.source = edgeProps.subject;
+    edge.target = edgeProps.object;
+    edge.predicate = edgeProps.predicate;
+    if (edge.predicate && !Array.isArray(edge.predicate)) {
+      edge.predicate = [edge.predicate];
+    }
+    return edge;
+  });
+  return { nodes, edges };
+}
+
 function dragNode(simulation) {
   function dragStart(e, d) {
     if (!e.active) simulation.alphaTarget(0.3).restart();
@@ -77,6 +121,9 @@ function dragNode(simulation) {
 
 export default {
   makeDisplayNodes,
+  getFullDisplay,
+  getRankedCategories,
+  removeNamedThing,
   getNodeNums,
   getNodeRadius,
   dragNode,

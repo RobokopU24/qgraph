@@ -4,3 +4,9 @@
     display: inline-block;
     overflow-y: auto;
 }
+
+#kgFullContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
