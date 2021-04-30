@@ -31,9 +31,9 @@ export default function useBiolink() {
    * @param {object} biolinkClasses - object of all biolink classes
    * @returns {string[]} list of related biolink classes
    */
-  function getAscendants(childClass, classes) {
+  function getAncestors(childClass, classes) {
     let currentClass = childClass;
-    const descendantList = [currentClass];
+    const ancestors = [currentClass];
     // Repeat until we hit the top of the classes
     while (
       classes[currentClass] &&
@@ -41,9 +41,9 @@ export default function useBiolink() {
     ) {
       // reassign current type to parent type
       currentClass = classes[currentClass].is_a;
-      descendantList.push(currentClass);
+      ancestors.push(currentClass);
     }
-    return descendantList;
+    return ancestors;
   }
 
   /**
@@ -51,9 +51,9 @@ export default function useBiolink() {
    * @param {object} biolinkClasses - object of all biolink classes
    * @returns {{}} Object with classes as keys and descendant lists as values
    */
-  function getAllAscendancies(biolinkClasses) {
+  function getAllAncestries(biolinkClasses) {
     const newHierarchies = Object.keys(biolinkClasses).reduce((obj, item) => {
-      let ascendants = getAscendants(item, biolinkClasses);
+      let ascendants = getAncestors(item, biolinkClasses);
       ascendants = ascendants.map((h) => strings.nodeFromBiolink(h));
       obj[strings.nodeFromBiolink(item)] = ascendants;
       return obj;
@@ -103,7 +103,7 @@ export default function useBiolink() {
     if (biolink) {
       const biolinkClasses = _.transform(biolink.classes,
         (result, value, key) => { result[key] = value; });
-      const allHierarchies = getAllAscendancies(biolinkClasses);
+      const allHierarchies = getAllAncestries(biolinkClasses);
       const allConcepts = getValidConcepts(allHierarchies);
       const allPredicates = getEdgePredicates();
       const namedThingDescendants = getAllDescendants(biolinkClasses, 'named thing');
