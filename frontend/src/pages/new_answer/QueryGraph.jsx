@@ -5,11 +5,11 @@ import React, {
 import * as d3 from 'd3';
 
 import BiolinkContext from '~/context/biolink';
-import getNodeCategoryColorMap from '~/utils/colorUtils';
+import getNodeCategoryColorMap from '~/utils/colors';
 import qgUtils from './utils/qgUtils';
-import edgeUtils from './utils/edgeUtils';
-import d3Utils from '~/utils/d3Utils';
-import stringUtils from '~/utils/stringUtils';
+import graphUtils from '~/utils/d3/graph';
+import queryGraphUtils from '~/utils/queryGraph';
+import stringUtils from '~/utils/strings';
 
 const height = 400;
 const width = 400;
@@ -55,10 +55,10 @@ export default function QueryGraph({ query_graph }) {
       nodes = nodes.map((d) => ({ ...d, x: Math.random() * width, y: Math.random() * height }));
       const simulation = d3.forceSimulation()
         .force('center', d3.forceCenter(width / 2, height / 2).strength(1))
-        .force('forceX', d3.forceX(width / 2).strength(0.2))
-        .force('forceY', d3.forceY(height / 2).strength(0.2))
+        .force('forceX', d3.forceX(width / 2).strength(0.02))
+        .force('forceY', d3.forceY(height / 2).strength(0.02))
         .force('collide', d3.forceCollide().radius(nodeRadius))
-        .force('link', d3.forceLink().id((d) => d.id).distance(200).strength(1))
+        .force('link', d3.forceLink().id((d) => d.id).distance(100).strength(1))
         .on('tick', () => {
           node
             .attr('transform', (d) => `translate(${d.x}, ${d.y})`);
@@ -67,7 +67,7 @@ export default function QueryGraph({ query_graph }) {
               .attr('d', (d) => {
                 const {
                   x1, y1, qx, qy, x2, y2,
-                } = d3Utils.getRadialXY(d.source.x, d.source.y, d.target.x, d.target.y, d.numEdges, d.index, nodeRadius);
+                } = graphUtils.getCurvedEdgePos(d.source.x, d.source.y, d.target.x, d.target.y, d.numEdges, d.index, nodeRadius);
                 return `M${x1},${y1}Q${qx},${qy} ${x2},${y2}`;
               });
           edge
@@ -75,7 +75,7 @@ export default function QueryGraph({ query_graph }) {
               .attr('d', (d) => {
                 const {
                   x1, y1, qx, qy, x2, y2,
-                } = d3Utils.getRadialXY(d.source.x, d.source.y, d.target.x, d.target.y, d.numEdges, d.index, nodeRadius);
+                } = graphUtils.getCurvedEdgePos(d.source.x, d.source.y, d.target.x, d.target.y, d.numEdges, d.index, nodeRadius);
                 // if necessary, flip transparent path so text is always right side up
                 const leftNode = x1 > x2 ? `${x2},${y2}` : `${x1},${y1}`;
                 const rightNode = x1 > x2 ? `${x1},${y1}` : `${x2},${y2}`;
@@ -105,9 +105,9 @@ export default function QueryGraph({ query_graph }) {
                 const { name } = d;
                 return name || 'Any';
               })
-              .each(d3Utils.ellipseOverflow));
+              .each(graphUtils.ellipsisOverflow));
 
-      edges = edgeUtils.addEdgeIndices(edges);
+      edges = queryGraphUtils.addEdgeCurveProperties(edges);
       edge = edge.data(edges)
         .enter()
           .append('g')
@@ -116,7 +116,7 @@ export default function QueryGraph({ query_graph }) {
               .attr('fill', 'none')
               .attr('stroke-width', (d) => d.strokeWidth)
               .attr('class', 'edge')
-              .attr('marker-end', (d) => d3Utils.showArrow(d)))
+              .attr('marker-end', (d) => (graphUtils.shouldShowArrow(d) ? 'url(#arrow)' : '')))
             .call((e) => e.append('path')
               .attr('stroke', 'transparent')
               .attr('fill', 'none')

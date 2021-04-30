@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
-import stringUtils from '~/utils/stringUtils';
-import queryGraphUtils from '~/utils/queryGraphUtils';
+import stringUtils from '~/utils/strings';
+import queryGraphUtils from '~/utils/queryGraph';
 
 /**
  * Make lists of nodes and edges for d3
@@ -9,7 +9,7 @@ import queryGraphUtils from '~/utils/queryGraphUtils';
  * @param {obj} q_graph.edges edge objects
  */
 function makeDisplay(q_graph) {
-  const query_graph = queryGraphUtils.ingest(q_graph);
+  const query_graph = queryGraphUtils.standardize(q_graph);
   const nodes = Object.entries(query_graph.nodes).map(([nId, obj]) => {
     let { name } = obj;
     if (!obj.name) {

@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import _ from 'lodash';
 
-import stringUtils from '~/utils/stringUtils';
+import stringUtils from '~/utils/strings';
 
 function getNodeNums(results) {
   const counts = {};

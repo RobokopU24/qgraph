@@ -1,11 +1,12 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext } from 'react';
 
-import trapiUtils from '~/utils/trapiUtils';
-import usePageStatus from '~/utils/usePageStatus';
+import trapiUtils from '~/utils/trapi';
+import usePageStatus from '~/stores/usePageStatus';
 import AlertContext from '~/context/alert';
 import BiolinkContext from '~/context/biolink';
 
 import useAnswerStore from './answerStore';
+import useDisplayState from './useDisplayState';
 
 import LeftDrawer from './LeftDrawer';
 import KgBubble from './KgBubble';
@@ -16,17 +17,16 @@ import './answer.css';
 
 export default function Answer() {
   const answerStore = useAnswerStore();
-  const [message, setMessage] = useState({});
   const pageStatus = usePageStatus(false);
   const displayAlert = useContext(AlertContext);
   const { concepts } = useContext(BiolinkContext);
+  const displayState = useDisplayState();
 
   function onUpload(event) {
     const { files } = event.target;
     files.forEach((file) => {
       const fr = new window.FileReader();
       fr.onloadstart = () => pageStatus.setLoading('Loading Message...');
-      fr.onloadend = () => pageStatus.setSuccess();
       fr.onload = (e) => {
         const fileContents = e.target.result;
         let msg = {};
@@ -39,6 +39,7 @@ export default function Answer() {
         if (!errors.length) {
           try {
             answerStore.initialize(msg.message, concepts);
+            pageStatus.setSuccess();
           } catch (err) {
             console.error(err);
             displayAlert('error', `Failed to initialize message. Please submit an issue: ${err}`);
@@ -46,7 +47,6 @@ export default function Answer() {
         } else {
           pageStatus.setFailure(errors.join(', '));
         }
-        setMessage(msg.message);
       };
       fr.onerror = () => {
         displayAlert('error', 'Sorry but there was a problem uploading the file. The file may be invalid JSON.');
@@ -60,25 +60,34 @@ export default function Answer() {
   return (
     <>
       <LeftDrawer
+        displayState={displayState}
         onUpload={onUpload}
         uploadDisabled={!pageStatus.displayPage}
       />
-      <pageStatus.Display />
-      {pageStatus.displayPage && (
-        <>
-          <QueryGraph
-            query_graph={message.query_graph}
-          />
-          <KgBubble
-            nodes={answerStore.kgNodes}
-            knowledge_graph={message.knowledge_graph}
-          />
-          <ResultsTable
-            columns={answerStore.tableHeaders}
-            data={answerStore.message.results}
-          />
-        </>
-      )}
+      <div style={{ marginLeft: '200px' }}>
+        <pageStatus.Display />
+        {pageStatus.displayPage && (
+          <>
+            {displayState.state.qg.show && (
+              <QueryGraph
+                query_graph={answerStore.message.query_graph}
+              />
+            )}
+            {displayState.state.kg.show && (
+              <KgBubble
+                nodes={answerStore.kgNodes}
+                knowledge_graph={answerStore.message.knowledge_graph}
+              />
+            )}
+            {displayState.state.results.show && (
+              <ResultsTable
+                columns={answerStore.tableHeaders}
+                data={answerStore.message.results}
+              />
+            )}
+          </>
+        )}
+      </div>
     </>
   );
 }

@@ -5,9 +5,9 @@ import React, {
 import * as d3 from 'd3';
 
 import BiolinkContext from '~/context/biolink';
-import getNodeCategoryColorMap from '~/utils/colorUtils';
+import getNodeCategoryColorMap from '~/utils/colors';
 import kgUtils from './utils/kgUtils';
-import d3Utils from '~/utils/d3Utils';
+import graphUtils from '~/utils/d3/graph';
 
 const height = 400;
 const width = 400;
@@ -59,10 +59,13 @@ export default function KgBubble({ nodes, knowledge_graph }) {
               .style('font-weight', 600)
               .attr('alignment-baseline', 'middle')
               .text((d) => {
+                if (kgUtils.getNodeRadius(d.count, total, width) < 15) {
+                  return '';
+                }
                 const { name } = d;
                 return name || 'Any';
               })
-              .each(d3Utils.ellipseOverflow));
+              .each(graphUtils.ellipsisOverflow));
 
       simulation.nodes(converted_nodes)
         .force('collide', d3.forceCollide().radius(

@@ -18,6 +18,7 @@
 .header {
   background-color: #f5f7fa !important;
   box-shadow: 0px 0px 5px 0px #b3b3b3 !important;
+  z-index: 1300;
 }
 #robokopBrand {
   font-weight: 500;

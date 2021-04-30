@@ -1,7 +1,7 @@
 import React from 'react';
 
-import stringUtils from '~/utils/stringUtils';
-import getNodeCategoryColorMap from '~/utils/colorUtils';
+import stringUtils from '~/utils/strings';
+import getNodeCategoryColorMap from '~/utils/colors';
 
 function makeTableHeaders(message, concepts) {
   const colorMap = getNodeCategoryColorMap(concepts);
