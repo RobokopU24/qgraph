@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 
 import kgUtils from './utils/kgUtils';
 import resultsUtils from './utils/resultsUtils';
