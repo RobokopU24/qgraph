@@ -3,6 +3,7 @@ import React, { useContext } from 'react';
 import trapiUtils from '~/utils/trapi';
 import usePageStatus from '~/stores/usePageStatus';
 import AlertContext from '~/context/alert';
+import queryGraphUtils from '~/utils/queryGraph';
 
 import useAnswerStore from './useAnswerStore';
 import useDisplayState from './useDisplayState';
@@ -37,11 +38,16 @@ export default function Answer() {
         const errors = trapiUtils.validateMessage(msg);
         if (!errors.length) {
           try {
-            answerStore.initialize(msg.message);
-            pageStatus.setSuccess();
+            const standardQueryGraph = queryGraphUtils.standardize(msg.message.query_graph);
+            msg.message.query_graph = standardQueryGraph;
+            try {
+              answerStore.initialize(msg.message);
+              pageStatus.setSuccess();
+            } catch (err) {
+              displayAlert('error', `Failed to initialize message. Please submit an issue: ${err}`);
+            }
           } catch (err) {
-            console.error(err);
-            displayAlert('error', `Failed to initialize message. Please submit an issue: ${err}`);
+            displayAlert('error', 'Failed to parse this query graph. Please make sure it is TRAPI compliant.');
           }
         } else {
           pageStatus.setFailure(errors.join(', '));
