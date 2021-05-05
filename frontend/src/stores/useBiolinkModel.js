@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import _ from 'lodash';
 import strings from '~/utils/strings';
+import getNodeCategoryColorMap from '~/utils/colors';
 
 const baseClass = 'biolink:BiologicalEntity';
 
@@ -9,6 +10,7 @@ export default function useBiolinkModel() {
   const [concepts, setConcepts] = useState([]);
   const [hierarchies, setHierarchies] = useState({});
   const [predicates, setPredicates] = useState([]);
+  const colorMap = useCallback(getNodeCategoryColorMap(concepts), [concepts]);
 
   function getEdgePredicates() {
     const newPredicates = Object.entries(biolinkModel.slots).map(([identifier, predicate]) => ({
@@ -109,5 +111,6 @@ export default function useBiolinkModel() {
     concepts,
     hierarchies,
     predicates,
+    colorMap,
   };
 }

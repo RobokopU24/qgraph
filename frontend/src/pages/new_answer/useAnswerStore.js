@@ -7,7 +7,7 @@ import resultsUtils from './utils/results';
 export default function useAnswerStore() {
   const [message, setMessage] = useState({});
   const [kgNodes, setKgNodes] = useState([]);
-  const { concepts, hierarchies } = useContext(BiolinkContext);
+  const { colorMap, hierarchies } = useContext(BiolinkContext);
 
   function initialize(msg) {
     setMessage(msg);
@@ -16,10 +16,10 @@ export default function useAnswerStore() {
 
   const tableHeaders = useMemo(() => {
     if (message.query_graph) {
-      return resultsUtils.makeTableHeaders(message, concepts, hierarchies);
+      return resultsUtils.makeTableHeaders(message, colorMap, hierarchies);
     }
     return [];
-  }, [message, concepts]);
+  }, [message]);
 
   return {
     initialize,

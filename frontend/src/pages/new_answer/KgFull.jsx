@@ -1,13 +1,12 @@
 /* eslint-disable indent, no-use-before-define, func-names, no-return-assign */
 import React, {
-  useState, useContext, useEffect, useMemo, useRef,
+  useState, useContext, useEffect, useRef,
 } from 'react';
 import * as d3 from 'd3';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Box from '@material-ui/core/Box';
 
 import BiolinkContext from '~/context/biolink';
-import getNodeCategoryColorMap from '~/utils/colors';
 import kgUtils from './utils/kg';
 // import hierarchyUtils from './utils/hierarchy';
 
@@ -22,8 +21,7 @@ export default function KgFull({ message }) {
   const canvasRef = useRef();
   const [loading, toggleLoading] = useState(false);
   const [progress, setProgress] = useState(0);
-  const biolink = useContext(BiolinkContext);
-  const colorMap = useMemo(() => getNodeCategoryColorMap(biolink.concepts), [biolink.concepts]);
+  const { colorMap, hierarchies } = useContext(BiolinkContext);
 
   function displayCanvas(data) {
     const canvas = d3.select(canvasRef.current)
@@ -46,7 +44,7 @@ export default function KgFull({ message }) {
       context.arc(d.x, d.y, 5, 0, 2 * Math.PI);
       if (d.category && Array.isArray(d.category)) {
         d.category = kgUtils.removeNamedThing(d.category);
-        d.category = kgUtils.getRankedCategories(biolink.hierarchies, d.category);
+        d.category = kgUtils.getRankedCategories(hierarchies, d.category);
       }
       context.strokeStyle = colorMap((d.category && d.category[0]) || 'unknown');
       context.fillStyle = colorMap((d.category && d.category[0]) || 'unknown');

@@ -1,11 +1,10 @@
 /* eslint-disable indent, no-use-before-define, func-names, no-return-assign */
 import React, {
-  useEffect, useRef, useContext, useMemo,
+  useEffect, useRef, useContext,
 } from 'react';
 import * as d3 from 'd3';
 
 import BiolinkContext from '~/context/biolink';
-import getNodeCategoryColorMap from '~/utils/colors';
 import kgUtils from './utils/kg';
 import graphUtils from '~/utils/d3/graph';
 
@@ -15,8 +14,7 @@ const nodePadding = 5;
 
 export default function KgBubble({ nodes, knowledge_graph }) {
   const svgRef = useRef();
-  const { concepts } = useContext(BiolinkContext);
-  const colorMap = useMemo(() => getNodeCategoryColorMap(concepts), [concepts]);
+  const { colorMap } = useContext(BiolinkContext);
 
   useEffect(() => {
     d3.select(svgRef.current)

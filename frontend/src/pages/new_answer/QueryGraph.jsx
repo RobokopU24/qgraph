@@ -1,11 +1,10 @@
 /* eslint-disable indent, no-use-before-define, func-names, no-return-assign */
 import React, {
-  useEffect, useRef, useContext, useMemo,
+  useEffect, useRef, useContext,
 } from 'react';
 import * as d3 from 'd3';
 
 import BiolinkContext from '~/context/biolink';
-import getNodeCategoryColorMap from '~/utils/colors';
 import qgUtils from './utils/qg';
 import graphUtils from '~/utils/d3/graph';
 import queryGraphUtils from '~/utils/queryGraph';
@@ -17,8 +16,7 @@ const nodeRadius = 20;
 
 export default function QueryGraph({ query_graph }) {
   const svgRef = useRef();
-  const { concepts } = useContext(BiolinkContext);
-  const colorMap = useMemo(() => getNodeCategoryColorMap(concepts), [concepts]);
+  const { colorMap } = useContext(BiolinkContext);
 
   useEffect(() => {
     const svg = d3.select(svgRef.current)

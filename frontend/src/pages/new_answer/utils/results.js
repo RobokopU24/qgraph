@@ -4,7 +4,6 @@ import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
 import stringUtils from '~/utils/strings';
-import getNodeCategoryColorMap from '~/utils/colors';
 import kgUtils from './kg';
 
 const onExpand = (row, toggleAllRowsExpanded) => {
@@ -26,15 +25,13 @@ function findKgNodeCategory(knowledge_graph, id, hierarchies) {
   return kgNode.category;
 }
 
-function makeTableHeaders(message, concepts, hierarchies) {
-  const colorMap = getNodeCategoryColorMap(concepts);
+function makeTableHeaders(message, colorMap, hierarchies) {
   const { query_graph, knowledge_graph } = message;
   const headerColumns = Object.entries(query_graph.nodes).map(([id, qgNode]) => {
     let { category } = qgNode;
     if (!category && qgNode.id) {
       category = findKgNodeCategory(knowledge_graph, qgNode.id, hierarchies);
     }
-    console.log(category);
     const backgroundColor = colorMap(category && category[0]);
     return {
       Header: () => (
