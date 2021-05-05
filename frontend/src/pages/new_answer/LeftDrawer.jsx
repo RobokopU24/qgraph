@@ -6,8 +6,10 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
+import IconButton from '@material-ui/core/IconButton';
 
-import UploadButton from './UploadButton';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+
 import './leftDrawer.css';
 
 export default function LeftDrawer({ onUpload, displayState }) {
@@ -27,24 +29,42 @@ export default function LeftDrawer({ onUpload, displayState }) {
       <Toolbar />
       <List>
         {Object.entries(displayState.state).map(([key, val]) => (
-          <ListItem key={key}>
+          <ListItem
+            key={key}
+            button
+            onClick={() => toggleDisplay(key, !val.show)}
+          >
             <ListItemIcon>
               <Checkbox
                 checked={val.show}
                 disableRipple
-                onChange={() => toggleDisplay(key, !val.show)}
               />
             </ListItemIcon>
             <ListItemText primary={val.label} />
           </ListItem>
         ))}
-        <ListItem>
+        <ListItem
+          component="label"
+          button
+        >
           <ListItemIcon>
-            <UploadButton
-              onUpload={onUpload}
-            />
+            <IconButton
+              component="span"
+              style={{ fontSize: '18px' }}
+              title="Load"
+              disableRipple
+            >
+              <CloudUploadIcon />
+            </IconButton>
           </ListItemIcon>
           <ListItemText primary="Upload Answer" />
+          <input
+            accept=".json"
+            hidden
+            style={{ display: 'none' }}
+            type="file"
+            onChange={(e) => onUpload(e)}
+          />
         </ListItem>
       </List>
     </Drawer>
