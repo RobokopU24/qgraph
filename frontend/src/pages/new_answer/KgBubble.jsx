@@ -6,7 +6,7 @@ import * as d3 from 'd3';
 
 import BiolinkContext from '~/context/biolink';
 import getNodeCategoryColorMap from '~/utils/colors';
-import kgUtils from './utils/kgUtils';
+import kgUtils from './utils/kg';
 import graphUtils from '~/utils/d3/graph';
 
 const height = 400;

@@ -6,7 +6,7 @@ import * as d3 from 'd3';
 
 import BiolinkContext from '~/context/biolink';
 import getNodeCategoryColorMap from '~/utils/colors';
-import qgUtils from './utils/qgUtils';
+import qgUtils from './utils/qg';
 import graphUtils from '~/utils/d3/graph';
 import queryGraphUtils from '~/utils/queryGraph';
 import stringUtils from '~/utils/strings';

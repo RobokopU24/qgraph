@@ -69,8 +69,8 @@ function getRankedCategories(hierarchies, category) {
   return rankedCategories;
 }
 
-function getFullDisplay(knowledge_graph) {
-  let { nodes, edges } = knowledge_graph;
+function getFullDisplay(message) {
+  let { nodes, edges } = message.knowledge_graph;
   nodes = Object.entries(nodes).map(([nodeId, nodeProps]) => {
     const node = {};
     node.id = nodeId;
