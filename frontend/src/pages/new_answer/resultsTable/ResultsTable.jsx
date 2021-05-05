@@ -1,5 +1,5 @@
-import React from 'react';
-import { useTable, usePagination } from 'react-table';
+import React, { useMemo } from 'react';
+import { useTable, usePagination, useExpanded } from 'react-table';
 
 import Paper from '@material-ui/core/Paper';
 import TableContainer from '@material-ui/core/TableContainer';
@@ -10,11 +10,9 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TablePagination from '@material-ui/core/TablePagination';
 
-// const defaultColumn = {
-
-// }
-
-export default function ResultsTable({ columns, data }) {
+export default function ResultsTable({ store }) {
+  const columns = useMemo(() => store.tableHeaders, [store.tableHeaders]);
+  const data = useMemo(() => store.message.results, [store.message]);
   const {
     getTableProps, getTableBodyProps,
     headerGroups,
@@ -39,6 +37,7 @@ export default function ResultsTable({ columns, data }) {
         ],
       },
     },
+    useExpanded,
     usePagination,
   );
 
@@ -63,13 +62,22 @@ export default function ResultsTable({ columns, data }) {
                 {page.map((row) => {
                   prepareRow(row);
                   return (
-                    <TableRow {...row.getRowProps()}>
-                      {row.cells.map((cell) => (
-                        <TableCell {...cell.getCellProps()}>
-                          {cell.render('Cell')}
-                        </TableCell>
-                      ))}
-                    </TableRow>
+                    <React.Fragment key={row.id}>
+                      <TableRow {...row.getRowProps()}>
+                        {row.cells.map((cell) => (
+                          <TableCell {...cell.getCellProps()}>
+                            {cell.render('Cell')}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                      {row.isExpanded && (
+                        <TableRow>
+                          <TableCell colSpan={row.cells.length}>
+                            <h1>Test</h1>
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </React.Fragment>
                   );
                 })}
               </TableBody>

@@ -3,7 +3,6 @@ import React, { useContext } from 'react';
 import trapiUtils from '~/utils/trapi';
 import usePageStatus from '~/stores/usePageStatus';
 import AlertContext from '~/context/alert';
-import BiolinkContext from '~/context/biolink';
 
 import useAnswerStore from './useAnswerStore';
 import useDisplayState from './useDisplayState';
@@ -12,7 +11,7 @@ import LeftDrawer from './LeftDrawer';
 import KgBubble from './KgBubble';
 import KgFull from './KgFull';
 import QueryGraph from './QueryGraph';
-import ResultsTable from './ResultsTable';
+import ResultsTable from './resultsTable/ResultsTable';
 
 import './answer.css';
 
@@ -20,7 +19,6 @@ export default function Answer() {
   const answerStore = useAnswerStore();
   const pageStatus = usePageStatus(false);
   const displayAlert = useContext(AlertContext);
-  const { concepts } = useContext(BiolinkContext);
   const displayState = useDisplayState();
 
   function onUpload(event) {
@@ -39,7 +37,7 @@ export default function Answer() {
         const errors = trapiUtils.validateMessage(msg);
         if (!errors.length) {
           try {
-            answerStore.initialize(msg.message, concepts);
+            answerStore.initialize(msg.message);
             pageStatus.setSuccess();
           } catch (err) {
             console.error(err);
@@ -81,13 +79,12 @@ export default function Answer() {
             )}
             {displayState.state.kgFull.show && (
               <KgFull
-                knowledge_graph={answerStore.message.knowledge_graph}
+                message={answerStore.message}
               />
             )}
             {displayState.state.results.show && (
               <ResultsTable
-                columns={answerStore.tableHeaders}
-                data={answerStore.message.results}
+                store={answerStore}
               />
             )}
           </>

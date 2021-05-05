@@ -1,18 +1,25 @@
-import { useState } from 'react';
+import { useState, useMemo, useContext } from 'react';
 
-import kgUtils from './utils/kgUtils';
-import resultsUtils from './utils/resultsUtils';
+import BiolinkContext from '~/context/biolink';
+import kgUtils from './utils/kg';
+import resultsUtils from './utils/results';
 
 export default function useAnswerStore() {
   const [message, setMessage] = useState({});
   const [kgNodes, setKgNodes] = useState([]);
-  const [tableHeaders, setTableHeaders] = useState([]);
+  const { concepts, hierarchies } = useContext(BiolinkContext);
 
-  function initialize(msg, concepts) {
+  function initialize(msg) {
     setMessage(msg);
     setKgNodes(kgUtils.makeDisplayNodes(msg));
-    setTableHeaders(resultsUtils.makeTableHeaders(msg, concepts));
   }
+
+  const tableHeaders = useMemo(() => {
+    if (message.query_graph) {
+      return resultsUtils.makeTableHeaders(message, concepts, hierarchies);
+    }
+    return [];
+  }, [message, concepts]);
 
   return {
     initialize,

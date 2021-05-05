@@ -8,21 +8,24 @@ import Box from '@material-ui/core/Box';
 
 import BiolinkContext from '~/context/biolink';
 import getNodeCategoryColorMap from '~/utils/colors';
-import kgUtils from './utils/kgUtils';
+import kgUtils from './utils/kg';
+// import hierarchyUtils from './utils/hierarchy';
 
 import Worker from './utils/simulation.worker';
 
 const height = 400;
 const width = 400;
+// const maxNodes = 40;
+// const maxEdges = 100;
 
-export default function KgFull({ knowledge_graph }) {
+export default function KgFull({ message }) {
   const canvasRef = useRef();
   const [loading, toggleLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const biolink = useContext(BiolinkContext);
   const colorMap = useMemo(() => getNodeCategoryColorMap(biolink.concepts), [biolink.concepts]);
 
-  function display(data) {
+  function displayCanvas(data) {
     const canvas = d3.select(canvasRef.current)
       .attr('width', width)
       .attr('height', height);
@@ -65,16 +68,23 @@ export default function KgFull({ knowledge_graph }) {
     d3.select(canvasRef.current)
       .attr('width', 0)
       .attr('height', 0);
-    if (knowledge_graph) {
+    if (Object.keys(message).length) {
       const simulationWorker = new Worker();
-      const kgLists = kgUtils.getFullDisplay(knowledge_graph);
+      // hierarchyUtils.getQGNodeHierarchy(message);
+      const kgLists = kgUtils.getFullDisplay(message);
       toggleLoading(true);
       simulationWorker.postMessage(kgLists);
 
       simulationWorker.onmessage = (e) => {
         switch (e.data.type) {
           case 'display': {
-            display(e.data);
+            displayCanvas(e.data);
+            // TODO: if graph is small enough, display as svg
+            // if (e.data.nodes.length > maxNodes || e.data.edges.length > maxEdges) {
+            //   displayCanvas(e.data);
+            // } else {
+            //   displaySvg(e.data);
+            // }
             toggleLoading(false);
             break;
           }
@@ -87,10 +97,10 @@ export default function KgFull({ knowledge_graph }) {
         }
       };
     }
-  }, [knowledge_graph]);
+  }, [message]);
   return (
     <>
-      <div id="kgFullContainer" style={{ height, width }}>
+      <div id="kgFullContainer" style={{ height, width, display: 'inline-block' }}>
         {loading && (
           <Box position="relative" display="inline-flex">
             <CircularProgress variant="determinate" value={progress} size={150} />
