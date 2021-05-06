@@ -1,0 +1,156 @@
+/* eslint-disable indent, no-use-before-define, func-names, no-return-assign */
+import React, {
+  useEffect, useRef, useContext,
+} from 'react';
+import * as d3 from 'd3';
+import Paper from '@material-ui/core/Paper';
+
+import BiolinkContext from '~/context/biolink';
+import dragUtils from '~/utils/d3/drag';
+import qgUtils from '../utils/qg';
+import graphUtils from '~/utils/d3/graph';
+import queryGraphUtils from '~/utils/queryGraph';
+import stringUtils from '~/utils/strings';
+
+import './queryGraph.css';
+
+const nodeRadius = 20;
+
+export default function QueryGraph({ query_graph }) {
+  const svgRef = useRef();
+  const { colorMap } = useContext(BiolinkContext);
+
+  useEffect(() => {
+    const svg = d3.select(svgRef.current);
+    const { width, height } = svg.node().parentNode.getBoundingClientRect();
+    svg
+      .attr('width', width)
+      .attr('height', height)
+      .attr('preserveAspectRatio', 'xMinYMin meet')
+      .attr('viewBox', [0, 0, width, height]);
+    const defs = svg.append('defs');
+    defs.append('marker')
+      .attr('id', 'arrow')
+      .attr('viewBox', [0, 0, 20, 13])
+      .attr('refX', 20)
+      .attr('refY', 6.5)
+      .attr('markerWidth', 6.5)
+      .attr('markerHeight', 25)
+      .attr('orient', 'auto-start-reverse')
+      .append('path')
+        .attr('d', d3.line()([[0, 0], [0, 13], [25, 6.5]]))
+        .attr('fill', '#999');
+  }, []);
+
+  function drawQueryGraph() {
+    let { nodes, edges } = qgUtils.makeDisplay(query_graph);
+    const svg = d3.select(svgRef.current);
+    const { width, height } = svg.node().parentNode.getBoundingClientRect();
+    // clear the graph
+    svg.selectAll('*').remove();
+    let node = svg.append('g')
+      .attr('id', 'nodeContainer')
+        .selectAll('g');
+    let edge = svg.append('g')
+      .attr('id', 'edgeContainer')
+        .selectAll('g');
+    nodes = nodes.map((d) => ({ ...d, x: Math.random() * width, y: Math.random() * height }));
+    const simulation = d3.forceSimulation()
+      .force('center', d3.forceCenter(width / 2, height / 2).strength(0.5))
+      // .force('forceX', d3.forceX(width / 2).strength(0.02))
+      .force('forceY', d3.forceY(height / 2).strength(0.2))
+      .force('collide', d3.forceCollide().radius(nodeRadius * 3))
+      .force('link', d3.forceLink().id((d) => d.id).distance(100).strength(1))
+      .on('tick', () => {
+        node
+          .attr('transform', (d) => `translate(${d.x}, ${d.y})`);
+        edge
+          .select('.edge')
+            .attr('d', (d) => {
+              const {
+                x1, y1, qx, qy, x2, y2,
+              } = graphUtils.getCurvedEdgePos(d.source.x, d.source.y, d.target.x, d.target.y, d.numEdges, d.index, nodeRadius);
+              return `M${x1},${y1}Q${qx},${qy} ${x2},${y2}`;
+            });
+        edge
+          .select('.edgeTransparent')
+            .attr('d', (d) => {
+              const {
+                x1, y1, qx, qy, x2, y2,
+              } = graphUtils.getCurvedEdgePos(d.source.x, d.source.y, d.target.x, d.target.y, d.numEdges, d.index, nodeRadius);
+              // if necessary, flip transparent path so text is always right side up
+              const leftNode = x1 > x2 ? `${x2},${y2}` : `${x1},${y1}`;
+              const rightNode = x1 > x2 ? `${x1},${y1}` : `${x2},${y2}`;
+              return `M${leftNode}Q${qx},${qy} ${rightNode}`;
+            });
+      });
+    simulation.nodes(nodes);
+    simulation.force('link').links(edges);
+
+    node = node.data(nodes)
+      .enter()
+        .append('g')
+          .attr('class', 'node')
+          .call(dragUtils.dragNode(simulation, width, height, nodeRadius))
+          .call((n) => n.append('circle')
+            .attr('r', nodeRadius)
+            .attr('fill', (d) => colorMap((d.category && d.category[0]) || 'unknown'))
+            .call((nCircle) => nCircle.append('title')
+              .text((d) => d.name)))
+          .call((n) => n.append('text')
+            .attr('class', 'nodeLabel')
+            .style('pointer-events', 'none')
+            .attr('text-anchor', 'middle')
+            .style('font-weight', 600)
+            .attr('alignment-baseline', 'middle')
+            .text((d) => {
+              const { name } = d;
+              return name || 'Any';
+            })
+            .each(graphUtils.ellipsisOverflow));
+
+    edges = queryGraphUtils.addEdgeCurveProperties(edges);
+    edge = edge.data(edges)
+      .enter()
+        .append('g')
+          .call((e) => e.append('path')
+            .attr('stroke', '#999')
+            .attr('fill', 'none')
+            .attr('stroke-width', (d) => d.strokeWidth)
+            .attr('class', 'edge')
+            .attr('marker-end', (d) => (graphUtils.shouldShowArrow(d) ? 'url(#arrow)' : '')))
+          .call((e) => e.append('path')
+            .attr('stroke', 'transparent')
+            .attr('fill', 'none')
+            .attr('stroke-width', 10)
+            .attr('class', 'edgeTransparent')
+            .attr('id', (d) => `edge${d.id}`)
+            .call(() => e.append('text')
+              .attr('class', 'edgeText')
+              .attr('pointer-events', 'none')
+              .style('text-anchor', 'middle')
+              .attr('dy', (d) => -d.strokeWidth)
+              .append('textPath')
+                .attr('pointer-events', 'none')
+                .attr('xlink:href', (d) => `#edge${d.id}`)
+                .attr('startOffset', '50%')
+                .text((d) => (d.predicate ? d.predicate.map((p) => stringUtils.displayPredicate(p)).join(' or ') : '')))
+            .call((eLabel) => eLabel.append('title')
+              .text((d) => (d.predicate ? d.predicate.map((p) => stringUtils.displayPredicate(p)).join(' or ') : ''))));
+
+    simulation.alpha(1).restart();
+  }
+
+  useEffect(() => {
+    if (query_graph) {
+      drawQueryGraph();
+    }
+  }, [query_graph]);
+
+  return (
+    <Paper id="queryGraphContainer" elevation={3}>
+      <h5 id="queryGraphLabel">Question Graph</h5>
+      <svg ref={svgRef} />
+    </Paper>
+  );
+}

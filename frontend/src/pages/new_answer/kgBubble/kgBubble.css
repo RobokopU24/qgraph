@@ -1,0 +1,12 @@
+#kgBubbleContainer {
+    width: 100%;
+    height: 30rem;
+    margin: 10px;
+    position: relative;
+}
+#kgBubbleLabel {
+    position: absolute;
+    top: 5px;
+    left: 10px;
+    color: grey;
+}

@@ -1,0 +1,12 @@
+#queryGraphContainer {
+    width: 100%;
+    height: 20rem;
+    margin: 10px;
+    position: relative;
+}
+#queryGraphLabel {
+    position: absolute;
+    top: 5px;
+    left: 10px;
+    color: grey;
+}

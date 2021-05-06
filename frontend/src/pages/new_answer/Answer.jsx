@@ -9,12 +9,10 @@ import useAnswerStore from './useAnswerStore';
 import useDisplayState from './useDisplayState';
 
 import LeftDrawer from './LeftDrawer';
-import KgBubble from './KgBubble';
-import KgFull from './KgFull';
-import QueryGraph from './QueryGraph';
+import KgBubble from './kgBubble/KgBubble';
+import KgFull from './fullKg/KgFull';
+import QueryGraph from './queryGraph/QueryGraph';
 import ResultsTable from './resultsTable/ResultsTable';
-
-import './answer.css';
 
 export default function Answer() {
   const answerStore = useAnswerStore();

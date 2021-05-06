@@ -7,10 +7,12 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Box from '@material-ui/core/Box';
 
 import BiolinkContext from '~/context/biolink';
-import kgUtils from './utils/kg';
+import kgUtils from '../utils/kg';
 // import hierarchyUtils from './utils/hierarchy';
 
-import Worker from './utils/simulation.worker';
+import Worker from '../utils/simulation.worker';
+
+import './kgFull.css';
 
 const height = 400;
 const width = 400;

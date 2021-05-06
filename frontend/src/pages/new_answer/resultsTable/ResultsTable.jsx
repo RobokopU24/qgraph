@@ -10,6 +10,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TablePagination from '@material-ui/core/TablePagination';
 
+import './resultsTable.css';
+
 export default function ResultsTable({ store }) {
   const columns = useMemo(() => store.tableHeaders, [store.tableHeaders]);
   const data = useMemo(() => store.message.results, [store.message]);
@@ -44,7 +46,7 @@ export default function ResultsTable({ store }) {
   return (
     <>
       {page.length > 0 && (
-        <Paper id="resultsTable">
+        <Paper id="resultsTable" elevation={3}>
           <TableContainer>
             <Table {...getTableProps()}>
               <TableHead>
