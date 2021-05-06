@@ -33,6 +33,7 @@ export default function LeftDrawer({ onUpload, displayState }) {
             key={key}
             button
             onClick={() => toggleDisplay(key, !val.show)}
+            disabled={val.disabled}
           >
             <ListItemIcon>
               <Checkbox
