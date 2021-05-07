@@ -11,12 +11,12 @@ export default function useAnswerStore() {
 
   function initialize(msg) {
     setMessage(msg);
-    setKgNodes(kgUtils.makeDisplayNodes(msg));
+    setKgNodes(kgUtils.makeDisplayNodes(msg, hierarchies));
   }
 
   const tableHeaders = useMemo(() => {
     if (message.query_graph) {
-      return resultsUtils.makeTableHeaders(message, colorMap, hierarchies);
+      return resultsUtils.makeTableHeaders(message, colorMap);
     }
     return [];
   }, [message]);

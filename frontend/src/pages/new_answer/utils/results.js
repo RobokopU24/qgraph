@@ -1,10 +1,8 @@
 import React from 'react';
-import IconButton from '@material-ui/core/IconButton';
-import ArrowRightIcon from '@material-ui/icons/ArrowRight';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
 import stringUtils from '~/utils/strings';
 import kgUtils from './kg';
+import queryGraphUtils from '~/utils/queryGraph';
 
 const onExpand = (row, toggleAllRowsExpanded) => {
   // close all rows
@@ -25,43 +23,26 @@ function findKgNodeCategory(knowledge_graph, id, hierarchies) {
   return kgNode.category;
 }
 
-function makeTableHeaders(message, colorMap, hierarchies) {
+function makeTableHeaders(message, colorMap) {
   const { query_graph, knowledge_graph } = message;
   const headerColumns = Object.entries(query_graph.nodes).map(([id, qgNode]) => {
-    let { category } = qgNode;
-    if (!category && qgNode.id) {
-      category = findKgNodeCategory(knowledge_graph, qgNode.id, hierarchies);
-    }
-    const backgroundColor = colorMap(category && category[0]);
+    const backgroundColor = colorMap(qgNode.category && Array.isArray(qgNode.category) && qgNode.category[0]);
+    const nodeIdLabel = queryGraphUtils.getNodeIdLabel(qgNode);
+    const headerText = qgNode.name || nodeIdLabel || stringUtils.displayCategory(qgNode.category) || 'Something';
     return {
       Header: () => (
-        <div style={{ backgroundColor }}>{id}: {stringUtils.displayCategory(qgNode.category)}</div>
+        <div style={{ backgroundColor }}>{headerText} ({id})</div>
       ),
       id,
       accessor: (row) => row.node_bindings[id],
       Cell: ({ value }) => {
         if (value.length > 1) {
           // this is a set
-          return `Set of ${stringUtils.displayCategory(query_graph.nodes[id].category)} [${value.length}]`;
+          return `Set of ${stringUtils.displayCategory(qgNode.category)} [${value.length}]`;
         }
         return knowledge_graph.nodes[value[0].id].name;
       },
     };
-  });
-  headerColumns.unshift({
-    // Make an expander cell
-    Header: () => null, // No header
-    id: 'expander', // It needs an ID
-    Cell: ({ row, toggleAllRowsExpanded }) => (
-      <IconButton onClick={() => onExpand(row, toggleAllRowsExpanded)}>
-        {row.isExpanded ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
-      </IconButton>
-    ),
-    minWidth: 50,
-    width: 75,
-    maxWidth: 100,
-    // filterable: false,
-    disableFilters: true,
   });
   return headerColumns;
 }

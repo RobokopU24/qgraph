@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useTable, usePagination, useExpanded } from 'react-table';
+import { useTable, usePagination } from 'react-table';
 
 import Paper from '@material-ui/core/Paper';
 import TableContainer from '@material-ui/core/TableContainer';
@@ -39,7 +39,6 @@ export default function ResultsTable({ store }) {
         ],
       },
     },
-    useExpanded,
     usePagination,
   );
 
@@ -64,22 +63,18 @@ export default function ResultsTable({ store }) {
                 {page.map((row) => {
                   prepareRow(row);
                   return (
-                    <React.Fragment key={row.id}>
-                      <TableRow {...row.getRowProps()}>
-                        {row.cells.map((cell) => (
-                          <TableCell {...cell.getCellProps()}>
-                            {cell.render('Cell')}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                      {row.isExpanded && (
-                        <TableRow>
-                          <TableCell colSpan={row.cells.length}>
-                            <h1>Test</h1>
-                          </TableCell>
-                        </TableRow>
-                      )}
-                    </React.Fragment>
+                    <TableRow
+                      {...row.getRowProps()}
+                      hover
+                      onClick={() => console.log('clicked')}
+                      role="button"
+                    >
+                      {row.cells.map((cell) => (
+                        <TableCell {...cell.getCellProps()}>
+                          {cell.render('Cell')}
+                        </TableCell>
+                      ))}
+                    </TableRow>
                   );
                 })}
               </TableBody>
