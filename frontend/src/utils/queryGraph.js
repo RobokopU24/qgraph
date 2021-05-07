@@ -296,7 +296,7 @@ function standardize(q_graph) {
     standardizeCategory(node);
     if (!node.name) {
       node.name =
-        (node.id && node.id.length && stringUtils.prettyDisplay(node.id)) ||
+        (node.id && node.id.length && node.id.join(', ')) ||
         (node.category && node.category.length && stringUtils.displayCategory(node.category)) ||
         '';
     }
@@ -305,6 +305,18 @@ function standardize(q_graph) {
     standardizePredicate(clonedQueryGraph.edges[e]);
   });
   return clonedQueryGraph;
+}
+
+/**
+ * Get label for query graph node ids
+ * @param {object} node - query graph node
+ * @returns {string} human-readable id label
+ */
+function getNodeIdLabel(node) {
+  if (node.id && Array.isArray(node.id)) {
+    return node.id.join(', ');
+  }
+  return node.id;
 }
 
 export default {
@@ -317,4 +329,5 @@ export default {
   prune,
   standardize,
   getGraphEditorFormat,
+  getNodeIdLabel,
 };
