@@ -16,7 +16,7 @@ function makeDisplay(q_graph) {
       name = obj.id ? obj.id : stringUtils.displayCategory(obj.category);
     }
     if (!name) {
-      name = 'Any';
+      name = 'Something';
     }
     if (!Array.isArray(obj.category)) {
       obj.category = [obj.category];
