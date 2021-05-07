@@ -30,27 +30,6 @@ function getNodeRadius(num, total, width) {
   return radius;
 }
 
-function makeDisplayNodes(message) {
-  const displayNodes = {};
-  message.results.forEach((result) => {
-    Object.entries(result.node_bindings).forEach(([qgId, kgObjects]) => {
-      kgObjects.forEach((kgObj) => {
-        let displayNode = displayNodes[kgObj.id];
-        if (!displayNode) {
-          displayNode = _.cloneDeep(kgObj);
-          displayNode.category = stringUtils.toArray(message.query_graph.nodes[qgId].category || message.knowledge_graph.nodes[displayNode.id].category);
-          displayNode.name = message.knowledge_graph.nodes[displayNode.id].name;
-          displayNode.count = 1;
-        } else {
-          displayNode.count += 1;
-        }
-        displayNodes[kgObj.id] = displayNode;
-      });
-    });
-  });
-  return Object.values(displayNodes);
-}
-
 function removeNamedThing(categories) {
   const categoriesWithoutNamedThing = [...categories];
   const namedThingIndex = categories.indexOf('biolink:NamedThing');
@@ -67,6 +46,30 @@ function getRankedCategories(hierarchies, category) {
     return bLength - aLength;
   });
   return rankedCategories;
+}
+
+function makeDisplayNodes(message, hierarchies) {
+  const displayNodes = {};
+  message.results.forEach((result) => {
+    Object.values(result.node_bindings).forEach((kgObjects) => {
+      kgObjects.forEach((kgObj) => {
+        let displayNode = displayNodes[kgObj.id];
+        if (!displayNode) {
+          displayNode = _.cloneDeep(kgObj);
+          let categories = message.knowledge_graph.nodes[displayNode.id].category;
+          categories = removeNamedThing(categories);
+          categories = getRankedCategories(hierarchies, categories);
+          displayNode.category = categories;
+          displayNode.name = message.knowledge_graph.nodes[displayNode.id].name;
+          displayNode.count = 1;
+        } else {
+          displayNode.count += 1;
+        }
+        displayNodes[kgObj.id] = displayNode;
+      });
+    });
+  });
+  return Object.values(displayNodes);
 }
 
 function getFullDisplay(message) {
