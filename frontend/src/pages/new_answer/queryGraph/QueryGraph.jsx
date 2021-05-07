@@ -60,7 +60,7 @@ export default function QueryGraph({ query_graph }) {
       // .force('forceX', d3.forceX(width / 2).strength(0.02))
       .force('forceY', d3.forceY(height / 2).strength(0.2))
       .force('collide', d3.forceCollide().radius(nodeRadius * 2))
-      .force('link', d3.forceLink().id((d) => d.id).distance(150).strength(1))
+      .force('link', d3.forceLink().id((d) => d.id).distance(175).strength(1))
       .on('tick', () => {
         node
           .attr('transform', (d) => {
