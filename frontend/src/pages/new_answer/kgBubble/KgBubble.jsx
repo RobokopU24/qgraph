@@ -35,10 +35,13 @@ export default function KgBubble({ nodes, knowledge_graph }) {
     svg.selectAll('*').remove();
     const total = nodes.reduce((a, b) => a + b.count, 0);
     const converted_nodes = nodes.map((d) => ({ ...d, x: Math.random() * width, y: Math.random() * height }));
-    const simulation = d3.forceSimulation()
+    const simulation = d3.forceSimulation(converted_nodes)
       .force('center', d3.forceCenter(width / 2, height / 2).strength(0.01))
       .force('forceX', d3.forceX(width / 2).strength(0.01))
       .force('forceY', d3.forceY(height / 2).strength(0.2))
+      .force('collide', d3.forceCollide().radius(
+        (d) => kgUtils.getNodeRadius(d.count, total, width) + nodePadding,
+      ))
       .on('tick', () => {
         node
           .attr('transform', (d) => {
@@ -72,11 +75,6 @@ export default function KgBubble({ nodes, knowledge_graph }) {
               return name || 'Any';
             })
             .each(graphUtils.ellipsisOverflow));
-
-    simulation.nodes(converted_nodes)
-      .force('collide', d3.forceCollide().radius(
-        (d) => kgUtils.getNodeRadius(d.count, total, width) + nodePadding,
-      ));
 
     simulation.alpha(1).restart();
   }
