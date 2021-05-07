@@ -36,12 +36,16 @@ export default function KgBubble({ nodes, knowledge_graph }) {
     const total = nodes.reduce((a, b) => a + b.count, 0);
     const converted_nodes = nodes.map((d) => ({ ...d, x: Math.random() * width, y: Math.random() * height }));
     const simulation = d3.forceSimulation()
-      .force('center', d3.forceCenter(width / 2, height / 2).strength(1))
-      .force('forceX', d3.forceX(width / 2).strength(0.2))
+      .force('center', d3.forceCenter(width / 2, height / 2).strength(0.01))
+      .force('forceX', d3.forceX(width / 2).strength(0.01))
       .force('forceY', d3.forceY(height / 2).strength(0.2))
       .on('tick', () => {
         node
-          .attr('transform', (d) => `translate(${d.x}, ${d.y})`);
+          .attr('transform', (d) => {
+            const x = graphUtils.getBoundedValue(d.x, width, 0);
+            const y = graphUtils.getBoundedValue(d.y, height, 0);
+            return `translate(${x}, ${y})`;
+          });
       });
     const node = svg.selectAll('g')
       .data(converted_nodes)
@@ -50,7 +54,7 @@ export default function KgBubble({ nodes, knowledge_graph }) {
           .attr('class', 'node')
           .call(dragUtils.dragNode(simulation, width, height, 20))
           .call((n) => n.append('circle')
-            .attr('r', (d) => kgUtils.getNodeRadius(d.count, total, height))
+            .attr('r', (d) => kgUtils.getNodeRadius(d.count, total, width))
             .attr('fill', (d) => colorMap((d.category && d.category[0]) || 'unknown'))
             .call((nCircle) => nCircle.append('title')
               .text((d) => d.name)))
@@ -61,7 +65,7 @@ export default function KgBubble({ nodes, knowledge_graph }) {
             .style('font-weight', 600)
             .attr('alignment-baseline', 'middle')
             .text((d) => {
-              if (kgUtils.getNodeRadius(d.count, total, height) < 15) {
+              if (kgUtils.getNodeRadius(d.count, total, width) < 15) {
                 return '';
               }
               const { name } = d;
@@ -71,7 +75,7 @@ export default function KgBubble({ nodes, knowledge_graph }) {
 
     simulation.nodes(converted_nodes)
       .force('collide', d3.forceCollide().radius(
-        (d) => kgUtils.getNodeRadius(d.count, total, height) + nodePadding,
+        (d) => kgUtils.getNodeRadius(d.count, total, width) + nodePadding,
       ));
 
     simulation.alpha(1).restart();

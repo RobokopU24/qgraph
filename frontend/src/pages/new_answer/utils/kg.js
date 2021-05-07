@@ -23,10 +23,10 @@ function getNodeNums(results) {
   return counts;
 }
 
-function getNodeRadius(num, total, height) {
-  const area = height * 0.8;
+function getNodeRadius(num, total, width) {
+  const area = width * 0.8;
   const circumference = (num / total) * area;
-  const radius = Math.max(circumference / 2, 10);
+  const radius = Math.sqrt(Math.max(circumference / 2, 10)) * 10;
   return radius;
 }
 
