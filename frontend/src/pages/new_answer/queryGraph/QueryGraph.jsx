@@ -14,7 +14,7 @@ import stringUtils from '~/utils/strings';
 
 import './queryGraph.css';
 
-const nodeRadius = 20;
+const nodeRadius = 40;
 
 export default function QueryGraph({ query_graph }) {
   const svgRef = useRef();
@@ -59,11 +59,17 @@ export default function QueryGraph({ query_graph }) {
       .force('center', d3.forceCenter(width / 2, height / 2).strength(0.5))
       // .force('forceX', d3.forceX(width / 2).strength(0.02))
       .force('forceY', d3.forceY(height / 2).strength(0.2))
-      .force('collide', d3.forceCollide().radius(nodeRadius * 3))
-      .force('link', d3.forceLink().id((d) => d.id).distance(100).strength(1))
+      .force('collide', d3.forceCollide().radius(nodeRadius * 2))
+      .force('link', d3.forceLink().id((d) => d.id).distance(150).strength(1))
       .on('tick', () => {
         node
-          .attr('transform', (d) => `translate(${d.x}, ${d.y})`);
+          .attr('transform', (d) => {
+            // assign d.x and d.y so edges know the bounded positions
+            d.x = graphUtils.getBoundedValue(d.x, width, 0);
+            d.y = graphUtils.getBoundedValue(d.y, height, 0);
+            return `translate(${d.x}, ${d.y})`;
+          });
+
         edge
           .select('.edge')
             .attr('d', (d) => {
