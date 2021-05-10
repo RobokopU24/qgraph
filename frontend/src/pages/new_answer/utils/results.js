@@ -1,27 +1,7 @@
 import React from 'react';
 
 import stringUtils from '~/utils/strings';
-import kgUtils from './kg';
 import queryGraphUtils from '~/utils/queryGraph';
-
-const onExpand = (row, toggleAllRowsExpanded) => {
-  // close all rows
-  toggleAllRowsExpanded(false);
-  // expand single row
-  row.toggleRowExpanded(!row.isExpanded);
-};
-
-function findKgNodeCategory(knowledge_graph, id, hierarchies) {
-  const kgNode = knowledge_graph.nodes[id];
-  if (kgNode.category && !Array.isArray(kgNode.category)) {
-    kgNode.category = [kgNode.category];
-  }
-  if (kgNode.category && Array.isArray(kgNode.category)) {
-    kgNode.category = kgUtils.removeNamedThing(kgNode.category);
-    kgNode.category = kgUtils.getRankedCategories(hierarchies, kgNode.category);
-  }
-  return kgNode.category;
-}
 
 function makeTableHeaders(message, colorMap) {
   const { query_graph, knowledge_graph } = message;
