@@ -14,6 +14,8 @@ import KgFull from './fullKg/KgFull';
 import QueryGraph from './queryGraph/QueryGraph';
 import ResultsTable from './resultsTable/ResultsTable';
 
+import './answer.css';
+
 export default function Answer() {
   const answerStore = useAnswerStore();
   const pageStatus = usePageStatus(false);
@@ -66,30 +68,38 @@ export default function Answer() {
         displayState={displayState}
         onUpload={onUpload}
       />
-      <div style={{ marginLeft: '200px' }}>
+      <div id="answerContentContainer">
         <pageStatus.Display />
         {pageStatus.displayPage && (
           <>
-            {displayState.state.qg.show && (
-              <QueryGraph
-                query_graph={answerStore.message.query_graph}
-              />
-            )}
-            {displayState.state.kg.show && (
-              <KgBubble
-                nodes={answerStore.kgNodes}
-                knowledge_graph={answerStore.message.knowledge_graph}
-              />
-            )}
-            {displayState.state.kgFull.show && (
-              <KgFull
-                message={answerStore.message}
-              />
-            )}
-            {displayState.state.results.show && (
-              <ResultsTable
-                store={answerStore}
-              />
+            {Object.keys(answerStore.message).length ? (
+              <>
+                {displayState.state.qg.show && (
+                  <QueryGraph
+                    query_graph={answerStore.message.query_graph}
+                  />
+                )}
+                {displayState.state.kg.show && (
+                  <KgBubble
+                    nodes={answerStore.kgNodes}
+                    knowledge_graph={answerStore.message.knowledge_graph}
+                  />
+                )}
+                {displayState.state.kgFull.show && (
+                  <KgFull
+                    message={answerStore.message}
+                  />
+                )}
+                {displayState.state.results.show && (
+                  <ResultsTable
+                    store={answerStore}
+                  />
+                )}
+              </>
+            ) : (
+              <div id="answerPageSplashMessage">
+                <h2>Please upload an answer</h2>
+              </div>
             )}
           </>
         )}
