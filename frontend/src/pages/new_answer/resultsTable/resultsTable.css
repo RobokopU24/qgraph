@@ -29,3 +29,6 @@
 .MuiTableRow-root.Mui-selected {
     background-color: rgba(13, 0, 30, 0.08);
 }
+.MuiTableRow-root.Mui-selected:hover {
+    background-color: rgba(13, 0, 30, 0.1);
+}
