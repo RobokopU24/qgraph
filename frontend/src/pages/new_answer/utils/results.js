@@ -31,7 +31,7 @@ function makeTableHeaders(message, colorMap) {
     const headerText = qgNode.name || nodeIdLabel || stringUtils.displayCategory(qgNode.category) || 'Something';
     return {
       Header: () => (
-        <div style={{ backgroundColor }}>{headerText} ({id})</div>
+        <div style={{ backgroundColor, padding: '10px', border: '1px solid lightgrey' }}>{headerText} ({id})</div>
       ),
       id,
       accessor: (row) => row.node_bindings[id],
