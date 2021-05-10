@@ -86,10 +86,10 @@ export default function Landing() {
               href="/question"
             />
             <OptionButton
-              glyph="screenshot"
-              header="New Answer Page"
-              text="View new answer page."
-              href="/new_answer"
+              glyph="import"
+              header="Answer Explorer"
+              text="Easily upload JSON files of answersets to view them in Robokop&apos;s graphical interface."
+              href="/answer"
             />
           </Row>
         </ListGroup>
