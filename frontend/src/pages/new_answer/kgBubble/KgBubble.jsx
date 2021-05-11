@@ -12,9 +12,11 @@ import graphUtils from '~/utils/d3/graph';
 
 import './kgBubble.css';
 
-const nodePadding = 5;
+const nodePadding = 2;
 
-export default function KgBubble({ nodes, knowledge_graph }) {
+export default function KgBubble({
+  nodes, knowledge_graph, numQgNodes, numResults,
+}) {
   const svgRef = useRef();
   const { colorMap } = useContext(BiolinkContext);
 
@@ -33,14 +35,14 @@ export default function KgBubble({ nodes, knowledge_graph }) {
     const { width, height } = svg.node().parentNode.getBoundingClientRect();
     // clear the graph
     svg.selectAll('*').remove();
-    const total = nodes.reduce((a, b) => a + b.count, 0);
+    const getNodeRadius = kgUtils.getNodeRadius(width, height, numQgNodes, numResults);
     const converted_nodes = nodes.map((d) => ({ ...d, x: Math.random() * width, y: Math.random() * height }));
     const simulation = d3.forceSimulation(converted_nodes)
       .force('center', d3.forceCenter(width / 2, height / 2).strength(0.01))
       .force('forceX', d3.forceX(width / 2).strength(0.01))
       .force('forceY', d3.forceY(height / 2).strength(0.2))
       .force('collide', d3.forceCollide().radius(
-        (d) => kgUtils.getNodeRadius(d.count, total, width) + nodePadding,
+        (d) => getNodeRadius(d.count) + nodePadding,
       ))
       .on('tick', () => {
         node
@@ -57,7 +59,7 @@ export default function KgBubble({ nodes, knowledge_graph }) {
           .attr('class', 'node')
           .call(dragUtils.dragNode(simulation, width, height, 20))
           .call((n) => n.append('circle')
-            .attr('r', (d) => kgUtils.getNodeRadius(d.count, total, width))
+            .attr('r', (d) => getNodeRadius(d.count))
             .attr('fill', (d) => colorMap((d.category && d.category[0]) || 'unknown'))
             .call((nCircle) => nCircle.append('title')
               .text((d) => d.name)))
@@ -68,7 +70,7 @@ export default function KgBubble({ nodes, knowledge_graph }) {
             .style('font-weight', 600)
             .attr('alignment-baseline', 'middle')
             .text((d) => {
-              if (kgUtils.getNodeRadius(d.count, total, width) < 15) {
+              if (getNodeRadius(d.count) < 15) {
                 return '';
               }
               const { name } = d;

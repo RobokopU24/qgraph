@@ -21,11 +21,14 @@ function getNodeNums(results) {
   return counts;
 }
 
-function getNodeRadius(num, total, width) {
-  const area = width * 0.8;
-  const circumference = (num / total) * area;
-  const radius = Math.sqrt(Math.max(circumference / 2, 10)) * 10;
-  return radius;
+function getNodeRadius(width, height, numQNodes, numResults) {
+  const totalArea = width * height * 0.5;
+  return (num) => {
+    const numerator = totalArea * num;
+    const circleArea = numerator / numResults / numQNodes;
+    const radius = Math.sqrt(circleArea / Math.PI);
+    return radius;
+  };
 }
 
 function removeNamedThing(categories) {
