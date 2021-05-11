@@ -73,8 +73,8 @@ export default function KgBubble({
               if (getNodeRadius(d.count) < 15) {
                 return '';
               }
-              const { name } = d;
-              return name || 'Any';
+              const { name, id } = d;
+              return name || id || 'Something';
             })
             .each(graphUtils.ellipsisOverflow));
 

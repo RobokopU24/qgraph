@@ -20,7 +20,7 @@ function makeTableHeaders(message, colorMap) {
           // this is a set
           return `Set of ${stringUtils.displayCategory(qgNode.category)} [${value.length}]`;
         }
-        return knowledge_graph.nodes[value[0].id].name;
+        return knowledge_graph.nodes[value[0].id].name || value[0].id;
       },
     };
   });
