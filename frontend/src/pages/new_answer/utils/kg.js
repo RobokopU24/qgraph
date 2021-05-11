@@ -26,7 +26,9 @@ function getNodeRadius(width, height, numQNodes, numResults) {
   return (num) => {
     const numerator = totalArea * num;
     const circleArea = numerator / numResults / numQNodes;
-    const radius = Math.sqrt(circleArea / Math.PI);
+    let radius = Math.sqrt(circleArea / Math.PI);
+    // cap radius at 90% of height
+    radius = Math.min(radius, ((height / 2) * 0.9));
     return radius;
   };
 }

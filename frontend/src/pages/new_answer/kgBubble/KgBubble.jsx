@@ -41,14 +41,16 @@ export default function KgBubble({
       .force('center', d3.forceCenter(width / 2, height / 2).strength(0.01))
       .force('forceX', d3.forceX(width / 2).strength(0.01))
       .force('forceY', d3.forceY(height / 2).strength(0.2))
+      .force('charge', d3.forceManyBody().strength(-50).distanceMax(30))
       .force('collide', d3.forceCollide().radius(
         (d) => getNodeRadius(d.count) + nodePadding,
       ))
       .on('tick', () => {
         node
           .attr('transform', (d) => {
-            const x = graphUtils.getBoundedValue(d.x, width, 0);
-            const y = graphUtils.getBoundedValue(d.y, height, 0);
+            const nodeRadius = getNodeRadius(d.count);
+            const x = graphUtils.getBoundedValue(d.x, width - nodeRadius, nodeRadius);
+            const y = graphUtils.getBoundedValue(d.y, height - nodeRadius, nodeRadius);
             return `translate(${x}, ${y})`;
           });
       });
