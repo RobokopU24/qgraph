@@ -28,6 +28,14 @@ export default function QueryGraph({ query_graph }) {
       .attr('height', height)
       .attr('preserveAspectRatio', 'xMinYMin meet')
       .attr('viewBox', [0, 0, width, height]);
+  }, []);
+
+  function drawQueryGraph() {
+    let { nodes, edges } = qgUtils.makeDisplay(query_graph);
+    const svg = d3.select(svgRef.current);
+    const { width, height } = svg.node().parentNode.getBoundingClientRect();
+    // clear the graph
+    svg.selectAll('*').remove();
     const defs = svg.append('defs');
     defs.append('marker')
       .attr('id', 'arrow')
@@ -40,14 +48,6 @@ export default function QueryGraph({ query_graph }) {
       .append('path')
         .attr('d', d3.line()([[0, 0], [0, 13], [25, 6.5]]))
         .attr('fill', '#999');
-  }, []);
-
-  function drawQueryGraph() {
-    let { nodes, edges } = qgUtils.makeDisplay(query_graph);
-    const svg = d3.select(svgRef.current);
-    const { width, height } = svg.node().parentNode.getBoundingClientRect();
-    // clear the graph
-    svg.selectAll('*').remove();
     let node = svg.append('g')
       .attr('id', 'nodeContainer')
         .selectAll('g');
@@ -55,12 +55,12 @@ export default function QueryGraph({ query_graph }) {
       .attr('id', 'edgeContainer')
         .selectAll('g');
     nodes = nodes.map((d) => ({ ...d, x: Math.random() * width, y: Math.random() * height }));
-    const simulation = d3.forceSimulation()
+    const simulation = d3.forceSimulation(nodes)
       .force('center', d3.forceCenter(width / 2, height / 2).strength(0.5))
       // .force('forceX', d3.forceX(width / 2).strength(0.02))
       .force('forceY', d3.forceY(height / 2).strength(0.2))
       .force('collide', d3.forceCollide().radius(nodeRadius * 2))
-      .force('link', d3.forceLink().id((d) => d.id).distance(175).strength(1))
+      .force('link', d3.forceLink(edges).id((d) => d.id).distance(175).strength(1))
       .on('tick', () => {
         node
           .attr('transform', (d) => {
@@ -90,8 +90,6 @@ export default function QueryGraph({ query_graph }) {
               return `M${leftNode}Q${qx},${qy} ${rightNode}`;
             });
       });
-    simulation.nodes(nodes);
-    simulation.force('link').links(edges);
 
     node = node.data(nodes)
       .enter()
