@@ -32,7 +32,7 @@ export default function ResultsTable({ store }) {
       data,
       initialState: {
         pageIndex: 0,
-        pageSize: 5,
+        pageSize: 10,
         sortBy: [
           {
             id: 'score',
