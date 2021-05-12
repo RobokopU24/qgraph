@@ -153,7 +153,7 @@ export default function QueryGraph({ query_graph }) {
 
   return (
     <Paper id="queryGraphContainer" elevation={3}>
-      <h5 id="queryGraphLabel">Question Graph</h5>
+      <h5 className="cardLabel">Question Graph</h5>
       <svg ref={svgRef} />
     </Paper>
   );

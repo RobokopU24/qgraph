@@ -6,3 +6,9 @@
     text-align: center;
     padding-top: 35vh;
 }
+.cardLabel {
+    position: absolute;
+    top: 5px;
+    left: 10px;
+    color: grey;
+}

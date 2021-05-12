@@ -4,9 +4,3 @@
     margin: 10px;
     position: relative;
 }
-#kgBubbleLabel {
-    position: absolute;
-    top: 5px;
-    left: 10px;
-    color: grey;
-}

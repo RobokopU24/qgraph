@@ -91,7 +91,7 @@ export default function KgBubble({
 
   return (
     <Paper id="kgBubbleContainer" elevation={3}>
-      <h5 id="kgBubbleLabel">Knowledge Graph Bubble</h5>
+      <h5 className="cardLabel">Knowledge Graph Bubble</h5>
       <svg ref={svgRef} />
     </Paper>
   );
