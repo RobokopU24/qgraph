@@ -14,7 +14,9 @@ export default function useAnswerStore() {
   function initialize(msg) {
     setMessage(msg);
     setKgNodes(kgUtils.makeDisplayNodes(msg, hierarchies));
+    // reset answer explorer
     setSelectedResult({});
+    setSelectedRowId('');
   }
 
   function selectRow(row, rowId) {
@@ -22,18 +24,29 @@ export default function useAnswerStore() {
       setSelectedRowId('');
       setSelectedResult({});
     } else {
-      const edges = {};
-      Object.entries(row.edge_bindings).forEach(([key, value]) => {
-        edges[key] = [];
+      const edges = [];
+      Object.values(row.edge_bindings).forEach((value) => {
         value.forEach((kgObject) => {
-          edges[key].push(message.knowledge_graph.edges[kgObject.id]);
+          const kgEdge = message.knowledge_graph.edges[kgObject.id];
+          if (kgEdge.predicate && !Array.isArray(kgEdge.predicate)) {
+            kgEdge.predicate = [kgEdge.predicate];
+          }
+          kgEdge.source = kgEdge.subject;
+          kgEdge.target = kgEdge.object;
+          kgEdge.id = kgObject.id;
+          edges.push(kgEdge);
         });
       });
-      const nodes = {};
-      Object.entries(row.node_bindings).forEach(([key, value]) => {
-        nodes[key] = [];
+      const nodes = [];
+      Object.values(row.node_bindings).forEach((value) => {
         value.forEach((kgObject) => {
-          nodes[key].push(message.knowledge_graph.nodes[kgObject.id]);
+          const kgNode = message.knowledge_graph.nodes[kgObject.id];
+          let categories = kgNode.category;
+          categories = kgUtils.removeNamedThing(categories);
+          categories = kgUtils.getRankedCategories(hierarchies, categories);
+          kgNode.category = categories;
+          kgNode.id = kgObject.id;
+          nodes.push(kgNode);
         });
       });
       setSelectedResult({ nodes, edges });
