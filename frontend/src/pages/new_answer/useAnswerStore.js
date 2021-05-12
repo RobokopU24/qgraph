@@ -9,7 +9,6 @@ export default function useAnswerStore() {
   const [kgNodes, setKgNodes] = useState([]);
   const [selectedResult, setSelectedResult] = useState({});
   const [selectedRowId, setSelectedRowId] = useState('');
-  const [metaData, setMetaData] = useState(null);
   const { colorMap, hierarchies } = useContext(BiolinkContext);
 
   /**
@@ -18,7 +17,6 @@ export default function useAnswerStore() {
   function resetAnswerExplorer() {
     setSelectedResult({});
     setSelectedRowId('');
-    setMetaData(null);
   }
 
   function initialize(msg) {
@@ -67,19 +65,7 @@ export default function useAnswerStore() {
       });
       setSelectedResult({ nodes, edges });
       setSelectedRowId(rowId);
-      setMetaData(null);
     }
-  }
-
-  /**
-   * Get the full metadata from knowledge graph for id
-   * @param {string} kgId node or edge knowledge graph id
-   * @param {string} idType type of id, either node or edge
-   * @returns {object} metadata
-   */
-  function getMetaData(kgId, idType) {
-    const { knowledge_graph } = message;
-    setMetaData(knowledge_graph[idType][kgId]);
   }
 
   const tableHeaders = useMemo(() => {
@@ -99,7 +85,5 @@ export default function useAnswerStore() {
     selectedResult,
     selectedRowId,
     selectRow,
-    getMetaData,
-    metaData,
   };
 }

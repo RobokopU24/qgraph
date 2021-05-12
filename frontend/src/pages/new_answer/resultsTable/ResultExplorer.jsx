@@ -153,10 +153,7 @@ export default function ResultExplorer({ store }) {
               .style('font-weight', 600)
               .attr('alignment-baseline', 'middle')
               .text((d) => d.name)
-              .each(graphUtils.ellipsisOverflow))
-            .on('click', (e, d) => {
-              store.getMetaData(d.id, 'nodes');
-            }),
+              .each(graphUtils.ellipsisOverflow)),
         (update) => update,
         (exit) => exit
           .transition()
@@ -196,10 +193,7 @@ export default function ResultExplorer({ store }) {
                   .attr('startOffset', '50%')
                   .text((d) => (d.predicate ? d.predicate.map((p) => stringUtils.displayPredicate(p)).join(' or ') : '')))
               .call((eLabel) => eLabel.append('title')
-                .text((d) => (d.predicate ? d.predicate.map((p) => stringUtils.displayPredicate(p)).join(' or ') : ''))))
-              .on('click', (e, d) => {
-                store.getMetaData(d.id, 'edges');
-              }),
+                .text((d) => (d.predicate ? d.predicate.map((p) => stringUtils.displayPredicate(p)).join(' or ') : '')))),
         (update) => update,
         (exit) => exit
           .remove(),
