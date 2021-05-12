@@ -52,6 +52,9 @@ export default function useAnswerStore() {
         value.forEach((kgObject) => {
           const kgNode = message.knowledge_graph.nodes[kgObject.id];
           let categories = kgNode.category;
+          if (categories && !Array.isArray(categories)) {
+            categories = [categories];
+          }
           categories = kgUtils.removeNamedThing(categories);
           categories = kgUtils.getRankedCategories(hierarchies, categories);
           const graphNode = {
