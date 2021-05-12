@@ -60,6 +60,9 @@ function makeDisplayNodes(message, hierarchies) {
         if (!displayNode) {
           displayNode = _.cloneDeep(kgObj);
           let categories = message.knowledge_graph.nodes[displayNode.id].category;
+          if (categories && !Array.isArray(categories)) {
+            categories = [categories];
+          }
           categories = removeNamedThing(categories);
           categories = getRankedCategories(hierarchies, categories);
           displayNode.category = categories;
