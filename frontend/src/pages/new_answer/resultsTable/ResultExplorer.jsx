@@ -1,6 +1,6 @@
 /* eslint-disable indent, no-use-before-define, func-names, no-return-assign */
 import React, {
-  useState, useEffect, useContext, useRef,
+  useEffect, useContext, useRef,
 } from 'react';
 import * as d3 from 'd3';
 import Paper from '@material-ui/core/Paper';
@@ -22,8 +22,10 @@ export default function ResultExplorer({ store }) {
   const edge = useRef({});
   const simulation = useRef();
   const { colorMap } = useContext(BiolinkContext);
-  const [metaData, setMetaData] = useState(null);
 
+  /**
+   * Initialize svg object
+   */
   useEffect(() => {
     svg.current = d3.select(svgRef.current);
     const { width: fullWidth, height: fullHeight } = svg.current.node().parentNode.getBoundingClientRect();
@@ -60,6 +62,9 @@ export default function ResultExplorer({ store }) {
     }
   }, []);
 
+  /**
+   * Move nodes and edges one "tick" during simulation
+   */
   function ticked() {
     node.current
       .attr('transform', (d) => {
@@ -90,6 +95,9 @@ export default function ResultExplorer({ store }) {
         });
   }
 
+  /**
+   * Initialize simulation object
+   */
   useEffect(() => {
     simulation.current = d3.forceSimulation()
       .force('collide', d3.forceCollide().radius(nodeRadius * 2))
@@ -97,6 +105,9 @@ export default function ResultExplorer({ store }) {
       .on('tick', ticked);
   }, []);
 
+  /**
+   * Draw the answer graph
+   */
   function drawAnswerGraph() {
     const { width: fullWidth, height: fullHeight } = svg.current.node().parentNode.getBoundingClientRect();
     width.current = fullWidth;
@@ -112,6 +123,8 @@ export default function ResultExplorer({ store }) {
       .force('center', d3.forceCenter(width.current / 2, height.current / 2).strength(0.5))
       // .force('forceX', d3.forceX(width.current / 2).strength(0.02))
       .force('forceY', d3.forceY(height.current / 2).strength(0.2));
+
+    // keep positions of kept nodes
     const oldNodes = new Map(node.current.data().map((d) => [d.id, { x: d.x, y: d.y }]));
     const nodes = store.selectedResult.nodes.map((d) => (
       Object.assign(oldNodes.get(d.id) || { x: Math.random() * width.current, y: Math.random() * height.current }, d)
@@ -130,7 +143,7 @@ export default function ResultExplorer({ store }) {
             .call(dragUtils.dragNode(simulation.current, width.current, height.current, nodeRadius))
             .call((n) => n.append('circle')
               .attr('r', nodeRadius)
-              .attr('fill', (d) => colorMap((d.category && d.category[0]) || 'unknown'))
+              .attr('fill', (d) => colorMap((d.category) || 'unknown'))
               .call((nCircle) => nCircle.append('title')
                 .text((d) => d.name)))
             .call((n) => n.append('text')
@@ -139,13 +152,10 @@ export default function ResultExplorer({ store }) {
               .attr('text-anchor', 'middle')
               .style('font-weight', 600)
               .attr('alignment-baseline', 'middle')
-              .text((d) => {
-                const { name, id, category } = d;
-                return name || id || category[0];
-              })
+              .text((d) => d.name)
               .each(graphUtils.ellipsisOverflow))
             .on('click', (e, d) => {
-              setMetaData(d);
+              store.getMetaData(d.id, 'nodes');
             }),
         (update) => update,
         (exit) => exit
@@ -188,7 +198,7 @@ export default function ResultExplorer({ store }) {
               .call((eLabel) => eLabel.append('title')
                 .text((d) => (d.predicate ? d.predicate.map((p) => stringUtils.displayPredicate(p)).join(' or ') : ''))))
               .on('click', (e, d) => {
-                setMetaData(d);
+                store.getMetaData(d.id, 'edges');
               }),
         (update) => update,
         (exit) => exit
@@ -243,14 +253,14 @@ export default function ResultExplorer({ store }) {
     >
       <h5 className="cardLabel">Answer Explorer</h5>
       <svg ref={svgRef} />
-      {metaData && (
+      {store.metaData && (
         <Paper
           id="resultMetaData"
           elevation={3}
         >
           <h4>Result Meta Data</h4>
           <pre>
-            {JSON.stringify(metaData, null, 2)}
+            {JSON.stringify(store.metaData, null, 2)}
           </pre>
         </Paper>
       )}

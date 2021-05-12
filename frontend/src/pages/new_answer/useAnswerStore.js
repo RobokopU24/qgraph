@@ -9,32 +9,42 @@ export default function useAnswerStore() {
   const [kgNodes, setKgNodes] = useState([]);
   const [selectedResult, setSelectedResult] = useState({});
   const [selectedRowId, setSelectedRowId] = useState('');
+  const [metaData, setMetaData] = useState(null);
   const { colorMap, hierarchies } = useContext(BiolinkContext);
+
+  /**
+   * Reset all answer explorer state
+   */
+  function resetAnswerExplorer() {
+    setSelectedResult({});
+    setSelectedRowId('');
+    setMetaData(null);
+  }
 
   function initialize(msg) {
     setMessage(msg);
     setKgNodes(kgUtils.makeDisplayNodes(msg, hierarchies));
-    // reset answer explorer
-    setSelectedResult({});
-    setSelectedRowId('');
+    resetAnswerExplorer();
   }
 
   function selectRow(row, rowId) {
     if (rowId === selectedRowId) {
-      setSelectedRowId('');
-      setSelectedResult({});
+      resetAnswerExplorer();
     } else {
       const edges = [];
       Object.values(row.edge_bindings).forEach((value) => {
         value.forEach((kgObject) => {
           const kgEdge = message.knowledge_graph.edges[kgObject.id];
-          if (kgEdge.predicate && !Array.isArray(kgEdge.predicate)) {
-            kgEdge.predicate = [kgEdge.predicate];
+          const graphEdge = {
+            id: kgObject.id,
+            source: kgEdge.subject,
+            target: kgEdge.object,
+            predicate: kgEdge.predicate,
+          };
+          if (graphEdge.predicate && !Array.isArray(graphEdge.predicate)) {
+            graphEdge.predicate = [graphEdge.predicate];
           }
-          kgEdge.source = kgEdge.subject;
-          kgEdge.target = kgEdge.object;
-          kgEdge.id = kgObject.id;
-          edges.push(kgEdge);
+          edges.push(graphEdge);
         });
       });
       const nodes = [];
@@ -44,14 +54,29 @@ export default function useAnswerStore() {
           let categories = kgNode.category;
           categories = kgUtils.removeNamedThing(categories);
           categories = kgUtils.getRankedCategories(hierarchies, categories);
-          kgNode.category = categories;
-          kgNode.id = kgObject.id;
-          nodes.push(kgNode);
+          const graphNode = {
+            id: kgObject.id,
+            name: kgNode.name || kgObject.id || categories[0],
+            category: categories[0],
+          };
+          nodes.push(graphNode);
         });
       });
       setSelectedResult({ nodes, edges });
       setSelectedRowId(rowId);
+      setMetaData(null);
     }
+  }
+
+  /**
+   * Get the full metadata from knowledge graph for id
+   * @param {string} kgId node or edge knowledge graph id
+   * @param {string} idType type of id, either node or edge
+   * @returns {object} metadata
+   */
+  function getMetaData(kgId, idType) {
+    const { knowledge_graph } = message;
+    setMetaData(knowledge_graph[idType][kgId]);
   }
 
   const tableHeaders = useMemo(() => {
@@ -71,5 +96,7 @@ export default function useAnswerStore() {
     selectedResult,
     selectedRowId,
     selectRow,
+    getMetaData,
+    metaData,
   };
 }
