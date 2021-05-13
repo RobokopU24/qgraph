@@ -33,20 +33,11 @@ function getNodeRadius(width, height, numQNodes, numResults) {
   };
 }
 
-function removeNamedThing(categories) {
-  const categoriesWithoutNamedThing = [...categories];
-  const namedThingIndex = categories.indexOf('biolink:NamedThing');
-  if (namedThingIndex > -1) {
-    categoriesWithoutNamedThing.splice(namedThingIndex, 1);
-  }
-  return categoriesWithoutNamedThing;
-}
-
 function getRankedCategories(hierarchies, category) {
   const rankedCategories = category.sort((a, b) => {
     const aLength = (hierarchies[a] && hierarchies[a].length) || 0;
     const bLength = (hierarchies[b] && hierarchies[b].length) || 0;
-    return bLength - aLength;
+    return aLength - bLength;
   });
   return rankedCategories;
 }
@@ -63,7 +54,6 @@ function makeDisplayNodes(message, hierarchies) {
           if (categories && !Array.isArray(categories)) {
             categories = [categories];
           }
-          categories = removeNamedThing(categories);
           categories = getRankedCategories(hierarchies, categories);
           displayNode.category = categories;
           displayNode.name = message.knowledge_graph.nodes[displayNode.id].name;
@@ -132,7 +122,6 @@ export default {
   makeDisplayNodes,
   getFullDisplay,
   getRankedCategories,
-  removeNamedThing,
   getNodeNums,
   getNodeRadius,
   dragNode,

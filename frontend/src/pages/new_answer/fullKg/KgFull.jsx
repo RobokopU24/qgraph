@@ -45,7 +45,6 @@ export default function KgFull({ message }) {
       context.moveTo(d.x + 5, d.y);
       context.arc(d.x, d.y, 5, 0, 2 * Math.PI);
       if (d.category && Array.isArray(d.category)) {
-        d.category = kgUtils.removeNamedThing(d.category);
         d.category = kgUtils.getRankedCategories(hierarchies, d.category);
       }
       context.strokeStyle = colorMap((d.category && d.category[0]) || 'unknown');

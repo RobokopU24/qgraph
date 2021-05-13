@@ -66,7 +66,6 @@ export default function useAnswerStore() {
           if (categories && !Array.isArray(categories)) {
             categories = [categories];
           }
-          categories = kgUtils.removeNamedThing(categories);
           categories = kgUtils.getRankedCategories(hierarchies, categories);
           const graphNode = {
             id: kgObject.id,
