@@ -38,20 +38,18 @@ export default function KgBubble({
     const getNodeRadius = kgUtils.getNodeRadius(width, height, numQgNodes, numResults);
     const converted_nodes = nodes.map((d) => ({ ...d, x: Math.random() * width, y: Math.random() * height }));
     const simulation = d3.forceSimulation(converted_nodes)
-      .force('center', d3.forceCenter(width / 2, height / 2).strength(0.01))
-      .force('forceX', d3.forceX(width / 2).strength(0.01))
-      .force('forceY', d3.forceY(height / 2).strength(0.2))
-      .force('charge', d3.forceManyBody().strength(-50).distanceMax(30))
-      .force('collide', d3.forceCollide().radius(
+      .force('forceX', d3.forceX(width / 2).strength(0.02)) // pull all nodes horizontally towards middle of box
+      .force('forceY', d3.forceY(height / 2).strength(0.2)) // pull all nodes vertically towards middle of box
+      .force('collide', d3.forceCollide().strength(1).radius( // prevent collisions
         (d) => getNodeRadius(d.count) + nodePadding,
       ))
       .on('tick', () => {
         node
           .attr('transform', (d) => {
             const nodeRadius = getNodeRadius(d.count);
-            const x = graphUtils.getBoundedValue(d.x, width - nodeRadius, nodeRadius);
-            const y = graphUtils.getBoundedValue(d.y, height - nodeRadius, nodeRadius);
-            return `translate(${x}, ${y})`;
+            d.x = graphUtils.getBoundedValue(d.x, width - nodeRadius, nodeRadius);
+            d.y = graphUtils.getBoundedValue(d.y, height - nodeRadius, nodeRadius);
+            return `translate(${d.x}, ${d.y})`;
           });
       });
     const node = svg.selectAll('g')
