@@ -10,6 +10,7 @@ import dragUtils from '~/utils/d3/drag';
 import graphUtils from '~/utils/d3/graph';
 import stringUtils from '~/utils/strings';
 import queryGraphUtils from '~/utils/queryGraph';
+import SupportingPublications from './SupportingPublications';
 
 const nodeRadius = 40;
 
@@ -248,15 +249,9 @@ export default function ResultExplorer({ store }) {
       <h5 className="cardLabel">Answer Explorer</h5>
       <svg ref={svgRef} />
       {store.metaData && (
-        <Paper
-          id="resultMetaData"
-          elevation={3}
-        >
-          <h4>Result Meta Data</h4>
-          <pre>
-            {JSON.stringify(store.metaData, null, 2)}
-          </pre>
-        </Paper>
+        <SupportingPublications
+          metaData={store.metaData}
+        />
       )}
     </Paper>
   );

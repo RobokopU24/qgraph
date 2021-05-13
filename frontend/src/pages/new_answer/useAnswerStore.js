@@ -3,12 +3,14 @@ import { useState, useMemo, useContext } from 'react';
 import BiolinkContext from '~/context/biolink';
 import kgUtils from './utils/kg';
 import resultsUtils from './utils/results';
+import stringUtils from '~/utils/strings';
 
 export default function useAnswerStore() {
   const [message, setMessage] = useState({});
   const [kgNodes, setKgNodes] = useState([]);
   const [selectedResult, setSelectedResult] = useState({});
   const [selectedRowId, setSelectedRowId] = useState('');
+  const [metaData, setMetaData] = useState({});
   const { colorMap, hierarchies } = useContext(BiolinkContext);
 
   /**
@@ -30,6 +32,7 @@ export default function useAnswerStore() {
       resetAnswerExplorer();
     } else {
       const edges = [];
+      const edgePublications = {};
       Object.values(row.edge_bindings).forEach((value) => {
         value.forEach((kgObject) => {
           const kgEdge = message.knowledge_graph.edges[kgObject.id];
@@ -43,6 +46,16 @@ export default function useAnswerStore() {
             graphEdge.predicate = [graphEdge.predicate];
           }
           edges.push(graphEdge);
+
+          const publicationsAttribute = kgEdge.attributes && Array.isArray(kgEdge.attributes) && kgEdge.attributes.find((att) => att.name === 'publications' || att.type === 'EDAM:data_0971');
+          let publications = [];
+          if (publicationsAttribute) {
+            publications = (Array.isArray(publicationsAttribute.value) && publicationsAttribute.value) || [];
+          }
+          const subjectNode = message.knowledge_graph.nodes[kgEdge.subject];
+          const objectNode = message.knowledge_graph.nodes[kgEdge.object];
+          const edgeKey = `${subjectNode.name || kgEdge.subject} ${stringUtils.displayPredicate(graphEdge.predicate)} ${objectNode.name || kgEdge.object}`;
+          edgePublications[edgeKey] = publications;
         });
       });
       const nodes = [];
@@ -65,6 +78,7 @@ export default function useAnswerStore() {
       });
       setSelectedResult({ nodes, edges });
       setSelectedRowId(rowId);
+      setMetaData(edgePublications);
     }
   }
 
@@ -85,5 +99,7 @@ export default function useAnswerStore() {
     selectedResult,
     selectedRowId,
     selectRow,
+
+    metaData,
   };
 }
