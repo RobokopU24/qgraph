@@ -1,5 +1,3 @@
-import React from 'react';
-
 import stringUtils from '~/utils/strings';
 import queryGraphUtils from '~/utils/queryGraph';
 
@@ -10,9 +8,8 @@ function makeTableHeaders(message, colorMap) {
     const nodeIdLabel = queryGraphUtils.getNodeIdLabel(qgNode);
     const headerText = qgNode.name || nodeIdLabel || stringUtils.displayCategory(qgNode.category) || 'Something';
     return {
-      Header: () => (
-        <div style={{ backgroundColor, padding: '10px', border: '1px solid lightgrey' }}>{headerText} ({id})</div>
-      ),
+      Header: `${headerText} (${id})`,
+      color: backgroundColor,
       id,
       accessor: (row) => row.node_bindings[id],
       Cell: ({ value }) => {

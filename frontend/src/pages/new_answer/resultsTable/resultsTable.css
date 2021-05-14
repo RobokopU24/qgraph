@@ -10,7 +10,8 @@
     overflow-y: auto;
 }
 .resultsTableHeader {
-    padding: 0;
+    border: 1px solid lightgray;
+    border-collapse: collapse;
 }
 /* override table hover colors */
 .MuiTableRow-root.Mui-selected {

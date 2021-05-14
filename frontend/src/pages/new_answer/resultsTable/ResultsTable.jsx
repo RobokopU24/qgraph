@@ -55,7 +55,11 @@ export default function ResultsTable({ store }) {
                   {headerGroups.map((headerGroup, i) => (
                     <TableRow key={i} {...headerGroup.getHeaderGroupProps()}>
                       {headerGroup.headers.map((column) => (
-                        <TableCell key={column.id} className="resultsTableHeader">
+                        <TableCell
+                          key={column.id}
+                          className="resultsTableHeader"
+                          style={{ backgroundColor: column.color }}
+                        >
                           {column.render('Header')}
                         </TableCell>
                       ))}
