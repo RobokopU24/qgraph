@@ -1,29 +1,48 @@
 import stringUtils from '~/utils/strings';
 import queryGraphUtils from '~/utils/queryGraph';
+import queryBuilderUtils from '~/utils/queryBuilder';
+
+function findStartingNode(q_graph) {
+  const nodes = Object.entries(q_graph.nodes).map(([key, node]) => (
+    {
+      key,
+      pinned: node.id && Array.isArray(node.id) && node.id.length > 0,
+    }
+  ));
+  const edgeNums = queryBuilderUtils.getNumEdgesPerNode(q_graph);
+  const unpinnedNodes = nodes.filter((node) => !node.pinned && node.key in edgeNums);
+  const pinnedNodes = nodes.filter((node) => node.pinned && node.key in edgeNums);
+  let startingNode = (nodes.length && nodes[0].key) || null;
+  if (pinnedNodes.length) {
+    pinnedNodes.sort((a, b) => edgeNums[a.key] - edgeNums[b.key]);
+    startingNode = pinnedNodes[0].key;
+  } else if (unpinnedNodes.length) {
+    unpinnedNodes.sort((a, b) => edgeNums[a.key] - edgeNums[b.key]);
+    startingNode = unpinnedNodes[0].key;
+  }
+  return startingNode;
+}
 
 /**
  * Find the directly connected nodes
  */
-function findConnectedNodes(nodeId, query_graph, nodeList) {
-  const connectedEdgeIds = Object.keys(query_graph.edges).filter((edgeId) => {
-    const edge = query_graph.edges[edgeId];
-    return edge.subject === nodeId;
+function findConnectedNodes(edges, nodeList) {
+  const nodeId = nodeList[nodeList.length - 1];
+  const connectedEdgeIds = Object.keys(edges).filter((edgeId) => {
+    const edge = edges[edgeId];
+    return edge.subject === nodeId || edge.object === nodeId;
   });
   connectedEdgeIds.forEach((edgeId) => {
-    const { subject, object } = query_graph.edges[edgeId];
+    const { subject, object } = edges[edgeId];
     const subjectIndex = nodeList.indexOf(subject);
     const objectIndex = nodeList.indexOf(object);
-    if (subjectIndex === -1 && objectIndex === -1) {
-      // add both subject and object
-      nodeList.push(subject, object);
-    } else if (subjectIndex > -1 && objectIndex === -1) {
-      // put object right after subject
-      nodeList.splice(subjectIndex + 1, 0, object);
-    } else if (subjectIndex === -1 && objectIndex > -1) {
-      // put subject right in front of object
-      nodeList.splice(objectIndex, 0, subject);
-    } else {
-      // both nodes already in list, don't do anything
+    if (objectIndex === -1) {
+      nodeList.push(object);
+      findConnectedNodes(edges, nodeList);
+    }
+    if (subjectIndex === -1) {
+      nodeList.push(subject);
+      findConnectedNodes(edges, nodeList);
     }
   });
 }
@@ -33,13 +52,10 @@ function findConnectedNodes(nodeId, query_graph, nodeList) {
  * @param {object} query_graph
  * @returns {string[]} topologically sorted nodes
  */
-function sortNodes(query_graph) {
-  const sortedNodes = [];
-  const edgeIds = Object.keys(query_graph.edges);
-  edgeIds.forEach((edgeId) => {
-    const { subject } = query_graph.edges[edgeId];
-    findConnectedNodes(subject, query_graph, sortedNodes);
-  });
+function sortNodes(query_graph, startingNode) {
+  const sortedNodes = [startingNode];
+  findConnectedNodes(query_graph.edges, sortedNodes);
+  // TODO: handle detached sub-graphs
   // include any detached nodes at the end
   const extraNodes = Object.keys(query_graph.nodes).filter((nodeId) => sortedNodes.indexOf(nodeId) === -1);
   return [...sortedNodes, ...extraNodes];
@@ -49,7 +65,8 @@ function makeTableHeaders(message, colorMap) {
   const { query_graph, knowledge_graph } = message;
   // startingNode could be undefined for fully cyclic graph
   // topologically sort query graph nodes
-  const sortedNodes = sortNodes(query_graph);
+  const startingNode = findStartingNode(query_graph);
+  const sortedNodes = sortNodes(query_graph, startingNode);
   const headerColumns = sortedNodes.map((id) => {
     const qgNode = query_graph.nodes[id];
     const backgroundColor = colorMap(qgNode.category && Array.isArray(qgNode.category) && qgNode.category[0]);
