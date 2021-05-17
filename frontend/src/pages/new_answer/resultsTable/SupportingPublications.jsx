@@ -6,6 +6,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Collapse from '@material-ui/core/Collapse';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
+import shortid from 'shortid';
 
 function reducer(state, action) {
   switch (action.type) {
@@ -39,7 +40,7 @@ export default function SupportingPublications({ metaData }) {
             {publications.length > 0 && (
               <>
                 <ListItem
-                  key={edgeDescription}
+                  key={shortid.generate()}
                   button
                   onClick={() => dispatch({ type: 'toggle', key: edgeDescription })}
                 >
@@ -52,7 +53,7 @@ export default function SupportingPublications({ metaData }) {
                       <ListItem
                         button
                         component="a"
-                        key={publication}
+                        key={shortid.generate()}
                         href={`https://www.ncbi.nlm.nih.gov/pubmed/${publication.split(':')[1]}/`}
                         target="_blank"
                         rel="noreferrer"
