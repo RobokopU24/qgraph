@@ -10,7 +10,7 @@ import BiolinkContext from '~/context/biolink';
 import kgUtils from '../utils/kg';
 // import hierarchyUtils from './utils/hierarchy';
 
-import Worker from '../utils/simulation.worker';
+import Worker from './simulation.worker';
 
 import './kgFull.css';
 
