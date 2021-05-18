@@ -1,4 +1,3 @@
-import * as d3 from 'd3';
 import stringUtils from '~/utils/strings';
 import queryGraphUtils from '~/utils/queryGraph';
 
@@ -38,31 +37,6 @@ function makeDisplay(q_graph) {
   return { nodes, edges };
 }
 
-function dragNode(simulation) {
-  function dragStart(e, d) {
-    if (!e.active) simulation.alphaTarget(0.3).restart();
-    d.fx = d.x;
-    d.fy = d.y;
-  }
-
-  function dragged(e, d) {
-    d.fx = e.x;
-    d.fy = e.y;
-  }
-
-  function dragEnd(e, d) {
-    if (!e.active) simulation.alphaTarget(0);
-    d.fx = null;
-    d.fy = null;
-  }
-
-  return d3.drag()
-    .on('start', dragStart)
-    .on('drag', dragged)
-    .on('end', dragEnd);
-}
-
 export default {
   makeDisplay,
-  dragNode,
 };
