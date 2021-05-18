@@ -8,7 +8,7 @@ import queryGraphUtils from '~/utils/queryGraph';
 import useAnswerStore from './useAnswerStore';
 import useDisplayState from './useDisplayState';
 
-import LeftDrawer from './LeftDrawer';
+import LeftDrawer from './leftDrawer/LeftDrawer';
 import KgBubble from './kgBubble/KgBubble';
 import KgFull from './fullKg/KgFull';
 import QueryGraph from './queryGraph/QueryGraph';
