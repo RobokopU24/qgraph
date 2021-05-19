@@ -38,3 +38,19 @@
 #uploadIconLabel {
     margin-bottom: 0;
 }
+
+@media (max-width: 1450px) {
+    #queryEditorContainer {
+        flex-direction: column;
+        align-items: center;
+    }
+    #queryGraphEditor {
+        width: 100%;
+    }
+    #graphContainer {
+        margin: auto;
+    }
+    #queryTextEditor {
+        width: 100%;
+    }
+}
