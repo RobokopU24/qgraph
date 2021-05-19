@@ -92,16 +92,6 @@ export default function Landing() {
               href="/simple/view"
             />
           </Row>
-          {/*
-          <Row>
-            <OptionButton
-              glyph="screenshot"
-              header="Neighborhood"
-              text="Explore many sources and one-hop neighbors from specified node."
-              href="/neighborhood"
-            />
-          </Row>
-          */}
         </ListGroup>
       </Jumbotron>
     </Grid>
