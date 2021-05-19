@@ -10,19 +10,19 @@ const rectSize = {
 };
 
 const deleteRectOffset = {
-  x: -50,
+  x: -54,
   y: -90,
 };
 const deleteTextOffset = {
-  x: -25,
+  x: -29,
   y: -77,
 };
 const editRectOffset = {
-  x: 0,
+  x: 4,
   y: -90,
 };
 const editTextOffset = {
-  x: 25,
+  x: 29,
   y: -77,
 };
 
@@ -67,11 +67,14 @@ function enter(node, args) {
       .each(graphUtils.ellipsisOverflow))
     // create delete button
     .call((nodeDelete) => nodeDelete.append('rect')
+      .attr('rx', 5)
+      .attr('ry', 5)
       .attr('transform', `translate(${deleteRectOffset.x},${deleteRectOffset.y})`)
       .attr('width', rectSize.w)
       .attr('height', rectSize.h)
       .attr('stroke', 'black')
       .attr('fill', 'white')
+      .style('filter', 'url(#buttonShadow)')
       .style('display', 'none')
       .attr('class', (d) => `${d.id} deleteRect`))
     // add delete button label
@@ -86,11 +89,14 @@ function enter(node, args) {
       .text('delete'))
     // create edit button
     .call((nodeEdit) => nodeEdit.append('rect')
+      .attr('rx', 5)
+      .attr('ry', 5)
       .attr('transform', `translate(${editRectOffset.x},${editRectOffset.y})`)
       .attr('width', rectSize.w)
       .attr('height', rectSize.h)
       .attr('stroke', 'black')
       .attr('fill', 'white')
+      .style('filter', 'url(#buttonShadow)')
       .style('display', 'none')
       .attr('class', (d) => `${d.id} editRect`))
     // add edit button label

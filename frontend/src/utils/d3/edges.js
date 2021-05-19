@@ -11,19 +11,19 @@ const rectSize = {
 };
 
 const deleteRectOffset = {
-  x: -50,
+  x: -54,
   y: -50,
 };
 const deleteTextOffset = {
-  x: -25,
+  x: -29,
   y: -37,
 };
 const editRectOffset = {
-  x: 0,
+  x: 4,
   y: -50,
 };
 const editTextOffset = {
-  x: 25,
+  x: 29,
   y: -37,
 };
 
@@ -91,11 +91,14 @@ function enter(edge) {
     .call((eg) => eg.append('g')
       .attr('class', 'edgeButtons')
       .call((e) => e.append('rect')
+        .attr('rx', 5)
+        .attr('ry', 5)
         .attr('transform', `translate(${deleteRectOffset.x},${deleteRectOffset.y})`)
         .attr('width', rectSize.w)
         .attr('height', rectSize.h)
         .attr('stroke', 'black')
         .attr('fill', 'white')
+        .style('filter', 'url(#buttonShadow)')
         .style('display', 'none')
         .attr('class', (d) => `${d.id} deleteRect`))
       .call((e) => e.append('text')
@@ -108,11 +111,14 @@ function enter(edge) {
         .style('display', 'none')
         .text('delete'))
       .call((e) => e.append('rect')
+        .attr('rx', 5)
+        .attr('ry', 5)
         .attr('transform', `translate(${editRectOffset.x},${editRectOffset.y})`)
         .attr('width', rectSize.w)
         .attr('height', rectSize.h)
         .attr('stroke', 'black')
         .attr('fill', 'white')
+        .style('filter', 'url(#buttonShadow)')
         .style('display', 'none')
         .attr('class', (d) => `${d.id} editRect`))
       .call((e) => e.append('text')

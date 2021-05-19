@@ -110,7 +110,26 @@ export default function QueryGraph({
         .attr('dx', 0)
         .attr('dy', 0)
         .attr('result', 'offsetBlur');
-      const feMerge = shadow.append('feMerge');
+      let feMerge = shadow.append('feMerge');
+      feMerge.append('feMergeNode')
+        .attr('in', 'offsetBlur');
+      feMerge.append('feMergeNode')
+        .attr('in', 'SourceGraphic');
+
+      const buttonShadow = defs.append('filter')
+        .attr('id', 'buttonShadow')
+        .attr('width', '130%')
+        .attr('height', '130%');
+      buttonShadow.append('feGaussianBlur')
+        .attr('in', 'SourceAlpha')
+        .attr('stdDeviation', 1)
+        .attr('result', 'blur');
+      buttonShadow.append('feOffset')
+        .attr('in', 'blur')
+        .attr('dx', 2)
+        .attr('dy', 2)
+        .attr('result', 'offsetBlur');
+      feMerge = buttonShadow.append('feMerge');
       feMerge.append('feMergeNode')
         .attr('in', 'offsetBlur');
       feMerge.append('feMergeNode')
