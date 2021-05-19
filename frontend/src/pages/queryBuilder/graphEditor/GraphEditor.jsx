@@ -9,8 +9,8 @@ import QueryBuilderContext from '~/context/queryBuilder';
 import nodeUtils from '~/utils/d3/nodes';
 
 import QueryGraph from './QueryGraph';
-import NodeSelector from './textEditorRow/NodeSelector';
-import PredicateSelector from './textEditorRow/PredicateSelector';
+import NodeSelector from '../textEditor/textEditorRow/NodeSelector';
+import PredicateSelector from '../textEditor/textEditorRow/PredicateSelector';
 
 import './graphEditor.css';
 
