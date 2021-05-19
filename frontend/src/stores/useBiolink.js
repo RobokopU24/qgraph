@@ -47,7 +47,7 @@ export default function useBiolink() {
   }
 
   /**
-   * Get a list of descendants for all biolink classes
+   * Get a list of ancestors for all biolink classes
    * @param {object} biolinkClasses - object of all biolink classes
    * @returns {{}} Object with classes as keys and descendant lists as values
    */
