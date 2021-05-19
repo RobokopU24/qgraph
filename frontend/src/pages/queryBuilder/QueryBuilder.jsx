@@ -9,9 +9,9 @@ import './queryBuilder.css';
 import QueryBuilderContext from '~/context/queryBuilder';
 import queryGraphUtils from '~/utils/queryGraph';
 import useQueryBuilder from './useQueryBuilder';
-import GraphEditor from './GraphEditor';
-import TextEditor from './TextEditor';
-import JsonEditor from './JsonEditor';
+import GraphEditor from './graphEditor/GraphEditor';
+import TextEditor from './textEditor/TextEditor';
+import JsonEditor from './jsonEditor/JsonEditor';
 
 /**
  * Query Builder parent component
