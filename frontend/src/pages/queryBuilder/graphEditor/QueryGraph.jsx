@@ -30,7 +30,7 @@ export default function QueryGraph({
   const queryBuilder = useContext(QueryBuilderContext);
   const nodeCategoryColorMap = useMemo(() => getNodeCategoryColorMap(concepts), [concepts]);
   const { query_graph } = queryBuilder.state;
-  const queryGraph = useMemo(() => queryGraphUtils.getGraphEditorFormat(query_graph), [queryBuilder.state]);
+  const { nodes, edges } = useMemo(() => queryGraphUtils.getGraphEditorFormat(query_graph), [queryBuilder.state]);
   const node = useRef({});
   const edge = useRef({});
   const svgRef = useRef();
@@ -209,18 +209,18 @@ export default function QueryGraph({
   useEffect(() => {
     // preserve node position by using the already existing nodes
     const oldNodes = new Map(node.current.data().map((d) => [d.id, { x: d.x, y: d.y }]));
-    const nodes = queryGraph.nodes.map((d) => Object.assign(oldNodes.get(d.id) || { x: Math.random() * width, y: Math.random() * height }, d));
+    const newNodes = nodes.map((d) => Object.assign(oldNodes.get(d.id) || { x: Math.random() * width, y: Math.random() * height }, d));
     // edges need to preserve some internal properties
-    const edges = queryGraph.edges.map((d) => ({ ...d }));
+    const newEdges = edges.map((d) => ({ ...d }));
 
     // simulation adds x and y properties to nodes
-    simulation.current.nodes(nodes);
+    simulation.current.nodes(newNodes);
     // simulation converts source and target properties of
     // edges to node objects
-    simulation.current.force('link').links(edges);
+    simulation.current.force('link').links(newEdges);
     simulation.current.alpha(1).restart();
 
-    node.current = node.current.data(nodes, (d) => d.id)
+    node.current = node.current.data(newNodes, (d) => d.id)
       .join(
         (n) => nodeUtils.enter(n, nodeArgs),
         (n) => nodeUtils.update(n, nodeArgs),
@@ -229,7 +229,7 @@ export default function QueryGraph({
 
     // edge ends need the x and y of their attached nodes
     // must come after simulation
-    const edgesWithCurves = queryGraphUtils.addEdgeCurveProperties(edges);
+    const edgesWithCurves = queryGraphUtils.addEdgeCurveProperties(newEdges);
 
     edge.current = edge.current.data(edgesWithCurves, (d) => d.id)
       .join(
@@ -237,7 +237,7 @@ export default function QueryGraph({
         edgeUtils.update,
         edgeUtils.exit,
       );
-  }, [queryGraph]);
+  }, [nodes, edges]);
 
   function updateEdge(edgeId, endpoint, nodeId) {
     queryBuilder.dispatch({ type: 'editEdge', payload: { edgeId, endpoint, nodeId } });
@@ -289,7 +289,7 @@ export default function QueryGraph({
       // clicks were closing any alerts immediately.
       e.stopPropagation();
     });
-  }, [clickState, queryGraph]);
+  }, [clickState, nodes, edges]);
 
   return (
     <svg ref={svgRef} />
