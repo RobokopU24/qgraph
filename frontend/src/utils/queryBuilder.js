@@ -118,17 +118,16 @@ function removeDetachedFromRoot(q_graph, rootNode) {
 }
 
 /**
- * After deleting a node, trim any edges connected to it
+ * Trim any edges connected to the given node
  * @param {object} q_graph - query graph
- * @param {string} deletedNode - deleted node id
- * @param {string} rootNode - root node id
+ * @param {string} nodeId - node id
  * @returns trimDetached query graph
  */
-function removeAttachedEdges(q_graph, deletedNode) {
+function removeAttachedEdges(q_graph, nodeId) {
   const edgeIds = Object.keys(q_graph.edges).map((id) => id);
   edgeIds.forEach((eId) => {
     const currentEdge = q_graph.edges[eId];
-    if (currentEdge.subject === deletedNode || currentEdge.object === deletedNode) {
+    if (currentEdge.subject === nodeId || currentEdge.object === nodeId) {
       delete q_graph.edges[eId];
     }
   });
