@@ -45,7 +45,7 @@ function getNumEdgesPerNode(q_graph) {
  * @param {object} q_graph - valid query graph with nodes and edges
  * @returns {string} the id of the root node in the query graph
  */
-function findRootNode(q_graph) {
+function getRootNode(q_graph) {
   // create nodes object with pinned boolean property
   const nodes = Object.entries(q_graph.nodes).map(([key, node]) => (
     {
@@ -152,11 +152,11 @@ function getConnectedEdges(edges, nodeId) {
  * @param {string} rootNode - graph root node
  * @returns {string} new root node
  */
-function computeRootNode(q_graph, rootNode) {
+function recomputeRootNode(q_graph, rootNode) {
   if (getConnectedEdges(q_graph.edges, rootNode).size > 0) {
     return rootNode;
   }
-  return findRootNode(q_graph);
+  return getRootNode(q_graph);
 }
 
 /**
@@ -190,7 +190,7 @@ export default {
   getConnectedEdges,
   removeDetachedFromRoot,
   removeAttachedEdges,
-  findRootNode,
-  computeRootNode,
+  getRootNode,
+  recomputeRootNode,
   isValidGraph,
 };
