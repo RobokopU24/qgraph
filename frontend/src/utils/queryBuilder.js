@@ -28,12 +28,11 @@ function getNextEdgeID(q_graph) {
  * @returns {obj} an object with keys as node ids and values as number of edges
  */
 function getNumEdgesPerNode(q_graph) {
-  const edgeNums = _.transform(q_graph.edges,
+  return _.transform(q_graph.edges,
     (result, value) => {
       result[value.object] = result[value.object] ? result[value.object] + 1 : 1;
       result[value.subject] = result[value.subject] ? result[value.subject] + 1 : 1;
     });
-  return edgeNums;
 }
 
 /**
@@ -143,10 +142,9 @@ function removeAttachedEdges(q_graph, deletedNode) {
  * @returns Set of edge ids
  */
 function getConnectedEdges(edges, nodeId) {
-  const connectedEdges = new Set(Object.keys(edges).filter((eId) => (
+  return new Set(Object.keys(edges).filter((eId) => (
     edges[eId].subject === nodeId || edges[eId].object === nodeId
   )));
-  return connectedEdges;
 }
 
 /**
