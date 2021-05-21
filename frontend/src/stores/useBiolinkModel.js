@@ -4,14 +4,14 @@ import strings from '~/utils/strings';
 
 const baseClass = 'biolink:BiologicalEntity';
 
-export default function useBiolink() {
-  const [biolink, setBiolink] = useState(null);
+export default function useBiolinkModel() {
+  const [biolinkModel, setBiolinkModel] = useState(null);
   const [concepts, setConcepts] = useState([]);
   const [hierarchies, setHierarchies] = useState({});
   const [predicates, setPredicates] = useState([]);
 
   function getEdgePredicates() {
-    const newPredicates = Object.entries(biolink.slots).map(([identifier, predicate]) => ({
+    const newPredicates = Object.entries(biolinkModel.slots).map(([identifier, predicate]) => ({
       predicate: strings.edgeFromBiolink(identifier),
       domain: strings.nodeFromBiolink(predicate.domain),
       range: strings.nodeFromBiolink(predicate.range),
@@ -88,8 +88,8 @@ export default function useBiolink() {
   }
 
   useEffect(() => {
-    if (biolink) {
-      const biolinkClasses = _.transform(biolink.classes,
+    if (biolinkModel) {
+      const biolinkClasses = _.transform(biolinkModel.classes,
         (result, value, key) => { result[key] = value; });
       const allHierarchies = getAllAncestries(biolinkClasses);
       const allConcepts = getValidConcepts(allHierarchies);
@@ -102,10 +102,10 @@ export default function useBiolink() {
       setConcepts(allConcepts);
       setPredicates(allPredicates);
     }
-  }, [biolink]);
+  }, [biolinkModel]);
 
   return {
-    setBiolink,
+    setBiolinkModel,
     concepts,
     hierarchies,
     predicates,

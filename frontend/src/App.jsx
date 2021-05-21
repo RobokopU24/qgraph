@@ -24,12 +24,12 @@ import UserContext from '~/context/user';
 import AlertContext from '~/context/alert';
 import BiolinkContext from '~/context/biolink';
 
-import useBiolink from '~/stores/useBiolink';
+import useBiolinkModel from '~/stores/useBiolinkModel';
 
 export default function App() {
   const [user, setUser] = useState(null);
   const [alert, setAlert] = useState({});
-  const biolink = useBiolink();
+  const biolink = useBiolinkModel();
 
   function simpleSetAlert(severity, msg) {
     setAlert({ severity, msg });
@@ -43,7 +43,7 @@ export default function App() {
         'Failed to contact server to download biolink model. You will not be able to select general nodes or predicates. Please try again later.');
       return;
     }
-    biolink.setBiolink(response);
+    biolink.setBiolinkModel(response);
   }
   useEffect(() => { fetchBiolink(); }, []);
 
