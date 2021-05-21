@@ -217,7 +217,7 @@ export default function QueryGraph({
     edge.current
       .select('.edgeButtons')
         .attr('transform', (d) => {
-          const { x, y } = graphUtils.getEdgeMiddle(d);
+          const { x, y } = graphUtils.getEdgeMidpoint(d);
           return `translate(${x},${y})`;
         });
   }

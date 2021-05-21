@@ -120,7 +120,7 @@ function ellipsisOverflow() {
  * @param {obj} edge edge object
  * @returns {obj} the x and y of the middle of two points
  */
-function getEdgeMiddle(edge) {
+function getEdgeMidpoint(edge) {
   const { source, target } = edge;
   const midX = (source.x + target.x) / 2;
   const midY = (source.y + target.y) / 2;
@@ -177,7 +177,7 @@ export default {
   getBoundedValue,
 
   ellipsisOverflow,
-  getEdgeMiddle,
+  getEdgeMidpoint,
 
   isInside,
   shouldShowArrow,
