@@ -72,31 +72,19 @@ export default function useBiolink() {
   }
 
   /**
-   * Get all direct descendants of a target class, recursively
+   * Get all descendants of a given class
    * @param {object} classes - all biolink classes
    * @param {*} targetClass - class we want to find the descendants of
    * @returns {[]} list of descendants
    */
-  function getDirectDescendants(classes, targetClass) {
-    let descendants = [];
+  function getDescendants(classes, targetClass) {
+    let descendants = [targetClass];
     Object.keys(classes).forEach((key) => {
       if (classes[key].is_a === targetClass) {
-        descendants.push(key);
-        descendants = descendants.concat(getDirectDescendants(classes, key));
+        descendants = descendants.concat(getDescendants(classes, key));
       }
     });
     return descendants;
-  }
-
-  /**
-   * Get all descendants by getting direct descendants recursively
-   * @param {string} targetClass - biolink class to get all descendants of
-   * @param {object} classes - object of all biolink classes
-   * @returns {[]} list of all descendants
-   */
-  function getAllDescendants(classes, targetClass) {
-    const descendants = [targetClass, ...getDirectDescendants(classes, targetClass)];
-    return descendants.map((h) => strings.nodeFromBiolink(h));
   }
 
   useEffect(() => {
@@ -106,8 +94,10 @@ export default function useBiolink() {
       const allHierarchies = getAllAncestries(biolinkClasses);
       const allConcepts = getValidConcepts(allHierarchies);
       const allPredicates = getEdgePredicates();
-      const namedThingDescendants = getAllDescendants(biolinkClasses, 'named thing');
-      allHierarchies['biolink:NamedThing'] = namedThingDescendants;
+      const namedThingDescendants = getDescendants(biolinkClasses, 'named thing');
+      allHierarchies['biolink:NamedThing'] = namedThingDescendants.map(
+        (descendant) => strings.nodeFromBiolink(descendant),
+      );
       setHierarchies(allHierarchies);
       setConcepts(allConcepts);
       setPredicates(allPredicates);
