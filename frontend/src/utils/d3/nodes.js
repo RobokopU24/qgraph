@@ -14,16 +14,16 @@ const deleteRectOffset = {
   y: -90,
 };
 const deleteTextOffset = {
-  x: -29,
-  y: -77,
+  x: (deleteRectOffset.x + (deleteRectOffset.x + rectSize.w)) / 2,
+  y: (deleteRectOffset.y + (deleteRectOffset.y + rectSize.h)) / 2,
 };
 const editRectOffset = {
   x: 4,
   y: -90,
 };
 const editTextOffset = {
-  x: 29,
-  y: -77,
+  x: (editRectOffset.x + (editRectOffset.x + rectSize.w)) / 2,
+  y: (editRectOffset.y + (editRectOffset.y + rectSize.h)) / 2,
 };
 
 /**
@@ -83,7 +83,7 @@ function enter(node, args) {
       .attr('dy', deleteTextOffset.y)
       .style('pointer-events', 'none')
       .attr('text-anchor', 'middle')
-      .attr('alignment-baseline', 'middle')
+      .attr('dominant-baseline', 'middle')
       .attr('class', (d) => `${d.id} deleteLabel`)
       .style('display', 'none')
       .text('delete'))
@@ -105,7 +105,7 @@ function enter(node, args) {
       .attr('dy', editTextOffset.y)
       .style('pointer-events', 'none')
       .attr('text-anchor', 'middle')
-      .attr('alignment-baseline', 'middle')
+      .attr('dominant-baseline', 'middle')
       .attr('class', (d) => `${d.id} editLabel`)
       .style('display', 'none')
       .text('edit'));
