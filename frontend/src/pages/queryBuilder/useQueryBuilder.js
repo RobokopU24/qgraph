@@ -103,6 +103,7 @@ function reducer(state, action) {
     }
     case 'saveGraph': {
       state.query_graph = queryGraphUtils.standardize(action.payload);
+      state.rootNode = queryBuilderUtils.getRootNode(state.query_graph);
       break;
     }
     default: {
