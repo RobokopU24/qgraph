@@ -54,7 +54,7 @@ function reducer(state, action) {
       } else {
         state.query_graph.edges[edgeId][endpoint] = nodeId;
       }
-      state.rootNode = queryBuilderUtils.recomputeRootNode(state.query_graph);
+      state.rootNode = queryBuilderUtils.getRootNode(state.query_graph, state.rootNode);
       state.query_graph = queryBuilderUtils.removeDetachedFromRoot(state.query_graph, state.rootNode);
       break;
     }
@@ -66,7 +66,7 @@ function reducer(state, action) {
     case 'deleteEdge': {
       const { id } = action.payload;
       delete state.query_graph.edges[id];
-      state.rootNode = queryBuilderUtils.recomputeRootNode(state.query_graph);
+      state.rootNode = queryBuilderUtils.getRootNode(state.query_graph, state.rootNode);
       state.query_graph = queryBuilderUtils.removeDetachedFromRoot(state.query_graph, state.rootNode);
       break;
     }
@@ -97,7 +97,7 @@ function reducer(state, action) {
       const { id } = action.payload;
       delete state.query_graph.nodes[id];
       const trimmedQueryGraph = queryBuilderUtils.removeAttachedEdges(state.query_graph, id);
-      state.rootNode = queryBuilderUtils.recomputeRootNode(trimmedQueryGraph);
+      state.rootNode = queryBuilderUtils.getRootNode(trimmedQueryGraph, state.rootNode);
       state.query_graph = queryBuilderUtils.removeDetachedFromRoot(trimmedQueryGraph, state.rootNode);
       break;
     }

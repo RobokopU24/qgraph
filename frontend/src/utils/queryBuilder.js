@@ -36,7 +36,20 @@ function getNumEdgesPerNode(q_graph) {
 }
 
 /**
- * Parse an incoming query graph and find the "root" node
+ * Get a unique list of all edges connected to specified node
+ * @param {object} edges - query graph edges object
+ * @param {string} nodeId - node id
+ * @returns Set of edge ids
+ */
+function getConnectedEdges(edges, nodeId) {
+  return new Set(Object.keys(edges).filter((eId) => (
+    edges[eId].subject === nodeId || edges[eId].object === nodeId
+  )));
+}
+
+/**
+ * Parse an incoming query graph and either keep the old connected root node or
+ * compute a new one
  *
  * Rules are:
  * 1. sort by unpinned and then pinned nodes
@@ -45,7 +58,10 @@ function getNumEdgesPerNode(q_graph) {
  * @param {object} q_graph - valid query graph with nodes and edges
  * @returns {string} the id of the root node in the query graph
  */
-function getRootNode(q_graph) {
+function getRootNode(q_graph, rootNode) {
+  if (rootNode && getConnectedEdges(q_graph.edges, rootNode).size > 0) {
+    return rootNode;
+  }
   // create nodes object with pinned boolean property
   const nodes = Object.entries(q_graph.nodes).map(([key, node]) => (
     {
@@ -135,31 +151,6 @@ function removeAttachedEdges(q_graph, nodeId) {
 }
 
 /**
- * Get a unique list of all edges connected to specified node
- * @param {object} edges - query graph edges object
- * @param {string} nodeId - node id
- * @returns Set of edge ids
- */
-function getConnectedEdges(edges, nodeId) {
-  return new Set(Object.keys(edges).filter((eId) => (
-    edges[eId].subject === nodeId || edges[eId].object === nodeId
-  )));
-}
-
-/**
- * Keep current attached root node or find the new root
- * @param {object} q_graph - query graph object
- * @param {string} rootNode - graph root node
- * @returns {string} new root node
- */
-function recomputeRootNode(q_graph, rootNode) {
-  if (getConnectedEdges(q_graph.edges, rootNode).size > 0) {
-    return rootNode;
-  }
-  return getRootNode(q_graph);
-}
-
-/**
  * Starting at root node, is this query graph valid? Is there at least one hop in the graph?
  * @param {object} query_graph - query graph object
  * @returns isValid boolean and an error message
@@ -191,6 +182,5 @@ export default {
   removeDetachedFromRoot,
   removeAttachedEdges,
   getRootNode,
-  recomputeRootNode,
   isValidGraph,
 };
