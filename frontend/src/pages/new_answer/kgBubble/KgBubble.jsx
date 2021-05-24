@@ -15,20 +15,22 @@ import './kgBubble.css';
 const nodePadding = 2;
 
 export default function KgBubble({
-  nodes, knowledge_graph, numQgNodes, numResults,
+  nodes, numQgNodes, numResults,
 }) {
   const svgRef = useRef();
   const { colorMap } = useContext(BiolinkContext);
 
   useEffect(() => {
-    const svg = d3.select(svgRef.current);
-    const { width, height } = svg.node().parentNode.getBoundingClientRect();
-    svg
-      .attr('width', width)
-      .attr('height', height)
-      .attr('preserveAspectRatio', 'xMinYMin meet')
-      .attr('viewBox', [0, 0, width, height]);
-  }, []);
+    if (nodes.length) {
+      const svg = d3.select(svgRef.current);
+      const { width, height } = svg.node().parentNode.getBoundingClientRect();
+      svg
+        .attr('width', width)
+        .attr('height', height)
+        .attr('preserveAspectRatio', 'xMinYMin meet')
+        .attr('viewBox', [0, 0, width, height]);
+    }
+  }, [nodes]);
 
   function drawBubbleGraph() {
     const svg = d3.select(svgRef.current);
@@ -82,15 +84,19 @@ export default function KgBubble({
   }
 
   useEffect(() => {
-    if (knowledge_graph) {
+    if (nodes.length) {
       drawBubbleGraph();
     }
-  }, [knowledge_graph]);
+  }, [nodes]);
 
   return (
-    <Paper id="kgBubbleContainer" elevation={3}>
-      <h5 className="cardLabel">Knowledge Graph Bubble</h5>
-      <svg ref={svgRef} />
-    </Paper>
+    <>
+      {nodes.length > 0 && (
+        <Paper id="kgBubbleContainer" elevation={3}>
+          <h5 className="cardLabel">Knowledge Graph Bubble</h5>
+          <svg ref={svgRef} />
+        </Paper>
+      )}
+    </>
   );
 }

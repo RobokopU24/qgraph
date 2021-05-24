@@ -82,7 +82,6 @@ export default function Answer() {
                 {displayState.state.kg.show && (
                   <KgBubble
                     nodes={answerStore.kgNodes}
-                    knowledge_graph={answerStore.message.knowledge_graph}
                     numQgNodes={Object.keys(answerStore.message.query_graph.nodes).length}
                     numResults={answerStore.message.results.length}
                   />
