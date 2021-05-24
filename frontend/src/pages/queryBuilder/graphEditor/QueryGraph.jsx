@@ -30,7 +30,7 @@ export default function QueryGraph({
   const queryBuilder = useContext(QueryBuilderContext);
   const nodeCategoryColorMap = useMemo(() => getNodeCategoryColorMap(concepts), [concepts]);
   const { query_graph } = queryBuilder.state;
-  const { nodes, edges } = useMemo(() => queryGraphUtils.getGraphEditorFormat(query_graph), [queryBuilder.state]);
+  const { nodes, edges } = useMemo(() => queryGraphUtils.getNodeAndEdgeListsForDisplay(query_graph), [queryBuilder.state]);
   const node = useRef({});
   const edge = useRef({});
   const svgRef = useRef();
