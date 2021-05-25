@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useMemo } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 
 import API from '~/API';
@@ -35,12 +35,10 @@ export default function Answer() {
   const user = useContext(UserContext);
   const { displayState, updateDisplayState } = useDisplayState();
 
-  let answer_id;
   // If we are rendering an answer, get answer_id with useRouteMatch
   const match = useRouteMatch('/answer/:answer_id');
-  if (match) {
-    answer_id = match.params.answer_id;
-  }
+
+  const answer_id = useMemo(() => match && match.params.answer_id, [match]);
 
   async function fetchAnswerData() {
     const answerResponse = await API.cache.getAnswerData(answer_id, user && user.id_token);
@@ -91,7 +89,7 @@ export default function Answer() {
     if (answer_id) {
       fetchAnswerData();
     }
-  }, [answer_id]);
+  }, [answer_id, user]);
 
   /**
    * Upload a TRAPI message for viewing
