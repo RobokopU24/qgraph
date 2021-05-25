@@ -1,7 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useEffect, useContext } from 'react';
+import { useRouteMatch } from 'react-router-dom';
 
+import API from '~/API';
 import trapiUtils from '~/utils/trapi';
 import usePageStatus from '~/stores/usePageStatus';
+import UserContext from '~/context/user';
 import AlertContext from '~/context/alert';
 import queryGraphUtils from '~/utils/queryGraph';
 
@@ -29,7 +32,66 @@ export default function Answer() {
   const answerStore = useAnswerStore();
   const pageStatus = usePageStatus(false);
   const displayAlert = useContext(AlertContext);
+  const user = useContext(UserContext);
   const { displayState, updateDisplayState } = useDisplayState();
+
+  let answer_id;
+  // If we are rendering an answer, get answer_id with useRouteMatch
+  const match = useRouteMatch('/answer/:answer_id');
+  if (match) {
+    answer_id = match.params.answer_id;
+  }
+
+  async function fetchAnswerData() {
+    const answerResponse = await API.cache.getAnswerData(answer_id, user && user.id_token);
+
+    if (answerResponse.status === 'error') {
+      pageStatus.setFailure(answerResponse.message);
+      return;
+    }
+
+    let answerResponseJSON;
+    try {
+      answerResponseJSON = JSON.parse(answerResponse);
+    } catch (err) {
+      pageStatus.setFailure('Invalid answer JSON');
+      return;
+    }
+
+    if (answerResponseJSON.status === 'error') {
+      pageStatus.setFailure(
+        `Error during answer processing: ${answerResponseJSON.message}`,
+      );
+      return;
+    }
+
+    const validationErrors = trapiUtils.validateMessage(answerResponseJSON);
+    if (validationErrors.length) {
+      pageStatus.setFailure(
+        `Found errors while parsing message: ${validationErrors.join(', ')}`,
+      );
+      return;
+    }
+
+    try {
+      const standardQueryGraph = queryGraphUtils.standardize(answerResponseJSON.message.query_graph);
+      answerResponseJSON.message.query_graph = standardQueryGraph;
+      try {
+        answerStore.initialize(answerResponseJSON.message);
+        pageStatus.setSuccess();
+      } catch (err) {
+        displayAlert('error', `Failed to initialize message. Please submit an issue: ${err}`);
+      }
+    } catch (err) {
+      displayAlert('error', 'Failed to parse this query graph. Please make sure it is TRAPI compliant.');
+    }
+  }
+
+  useEffect(() => {
+    if (answer_id) {
+      fetchAnswerData();
+    }
+  }, [answer_id]);
 
   /**
    * Upload a TRAPI message for viewing
