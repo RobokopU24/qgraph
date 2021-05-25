@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useMemo } from 'react';
-import { useRouteMatch } from 'react-router-dom';
+import { useRouteMatch, useHistory } from 'react-router-dom';
 
 import API from '~/API';
 import trapiUtils from '~/utils/trapi';
@@ -33,6 +33,7 @@ export default function Answer() {
   const pageStatus = usePageStatus(false);
   const displayAlert = useContext(AlertContext);
   const user = useContext(UserContext);
+  const history = useHistory();
   const { displayState, updateDisplayState } = useDisplayState();
 
   // If we are rendering an answer, get answer_id with useRouteMatch
@@ -88,6 +89,8 @@ export default function Answer() {
   useEffect(() => {
     if (answer_id) {
       fetchAnswerData();
+    } else {
+      answerStore.reset();
     }
   }, [answer_id, user]);
 
@@ -115,6 +118,10 @@ export default function Answer() {
             try {
               answerStore.initialize(msg.message);
               pageStatus.setSuccess();
+              // user uploaded a new answer, reset the url
+              if (match) {
+                history.push('/answer');
+              }
             } catch (err) {
               displayAlert('error', `Failed to initialize message. Please submit an issue: ${err}`);
             }

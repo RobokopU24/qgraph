@@ -39,6 +39,12 @@ export default function useAnswerStore() {
     resetAnswerExplorer();
   }
 
+  function reset() {
+    setMessage({});
+    setKgNodes([]);
+    resetAnswerExplorer();
+  }
+
   /**
    * Get metadata of result when selected in the results table
    * @param {object} row - result object from message that was selected
@@ -112,6 +118,7 @@ export default function useAnswerStore() {
 
   return {
     initialize,
+    reset,
     message,
 
     kgNodes,
