@@ -1,17 +1,21 @@
-import React, { useState } from 'react';
-
+import React, { useState, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 
-import './queryBuilder.css';
-
-// import API from '~/API';
-// import trapiUtils from '~/utils/trapi';
+import API from '~/API';
+import trapiUtils from '~/utils/trapi';
 import QueryBuilderContext from '~/context/queryBuilder';
+import UserContext from '~/context/user';
+import AlertContext from '~/context/alert';
 import queryGraphUtils from '~/utils/queryGraph';
+import { useVisibility } from '~/utils/cache';
+import usePageStatus from '~/stores/usePageStatus';
 import useQueryBuilder from './useQueryBuilder';
 import GraphEditor from './graphEditor/GraphEditor';
 import TextEditor from './textEditor/TextEditor';
 import JsonEditor from './jsonEditor/JsonEditor';
+
+import './queryBuilder.css';
 
 /**
  * Query Builder parent component
@@ -20,7 +24,12 @@ import JsonEditor from './jsonEditor/JsonEditor';
  */
 export default function QueryBuilder() {
   const queryBuilder = useQueryBuilder();
+  const visibility = useVisibility();
+  const pageStatus = usePageStatus(false);
   const [showJson, toggleJson] = useState(false);
+  const displayAlert = useContext(AlertContext);
+  const user = useContext(UserContext);
+  const history = useHistory();
 
   /**
    * Open iframe in new tab and display query graph json
@@ -35,59 +44,168 @@ export default function QueryBuilder() {
   }
 
   /**
-   * Submit this query to an ARA and then navigate to the answer page
+   * Submit this query directly to an ARA and then navigate to the answer page
    */
-  // async function onSubmit() {
-  //   const prunedQueryGraph = queryGraphUtils.prune(queryBuilder.query_graph);
-  //   const response = await API.ara.getAnswer({ message: { query_graph: prunedQueryGraph } });
-  //   if (response.status === 'error') {
-  //     console.log('error', response);
-  //     return;
-  //   }
+  async function onQuickSubmit() {
+    pageStatus.setLoading('Fetching answer, this may take a while');
+    const prunedQueryGraph = queryGraphUtils.prune(queryBuilder.state.query_graph);
+    const response = await API.ara.getAnswer({ message: { query_graph: prunedQueryGraph } });
+    const failedToAnswer = 'Please try asking this question again later.';
+    if (response.status === 'error') {
+      displayAlert('error', `${response.message}. ${failedToAnswer}`);
+      // go back to rendering query builder
+      pageStatus.setSuccess();
+      return;
+    }
 
-  //   const validationErrors = trapiUtils.validateMessage(response);
-  //   if (validationErrors.length) {
-  //     console.log('error', validationErrors.join(', '));
-  //     return;
-  //   }
+    const validationErrors = trapiUtils.validateMessage(response);
+    if (validationErrors.length) {
+      displayAlert('error', `${validationErrors.join(', ')}. ${failedToAnswer}`);
+      // go back to rendering query builder
+      pageStatus.setSuccess();
+      return;
+    }
 
-  //   console.log(response.message);
-  // }
+    // TODO: store response in local storage
+    // different actions will clear it out
+    console.log(response.message);
+    // once message is stored, navigate to answer page to load and display
+    // history.push('/answer');
+  }
+
+  async function fetchAnswer(questionId) {
+    let response = await API.queryDispatcher.getAnswer(questionId, user.id_token);
+    if (response.status === 'error') {
+      return response;
+    }
+    const answerId = response.id;
+
+    response = await API.cache.getQuestion(questionId, user.id_token);
+    if (response.status === 'error') {
+      return response;
+    }
+
+    // Set hasAnswers in metadata to true
+    const questionMeta = response;
+    questionMeta.metadata.hasAnswers = true;
+    response = await API.cache.updateQuestion(questionMeta, user.id_token);
+    if (response.status === 'error') {
+      return response;
+    }
+
+    return { status: 'success', answerId };
+  }
+
+  async function onSubmit() {
+    const defaultQuestion = {
+      parent: '',
+      visibility: visibility.toInt('Private'),
+      metadata: { name: 'New Question' },
+    };
+    let response;
+
+    response = await API.cache.createQuestion(defaultQuestion, user.id_token);
+    if (response.status === 'error') {
+      displayAlert('error', response.message);
+      return;
+    }
+    const questionId = response.id;
+
+    // Strip labels from nodes
+    const prunedQueryGraph = queryGraphUtils.prune(queryBuilder.state.query_graph);
+
+    // Upload question data
+    const questionData = JSON.stringify({ message: { query_graph: prunedQueryGraph } }, null, 2);
+    response = await API.cache.setQuestionData(questionId, questionData, user.id_token);
+    if (response.status === 'error') {
+      displayAlert('error', response.message);
+      return;
+    }
+
+    pageStatus.setLoading('Fetching answer, this may take a while');
+
+    // Start the process of getting an answer and display to user when done
+    response = await fetchAnswer(questionId);
+
+    if (response.status === 'error') {
+      const failedToAnswer = 'Please try asking this question later.';
+      displayAlert('error', `${response.message}. ${failedToAnswer}`);
+      // go back to rendering query builder
+      pageStatus.setSuccess();
+    } else {
+      const alertText = 'Your answer is ready!';
+      const { answerId } = response;
+      // User has navigated away, display a button to go to the answer
+      if (history.location.pathname !== '/question') {
+        displayAlert(
+          response.status,
+          <>
+            <h4>{alertText}</h4>
+            {answerId && (
+              <Button
+                onClick={() => history.push(`/answer/${answerId}`)}
+                variant="contained"
+              >
+                View Answer
+              </Button>
+            )}
+          </>,
+        );
+      } else {
+        displayAlert(response.status, alertText);
+        // Redirect to answer
+        history.push(`/answer/${answerId}`);
+      }
+    }
+  }
 
   return (
     <>
-      <div id="queryEditorContainer">
-        <QueryBuilderContext.Provider value={queryBuilder}>
-          <TextEditor
-            rows={queryBuilder.textEditorRows}
-          />
-          <GraphEditor />
-          <JsonEditor
-            show={showJson}
-            close={() => toggleJson(false)}
-          />
-        </QueryBuilderContext.Provider>
-      </div>
-      <Button
-        onClick={() => toggleJson(true)}
-        variant="contained"
-      >
-        Edit JSON
-      </Button>
-      {/* <Button
-        onClick={onSubmit}
-        variant="contained"
-        style={{ marginLeft: '10px' }}
-      >
-        Submit
-      </Button> */}
-      <Button
-        onClick={newTabJSON}
-        variant="contained"
-        style={{ marginLeft: '10px' }}
-      >
-        View JSON
-      </Button>
+      <pageStatus.Display />
+
+      {pageStatus.displayPage && (
+        <>
+          <div id="queryEditorContainer">
+            <QueryBuilderContext.Provider value={queryBuilder}>
+              <TextEditor
+                rows={queryBuilder.textEditorRows}
+              />
+              <GraphEditor />
+              <JsonEditor
+                show={showJson}
+                close={() => toggleJson(false)}
+              />
+            </QueryBuilderContext.Provider>
+          </div>
+          <Button
+            onClick={() => toggleJson(true)}
+            variant="contained"
+          >
+            Edit JSON
+          </Button>
+          <Button
+            onClick={newTabJSON}
+            variant="contained"
+            style={{ marginLeft: '10px' }}
+          >
+            View JSON
+          </Button>
+          <Button
+            onClick={onSubmit}
+            variant="contained"
+            style={{ marginLeft: '10px' }}
+          >
+            Submit
+          </Button>
+          <Button
+            onClick={onQuickSubmit}
+            variant="contained"
+            style={{ marginLeft: '10px' }}
+          >
+            Quick Submit
+          </Button>
+        </>
+      )}
     </>
   );
 }
