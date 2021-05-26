@@ -1,9 +1,9 @@
 /**
  * A Reasoner API Standard Message
  * @typedef {Object} Message
- * @property {Object} knowledge_graph a graph containing nodes and edges
- * @property {Object} query_graph a graph containing nodes and edges
- * @property {Array} results an array of results
+ * @property {Object} knowledge_graph - a graph containing nodes and edges
+ * @property {Object} query_graph - a graph containing nodes and edges
+ * @property {Array} results - an array of results
  */
 
 /**
@@ -57,6 +57,7 @@ function validateGraph(graph, graphName) {
  * Validate message results
  * Return a list of errors as soon as we find one
  * malformed result
+ * @param {array} results - results array of a message
  */
 function validateResults(results) {
   const errors = [];
@@ -89,6 +90,7 @@ function validateResults(results) {
 /**
  * Simple verification that a message is formatted correctly
  * Returns a list of validation errors.
+ * @param {object} message - TRAPI message
  */
 function validateMessage(message) {
   if (!message || message.constructor !== Object) {

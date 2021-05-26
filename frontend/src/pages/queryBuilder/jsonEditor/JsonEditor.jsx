@@ -19,8 +19,8 @@ import QueryBuilderContext from '~/context/queryBuilder';
 
 /**
  * Query Builder json editor interface
- * @param {bool} show whether to show the json editor or not
- * @param {func} close close the json editor
+ * @param {bool} show - whether to show the json editor or not
+ * @param {func} close - close the json editor
  */
 export default function JsonEditor({ show, close }) {
   const queryBuilder = useContext(QueryBuilderContext);

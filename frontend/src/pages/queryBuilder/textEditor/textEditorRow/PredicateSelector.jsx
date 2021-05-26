@@ -9,7 +9,7 @@ import highlighter from '~/utils/d3/highlighter';
 
 /**
  * Get a list of categories
- * @param {array|undefined} categories array of node categories
+ * @param {array|undefined} categories - array of node categories
  * @returns list of categories or biolink:NamedThing
  */
 function getCategories(categories) {

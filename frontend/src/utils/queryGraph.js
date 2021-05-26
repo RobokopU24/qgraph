@@ -14,7 +14,7 @@ function getEmptyGraph() {
 /**
  * Convert a list of objects with an "id" property
  * to a dictionary
- * @param {array} list a list of node or edge objects that each have an ID property
+ * @param {array} list - a list of node or edge objects that each have an ID property
  */
 function listWithIdsToDict(list) {
   const ret = {};
@@ -30,7 +30,7 @@ function listWithIdsToDict(list) {
 /**
  * Convert a dictionary of key-value pairs to a list of objects
  * with an internal "id" property
- * @param {object} dict dictionary with keys and values
+ * @param {object} dict - dictionary with keys and values
  */
 function dictToListWithIds(dict) {
   return Object.entries(dict).map(
@@ -40,8 +40,8 @@ function dictToListWithIds(dict) {
 
 /**
  * Convert property that could be a string to an array if not given as array
- * @param {object} obj object to modify
- * @param {string} property property to modify
+ * @param {object} obj - object to modify
+ * @param {string} property - property to modify
  */
 function standardizeArrayProperty(obj, property) {
   if (obj[property] && !_.isArray(obj[property])) {
@@ -51,7 +51,7 @@ function standardizeArrayProperty(obj, property) {
 
 /**
  * Make the input an array
- * @param {(string|array)} value input to make into array
+ * @param {(string|array)} value - input to make into array
  * @throws {TypeError}
  * @returns {(array|null)} array of the value or null
  */
@@ -75,8 +75,8 @@ const standardizeCategory = (o) => standardizeArrayProperty(o, 'category');
 
 /**
  * Remove empty arrays
- * @param {object} obj object to prune
- * @param {string} property property of object to prune
+ * @param {object} obj - object to prune
+ * @param {string} property - property of object to prune
 */
 function pruneEmptyArray(obj, property) {
   if (obj[property] && _.isArray(obj[property]) &&
@@ -92,7 +92,7 @@ function pruneEmptyArray(obj, property) {
 const convert = {
   /**
    * Convert an old Reasoner standard query graph to a newer internal representation
-   * @param {object} q a query graph containing lists of nodes and edges
+   * @param {object} q - a query graph containing lists of nodes and edges
    * @returns {object} a query graph containing objects of nodes and edges
    */
   reasonerToInternal(q) {
@@ -108,7 +108,7 @@ const convert = {
   },
   /**
    * Convert a newer internal representation to the older Reasoner standard query graph
-   * @param {object} q a query graph containing objects of nodes and edges
+   * @param {object} q - a query graph containing objects of nodes and edges
    * @returns {object} a query graph containing a list of nodes and edges
    */
   internalToReasoner(q) {
@@ -224,7 +224,7 @@ function addEdgeCurveProperties(edges) {
 
 /**
  * Convert nodes and edges objects to lists for d3
- * @param {obj} q_graph
+ * @param {obj} q_graph - query graph object
  * @returns {obj} query graph with node and edge lists
  */
 function getGraphEditorFormat(q_graph) {
@@ -262,7 +262,7 @@ function getGraphEditorFormat(q_graph) {
 
 /**
  * Remove any empty node categories or ids or edge predicates
- * @param {obj} q_graph query graph
+ * @param {obj} q_graph - query graph
  * @returns query graph
  */
 function prune(q_graph) {

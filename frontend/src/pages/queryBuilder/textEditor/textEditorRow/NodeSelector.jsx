@@ -117,7 +117,7 @@ export default function NodeSelector({
 
   /**
    * Create a human-readable label for every option
-   * @param {object} opt autocomplete option
+   * @param {object} opt - autocomplete option
    * @returns {string} Label to display
    */
   function getOptionLabel(opt) {
@@ -142,8 +142,8 @@ export default function NodeSelector({
 
   /**
    * Update query graph based on option selected
-   * @param {*} e click event
-   * @param {object|null} v value of selected option
+   * @param {*} e - click event
+   * @param {object|null} v - value of selected option
    */
   function handleUpdate(e, v) {
     // reset search term back when user selects something
