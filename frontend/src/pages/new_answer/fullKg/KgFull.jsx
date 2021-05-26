@@ -7,7 +7,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Box from '@material-ui/core/Box';
 
 import BiolinkContext from '~/context/biolink';
-import kgUtils from '../utils/kg';
+import kgUtils from '~/utils/knowledgeGraph';
 // import hierarchyUtils from './utils/hierarchy';
 
 import Worker from './simulation.worker';
@@ -97,6 +97,7 @@ export default function KgFull({ message }) {
       };
     }
   }, [message]);
+
   return (
     <>
       <div id="kgFullContainer" style={{ height, width, display: 'inline-block' }}>

@@ -6,7 +6,7 @@ import * as d3 from 'd3';
 import Paper from '@material-ui/core/Paper';
 
 import BiolinkContext from '~/context/biolink';
-import kgUtils from '../utils/kg';
+import kgUtils from '~/utils/knowledgeGraph';
 import dragUtils from '~/utils/d3/drag';
 import graphUtils from '~/utils/d3/graph';
 

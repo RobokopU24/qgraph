@@ -12,7 +12,7 @@ import queryBuilderUtils from '~/utils/queryBuilder';
  * 3. Pick first node in insertion order
  * @returns {string} the starting node id
  */
-function findStartingNode(query_graph) {
+export function findStartingNode(query_graph) {
   const nodes = Object.entries(query_graph.nodes).map(([key, node]) => (
     {
       key,
@@ -67,7 +67,7 @@ function findConnectedNodes(edges, nodeList) {
  * @param {string} startingNode - node id
  * @returns {string[]} topologically sorted nodes
  */
-function sortNodes(query_graph, startingNode) {
+export function sortNodes(query_graph, startingNode) {
   const sortedNodes = [startingNode];
   findConnectedNodes(query_graph.edges, sortedNodes);
   // TODO: handle detached sub-graphs, right now those nodes will be tacked on the end in insertion order

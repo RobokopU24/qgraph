@@ -1,8 +1,8 @@
 import { useState, useMemo, useContext } from 'react';
 
 import BiolinkContext from '~/context/biolink';
-import kgUtils from './utils/kg';
-import resultsUtils from './utils/results';
+import kgUtils from '~/utils/knowledgeGraph';
+import resultsUtils from '~/utils/results';
 import stringUtils from '~/utils/strings';
 
 export default function useAnswerStore() {
