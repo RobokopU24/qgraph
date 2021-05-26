@@ -19,7 +19,6 @@ import QueryBuilderContext from '~/context/queryBuilder';
 
 /**
  * Query Builder json editor interface
- * @param {obj} queryBuilder query builder custom hook
  * @param {bool} show whether to show the json editor or not
  * @param {func} close close the json editor
  */

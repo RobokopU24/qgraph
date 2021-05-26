@@ -64,7 +64,6 @@ function reducer(state, action) {
 
 /**
  * Query Builder graph editor interface
- * @param {obj} queryBuilder query builder custom hook
  */
 export default function GraphEditor() {
   const queryBuilder = useContext(QueryBuilderContext);
