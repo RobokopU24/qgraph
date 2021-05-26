@@ -41,7 +41,10 @@ function validateGraph(graph, graphName) {
     errors.push(`${graphName} edges should be an object`);
   } else {
     // each edge should have a valid source and target id
-    const edgesHaveIds = Object.keys(graph.edges).reduce((val, e) => val && graph.edges[e] && graph.edges[e].subject && graph.edges[e].object, true);
+    const edgesHaveIds = Object.keys(graph.edges).reduce((val, e) => {
+      const edge = graph.edges[e];
+      return val && edge && edge.subject && edge.object && graph.nodes[edge.subject] && graph.nodes[edge.object];
+    }, true);
     if (!edgesHaveIds) {
       errors.push(`Each ${graphName.toLowerCase()} edge must have a valid "subject" and "object" property`);
     }
