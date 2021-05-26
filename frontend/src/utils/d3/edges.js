@@ -15,16 +15,16 @@ const deleteRectOffset = {
   y: -50,
 };
 const deleteTextOffset = {
-  x: -29,
-  y: -37,
+  x: (deleteRectOffset.x + (deleteRectOffset.x + rectSize.w)) / 2,
+  y: (deleteRectOffset.y + (deleteRectOffset.y + rectSize.h)) / 2,
 };
 const editRectOffset = {
   x: 4,
   y: -50,
 };
 const editTextOffset = {
-  x: 29,
-  y: -37,
+  x: (editRectOffset.x + (editRectOffset.x + rectSize.w)) / 2,
+  y: (editRectOffset.y + (editRectOffset.y + rectSize.h)) / 2,
 };
 
 /**
@@ -106,7 +106,7 @@ function enter(edge) {
         .attr('dy', deleteTextOffset.y)
         .style('pointer-events', 'none')
         .attr('text-anchor', 'middle')
-        .attr('alignment-baseline', 'middle')
+        .attr('dominant-baseline', 'middle')
         .attr('class', (d) => `${d.id} deleteLabel`)
         .style('display', 'none')
         .text('delete'))
@@ -126,7 +126,7 @@ function enter(edge) {
         .attr('dy', editTextOffset.y)
         .style('pointer-events', 'none')
         .attr('text-anchor', 'middle')
-        .attr('alignment-baseline', 'middle')
+        .attr('dominant-baseline', 'middle')
         .attr('class', (d) => `${d.id} editLabel`)
         .style('display', 'none')
         .text('edit')));
