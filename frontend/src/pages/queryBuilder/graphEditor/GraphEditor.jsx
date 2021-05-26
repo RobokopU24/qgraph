@@ -17,7 +17,7 @@ import './graphEditor.css';
 const width = 600;
 const height = 400;
 
-function reducer(state, action) {
+function clickReducer(state, action) {
   switch (action.type) {
     case 'startConnection': {
       const { anchor } = action.payload;
@@ -69,7 +69,7 @@ export default function GraphEditor() {
   const queryBuilder = useContext(QueryBuilderContext);
   const { query_graph } = queryBuilder.state;
 
-  const [state, dispatch] = useReducer(reducer, {
+  const [clickState, clickDispatch] = useReducer(clickReducer, {
     creatingConnection: false,
     chosenTerms: [],
     clickedId: '',
@@ -79,7 +79,7 @@ export default function GraphEditor() {
   });
 
   function addEdge() {
-    queryBuilder.dispatch({ type: 'addEdge', payload: state.chosenTerms });
+    queryBuilder.dispatch({ type: 'addEdge', payload: clickState.chosenTerms });
   }
 
   function addHop() {
@@ -107,13 +107,13 @@ export default function GraphEditor() {
    * and reset click state
    */
   useEffect(() => {
-    if (state.creatingConnection && state.chosenTerms.length >= 2) {
+    if (clickState.creatingConnection && clickState.chosenTerms.length >= 2) {
       addEdge();
-      dispatch({ type: 'connectionMade' });
+      clickDispatch({ type: 'connectionMade' });
       // remove border from connected nodes
       nodeUtils.removeBorder();
     }
-  }, [state]);
+  }, [clickState]);
 
   return (
     <div id="queryGraphEditor">
@@ -121,8 +121,8 @@ export default function GraphEditor() {
         <QueryGraph
           height={height}
           width={width}
-          clickState={state}
-          updateClickState={dispatch}
+          clickState={clickState}
+          updateClickState={clickDispatch}
         />
         <div id="graphBottomButtons">
           <Button
@@ -135,10 +135,10 @@ export default function GraphEditor() {
           </Button>
           <Button
             onClick={(e) => {
-              dispatch({ type: 'startConnection', payload: { anchor: e.currentTarget } });
+              clickDispatch({ type: 'startConnection', payload: { anchor: e.currentTarget } });
               // auto close after 5 seconds
               setTimeout(() => {
-                dispatch({ type: 'closeEditor' });
+                clickDispatch({ type: 'closeEditor' });
               }, 5000);
             }}
           >
@@ -146,9 +146,9 @@ export default function GraphEditor() {
           </Button>
         </div>
         <Popover
-          open={Boolean(state.popoverAnchor)}
-          anchorEl={state.popoverAnchor}
-          onClose={() => dispatch({ type: 'closeEditor' })}
+          open={Boolean(clickState.popoverAnchor)}
+          anchorEl={clickState.popoverAnchor}
+          onClose={() => clickDispatch({ type: 'closeEditor' })}
           anchorOrigin={{
             vertical: 'top',
             horizontal: 'left',
@@ -158,10 +158,10 @@ export default function GraphEditor() {
             horizontal: 'left',
           }}
         >
-          {(state.popoverType === 'editNode' || state.popoverType === 'newNode') && (
+          {(clickState.popoverType === 'editNode' || clickState.popoverType === 'newNode') && (
             <NodeSelector
-              properties={query_graph.nodes[state.popoverId]}
-              id={state.popoverId}
+              properties={query_graph.nodes[clickState.popoverId]}
+              id={clickState.popoverId}
               update={editNode}
               isReference={false}
               options={{
@@ -169,12 +169,12 @@ export default function GraphEditor() {
               }}
             />
           )}
-          {state.popoverType === 'editEdge' && (
+          {clickState.popoverType === 'editEdge' && (
             <PredicateSelector
-              id={state.popoverId}
+              id={clickState.popoverId}
             />
           )}
-          {state.popoverType === 'newEdge' && (
+          {clickState.popoverType === 'newEdge' && (
             <Paper style={{ padding: '10px' }}>
               <p>Select two terms to connect!</p>
             </Paper>
