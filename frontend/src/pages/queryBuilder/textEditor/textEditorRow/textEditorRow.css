@@ -1,0 +1,7 @@
+.textEditorSelector {
+    margin: 0px 10px;
+    min-width: 200px;
+}
+.referenceNode > .nodeDropdown {
+    background-color: #f2f2f2;
+}

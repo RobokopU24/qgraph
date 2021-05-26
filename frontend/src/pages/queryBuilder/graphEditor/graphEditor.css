@@ -1,0 +1,10 @@
+#graphContainer {
+    border: 1px solid black;
+    position: relative;
+    border-radius: 5px;
+}
+#graphBottomButtons {
+    border-top: 1px solid grey;
+    display: flex;
+    height: 43px;
+}

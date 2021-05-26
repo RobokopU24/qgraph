@@ -8,8 +8,8 @@ import SubGraphViewer from '~/components/shared/graphs/SubGraphViewer';
 
 import curieUrls from '~/utils/curieUrls';
 import ctdUrls from '~/utils/ctdUrls';
-import getNodeCategoryColorMap from '~/utils/colorUtils';
-import strings from '~/utils/stringUtils';
+import getNodeCategoryColorMap from '~/utils/colors';
+import strings from '~/utils/strings';
 
 import PubmedList from './PubmedList';
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { Row, Col, Panel } from 'react-bootstrap';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
-import strings from '~/utils/stringUtils';
+import strings from '~/utils/strings';
 
 import QuestionGraphView from './QuestionGraphView';
 

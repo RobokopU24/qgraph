@@ -5,8 +5,8 @@ import _ from 'lodash';
 import shortid from 'shortid';
 
 import BiolinkContext from '~/context/biolink';
-import getNodeCategoryColorMap from '~/utils/colorUtils';
-import strings from '~/utils/stringUtils';
+import getNodeCategoryColorMap from '~/utils/colors';
+import strings from '~/utils/strings';
 
 const Graph = require('react-graph-vis').default;
 

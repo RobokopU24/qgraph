@@ -1,14 +1,20 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import {
   Grid, Jumbotron, ButtonToolbar, Button, ListGroup,
   ListGroupItem, Glyphicon, Col, Row,
 } from 'react-bootstrap';
 
-import UserContext from '~/context/user';
 import './simplecss.css';
 
-function CustomComponent({
+/**
+ * Landing Page Options Button
+ * @param {string} glyph bootstrap glyph type
+ * @param {string} header Title of the option
+ * @param {string} text Short description of the option
+ * @param {string} href option url
+ */
+function OptionButton({
   glyph, header, text, href,
 }) {
   return (
@@ -40,7 +46,6 @@ function CustomComponent({
  * Home page
  */
 export default function Landing() {
-  const user = useContext(UserContext);
   return (
     <Grid>
       <Jumbotron>
@@ -68,52 +73,25 @@ export default function Landing() {
               Browse Questions
             </Button>
           </Link>
-          {user ? (
-            <Link to="/q/new">
-              <Button
-                bsSize="large"
-              >
-                Ask a Question
-              </Button>
-            </Link>
-          ) : (
-            <Link to="/simple/question">
-              <Button
-                bsSize="large"
-              >
-                Ask a Quick Question
-              </Button>
-            </Link>
-          )}
         </ButtonToolbar>
       </Jumbotron>
       <Jumbotron id="landingOptions">
         <h2>Robokop Apps</h2>
         <ListGroup>
           <Row>
-            <CustomComponent
-              glyph="question-sign"
-              header="Quick Question"
-              text="Ask a question and get an answerset back. This question will not be stored and you don&apos;t have to be signed in."
-              href="/simple/question"
+            <OptionButton
+              glyph="screenshot"
+              header="Question Builder"
+              text="Build a new question."
+              href="/question"
             />
-            <CustomComponent
+            <OptionButton
               glyph="import"
               header="Answerset Explorer"
               text="Easily upload JSON files of answersets to view them in Robokop&apos;s graphical interface."
               href="/simple/view"
             />
           </Row>
-          {/*
-          <Row>
-            <CustomComponent
-              glyph="screenshot"
-              header="Neighborhood"
-              text="Explore many sources and one-hop neighbors from specified node."
-              href="/neighborhood"
-            />
-          </Row>
-          */}
         </ListGroup>
       </Jumbotron>
     </Grid>

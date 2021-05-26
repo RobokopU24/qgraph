@@ -1,0 +1,56 @@
+#queryEditorContainer {
+    display: flex;
+}
+#queryTextEditor {
+    width: 60%;
+    padding: 20px;
+}
+#queryTextEditor > * {
+    padding: 12px;
+}
+#queryGraphEditor {
+    width: 40%;
+    padding: 20px;
+}
+.textEditorRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.textEditorRow > p {
+    margin: 0;
+    font-size: 16px;
+}
+.textEditorIconButton > span > svg {
+    font-size: 40px;
+    color: #b2b0b0;
+}
+.textEditorIconButton:disabled > span > svg {
+    color: #e0e0e0;
+}
+
+#jsonEditorTitle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+}
+#uploadIconLabel {
+    margin-bottom: 0;
+}
+
+@media (max-width: 1450px) {
+    #queryEditorContainer {
+        flex-direction: column;
+        align-items: center;
+    }
+    #queryGraphEditor {
+        width: 100%;
+    }
+    #graphContainer {
+        margin: auto;
+    }
+    #queryTextEditor {
+        width: 100%;
+    }
+}

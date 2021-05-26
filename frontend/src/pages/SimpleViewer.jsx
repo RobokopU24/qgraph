@@ -9,8 +9,8 @@ import API from '~/API';
 import { useVisibility } from '~/utils/cache';
 import AlertContext from '~/context/alert';
 import UserContext from '~/context/user';
-import usePageStatus from '~/utils/usePageStatus';
-import trapiUtils from '~/utils/trapiUtils';
+import usePageStatus from '~/stores/usePageStatus';
+import trapiUtils from '~/utils/trapi';
 
 import AnswersetView from '~/components/shared/answersetView/AnswersetView';
 
