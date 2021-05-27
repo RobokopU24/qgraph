@@ -8,7 +8,7 @@ import Help from '~/pages/Help';
 import Guide from '~/pages/Guide';
 import TermsofService from '~/pages/TermsofService';
 import QueryBuilder from '~/pages/queryBuilder/QueryBuilder';
-import NewAnswer from '~/pages/new_answer/Answer';
+import Answer from '~/pages/answer/Answer';
 
 import QuestionList from '~/pages/questionList/QuestionList';
 import QuestionAnswerViewer from '~/pages/questionAnswerViewer/QuestionAnswerViewer';
@@ -84,7 +84,7 @@ export default function App() {
                         <QueryBuilder />
                       </Route>
                       <Route path="/answer">
-                        <NewAnswer />
+                        <Answer />
                       </Route>
                       <Route path="/">
                         <Landing />
