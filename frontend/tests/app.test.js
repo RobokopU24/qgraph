@@ -6,7 +6,7 @@ import {
 import App from '../src/App';
 
 // needed for web worker import
-jest.mock('~/pages/new_answer/fullKg/simulation.worker.js');
+jest.mock('~/pages/answer/fullKg/simulation.worker.js');
 
 describe('<App />', () => {
   it('loads page and shows welcome', async () => {
