@@ -29,7 +29,7 @@ export default function Answer() {
   const answerStore = useAnswerStore();
   const pageStatus = usePageStatus(false);
   const displayAlert = useContext(AlertContext);
-  const displayState = useDisplayState();
+  const { displayState, updateDisplayState } = useDisplayState();
 
   /**
    * Upload a TRAPI message for viewing
@@ -79,6 +79,7 @@ export default function Answer() {
     <>
       <LeftDrawer
         displayState={displayState}
+        updateDisplayState={updateDisplayState}
         onUpload={onUpload}
       />
       <div id="answerContentContainer">
@@ -87,26 +88,26 @@ export default function Answer() {
           <>
             {Object.keys(answerStore.message).length ? (
               <>
-                {displayState.state.qg.show && (
+                {displayState.qg.show && (
                   <QueryGraph
                     query_graph={answerStore.message.query_graph}
                   />
                 )}
-                {displayState.state.kg.show && (
+                {displayState.kg.show && (
                   <KgBubble
                     nodes={answerStore.kgNodes}
                     numQgNodes={Object.keys(answerStore.message.query_graph.nodes).length}
                     numResults={answerStore.message.results.length}
                   />
                 )}
-                {displayState.state.kgFull.show && (
+                {displayState.kgFull.show && (
                   <KgFull
                     message={answerStore.message}
                   />
                 )}
-                {displayState.state.results.show && (
+                {displayState.results.show && (
                   <ResultsTable
-                    store={answerStore}
+                    answerStore={answerStore}
                   />
                 )}
               </>

@@ -23,7 +23,7 @@ export default function useDisplayState() {
   });
 
   return {
-    state,
-    dispatch,
+    displayState: state,
+    updateDisplayState: dispatch,
   };
 }

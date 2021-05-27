@@ -12,9 +12,9 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
 import './leftDrawer.css';
 
-export default function LeftDrawer({ onUpload, displayState }) {
+export default function LeftDrawer({ onUpload, displayState, updateDisplayState }) {
   function toggleDisplay(component, show) {
-    displayState.dispatch({ type: 'toggle', payload: { component, show } });
+    updateDisplayState({ type: 'toggle', payload: { component, show } });
   }
 
   return (
@@ -28,7 +28,7 @@ export default function LeftDrawer({ onUpload, displayState }) {
     >
       <Toolbar />
       <List>
-        {Object.entries(displayState.state).map(([key, val]) => (
+        {Object.entries(displayState).map(([key, val]) => (
           <ListItem
             key={key}
             button
