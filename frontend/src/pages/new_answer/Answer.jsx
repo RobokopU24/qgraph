@@ -16,12 +16,25 @@ import ResultsTable from './resultsTable/ResultsTable';
 
 import './answer.css';
 
+/**
+ * Main Answer Page component
+ *
+ * Displays
+ * - query graph
+ * - knowledge graph bubble chart
+ * - full knowledge graph
+ * - results table
+ */
 export default function Answer() {
   const answerStore = useAnswerStore();
   const pageStatus = usePageStatus(false);
   const displayAlert = useContext(AlertContext);
   const displayState = useDisplayState();
 
+  /**
+   * Upload a TRAPI message for viewing
+   * @param {*} event - html file input event
+   */
   function onUpload(event) {
     const { files } = event.target;
     files.forEach((file) => {

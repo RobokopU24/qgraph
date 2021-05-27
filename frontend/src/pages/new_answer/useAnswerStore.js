@@ -5,6 +5,11 @@ import kgUtils from '~/utils/knowledgeGraph';
 import resultsUtils from '~/utils/results';
 import stringUtils from '~/utils/strings';
 
+/**
+ * Main answer page store
+ *
+ * Stores current TRAPI message
+ */
 export default function useAnswerStore() {
   const [message, setMessage] = useState({});
   const [kgNodes, setKgNodes] = useState([]);
@@ -21,12 +26,24 @@ export default function useAnswerStore() {
     setSelectedRowId('');
   }
 
+  /**
+   * Initialize the answer store with a message
+   *
+   * Stores the message, makes the nodes for a bubble chart,
+   * and resets any results table info
+   * @param {object} msg - TRAPI message
+   */
   function initialize(msg) {
     setMessage(msg);
     setKgNodes(kgUtils.makeDisplayNodes(msg, hierarchies));
     resetAnswerExplorer();
   }
 
+  /**
+   * Get metadata of result when selected in the results table
+   * @param {object} row - result object from message that was selected
+   * @param {string} rowId - the internal row id
+   */
   function selectRow(row, rowId) {
     if (rowId === selectedRowId) {
       resetAnswerExplorer();
@@ -81,6 +98,9 @@ export default function useAnswerStore() {
     }
   }
 
+  /**
+   * Compute table header list when message changes
+   */
   const tableHeaders = useMemo(() => {
     if (message.query_graph) {
       return resultsUtils.makeTableHeaders(message, colorMap);
