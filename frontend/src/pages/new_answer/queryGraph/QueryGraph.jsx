@@ -15,10 +15,17 @@ import './queryGraph.css';
 
 const nodeRadius = 40;
 
+/**
+ * Query Graph Display
+ * @param {object} query_graph - query graph object
+ */
 export default function QueryGraph({ query_graph }) {
   const svgRef = useRef();
   const { colorMap } = useContext(BiolinkContext);
 
+  /**
+   * Initialize the svg size
+   */
   useEffect(() => {
     const svg = d3.select(svgRef.current);
     const { width, height } = svg.node().parentNode.getBoundingClientRect();
@@ -33,7 +40,7 @@ export default function QueryGraph({ query_graph }) {
     let { nodes, edges } = queryGraphUtils.getNodeAndEdgeListsForDisplay(query_graph);
     const svg = d3.select(svgRef.current);
     const { width, height } = svg.node().parentNode.getBoundingClientRect();
-    // clear the graph
+    // clear the graph for redraw
     svg.selectAll('*').remove();
     const defs = svg.append('defs');
     defs.append('marker')

@@ -14,6 +14,10 @@ import ResultExplorer from './ResultExplorer';
 
 import './resultsTable.css';
 
+/**
+ * Paginated results table
+ * @param {object} answerStore - answer store hook
+ */
 export default function ResultsTable({ answerStore }) {
   const columns = useMemo(() => answerStore.tableHeaders, [answerStore.tableHeaders]);
   const data = useMemo(() => answerStore.message.results, [answerStore.message]);
@@ -28,7 +32,6 @@ export default function ResultsTable({ answerStore }) {
   } = useTable(
     {
       columns,
-      // defaultColumn,
       data,
       initialState: {
         pageIndex: 0,

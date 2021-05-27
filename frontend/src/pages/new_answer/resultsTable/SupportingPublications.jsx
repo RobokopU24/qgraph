@@ -21,10 +21,15 @@ function reducer(state, action) {
   return { ...state };
 }
 
+/**
+ * Show expandable supporting publications for all edges of a selected result
+ * @param {object} metaData - selected result edge metadata
+ */
 export default function SupportingPublications({ metaData }) {
   const [open, dispatch] = useReducer(reducer, {});
 
   useEffect(() => {
+    // Whenever the user selects a new row, close all expanded rows
     dispatch({ type: 'clear' });
   }, [metaData]);
 

@@ -8,7 +8,6 @@ import Box from '@material-ui/core/Box';
 
 import BiolinkContext from '~/context/biolink';
 import kgUtils from '~/utils/knowledgeGraph';
-// import hierarchyUtils from './utils/hierarchy';
 
 import Worker from './simulation.worker';
 
@@ -19,6 +18,10 @@ const width = 400;
 // const maxNodes = 40;
 // const maxEdges = 100;
 
+/**
+ * Full Knowledge Graph display
+ * @param {object} message - TRAPI message
+ */
 export default function KgFull({ message }) {
   const canvasRef = useRef();
   const [loading, toggleLoading] = useState(false);
@@ -69,7 +72,6 @@ export default function KgFull({ message }) {
       .attr('height', 0);
     if (Object.keys(message).length) {
       const simulationWorker = new Worker();
-      // hierarchyUtils.getQGNodeHierarchy(message);
       const kgLists = kgUtils.getFullDisplay(message);
       toggleLoading(true);
       simulationWorker.postMessage(kgLists);

@@ -14,12 +14,21 @@ import './kgBubble.css';
 
 const nodePadding = 2;
 
+/**
+ * Knowledge Graph Bubble Graph
+ * @param {array} nodes - list of node objects
+ * @param {integer} numQgNodes - number of nodes in query graph
+ * @param {integer} numResults - number of results in message
+ */
 export default function KgBubble({
   nodes, numQgNodes, numResults,
 }) {
   const svgRef = useRef();
   const { colorMap } = useContext(BiolinkContext);
 
+  /**
+   * Initialize the svg size
+   */
   useEffect(() => {
     if (nodes.length) {
       const svg = d3.select(svgRef.current);

@@ -14,6 +14,10 @@ import SupportingPublications from './SupportingPublications';
 
 const nodeRadius = 40;
 
+/**
+ * Selected result graph
+ * @param {object} answerStore - answer store hook
+ */
 export default function ResultExplorer({ answerStore }) {
   const svgRef = useRef();
   const svg = useRef();
@@ -122,7 +126,6 @@ export default function ResultExplorer({ answerStore }) {
     // set the simulation gravity middle
     simulation.current
       .force('center', d3.forceCenter(width.current / 2, height.current / 2).strength(0.5))
-      // .force('forceX', d3.forceX(width.current / 2).strength(0.02))
       .force('forceY', d3.forceY(height.current / 2).strength(0.2));
 
     // keep positions of kept nodes
@@ -200,7 +203,7 @@ export default function ResultExplorer({ answerStore }) {
           .remove(),
       );
 
-    simulation.current.alpha(0.1).restart();
+    simulation.current.alpha(1).restart();
   }
 
   /**

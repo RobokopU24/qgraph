@@ -1,3 +1,4 @@
+/** Web Worker to run d3 force simulation and return placed nodes and edges */
 import * as d3 from 'd3';
 
 onmessage = (e) => {

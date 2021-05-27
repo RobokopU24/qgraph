@@ -64,6 +64,7 @@ export default function useAnswerStore() {
           }
           edges.push(graphEdge);
 
+          // EDAM:data_0971 is the publications type
           const publicationsAttribute = kgEdge.attributes && Array.isArray(kgEdge.attributes) && kgEdge.attributes.find((att) => att.name === 'publications' || att.type === 'EDAM:data_0971');
           let publications = [];
           if (publicationsAttribute) {

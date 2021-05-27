@@ -12,6 +12,12 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
 import './leftDrawer.css';
 
+/**
+ * Main Drawer component on answer page
+ * @param {function} onUpload - function to call when user uploads their own message
+ * @param {object} displayState - state of card components
+ * @param {function} updateDisplayState - dispatch function for changing which cards are shown
+ */
 export default function LeftDrawer({ onUpload, displayState, updateDisplayState }) {
   function toggleDisplay(component, show) {
     updateDisplayState({ type: 'toggle', payload: { component, show } });
