@@ -36,11 +36,10 @@ export default function SupportingPublications({ metaData }) {
       <h4>Supporting Publications</h4>
       <List>
         {Object.entries(metaData).map(([edgeDescription, publications]) => (
-          <>
+          <React.Fragment key={shortid.generate()}>
             {publications.length > 0 && (
               <>
                 <ListItem
-                  key={shortid.generate()}
                   button
                   onClick={() => dispatch({ type: 'toggle', key: edgeDescription })}
                 >
@@ -68,7 +67,7 @@ export default function SupportingPublications({ metaData }) {
                 </Collapse>
               </>
             )}
-          </>
+          </React.Fragment>
         ))}
       </List>
     </Paper>
