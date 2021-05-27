@@ -14,9 +14,9 @@ import ResultExplorer from './ResultExplorer';
 
 import './resultsTable.css';
 
-export default function ResultsTable({ store }) {
-  const columns = useMemo(() => store.tableHeaders, [store.tableHeaders]);
-  const data = useMemo(() => store.message.results, [store.message]);
+export default function ResultsTable({ answerStore }) {
+  const columns = useMemo(() => answerStore.tableHeaders, [answerStore.tableHeaders]);
+  const data = useMemo(() => answerStore.message.results, [answerStore.message]);
   const {
     getTableProps, getTableBodyProps,
     headerGroups,
@@ -73,8 +73,8 @@ export default function ResultsTable({ store }) {
                       <TableRow
                         {...row.getRowProps()}
                         hover
-                        selected={store.selectedRowId === row.id}
-                        onClick={() => store.selectRow(row.original, row.id)}
+                        selected={answerStore.selectedRowId === row.id}
+                        onClick={() => answerStore.selectRow(row.original, row.id)}
                         role="button"
                       >
                         {row.cells.map((cell) => (
@@ -107,7 +107,7 @@ export default function ResultsTable({ store }) {
             />
           </Paper>
           <ResultExplorer
-            store={store}
+            answerStore={answerStore}
           />
         </div>
       )}

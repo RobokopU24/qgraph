@@ -14,7 +14,7 @@ import SupportingPublications from './SupportingPublications';
 
 const nodeRadius = 40;
 
-export default function ResultExplorer({ store }) {
+export default function ResultExplorer({ answerStore }) {
   const svgRef = useRef();
   const svg = useRef();
   const width = useRef();
@@ -127,12 +127,12 @@ export default function ResultExplorer({ store }) {
 
     // keep positions of kept nodes
     const oldNodes = new Map(node.current.data().map((d) => [d.id, { x: d.x, y: d.y }]));
-    const nodes = store.selectedResult.nodes.map((d) => (
+    const nodes = answerStore.selectedResult.nodes.map((d) => (
       Object.assign(oldNodes.get(d.id) || { x: Math.random() * width.current, y: Math.random() * height.current }, d)
     ));
     // this is weird, but stops the simulation from throwing a
     // `d3 cannot create property 'vx' on string` error when trying to move edges
-    const edges = store.selectedResult.edges.map((d) => ({ ...d }));
+    const edges = answerStore.selectedResult.edges.map((d) => ({ ...d }));
     simulation.current.nodes(nodes);
     simulation.current.force('link').links(edges);
 
@@ -210,7 +210,7 @@ export default function ResultExplorer({ store }) {
   function resize() {
     const container = d3.select('#resultExplorer');
     const fullWidth = 50;
-    if (store.selectedRowId !== '') {
+    if (answerStore.selectedRowId !== '') {
       // get current width
       const currentWidth = parseInt(container.style('width'), 10);
       // find the difference in width
@@ -239,7 +239,7 @@ export default function ResultExplorer({ store }) {
 
   useEffect(() => {
     resize();
-  }, [store.selectedResult, store.selectedRowId]);
+  }, [answerStore.selectedResult, answerStore.selectedRowId]);
 
   return (
     <Paper
@@ -248,9 +248,9 @@ export default function ResultExplorer({ store }) {
     >
       <h5 className="cardLabel">Answer Explorer</h5>
       <svg ref={svgRef} />
-      {store.metaData && (
+      {answerStore.metaData && (
         <SupportingPublications
-          metaData={store.metaData}
+          metaData={answerStore.metaData}
         />
       )}
     </Paper>
