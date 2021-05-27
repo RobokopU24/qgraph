@@ -1,25 +1,13 @@
 import _ from 'lodash';
 
-function getNodeNums(results) {
-  const counts = {};
-  results.forEach((result) => {
-    const qgKeys = Object.keys(result.node_bindings);
-    qgKeys.forEach((qgKey) => {
-      if (!Array.isArray(result.node_bindings[qgKey])) {
-        result.node_bindings[qgKey] = [result.node_bindings[qgKey]];
-      }
-      result.node_bindings[qgKey].forEach((idObj) => {
-        if (!(idObj.id in counts)) {
-          counts[idObj.id] = 0;
-        }
-        counts[idObj.id] += 1;
-      });
-    });
-  });
-  counts.total = Object.values(counts).reduce((a, b) => a + b);
-  return counts;
-}
-
+/**
+ * Calculate the radius node circles
+ * @param {integer} width - width of container
+ * @param {integer} height - height of container
+ * @param {integer} numQNodes - number of query graph nodes
+ * @param {integer} numResults - total number of results
+ * @returns {function} function that takes a number and returns a radius
+ */
 function getNodeRadius(width, height, numQNodes, numResults) {
   const totalArea = width * height * 0.5;
   return (num) => {
@@ -32,6 +20,12 @@ function getNodeRadius(width, height, numQNodes, numResults) {
   };
 }
 
+/**
+ * Rank categories based on how specific they are
+ * @param {object} hierarchies - all biolink hierarchies
+ * @param {array} category - list of categories of a specific node
+ * @returns {string[]} list of ranked categories
+ */
 function getRankedCategories(hierarchies, category) {
   const rankedCategories = category.sort((a, b) => {
     const aLength = (hierarchies[a] && hierarchies[a].length) || 0;
@@ -41,6 +35,12 @@ function getRankedCategories(hierarchies, category) {
   return rankedCategories;
 }
 
+/**
+ * Make a list of nodes for bubble graph display
+ * @param {object} message - TRAPI message
+ * @param {object} hierarchies - all biolink hierarchies
+ * @returns {object[]} list of node objects for display
+ */
 function makeDisplayNodes(message, hierarchies) {
   const displayNodes = {};
   message.results.forEach((result) => {
@@ -67,6 +67,11 @@ function makeDisplayNodes(message, hierarchies) {
   return Object.values(displayNodes);
 }
 
+/**
+ * Get nodes and edges to display in full knowledge graph
+ * @param {object} message - TRAPI message
+ * @returns {{ nodes: object[], edges: object[] }} lists of nodes and edges for display
+ */
 function getFullDisplay(message) {
   let { nodes, edges } = message.knowledge_graph;
   nodes = Object.entries(nodes).map(([nodeId, nodeProps]) => {
@@ -97,6 +102,5 @@ export default {
   makeDisplayNodes,
   getFullDisplay,
   getRankedCategories,
-  getNodeNums,
   getNodeRadius,
 };
