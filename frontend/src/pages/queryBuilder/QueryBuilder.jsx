@@ -3,7 +3,6 @@ import { useHistory } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 
 import API from '~/API';
-import trapiUtils from '~/utils/trapi';
 import QueryBuilderContext from '~/context/queryBuilder';
 import UserContext from '~/context/user';
 import AlertContext from '~/context/alert';
@@ -50,27 +49,12 @@ export default function QueryBuilder() {
     pageStatus.setLoading('Fetching answer, this may take a while');
     const prunedQueryGraph = queryGraphUtils.prune(queryBuilder.state.query_graph);
     const response = await API.ara.getAnswer({ message: { query_graph: prunedQueryGraph } });
-    const failedToAnswer = 'Please try asking this question again later.';
-    if (response.status === 'error') {
-      displayAlert('error', `${response.message}. ${failedToAnswer}`);
-      // go back to rendering query builder
-      pageStatus.setSuccess();
-      return;
-    }
-
-    const validationErrors = trapiUtils.validateMessage(response);
-    if (validationErrors.length) {
-      displayAlert('error', `${validationErrors.join(', ')}. ${failedToAnswer}`);
-      // go back to rendering query builder
-      pageStatus.setSuccess();
-      return;
-    }
 
     // TODO: store response in local storage
     // different actions will clear it out
-    console.log(response.message);
+    window.sessionStorage.setItem('message', JSON.stringify(response));
     // once message is stored, navigate to answer page to load and display
-    // history.push('/answer');
+    history.push('/answer');
   }
 
   async function fetchAnswer(questionId) {
@@ -197,13 +181,13 @@ export default function QueryBuilder() {
           >
             Submit
           </Button>
-          <Button
+          {/* <Button
             onClick={onQuickSubmit}
             variant="contained"
             style={{ marginLeft: '10px' }}
           >
             Quick Submit
-          </Button>
+          </Button> */}
         </>
       )}
     </>
