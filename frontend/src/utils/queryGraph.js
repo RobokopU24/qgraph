@@ -47,6 +47,18 @@ function standardizeArrayProperty(obj, property) {
   if (obj[property] && !_.isArray(obj[property])) {
     obj[property] = [obj[property]];
   }
+  if (obj[property] && property === 'ids') {
+    obj.id = obj.ids;
+    delete obj.ids;
+  }
+  if (obj[property] && property === 'categories') {
+    obj.category = obj.categories;
+    delete obj.categories;
+  }
+  if (obj[property] && property === 'predicates') {
+    obj.predicate = obj.predicates;
+    delete obj.predicates;
+  }
 }
 
 /**
@@ -69,9 +81,9 @@ function makeArray(value) {
   throw TypeError('Unexpected input. Should be either an array or string.');
 }
 
-const standardizeIDs = (o) => standardizeArrayProperty(o, 'id');
-const standardizePredicate = (o) => standardizeArrayProperty(o, 'predicate');
-const standardizeCategory = (o) => standardizeArrayProperty(o, 'category');
+const standardizeIDs = (o) => standardizeArrayProperty(o, 'ids');
+const standardizePredicate = (o) => standardizeArrayProperty(o, 'predicates');
+const standardizeCategory = (o) => standardizeArrayProperty(o, 'categories');
 
 /**
  * Remove empty arrays
@@ -232,12 +244,24 @@ function prune(q_graph) {
   Object.keys(clonedQueryGraph.nodes).forEach((n) => {
     pruneEmptyArray(clonedQueryGraph.nodes[n], 'category');
     pruneEmptyArray(clonedQueryGraph.nodes[n], 'id');
-    if (clonedQueryGraph.nodes[n].id && clonedQueryGraph.nodes[n].category) {
+    // if (clonedQueryGraph.nodes[n].id && clonedQueryGraph.nodes[n].category) {
+    //   delete clonedQueryGraph.nodes[n].category;
+    // }
+    if (clonedQueryGraph.nodes[n].id) {
+      clonedQueryGraph.nodes[n].ids = clonedQueryGraph.nodes[n].id;
+      delete clonedQueryGraph.nodes[n].id;
+    }
+    if (clonedQueryGraph.nodes[n].category) {
+      clonedQueryGraph.nodes[n].categories = clonedQueryGraph.nodes[n].category;
       delete clonedQueryGraph.nodes[n].category;
     }
   });
   Object.keys(clonedQueryGraph.edges).forEach((e) => {
     pruneEmptyArray(clonedQueryGraph.edges[e], 'predicate');
+    if (clonedQueryGraph.edges[e].predicate) {
+      clonedQueryGraph.edges[e].predicates = clonedQueryGraph.edges[e].predicate;
+      delete clonedQueryGraph.edges[e].predicate;
+    }
   });
   return clonedQueryGraph;
 }

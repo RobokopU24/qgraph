@@ -86,7 +86,7 @@ export default function useAnswerStore() {
       Object.entries(row.node_bindings).forEach(([qg_id, value]) => {
         value.forEach((kgObject) => {
           const kgNode = message.knowledge_graph.nodes[kgObject.id];
-          let categories = kgNode.category;
+          let { categories } = kgNode;
           if (categories && !Array.isArray(categories)) {
             categories = [categories];
           }
