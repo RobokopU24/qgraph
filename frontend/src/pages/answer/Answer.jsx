@@ -41,9 +41,7 @@ export default function Answer() {
 
   const answer_id = useMemo(() => match && match.params.answer_id, [match]);
 
-  async function fetchAnswerData() {
-    const answerResponse = await API.cache.getAnswerData(answer_id, user && user.id_token);
-
+  function validateAndInitializeMessage(answerResponse) {
     if (answerResponse.status === 'error') {
       pageStatus.setFailure(answerResponse.message);
       return;
@@ -86,9 +84,20 @@ export default function Answer() {
     }
   }
 
+  async function fetchAnswerData() {
+    pageStatus.setLoading('Loading Message...');
+    const answerResponse = await API.cache.getAnswerData(answer_id, user && user.id_token);
+
+    validateAndInitializeMessage(answerResponse);
+  }
+
   useEffect(() => {
     if (answer_id) {
+      window.sessionStorage.removeItem('message');
       fetchAnswerData();
+    } else if (window.sessionStorage.getItem('message')) {
+      pageStatus.setLoading('Loading Message...');
+      validateAndInitializeMessage(window.sessionStorage.getItem('message'));
     } else {
       answerStore.reset();
     }
