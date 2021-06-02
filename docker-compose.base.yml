@@ -10,7 +10,7 @@ services:
       ROBOKACHE_URL: http://robokache
       FRONTEND_URL: http://frontend
       QUERYDISPATCHER_URL: http://query-dispatcher
-      STRIDER_URL: https://strider.renci.org
+      STRIDER_URL: https://strider.renci.org/1.1
   frontend:
     build: frontend/
   robokache:
@@ -21,4 +21,4 @@ services:
     build: query-dispatcher/
     environment:
       ROBOKACHE_URL: http://robokache
-      STRIDER_URL: https://strider.renci.org
+      STRIDER_URL: https://strider.renci.org/1.1
