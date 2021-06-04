@@ -5,7 +5,7 @@
 }
 #resultsTable {
     flex-grow: 1;
-    height: 600px;
+    min-height: 600px;
     display: inline-block;
     overflow-y: auto;
 }
@@ -24,12 +24,13 @@
 #resultExplorer {
     position: relative;
     width: 0%;
-    height: 600px;
-    display: inline-block;
+    min-height: 600px;
+    display: flex;
+    flex-direction: column;
     overflow-y: auto;
 }
 #resultMetaData {
-    height: 49%;
+    flex-grow: 1;
     overflow-y: auto;
 }
 #noAnswersMessage {
