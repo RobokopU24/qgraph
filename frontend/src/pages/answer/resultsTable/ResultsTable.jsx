@@ -49,7 +49,7 @@ export default function ResultsTable({ answerStore }) {
 
   return (
     <>
-      {page.length > 0 && (
+      {page.length > 0 ? (
         <div id="resultsContainer">
           <Paper id="resultsTable" elevation={3}>
             <TableContainer>
@@ -112,6 +112,10 @@ export default function ResultsTable({ answerStore }) {
           <ResultExplorer
             answerStore={answerStore}
           />
+        </div>
+      ) : (
+        <div id="noAnswersMessage">
+          <h4>This message has no answers.</h4>
         </div>
       )}
     </>
