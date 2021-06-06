@@ -105,11 +105,15 @@ export default function Answer() {
           } else {
             // if quick_message === undefined
             answerStore.reset();
+            // stop loading message
+            pageStatus.setSuccess();
           }
         })
         .catch((err) => {
           answerStore.reset();
           displayAlert('error', `Failed to load answer. Please try refreshing the page. Error: ${err}`);
+          // stop loading message
+          pageStatus.setSuccess();
         });
     }
   }, [answer_id, user]);
