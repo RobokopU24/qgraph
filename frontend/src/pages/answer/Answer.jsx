@@ -1,6 +1,6 @@
 import React, { useEffect, useContext, useMemo } from 'react';
 import { useRouteMatch, useHistory } from 'react-router-dom';
-import { get as idbGet, del as idbDelete } from 'idb-keyval';
+import { get as idbGet, del as idbDelete, set as idbSet } from 'idb-keyval';
 
 import API from '~/API';
 import trapiUtils from '~/utils/trapi';
@@ -136,6 +136,7 @@ export default function Answer() {
           try {
             msg.message.query_graph = queryGraphUtils.standardize(msg.message.query_graph);
             try {
+              idbSet('quick_message', JSON.stringify(msg));
               answerStore.initialize(msg.message);
               pageStatus.setSuccess();
               // user uploaded a new answer, reset the url
