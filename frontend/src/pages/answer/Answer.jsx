@@ -1,5 +1,6 @@
 import React, { useEffect, useContext, useMemo } from 'react';
 import { useRouteMatch, useHistory } from 'react-router-dom';
+import { get as idbGet, del as idbDelete } from 'idb-keyval';
 
 import API from '~/API';
 import trapiUtils from '~/utils/trapi';
@@ -93,13 +94,23 @@ export default function Answer() {
 
   useEffect(() => {
     if (answer_id) {
-      window.sessionStorage.removeItem('message');
+      idbDelete('quick_message');
       fetchAnswerData();
-    } else if (window.sessionStorage.getItem('message')) {
-      pageStatus.setLoading('Loading Message...');
-      validateAndInitializeMessage(window.sessionStorage.getItem('message'));
     } else {
-      answerStore.reset();
+      pageStatus.setLoading('Loading Message...');
+      idbGet('quick_message')
+        .then((val) => {
+          if (val) {
+            validateAndInitializeMessage(val);
+          } else {
+            // if quick_message === undefined
+            answerStore.reset();
+          }
+        })
+        .catch((err) => {
+          answerStore.reset();
+          displayAlert('error', `Failed to load answer. Please try refreshing the page. Error: ${err}`);
+        });
     }
   }, [answer_id, user]);
 

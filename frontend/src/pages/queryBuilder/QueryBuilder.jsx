@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
+import { set as idbSet } from 'idb-keyval';
 
 import API from '~/API';
 import QueryBuilderContext from '~/context/queryBuilder';
@@ -50,11 +51,24 @@ export default function QueryBuilder() {
     const prunedQueryGraph = queryGraphUtils.prune(queryBuilder.state.query_graph);
     const response = await API.ara.getAnswer({ message: { query_graph: prunedQueryGraph } });
 
-    // TODO: store response in local storage
-    // different actions will clear it out
-    window.sessionStorage.setItem('message', JSON.stringify(response));
-    // once message is stored, navigate to answer page to load and display
-    history.push('/answer');
+    if (response.status === 'error') {
+      const failedToAnswer = 'Please try asking this question later.';
+      displayAlert('error', `${response.message}. ${failedToAnswer}`);
+      // go back to rendering query builder
+      pageStatus.setSuccess();
+    } else {
+      // stringify to stay consistent with answer page json parsing
+      idbSet('quick_message', JSON.stringify(response))
+        .then(() => {
+          displayAlert('success', 'Your answer is ready!');
+          // once message is stored, navigate to answer page to load and display
+          history.push('/answer');
+        })
+        .catch((err) => {
+          displayAlert('error', `Failed to locally store this answer. Please try again later. Error: ${err}`);
+          pageStatus.setSuccess();
+        });
+    }
   }
 
   async function fetchAnswer(questionId) {
@@ -181,13 +195,13 @@ export default function QueryBuilder() {
           >
             Submit
           </Button>
-          {/* <Button
+          <Button
             onClick={onQuickSubmit}
             variant="contained"
             style={{ marginLeft: '10px' }}
           >
             Quick Submit
-          </Button> */}
+          </Button>
         </>
       )}
     </>
