@@ -77,7 +77,7 @@ export default function useAnswerStore() {
         });
       });
       const nodes = [];
-      Object.values(row.node_bindings).forEach((value) => {
+      Object.entries(row.node_bindings).forEach(([qg_id, value]) => {
         value.forEach((kgObject) => {
           const kgNode = message.knowledge_graph.nodes[kgObject.id];
           let categories = kgNode.category;
@@ -89,6 +89,7 @@ export default function useAnswerStore() {
             id: kgObject.id,
             name: kgNode.name || kgObject.id || categories[0],
             category: categories[0],
+            qg_id,
           };
           nodes.push(graphNode);
         });

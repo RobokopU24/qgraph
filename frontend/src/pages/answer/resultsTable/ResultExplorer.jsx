@@ -129,9 +129,9 @@ export default function ResultExplorer({ answerStore }) {
       .force('forceY', d3.forceY(height.current / 2).strength(0.2));
 
     // keep positions of kept nodes
-    const oldNodes = new Map(node.current.data().map((d) => [d.id, { x: d.x, y: d.y }]));
+    const oldNodes = new Map(node.current.data().map((d) => [d.qg_id, { x: d.x, y: d.y }]));
     const nodes = answerStore.selectedResult.nodes.map((d) => (
-      Object.assign(oldNodes.get(d.id) || { x: Math.random() * width.current, y: Math.random() * height.current }, d)
+      Object.assign(oldNodes.get(d.qg_id) || { x: Math.random() * width.current, y: Math.random() * height.current }, d)
     ));
     // this is weird, but stops the simulation from throwing a
     // `d3 cannot create property 'vx' on string` error when trying to move edges
