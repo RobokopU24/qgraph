@@ -51,8 +51,7 @@ export default function Answer() {
         const errors = trapiUtils.validateMessage(msg);
         if (!errors.length) {
           try {
-            const standardQueryGraph = queryGraphUtils.standardize(msg.message.query_graph);
-            msg.message.query_graph = standardQueryGraph;
+            msg.message.query_graph = queryGraphUtils.standardize(msg.message.query_graph);
             try {
               answerStore.initialize(msg.message);
               pageStatus.setSuccess();
