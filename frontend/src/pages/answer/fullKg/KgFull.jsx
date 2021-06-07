@@ -70,8 +70,6 @@ export default function KgFull({ message }) {
     const simulationWorker = new Worker();
     const kgLists = kgUtils.getFullDisplay(message);
     toggleLoading(true);
-    simulationWorker.postMessage(kgLists);
-
     simulationWorker.onmessage = (e) => {
       switch (e.data.type) {
         case 'display': {
@@ -95,6 +93,7 @@ export default function KgFull({ message }) {
           console.log('unhandled worker message');
       }
     };
+    simulationWorker.postMessage(kgLists);
   }
 
   useEffect(() => {
