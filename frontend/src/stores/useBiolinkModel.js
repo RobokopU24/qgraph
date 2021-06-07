@@ -58,13 +58,13 @@ export default function useBiolinkModel() {
    * @param {object} classes - object of all biolink classes
    * @returns {string[]} list of all descendants
    */
-  function getDirectDescendants(parentClass, classes) {
+  function getDescendants(parentClass, classes) {
     let descendants = [];
     Object.keys(classes).forEach((key) => {
       if (classes[key].is_a === parentClass) {
         descendants.push(key);
         // Repeat until we hit the bottom of the classes
-        descendants = descendants.concat(getDirectDescendants(key, classes));
+        descendants = descendants.concat(getDescendants(key, classes));
       }
     });
     return descendants;
@@ -79,7 +79,7 @@ export default function useBiolinkModel() {
     const newHierarchies = Object.keys(biolinkClasses).reduce((obj, item) => {
       let ancestors = getAncestors(item, biolinkClasses);
       ancestors = ancestors.map((h) => strings.nodeFromBiolink(h));
-      let descendants = getDirectDescendants(item, biolinkClasses);
+      let descendants = getDescendants(item, biolinkClasses);
       descendants = descendants.map((h) => strings.nodeFromBiolink(h));
       obj[strings.nodeFromBiolink(item)] = [...descendants, strings.nodeFromBiolink(item), ...ancestors];
       return obj;
