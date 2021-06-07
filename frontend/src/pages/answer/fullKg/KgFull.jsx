@@ -66,37 +66,43 @@ export default function KgFull({ message }) {
     context.restore();
   }
 
+  function getGraphFromWorker() {
+    const simulationWorker = new Worker();
+    const kgLists = kgUtils.getFullDisplay(message);
+    toggleLoading(true);
+    simulationWorker.postMessage(kgLists);
+
+    simulationWorker.onmessage = (e) => {
+      switch (e.data.type) {
+        case 'display': {
+          displayCanvas(e.data);
+          // TODO: if graph is small enough, display as svg
+          // if (e.data.nodes.length > maxNodes || e.data.edges.length > maxEdges) {
+          //   displayCanvas(e.data);
+          // } else {
+          //   displaySvg(e.data);
+          // }
+          toggleLoading(false);
+          // we've gotten the graph, no need for the worker to stay open.
+          simulationWorker.terminate();
+          break;
+        }
+        case 'tick': {
+          setProgress(e.data.progress);
+          break;
+        }
+        default:
+          console.log('unhandled worker message');
+      }
+    };
+  }
+
   useEffect(() => {
     d3.select(canvasRef.current)
       .attr('width', 0)
       .attr('height', 0);
     if (Object.keys(message).length) {
-      const simulationWorker = new Worker();
-      const kgLists = kgUtils.getFullDisplay(message);
-      toggleLoading(true);
-      simulationWorker.postMessage(kgLists);
-
-      simulationWorker.onmessage = (e) => {
-        switch (e.data.type) {
-          case 'display': {
-            displayCanvas(e.data);
-            // TODO: if graph is small enough, display as svg
-            // if (e.data.nodes.length > maxNodes || e.data.edges.length > maxEdges) {
-            //   displayCanvas(e.data);
-            // } else {
-            //   displaySvg(e.data);
-            // }
-            toggleLoading(false);
-            break;
-          }
-          case 'tick': {
-            setProgress(e.data.progress);
-            break;
-          }
-          default:
-            console.log('unhandled worker message');
-        }
-      };
+      getGraphFromWorker();
     }
   }, [message]);
 
