@@ -71,8 +71,8 @@ export default function QueryGraph({ query_graph }) {
         node
           .attr('transform', (d) => {
             // assign d.x and d.y so edges know the bounded positions
-            d.x = graphUtils.getBoundedValue(d.x, width, 0);
-            d.y = graphUtils.getBoundedValue(d.y, height, 0);
+            d.x = graphUtils.getBoundedValue(d.x, width - nodeRadius, nodeRadius);
+            d.y = graphUtils.getBoundedValue(d.y, height - nodeRadius, nodeRadius);
             return `translate(${d.x}, ${d.y})`;
           });
 
