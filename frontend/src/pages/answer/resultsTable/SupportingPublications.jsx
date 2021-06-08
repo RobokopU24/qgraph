@@ -8,7 +8,7 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import shortid from 'shortid';
 
-function expandedPublicationsReducer(state, action) {
+function expansionReducer(state, action) {
   switch (action.type) {
     case 'toggle':
       state[action.key] = !state[action.key];
@@ -26,11 +26,11 @@ function expandedPublicationsReducer(state, action) {
  * @param {object} metaData - selected result edge metadata
  */
 export default function SupportingPublications({ metaData }) {
-  const [expandedPublications, updateExpandedPublications] = useReducer(expandedPublicationsReducer, {});
+  const [expanded, updateExpanded] = useReducer(expansionReducer, {});
 
   useEffect(() => {
     // Whenever the user selects a new row, close all expanded rows
-    updateExpandedPublications({ type: 'clear' });
+    updateExpanded({ type: 'clear' });
   }, [metaData]);
 
   const hasSupportPublications = useMemo(() => !!Object.values(metaData).find((edge) => edge.length), [metaData]);
@@ -49,12 +49,12 @@ export default function SupportingPublications({ metaData }) {
                 <>
                   <ListItem
                     button
-                    onClick={() => updateExpandedPublications({ type: 'toggle', key: edgeDescription })}
+                    onClick={() => updateExpanded({ type: 'toggle', key: edgeDescription })}
                   >
                     <ListItemText primary={edgeDescription} />
-                    {expandedPublications[edgeDescription] ? <ExpandLess /> : <ExpandMore />}
+                    {expanded[edgeDescription] ? <ExpandLess /> : <ExpandMore />}
                   </ListItem>
-                  <Collapse in={expandedPublications[edgeDescription]} timeout="auto" unmountOnExit>
+                  <Collapse in={expanded[edgeDescription]} timeout="auto" unmountOnExit>
                     <List component="div">
                       {publications.map((publication) => (
                         <ListItem
