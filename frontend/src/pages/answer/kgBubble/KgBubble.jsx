@@ -49,11 +49,11 @@ export default function KgBubble({
     const getNodeRadius = kgUtils.getNodeRadius(width, height, numQgNodes, numResults);
     const converted_nodes = nodes.map((d) => ({ ...d, x: Math.random() * width, y: Math.random() * height }));
     const simulation = d3.forceSimulation(converted_nodes)
-      .force('forceX', d3.forceX(width / 2).strength(0.02)) // pull all nodes horizontally towards middle of box
-      .force('forceY', d3.forceY(height / 2).strength(0.2)) // pull all nodes vertically towards middle of box
-      .force('collide', d3.forceCollide().strength(1).radius( // prevent collisions
+      .force('x', d3.forceX(width / 2).strength(0.02)) // pull all nodes horizontally towards middle of box
+      .force('y', d3.forceY(height / 2).strength(0.2)) // pull all nodes vertically towards middle of box
+      .force('collide', d3.forceCollide().radius( // prevent collisions
         (d) => getNodeRadius(d.count) + nodePadding,
-      ))
+      ).iterations(3))
       .on('tick', () => {
         node
           .attr('transform', (d) => {
