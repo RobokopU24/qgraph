@@ -53,7 +53,7 @@ export default function KgBubble({
       .force('y', d3.forceY(height / 2).strength(0.2)) // pull all nodes vertically towards middle of box
       .force('collide', d3.forceCollide().radius( // prevent collisions
         (d) => getNodeRadius(d.count) + nodePadding,
-      ).iterations(3))
+      ).iterations(3)) // run the collide constraint multiple times to strongly enforce collision prevention
       .on('tick', () => {
         node
           .attr('transform', (d) => {
