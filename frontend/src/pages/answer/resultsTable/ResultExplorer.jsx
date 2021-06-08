@@ -73,9 +73,14 @@ export default function ResultExplorer({ answerStore }) {
   function ticked() {
     node.current
       .attr('transform', (d) => {
+        let padding = nodeRadius;
+        // 70% of node radius so a dragged node can push into the graph bounds a little
+        if (d.fx !== null && d.fx !== undefined) {
+          padding *= 0.5;
+        }
         // assign d.x and d.y so edges know the bounded positions
-        d.x = graphUtils.getBoundedValue(d.x, width.current - nodeRadius, nodeRadius);
-        d.y = graphUtils.getBoundedValue(d.y, height.current - nodeRadius, nodeRadius);
+        d.x = graphUtils.getBoundedValue(d.x, width.current - padding, padding);
+        d.y = graphUtils.getBoundedValue(d.y, height.current - padding, padding);
         return `translate(${d.x}, ${d.y})`;
       });
 
@@ -144,7 +149,7 @@ export default function ResultExplorer({ answerStore }) {
         (enter) => enter
           .append('g')
             .attr('class', 'node')
-            .call(dragUtils.dragNode(simulation.current, width.current, height.current, nodeRadius))
+            .call(dragUtils.dragNode(simulation.current))
             .call((n) => n.append('circle')
               .attr('r', nodeRadius)
               .attr('fill', (d) => colorMap((d.category) || 'unknown'))

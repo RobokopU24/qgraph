@@ -154,8 +154,13 @@ export default function QueryGraph({
   function ticked() {
     node.current
       .attr('transform', (d) => {
-        d.x = graphUtils.getBoundedValue(d.x, width - nodeRadius, nodeRadius);
-        d.y = graphUtils.getBoundedValue(d.y, height - nodeRadius, nodeRadius);
+        let padding = nodeRadius;
+        // 70% of node radius so a dragged node can push into the graph bounds a little
+        if (d.fx !== null && d.fx !== undefined) {
+          padding *= 0.5;
+        }
+        d.x = graphUtils.getBoundedValue(d.x, width - padding, padding);
+        d.y = graphUtils.getBoundedValue(d.y, height - padding, padding);
         return `translate(${d.x},${d.y})`;
       });
 
@@ -286,7 +291,7 @@ export default function QueryGraph({
       nodeUtils.attachEditClick(openEditor, setClickedId);
       nodeUtils.attachDeleteClick((id) => queryBuilder.dispatch({ type: 'deleteNode', payload: { id } }), setClickedId);
       nodeUtils.attachMouseHover(clickedId);
-      nodeUtils.attachDrag(simulation.current, width, height, nodeRadius);
+      nodeUtils.attachDrag(simulation.current);
 
       edgeUtils.attachEdgeClick(clickedId, setClickedId);
       edgeUtils.attachEditClick(openEditor, setClickedId);

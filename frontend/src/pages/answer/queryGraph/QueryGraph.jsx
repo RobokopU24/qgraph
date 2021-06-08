@@ -70,9 +70,14 @@ export default function QueryGraph({ query_graph }) {
       .on('tick', () => {
         node
           .attr('transform', (d) => {
+            let padding = nodeRadius;
+            // 70% of padding so a dragged node can push into the graph bounds a little
+            if (d.fx !== null && d.fx !== undefined) {
+              padding *= 0.5;
+            }
             // assign d.x and d.y so edges know the bounded positions
-            d.x = graphUtils.getBoundedValue(d.x, width - nodeRadius, nodeRadius);
-            d.y = graphUtils.getBoundedValue(d.y, height - nodeRadius, nodeRadius);
+            d.x = graphUtils.getBoundedValue(d.x, width - padding, padding);
+            d.y = graphUtils.getBoundedValue(d.y, height - padding, padding);
             return `translate(${d.x}, ${d.y})`;
           });
 
@@ -101,7 +106,7 @@ export default function QueryGraph({ query_graph }) {
       .enter()
         .append('g')
           .attr('class', 'node')
-          .call(dragUtils.dragNode(simulation, width, height, nodeRadius))
+          .call(dragUtils.dragNode(simulation))
           .call((n) => n.append('circle')
             .attr('r', nodeRadius)
             .attr('fill', (d) => colorMap((d.category && d.category[0]) || 'unknown'))

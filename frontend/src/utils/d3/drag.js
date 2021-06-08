@@ -3,7 +3,7 @@ import graphUtils from './graph';
 /**
  * Handle node dragging
  */
-function dragNode(simulation, width, height, nodeRadius) {
+function dragNode(simulation) {
   function dragstarted(event, d) {
     if (!event.active) simulation.alphaTarget(0.01).restart();
     d.fx = d.x;
@@ -11,8 +11,8 @@ function dragNode(simulation, width, height, nodeRadius) {
   }
 
   function dragged(event, d) {
-    d.fx = graphUtils.getBoundedValue(event.x, width - nodeRadius, nodeRadius);
-    d.fy = graphUtils.getBoundedValue(event.y, height - nodeRadius, nodeRadius);
+    d.fx = event.x;
+    d.fy = event.y;
   }
 
   function dragended(event, d) {
