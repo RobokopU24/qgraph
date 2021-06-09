@@ -223,44 +223,6 @@ function addEdgeCurveProperties(edges) {
 }
 
 /**
- * Convert nodes and edges objects to lists for d3
- * @param {obj} q_graph - query graph object
- * @returns {obj} query graph with node and edge lists
- */
-function getGraphEditorFormat(q_graph) {
-  const graphWithLists = {
-    nodes: [],
-    edges: [],
-  };
-  Object.entries(q_graph.nodes).forEach(([nodeId, nodeObj]) => {
-    // nodes have an id property already, we need to reassign
-    const curie = makeArray(nodeObj.id);
-    const category = makeArray(nodeObj.category);
-    graphWithLists.nodes.push({
-      ...nodeObj,
-      category,
-      curie,
-      id: nodeId,
-    });
-  });
-  Object.entries(q_graph.edges).forEach(([edgeId, edgeObj]) => {
-    // remove subject and object from edge object
-    const { subject, object, ...edge } = edgeObj;
-    const predicate = makeArray(edgeObj.predicate);
-    const source = subject;
-    const target = object;
-    graphWithLists.edges.push({
-      ...edge,
-      source,
-      target,
-      predicate,
-      id: edgeId,
-    });
-  });
-  return graphWithLists;
-}
-
-/**
  * Remove any empty node categories or ids or edge predicates
  * @param {obj} q_graph - query graph
  * @returns query graph
@@ -296,7 +258,7 @@ function standardize(q_graph) {
     standardizeCategory(node);
     if (!node.name) {
       node.name =
-        (node.id && node.id.length && stringUtils.prettyDisplay(node.id)) ||
+        (node.id && node.id.length && node.id.join(', ')) ||
         (node.category && node.category.length && stringUtils.displayCategory(node.category)) ||
         '';
     }
@@ -305,6 +267,51 @@ function standardize(q_graph) {
     standardizePredicate(clonedQueryGraph.edges[e]);
   });
   return clonedQueryGraph;
+}
+
+/**
+ * Get label for query graph node ids
+ * @param {object} node - query graph node
+ * @returns {string} human-readable id label
+ */
+function getNodeIdLabel(node) {
+  if (node.id && Array.isArray(node.id)) {
+    return node.id.join(', ');
+  }
+  return node.id;
+}
+
+/**
+ * Convert nodes and edges objects to lists for d3
+ * @param {obj} q_graph
+ * @returns {obj} query graph with node and edge lists
+ */
+function getNodeAndEdgeListsForDisplay(q_graph) {
+  const query_graph = standardize(q_graph);
+  const nodes = Object.entries(query_graph.nodes).map(([nodeId, obj]) => {
+    let { name } = obj;
+    if (!obj.name) {
+      name = obj.id && obj.id.length ? obj.id.join(', ') : stringUtils.displayCategory(obj.category);
+    }
+    if (!name) {
+      name = 'Something';
+    }
+    obj.category = makeArray(obj.category);
+    return {
+      id: nodeId,
+      name,
+      category: obj.category,
+    };
+  });
+  const edges = Object.entries(query_graph.edges).map(([edgeId, obj]) => (
+    {
+      id: edgeId,
+      predicate: obj.predicate,
+      source: obj.subject,
+      target: obj.object,
+    }
+  ));
+  return { nodes, edges };
 }
 
 export default {
@@ -316,5 +323,6 @@ export default {
   addEdgeCurveProperties,
   prune,
   standardize,
-  getGraphEditorFormat,
+  getNodeAndEdgeListsForDisplay,
+  getNodeIdLabel,
 };

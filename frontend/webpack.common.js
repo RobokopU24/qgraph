@@ -29,6 +29,10 @@ const config = {
         test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
         use: 'url-loader?name=[name].[ext]',
       },
+      {
+        test: /\.worker\.js$/,
+        use: { loader: 'worker-loader' },
+      },
     ],
     noParse: /node_modules\/lodash\/lodash\.js/,
   },

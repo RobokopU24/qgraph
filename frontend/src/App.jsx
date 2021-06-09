@@ -7,8 +7,8 @@ import About from '~/pages/About';
 import Help from '~/pages/Help';
 import Guide from '~/pages/Guide';
 import TermsofService from '~/pages/TermsofService';
-import SimpleViewer from '~/pages/SimpleViewer';
 import QueryBuilder from '~/pages/queryBuilder/QueryBuilder';
+import Answer from '~/pages/answer/Answer';
 
 import QuestionList from '~/pages/questionList/QuestionList';
 import QuestionAnswerViewer from '~/pages/questionAnswerViewer/QuestionAnswerViewer';
@@ -80,11 +80,11 @@ export default function App() {
                       <Route path="/termsofservice">
                         <TermsofService />
                       </Route>
-                      <Route path="/simple/view">
-                        <SimpleViewer />
-                      </Route>
                       <Route path="/question">
                         <QueryBuilder />
+                      </Route>
+                      <Route path="/answer">
+                        <Answer />
                       </Route>
                       <Route path="/">
                         <Landing />

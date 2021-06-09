@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import _ from 'lodash';
 import strings from '~/utils/strings';
+import getNodeCategoryColorMap from '~/utils/colors';
 
 const baseClass = 'biolink:BiologicalEntity';
 
@@ -9,7 +10,12 @@ export default function useBiolinkModel() {
   const [concepts, setConcepts] = useState([]);
   const [hierarchies, setHierarchies] = useState({});
   const [predicates, setPredicates] = useState([]);
+  const colorMap = useCallback(getNodeCategoryColorMap(concepts), [concepts]);
 
+  /**
+   * Get a list of all predicates in the biolink model
+   * @returns {object[]} list of predicate objects
+   */
   function getEdgePredicates() {
     const newPredicates = Object.entries(biolinkModel.slots).map(([identifier, predicate]) => ({
       predicate: strings.edgeFromBiolink(identifier),
@@ -33,7 +39,7 @@ export default function useBiolinkModel() {
    */
   function getAncestors(childClass, classes) {
     let currentClass = childClass;
-    const ancestors = [currentClass];
+    const ancestors = [];
     // Repeat until we hit the top of the classes
     while (
       classes[currentClass] &&
@@ -47,15 +53,35 @@ export default function useBiolinkModel() {
   }
 
   /**
-   * Get a list of ancestors for all biolink classes
-   * @param {object} biolinkClasses - object of all biolink classes
-   * @returns {{}} Object with classes as keys and descendant lists as values
+   * Get all descendants by getting direct descendants recursively
+   * @param {string} parentClass - biolink class to get direct descendants of
+   * @param {object} classes - object of all biolink classes
+   * @returns {string[]} list of all descendants
    */
-  function getAllAncestries(biolinkClasses) {
+  function getDescendants(parentClass, classes) {
+    let descendants = [];
+    Object.keys(classes).forEach((key) => {
+      if (classes[key].is_a === parentClass) {
+        descendants.push(key);
+        // Repeat until we hit the bottom of the classes
+        descendants = descendants.concat(getDescendants(key, classes));
+      }
+    });
+    return descendants;
+  }
+
+  /**
+   * Get a list of hierarchies for all biolink classes
+   * @param {object} biolinkClasses - object of all biolink classes
+   * @returns {object} Object with classes as keys and descendant lists as values
+   */
+  function getAllHierarchies(biolinkClasses) {
     const newHierarchies = Object.keys(biolinkClasses).reduce((obj, item) => {
-      let ascendants = getAncestors(item, biolinkClasses);
-      ascendants = ascendants.map((h) => strings.nodeFromBiolink(h));
-      obj[strings.nodeFromBiolink(item)] = ascendants;
+      let ancestors = getAncestors(item, biolinkClasses);
+      ancestors = ancestors.map((h) => strings.nodeFromBiolink(h));
+      let descendants = getDescendants(item, biolinkClasses);
+      descendants = descendants.map((h) => strings.nodeFromBiolink(h));
+      obj[strings.nodeFromBiolink(item)] = [...descendants, strings.nodeFromBiolink(item), ...ancestors];
       return obj;
     }, {});
     return newHierarchies;
@@ -63,41 +89,21 @@ export default function useBiolinkModel() {
 
   /**
    * Filter out concepts that are not derived classes of base class
-   * @param {object} allDescendancies - object of all descendant lists
+   * @param {object} allHierarchies - object of all hierarchy lists
    * @returns {array} list of valid concepts
    */
-  function getValidConcepts(allDescendancies) {
-    const newConcepts = Object.keys(allDescendancies).filter((biolinkClass) => allDescendancies[biolinkClass].includes(baseClass));
+  function getValidConcepts(allHierarchies) {
+    const newConcepts = Object.keys(allHierarchies).filter((biolinkClass) => allHierarchies[biolinkClass].includes(baseClass));
     return newConcepts;
-  }
-
-  /**
-   * Get all descendants of a given class
-   * @param {object} classes - all biolink classes
-   * @param {*} targetClass - class we want to find the descendants of
-   * @returns {[]} list of descendants
-   */
-  function getDescendants(classes, targetClass) {
-    let descendants = [targetClass];
-    Object.keys(classes).forEach((key) => {
-      if (classes[key].is_a === targetClass) {
-        descendants = descendants.concat(getDescendants(classes, key));
-      }
-    });
-    return descendants;
   }
 
   useEffect(() => {
     if (biolinkModel) {
       const biolinkClasses = _.transform(biolinkModel.classes,
         (result, value, key) => { result[key] = value; });
-      const allHierarchies = getAllAncestries(biolinkClasses);
+      const allHierarchies = getAllHierarchies(biolinkClasses);
       const allConcepts = getValidConcepts(allHierarchies);
       const allPredicates = getEdgePredicates();
-      const namedThingDescendants = getDescendants(biolinkClasses, 'named thing');
-      allHierarchies['biolink:NamedThing'] = namedThingDescendants.map(
-        (descendant) => strings.nodeFromBiolink(descendant),
-      );
       setHierarchies(allHierarchies);
       setConcepts(allConcepts);
       setPredicates(allPredicates);
@@ -109,5 +115,6 @@ export default function useBiolinkModel() {
     concepts,
     hierarchies,
     predicates,
+    colorMap,
   };
 }

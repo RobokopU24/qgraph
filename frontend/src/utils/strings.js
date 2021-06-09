@@ -74,7 +74,6 @@ function displayCategory(arg) {
     const out = pascalCategory.split(/(?=[A-Z][a-z])/g);
     return out.join(' ');
   } catch (err) {
-    console.log('Error making display category:', err);
     return '';
   }
 }
@@ -117,7 +116,6 @@ function displayPredicate(arg) {
     const out = snake_type.split(/_/g);
     return out.join(' ');
   } catch (err) {
-    console.log('Error making display predicate:', err);
     return '';
   }
 }

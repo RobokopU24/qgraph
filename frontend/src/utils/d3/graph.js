@@ -108,7 +108,17 @@ function ellipsisOverflow() {
   const el = d3.select(this);
   let textLength = el.node().getComputedTextLength();
   let text = el.text();
-  while (textLength > 60 && text.length > 0) {
+  // grab the parent g tag
+  const parent = el.node().parentNode;
+  // grab the corresponding circle
+  const circle = d3.select(parent)
+    .select('circle');
+  // get circle radius
+  const nodeRadius = circle.attr('r');
+  const diameter = nodeRadius * 2;
+  // give the text a little padding
+  const targetLength = diameter * 0.9;
+  while (textLength > targetLength && text.length > 0) {
     text = text.slice(0, -1);
     el.text(`${text}...`);
     textLength = el.node().getComputedTextLength();

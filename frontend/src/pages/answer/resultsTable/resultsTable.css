@@ -1,0 +1,41 @@
+#resultsContainer {
+    display: flex;
+    width: 100%;
+    margin: 10px;
+}
+#resultsTable {
+    flex-grow: 1;
+    min-height: 600px;
+    display: inline-block;
+    overflow-y: auto;
+}
+.resultsTableHeader {
+    border: 1px solid lightgray;
+    border-collapse: collapse;
+}
+/* override table hover colors */
+.MuiTableRow-root.Mui-selected {
+    background-color: rgba(13, 0, 30, 0.08);
+}
+.MuiTableRow-root.Mui-selected:hover {
+    background-color: rgba(13, 0, 30, 0.1);
+}
+
+#resultExplorer {
+    position: relative;
+    width: 0%;
+    min-height: 600px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+#resultMetaData {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+#noAnswersMessage {
+    width: 100%;
+    margin: auto;
+    text-align: center;
+    padding-top: 28vh;
+}

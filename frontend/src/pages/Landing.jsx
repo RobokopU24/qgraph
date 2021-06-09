@@ -87,9 +87,9 @@ export default function Landing() {
             />
             <OptionButton
               glyph="import"
-              header="Answerset Explorer"
+              header="Answer Explorer"
               text="Easily upload JSON files of answersets to view them in Robokop&apos;s graphical interface."
-              href="/simple/view"
+              href="/answer"
             />
           </Row>
         </ListGroup>
