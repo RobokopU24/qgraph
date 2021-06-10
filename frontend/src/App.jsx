@@ -58,7 +58,7 @@ export default function App() {
                     alert={alert}
                     onClose={() => simpleSetAlert(alert.severity, '')}
                   />
-                  {/* <Header setUser={setUser} /> */}
+                  <Header setUser={setUser} />
                   <div id="contentContainer">
                     <Switch>
                       <Route path="/about">

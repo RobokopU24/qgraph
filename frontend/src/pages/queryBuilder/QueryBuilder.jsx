@@ -188,7 +188,7 @@ export default function QueryBuilder() {
           >
             View JSON
           </Button>
-          {/* <Button
+          <Button
             onClick={onSubmit}
             variant="contained"
             style={{ marginLeft: '10px' }}
@@ -201,7 +201,7 @@ export default function QueryBuilder() {
             style={{ marginLeft: '10px' }}
           >
             Quick Submit
-          </Button> */}
+          </Button>
         </>
       )}
     </>
