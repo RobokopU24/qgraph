@@ -250,6 +250,9 @@ function prune(q_graph) {
     if (clonedQueryGraph.nodes[n].id) {
       clonedQueryGraph.nodes[n].ids = clonedQueryGraph.nodes[n].id;
       delete clonedQueryGraph.nodes[n].id;
+      if (!Array.isArray(clonedQueryGraph.nodes[n].ids)) {
+        clonedQueryGraph.nodes[n].ids = [clonedQueryGraph.nodes[n].ids];
+      }
     }
     if (clonedQueryGraph.nodes[n].category) {
       clonedQueryGraph.nodes[n].categories = clonedQueryGraph.nodes[n].category;
