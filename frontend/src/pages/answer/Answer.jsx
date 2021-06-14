@@ -37,11 +37,20 @@ export default function Answer() {
   const history = useHistory();
   const { displayState, updateDisplayState } = useDisplayState();
 
-  // If we are rendering an answer, get answer_id with useRouteMatch
+  /**
+   * If we are rendering an answer, get answer_id with useRouteMatch
+   */
   const match = useRouteMatch('/answer/:answer_id');
 
+  /**
+   * Get answer id from url
+   */
   const answer_id = useMemo(() => match && match.params.answer_id, [match]);
 
+  /**
+   * Validate a TRAPI message and either display any errors or initialize the answer store
+   * @param {object|String} answerResponse - Either an object with error message or stringified message object
+   */
   function validateAndInitializeMessage(answerResponse) {
     if (answerResponse.status === 'error') {
       pageStatus.setFailure(answerResponse.message);
@@ -72,8 +81,7 @@ export default function Answer() {
     }
 
     try {
-      const standardQueryGraph = queryGraphUtils.standardize(answerResponseJSON.message.query_graph);
-      answerResponseJSON.message.query_graph = standardQueryGraph;
+      answerResponseJSON.message.query_graph = queryGraphUtils.standardize(answerResponseJSON.message.query_graph);
       try {
         answerStore.initialize(answerResponseJSON.message);
         pageStatus.setSuccess();
@@ -85,6 +93,9 @@ export default function Answer() {
     }
   }
 
+  /**
+   * Get a message by id from Robokache
+   */
   async function fetchAnswerData() {
     pageStatus.setLoading('Loading Message...');
     const answerResponse = await API.cache.getAnswerData(answer_id, user && user.id_token);
@@ -92,6 +103,9 @@ export default function Answer() {
     validateAndInitializeMessage(answerResponse);
   }
 
+  /**
+   * Get or reset stored message whenever the answer id or user changes
+   */
   useEffect(() => {
     if (answer_id) {
       idbDelete('quick_message');

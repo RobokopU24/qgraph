@@ -18,11 +18,15 @@ export default function QuestionTableRow({ question }) {
   const visibility = useVisibility();
   const user = useContext(UserContext);
 
+  /**
+   * Handle row click and redirect to most recent answer
+   */
   async function getAnswers() {
     let token;
     if (user) {
       token = user.id_token;
     }
+    // Get all answers for selected question
     const response = await API.cache.getAnswersByQuestion(question.id, token);
     if (response.status === 'error') {
       console.log('failed to get answers');
@@ -31,6 +35,7 @@ export default function QuestionTableRow({ question }) {
     }
 
     if (response.length) {
+      // redirect to first answer
       const answerId = response[0].id;
       history.push(`/answer/${answerId}`);
     } else {

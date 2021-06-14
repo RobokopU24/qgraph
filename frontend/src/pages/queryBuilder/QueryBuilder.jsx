@@ -71,6 +71,11 @@ export default function QueryBuilder() {
     }
   }
 
+  /**
+   * Get new answer for stored question id
+   * @param {string} questionId - question id
+   * @returns {object} response
+   */
   async function fetchAnswer(questionId) {
     let response = await API.queryDispatcher.getAnswer(questionId, user.id_token);
     if (response.status === 'error') {
@@ -94,6 +99,13 @@ export default function QueryBuilder() {
     return { status: 'success', answerId };
   }
 
+  /**
+   * Handle user question submission
+   *
+   * - Uploads a question to Robokache
+   * - Fetches an answer from an ARA and stores in Robokache
+   * - Notifies the user when the answer is ready
+   */
   async function onSubmit() {
     const defaultQuestion = {
       parent: '',
