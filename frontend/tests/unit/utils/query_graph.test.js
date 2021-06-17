@@ -1,6 +1,6 @@
 import qgUtils from '~/utils/queryGraph';
 
-import test_message from '../../common/test_message.json';
+import test_message from '&/test_message.json';
 
 describe('Answer Page Query Graph Utils', () => {
   it('makes node and edge lists', () => {

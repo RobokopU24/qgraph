@@ -1,7 +1,7 @@
 import kgUtils from '~/utils/knowledgeGraph';
 
-import test_message from '../../common/test_message.json';
-import biolink from '../../common/biolink.json';
+import test_message from '&/test_message.json';
+import biolink from '&/biolink.json';
 
 describe('Knowledge Graph Utils', () => {
   it('makes full node and edge lists', () => {

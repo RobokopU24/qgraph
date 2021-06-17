@@ -21,7 +21,7 @@
     "knowledge_graph": {
       "nodes": {
         "1": {
-          "name": "Ebola Hemmorrhagic Fever",
+          "name": "Ebola Hemorrhagic Fever",
           "categories": ["biolink:Disease"]
         },
         "2": {
@@ -41,7 +41,7 @@
       {
         "node_bindings": {
           "n1": [{ "id": "1" }],
-          "n2": [{ "id": "2" }]
+          "n0": [{ "id": "2" }]
         },
         "edge_bindings": {
           "e0": [{ "id": "1" }]
