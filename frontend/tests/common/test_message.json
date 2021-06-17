@@ -3,11 +3,11 @@
     "query_graph": {
       "nodes": {
         "n1": {
-          "id": "MONDO:0005737",
+          "ids": ["MONDO:0005737"],
           "is_set": false
         },
         "n0": {
-          "category": "biolink:Gene",
+          "categories": ["biolink:Gene"],
           "is_set": true
         }
       },
@@ -22,11 +22,11 @@
       "nodes": {
         "1": {
           "name": "Ebola Hemmorrhagic Fever",
-          "category": ["biolink:Disease"]
+          "categories": ["biolink:Disease"]
         },
         "2": {
           "name": "NPC1",
-          "category": ["biolink:Gene"]
+          "categories": ["biolink:Gene"]
         }
       },
       "edges": {

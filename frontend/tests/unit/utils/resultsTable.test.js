@@ -1,7 +1,7 @@
 import resultsUtils, { findStartingNode, sortNodes } from '~/utils/results';
 
-import test_message from './test_message.json';
-import query_graph from './query_graph.json';
+import test_message from '&/test_message.json';
+import query_graph from '&/query_graph.json';
 
 describe('Results Table', () => {
   it('finds the root node', () => {

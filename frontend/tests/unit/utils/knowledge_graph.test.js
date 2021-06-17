@@ -1,7 +1,7 @@
 import kgUtils from '~/utils/knowledgeGraph';
 
-import test_message from './test_message.json';
-import hierarchies from './hierarchies.json';
+import test_message from '../../common/test_message.json';
+import biolink from '../../common/biolink.json';
 
 describe('Knowledge Graph Utils', () => {
   it('makes full node and edge lists', () => {
@@ -10,7 +10,7 @@ describe('Knowledge Graph Utils', () => {
     expect(edges[0].target).toBe('2');
   });
   it('makes bubble graph nodes', () => {
-    const nodes = kgUtils.makeDisplayNodes(test_message.message, hierarchies);
+    const nodes = kgUtils.makeDisplayNodes(test_message.message, biolink.hierarchies);
     expect(nodes[0].id).toBe('1');
     expect(nodes[1].count).toBe(1);
   });
