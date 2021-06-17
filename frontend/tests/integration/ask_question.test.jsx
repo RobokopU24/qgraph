@@ -12,63 +12,15 @@ import App from '~/App';
 jest.mock('~/pages/answer/fullKg/simulation.worker.js');
 // https://jestjs.io/docs/timer-mocks#run-pending-timers
 jest.useFakeTimers();
-jest.mock('idb-keyval', () => ({
-  set: jest.fn()
-    .mockImplementationOnce(() => Promise.resolve()),
-  get: jest.fn()
-    .mockImplementation(() => Promise.resolve(JSON.stringify({
-      message: {
-        query_graph: {
-          nodes: {
-            n1: {
-              ids: ['MONDO:0005737'],
-              is_set: false,
-            },
-            n0: {
-              categories: ['biolink:Gene'],
-              is_set: true,
-            },
-          },
-          edges: {
-            e0: {
-              subject: 'n0',
-              object: 'n1',
-            },
-          },
-        },
-        knowledge_graph: {
-          nodes: {
-            1: {
-              name: 'Ebola Hemorrhagic Fever',
-              categories: ['biolink:Disease'],
-            },
-            2: {
-              name: 'NPC1',
-              categories: ['biolink:Gene'],
-            },
-          },
-          edges: {
-            1: {
-              subject: 1,
-              object: 2,
-              predicate: [],
-            },
-          },
-        },
-        results: [
-          {
-            node_bindings: {
-              n1: [{ id: 1 }],
-              n0: [{ id: 2 }],
-            },
-            edge_bindings: {
-              e0: [{ id: 1 }],
-            },
-          },
-        ],
-      },
-    }))),
-}));
+jest.mock('idb-keyval', () => {
+  const saved_message = require('&/test_message.json');
+  return {
+    set: jest.fn()
+      .mockImplementationOnce(() => Promise.resolve()),
+    get: jest.fn()
+      .mockImplementation(() => Promise.resolve(JSON.stringify(saved_message))),
+  };
+});
 
 describe('Full question workflow', () => {
   beforeEach(() => {
