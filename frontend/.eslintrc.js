@@ -15,6 +15,7 @@ module.exports = {
       alias: {
         map: [
           ['~', path.resolve(__dirname, 'src')],
+          ['&', path.resolve(__dirname, 'tests/common/')],
         ],
         extensions: ['.jsx', '.js'],
       },
