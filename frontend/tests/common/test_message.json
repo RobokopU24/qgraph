@@ -3,7 +3,7 @@
     "query_graph": {
       "nodes": {
         "n0": {
-          "category": ["biolink:Gene"],
+          "categories": ["biolink:Gene"],
           "is_set": true
         },
         "n1": {
@@ -22,11 +22,11 @@
       "nodes": {
         "1": {
           "name": "NPC1",
-          "category": ["biolink:Gene"]
+          "categories": ["biolink:Gene"]
         },
         "2": {
           "name": "Ebola Hemorrhagic Fever",
-          "category": ["biolink:Disease"]
+          "categories": ["biolink:Disease"]
         }
       },
       "edges": {
