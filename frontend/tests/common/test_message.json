@@ -2,13 +2,13 @@
   "message": {
     "query_graph": {
       "nodes": {
-        "n1": {
-          "ids": ["MONDO:0005737"],
-          "is_set": false
-        },
         "n0": {
-          "categories": ["biolink:Gene"],
+          "category": ["biolink:Gene"],
           "is_set": true
+        },
+        "n1": {
+          "id": ["MONDO:0005737"],
+          "is_set": false
         }
       },
       "edges": {
@@ -21,12 +21,12 @@
     "knowledge_graph": {
       "nodes": {
         "1": {
-          "name": "Ebola Hemorrhagic Fever",
-          "categories": ["biolink:Disease"]
+          "name": "NPC1",
+          "category": ["biolink:Gene"]
         },
         "2": {
-          "name": "NPC1",
-          "categories": ["biolink:Gene"]
+          "name": "Ebola Hemorrhagic Fever",
+          "category": ["biolink:Disease"]
         }
       },
       "edges": {
@@ -40,8 +40,8 @@
     "results": [
       {
         "node_bindings": {
-          "n1": [{ "id": "1" }],
-          "n0": [{ "id": "2" }]
+          "n0": [{ "id": "1" }],
+          "n1": [{ "id": "2" }]
         },
         "edge_bindings": {
           "e0": [{ "id": "1" }]
