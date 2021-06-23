@@ -244,9 +244,6 @@ function prune(q_graph) {
   Object.keys(clonedQueryGraph.nodes).forEach((n) => {
     pruneEmptyArray(clonedQueryGraph.nodes[n], 'category');
     pruneEmptyArray(clonedQueryGraph.nodes[n], 'id');
-    // if (clonedQueryGraph.nodes[n].id && clonedQueryGraph.nodes[n].category) {
-    //   delete clonedQueryGraph.nodes[n].category;
-    // }
     if (clonedQueryGraph.nodes[n].id) {
       clonedQueryGraph.nodes[n].ids = clonedQueryGraph.nodes[n].id;
       delete clonedQueryGraph.nodes[n].id;
