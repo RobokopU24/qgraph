@@ -39,6 +39,12 @@ export default function useAnswerStore() {
     resetAnswerExplorer();
   }
 
+  function reset() {
+    setMessage({});
+    setKgNodes([]);
+    resetAnswerExplorer();
+  }
+
   /**
    * Get metadata of result when selected in the results table
    * @param {object} row - result object from message that was selected
@@ -80,7 +86,7 @@ export default function useAnswerStore() {
       Object.entries(row.node_bindings).forEach(([qg_id, value]) => {
         value.forEach((kgObject) => {
           const kgNode = message.knowledge_graph.nodes[kgObject.id];
-          let categories = kgNode.category;
+          let { categories } = kgNode;
           if (categories && !Array.isArray(categories)) {
             categories = [categories];
           }
@@ -112,6 +118,7 @@ export default function useAnswerStore() {
 
   return {
     initialize,
+    reset,
     message,
 
     kgNodes,

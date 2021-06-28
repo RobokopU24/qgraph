@@ -49,7 +49,7 @@ function makeDisplayNodes(message, hierarchies) {
         let displayNode = displayNodes[kgObj.id];
         if (!displayNode) {
           displayNode = _.cloneDeep(kgObj);
-          let categories = message.knowledge_graph.nodes[displayNode.id].category;
+          let { categories } = message.knowledge_graph.nodes[displayNode.id];
           if (categories && !Array.isArray(categories)) {
             categories = [categories];
           }

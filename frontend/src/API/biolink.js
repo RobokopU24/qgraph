@@ -9,7 +9,7 @@ const routes = {
    */
   async getModelSpecification() {
     const config = {
-      url: 'https://raw.githubusercontent.com/biolink/biolink-model/master/biolink-model.yaml',
+      url: 'https://raw.githubusercontent.com/biolink/biolink-model/1.8.2/biolink-model.yaml',
       method: 'GET',
     };
     let response;

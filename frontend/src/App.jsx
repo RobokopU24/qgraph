@@ -11,7 +11,6 @@ import QueryBuilder from '~/pages/queryBuilder/QueryBuilder';
 import Answer from '~/pages/answer/Answer';
 
 import QuestionList from '~/pages/questionList/QuestionList';
-import QuestionAnswerViewer from '~/pages/questionAnswerViewer/QuestionAnswerViewer';
 
 import Header from '~/components/header/Header';
 import Footer from '~/components/footer/Footer';
@@ -74,16 +73,13 @@ export default function App() {
                       <Route path="/questions">
                         <QuestionList />
                       </Route>
-                      <Route path="/question/:question_id">
-                        <QuestionAnswerViewer />
-                      </Route>
                       <Route path="/termsofservice">
                         <TermsofService />
                       </Route>
                       <Route path="/question">
                         <QueryBuilder />
                       </Route>
-                      <Route path="/answer">
+                      <Route path="/answer/:answer_id?">
                         <Answer />
                       </Route>
                       <Route path="/">

@@ -15,6 +15,7 @@ module.exports = {
       alias: {
         map: [
           ['~', path.resolve(__dirname, 'src')],
+          ['&', path.resolve(__dirname, 'tests/common/')],
         ],
         extensions: ['.jsx', '.js'],
       },
@@ -54,7 +55,7 @@ module.exports = {
     'import/no-extraneous-dependencies': [
       'error',
       {
-        devDependencies: ['**/webpack*', '**/tests/*'],
+        devDependencies: ['**/webpack*', '**/tests/**'],
       },
     ],
     'react/jsx-filename-extension': [

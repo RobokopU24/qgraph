@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import TableRow from '@material-ui/core/TableRow';
@@ -9,20 +9,48 @@ import ClearIcon from '@material-ui/icons/Clear';
 
 import { green, red } from '@material-ui/core/colors';
 
+import API from '~/API';
 import { useVisibility, formatDateTimeNicely } from '~/utils/cache';
+import UserContext from '~/context/user';
+import AlertContext from '~/context/alert';
 
 export default function QuestionTableRow({ question }) {
   const history = useHistory();
   const visibility = useVisibility();
+  const user = useContext(UserContext);
+  const displayAlert = useContext(AlertContext);
+
+  /**
+   * Handle row click and redirect to most recent answer
+   */
+  async function getAnswers() {
+    let token;
+    if (user) {
+      token = user.id_token;
+    }
+    // Get all answers for selected question
+    const response = await API.cache.getAnswersByQuestion(question.id, token);
+    if (response.status === 'error') {
+      displayAlert('error', 'Failed to load answers.');
+      return;
+    }
+
+    if (response.length) {
+      // redirect to first answer
+      const answerId = response[0].id;
+      history.push(`/answer/${answerId}`);
+    } else {
+      displayAlert('warning', 'There are no answers for this question.');
+    }
+  }
 
   return (
     <TableRow
       key={question.id}
-      onClick={() => history.push(`/question/${question.id}`)}
+      onClick={getAnswers}
       hover
       style={{ cursor: 'pointer' }}
     >
-
       <TableCell>
         {question.metadata.name}
       </TableCell>
