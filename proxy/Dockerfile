@@ -1,4 +1,4 @@
-FROM nginx:stable-alpine
+FROM nginx:1.21.0
 
 # Add image info
 LABEL org.opencontainers.image.source https://github.com/NCATS-Gamma/robokop-rewrite
