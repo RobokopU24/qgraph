@@ -14,4 +14,10 @@ services:
     volumes:
       - ./query-dispatcher:/app
       - /app/node_modules
+    environment:
+      # deployed locally, we need to look at external robokop ara url
+      ROBOKOP_URL: http://robokop.renci.org:7092
     command: npm run dev
+  proxy:
+    environment:
+      ROBOKOP_URL: http://robokop.renci.org:7092

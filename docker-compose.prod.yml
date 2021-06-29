@@ -4,10 +4,10 @@ services:
   frontend:
     build:
       dockerfile: Dockerfile.prod
+  proxy:
     environment:
-      MESSENGER_HOST: http://messenger:4868
-
-networks:
-  default:
-    external:
-      name: robokop_default    
+      # deployed on renci servers, we need to look at local docker container
+      ROBOKOP_URL: http://robokop-ara:7092
+  query-dispatcher:
+    environment:
+      ROBOKOP_URL: http://robokop-ara:7092
