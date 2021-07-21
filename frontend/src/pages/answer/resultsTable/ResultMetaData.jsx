@@ -25,11 +25,11 @@ function expansionReducer(state, action) {
 }
 
 /**
- * Show expandable supporting publications for all edges of a selected result
+ * Show meta data of a selected result
  * @param {object} metaData - selected result edge metadata
  * @param {object} result - full node and edge result json from knowledge graph
  */
-export default function SupportingPublications({ metaData, result }) {
+export default function ResultMetaData({ metaData, result }) {
   const [expanded, updateExpanded] = useReducer(expansionReducer, {});
   const [showJSON, toggleJSONVisibility] = useState(false);
 
