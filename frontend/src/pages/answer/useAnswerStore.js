@@ -59,11 +59,11 @@ export default function useAnswerStore() {
     } else {
       const edges = [];
       const edgePublications = {};
-      const edgesJSON = [];
+      const edgesJSON = {};
       Object.values(row.edge_bindings).forEach((value) => {
         value.forEach((kgObject) => {
           const kgEdge = message.knowledge_graph.edges[kgObject.id];
-          edgesJSON.push(kgEdge);
+          edgesJSON[kgObject.id] = kgEdge;
           const graphEdge = {
             id: kgObject.id,
             source: kgEdge.subject,
@@ -88,11 +88,11 @@ export default function useAnswerStore() {
         });
       });
       const nodes = [];
-      const nodesJSON = [];
+      const nodesJSON = {};
       Object.entries(row.node_bindings).forEach(([qg_id, value]) => {
         value.forEach((kgObject) => {
           const kgNode = message.knowledge_graph.nodes[kgObject.id];
-          nodesJSON.push(kgNode);
+          nodesJSON[kgObject.id] = kgNode;
           let { categories } = kgNode;
           if (categories && !Array.isArray(categories)) {
             categories = [categories];
@@ -111,7 +111,7 @@ export default function useAnswerStore() {
       setSelectedRowId(rowId);
       setMetaData(edgePublications);
       // store full result JSON
-      setResultJSON({ nodes: nodesJSON, edges: edgesJSON });
+      setResultJSON({ knowledge_graph: { nodes: nodesJSON, edges: edgesJSON }, result: row });
     }
   }
 
