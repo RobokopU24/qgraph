@@ -4,11 +4,11 @@ services:
   proxy:
     build: proxy/
     ports:
-      - "80:80"
+      - "7080:7080"
     environment:
       DNS_SERVER: 127.0.0.11
       ROBOKACHE_URL: http://robokache
-      FRONTEND_URL: http://frontend
+      FRONTEND_URL: http://frontend:7080
       QUERYDISPATCHER_URL: http://query-dispatcher
       STRIDER_URL: https://strider.renci.org/1.1
   frontend:
