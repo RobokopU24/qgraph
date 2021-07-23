@@ -17,6 +17,7 @@ import API from '~/API';
 import './questionList.css';
 
 import UserContext from '~/context/user';
+import BrandContext from '~/context/brand';
 
 import usePageStatus from '~/stores/usePageStatus';
 
@@ -32,6 +33,7 @@ export default function QuestionList() {
   const [publicQuestionsRowsPerPage, publicQuestionsUpdateRowsPerPage] = useState(5);
 
   const user = useContext(UserContext);
+  const brandConfig = useContext(BrandContext);
 
   const pageStatus = usePageStatus(true);
 
@@ -55,7 +57,7 @@ export default function QuestionList() {
     <>
       <Box my={4}>
         <Typography variant="h3">
-          Robokop Question Library
+          {brandConfig.title} Question Library
         </Typography>
       </Box>
 

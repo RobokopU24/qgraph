@@ -4,6 +4,8 @@ services:
   frontend:
     build:
       dockerfile: Dockerfile.prod
+    environment:
+      BRAND: robokop
   proxy:
     environment:
       # deployed on renci servers, we need to look at local docker container

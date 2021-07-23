@@ -1,0 +1,15 @@
+version: '3.5'
+
+services:
+  frontend:
+    build:
+      dockerfile: Dockerfile.prod
+    environment:
+      BRAND: qgraph
+  proxy:
+    environment:
+      # deployed on AWS, we need to use external robokop ara url
+      ROBOKOP_URL: http://robokop.renci.org:7092
+  query-dispatcher:
+    environment:
+      ROBOKOP_URL: http://robokop.renci.org:7092
