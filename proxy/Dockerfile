@@ -1,7 +1,7 @@
 FROM nginx:1.21.0
 
 # Add image info
-LABEL org.opencontainers.image.source https://github.com/NCATS-Gamma/robokop-rewrite
+LABEL org.opencontainers.image.source https://github.com/NCATS-Gamma/qgraph
 
 # Output rendered templates to /etc/nginx
 ENV NGINX_ENVSUBST_OUTPUT_DIR /etc/nginx
