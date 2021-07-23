@@ -94,21 +94,13 @@ export default function App() {
                         <Route path="/answer/:answer_id?">
                           <Answer />
                         </Route>
-                        {brandConfig.brand === 'robokop' ? (
-                          <>
-                            <Route path="/question">
-                              <QueryBuilder />
-                            </Route>
-                            <Route path="/">
-                              <Landing />
-                            </Route>
-                          </>
-                        ) : (
-                          <>
-                            <Route path="/">
-                              <QueryBuilder />
-                            </Route>
-                          </>
+                        <Route path={brandConfig.brand === 'robokop' ? '/question' : '/'}>
+                          <QueryBuilder />
+                        </Route>
+                        {brandConfig.brand === 'robokop' && (
+                          <Route path="/">
+                            <Landing />
+                          </Route>
                         )}
                       </Switch>
                     </div>

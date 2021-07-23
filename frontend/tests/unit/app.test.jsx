@@ -1,9 +1,11 @@
 import React from 'react';
 import {
-  render, screen,
+  render, screen, waitFor,
 } from '&/test_utils';
 
+import mockAxios from '&/axios';
 import App from '~/App';
+import biolink from '&/biolink_model.json';
 
 // needed for web worker import
 jest.mock('~/pages/answer/fullKg/simulation.worker.js');
@@ -20,13 +22,19 @@ describe('<App />', () => {
   afterEach(() => {
     process.env = OLD_ENV;
   });
-  it('loads the Robokop homepage', () => {
+  it('loads the Robokop homepage', async () => {
+    jest.clearAllMocks();
     process.env.BRAND = 'robokop';
+    const biolinkCall = mockAxios.mockResponse(biolink);
     render(<App />);
+    await waitFor(() => expect(biolinkCall).toHaveBeenCalledTimes(1));
     expect(screen.getByText('Robokop Apps')).toBeTruthy();
   });
-  it('loads the qgraph query builder', () => {
+  it('loads the qgraph query builder', async () => {
+    jest.clearAllMocks();
+    const biolinkCall = mockAxios.mockResponse(biolink);
     render(<App />);
+    await waitFor(() => expect(biolinkCall).toHaveBeenCalledTimes(1));
     expect(screen.getByText('Quick Submit')).toBeTruthy();
   });
 });
