@@ -37,11 +37,9 @@ describe('Full question workflow', () => {
     mockAxios.mockResponse(biolink);
     render(<App />);
     // wait for initial api calls
-    await screen.findByText('Question Builder');
-    fireEvent.click(screen.getByText('Question Builder'));
 
     // update n0
-    const n0 = screen.getAllByRole('combobox')[0];
+    const n0 = await screen.getAllByRole('combobox')[0];
     const n0Input = within(n0).getByRole('textbox');
     n0.focus();
     mockAxios.mockNameResolver('MONDO:0005737');

@@ -5,6 +5,7 @@ module.exports = {
   ],
   setupFilesAfterEnv: [
     '<rootDir>/test_config/setupTests.js',
+    '<rootDir>/test_config/setEnvVars.js',
   ],
   moduleFileExtensions: [
     'js',

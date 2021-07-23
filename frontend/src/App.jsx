@@ -104,9 +104,11 @@ export default function App() {
                             </Route>
                           </>
                         ) : (
-                          <Route path="/">
-                            <QueryBuilder />
-                          </Route>
+                          <>
+                            <Route path="/">
+                              <QueryBuilder />
+                            </Route>
+                          </>
                         )}
                       </Switch>
                     </div>
