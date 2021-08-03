@@ -28,7 +28,7 @@ describe('<App />', () => {
     const biolinkCall = mockAxios.mockResponse(biolink);
     render(<App />);
     await waitFor(() => expect(biolinkCall).toHaveBeenCalledTimes(1));
-    expect(screen.getByText('Robokop Apps')).toBeTruthy();
+    expect(screen.getByText('ROBOKOP Apps')).toBeTruthy();
   });
   it('loads the qgraph query builder', async () => {
     jest.clearAllMocks();
