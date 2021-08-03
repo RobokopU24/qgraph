@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Drawer from '@material-ui/core/Drawer';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
@@ -10,6 +10,8 @@ import IconButton from '@material-ui/core/IconButton';
 
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
+
+import BrandContext from '~/context/brand';
 
 import './leftDrawer.css';
 
@@ -23,6 +25,7 @@ import './leftDrawer.css';
 export default function LeftDrawer({
   onUpload, displayState, updateDisplayState, message,
 }) {
+  const brandConfig = useContext(BrandContext);
   function toggleDisplay(component, show) {
     updateDisplayState({ type: 'toggle', payload: { component, show } });
   }
@@ -33,7 +36,7 @@ export default function LeftDrawer({
   async function download() {
     const blob = new Blob([JSON.stringify(message, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
-    a.download = 'qgraph_message.json';
+    a.download = `${brandConfig.title}_message.json`;
     a.href = window.URL.createObjectURL(blob);
     document.body.appendChild(a);
     a.click();
