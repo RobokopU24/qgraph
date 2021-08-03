@@ -48,7 +48,7 @@ export default function QueryBuilder() {
    */
   async function onQuickSubmit() {
     pageStatus.setLoading('Fetching answer, this may take a while');
-    const prunedQueryGraph = queryGraphUtils.prune(queryBuilder.state.query_graph);
+    const prunedQueryGraph = queryGraphUtils.prune(queryBuilder.query_graph);
     const response = await API.ara.getAnswer({ message: { query_graph: prunedQueryGraph } });
 
     if (response.status === 'error') {
@@ -122,7 +122,7 @@ export default function QueryBuilder() {
     const questionId = response.id;
 
     // Strip labels from nodes
-    const prunedQueryGraph = queryGraphUtils.prune(queryBuilder.state.query_graph);
+    const prunedQueryGraph = queryGraphUtils.prune(queryBuilder.query_graph);
 
     // Upload question data
     const questionData = JSON.stringify({ message: { query_graph: prunedQueryGraph } }, null, 2);

@@ -25,16 +25,16 @@ import QueryBuilderContext from '~/context/queryBuilder';
 export default function JsonEditor({ show, close }) {
   const queryBuilder = useContext(QueryBuilderContext);
   const [errorMessages, setErrorMessages] = useState('');
-  const { query_graph } = queryBuilder.state;
-  const [internalQueryGraph, updateInternalQueryGraph] = useState(query_graph);
+  const { message } = queryBuilder.state;
+  const [localMessage, updateLocalMessage] = useState(message);
   const pageStatus = usePageStatus(false);
   const displayAlert = useContext(AlertContext);
 
   function updateJson(e) {
     // updated_src is the updated graph RJV gives back
     const data = e.updated_src;
-    setErrorMessages(trapiUtils.validateGraph(data, 'Query Graph'));
-    updateInternalQueryGraph(data);
+    setErrorMessages(trapiUtils.validateMessage(data));
+    updateLocalMessage(data);
   }
 
   function onUpload(event) {
@@ -57,7 +57,8 @@ export default function JsonEditor({ show, close }) {
           } else {
             setErrorMessages(trapiUtils.validateGraph(graph, 'Query Graph'));
           }
-          updateInternalQueryGraph(graph);
+          setErrorMessages(trapiUtils.validateMessage(graph));
+          updateLocalMessage(graph);
         } catch (err) {
           displayAlert('error', 'Failed to read this query graph. Are you sure this is valid JSON?');
         }
@@ -73,12 +74,13 @@ export default function JsonEditor({ show, close }) {
 
   useEffect(() => {
     if (show) {
-      updateInternalQueryGraph(query_graph);
+      setErrorMessages(trapiUtils.validateMessage(message));
+      updateLocalMessage(message);
     }
   }, [show]);
 
   function saveGraph() {
-    queryBuilder.dispatch({ type: 'saveGraph', payload: internalQueryGraph });
+    queryBuilder.dispatch({ type: 'saveGraph', payload: localMessage });
   }
 
   return (
@@ -155,7 +157,7 @@ export default function JsonEditor({ show, close }) {
                 displayObjectSize={false}
                 displayDataTypes={false}
                 defaultValue=""
-                src={internalQueryGraph}
+                src={localMessage}
                 onEdit={updateJson}
                 onAdd={updateJson}
                 onDelete={updateJson}
