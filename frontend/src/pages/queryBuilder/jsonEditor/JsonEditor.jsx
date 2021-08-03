@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 
-import ReactJson from 'react-json-view';
+import ReactJsonView from 'react-json-view';
+import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -8,14 +9,15 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import CheckIcon from '@material-ui/icons/Check';
-// import UndoIcon from '@material-ui/icons/Undo';
 import CloseIcon from '@material-ui/icons/Close';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
+import SaveIcon from '@material-ui/icons/Save';
 
 import trapiUtils from '~/utils/trapi';
 import usePageStatus from '~/stores/usePageStatus';
 import AlertContext from '~/context/alert';
 import QueryBuilderContext from '~/context/queryBuilder';
+import ClipboardButton from '~/components/shared/ClipboardButton';
 
 /**
  * Query Builder json editor interface
@@ -113,15 +115,24 @@ export default function JsonEditor({ show, close }) {
                 onChange={(e) => onUpload(e)}
                 disabled={!pageStatus.displayPage}
               />
-              <IconButton
+              <Button
                 component="span"
+                variant="contained"
                 disabled={!pageStatus.displayPage}
-                style={{ fontSize: '18px' }}
-                title="Load"
+                style={{ margin: '0px 10px' }}
+                title="Load Message"
+                startIcon={<CloudUploadIcon />}
               >
-                <CloudUploadIcon />
-              </IconButton>
+                Upload
+              </Button>
             </label>
+            <ClipboardButton
+              startIcon={<FileCopyIcon />}
+              displayText="Copy"
+              clipboardText={JSON.stringify(localMessage, null, 2)}
+              notificationText="Copied JSON to clipboard!"
+              disabled={!pageStatus.displayPage}
+            />
           </div>
           <div style={{ color: '#777' }}>
             Query Graph JSON Editor
@@ -148,12 +159,13 @@ export default function JsonEditor({ show, close }) {
                 flexGrow: 1,
               }}
             >
-              <ReactJson
+              <ReactJsonView
                 name={false}
                 theme="rjv-default"
                 collapseStringsAfterLength={15}
                 indentWidth={2}
                 iconStyle="triangle"
+                enableClipboard={false}
                 displayObjectSize={false}
                 displayDataTypes={false}
                 defaultValue=""
@@ -177,19 +189,18 @@ export default function JsonEditor({ show, close }) {
         )}
       </DialogContent>
       <DialogActions>
-        <IconButton
+        <Button
+          startIcon={<SaveIcon />}
           disabled={errorMessages.length > 0 || !pageStatus.displayPage}
-          style={{
-            fontSize: '18px',
-          }}
+          variant="contained"
           title="Save Changes"
           onClick={() => {
             saveGraph();
             close();
           }}
         >
-          <CheckIcon />
-        </IconButton>
+          Save
+        </Button>
       </DialogActions>
     </Dialog>
   );
