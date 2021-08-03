@@ -1,7 +1,7 @@
 FROM node:latest
 
 # Add image info
-LABEL org.opencontainers.image.source https://github.com/NCATS-Gamma/robokop-rewrite
+LABEL org.opencontainers.image.source https://github.com/NCATS-Gamma/qgraph
 
 # Create a folder to add the code to
 WORKDIR /app

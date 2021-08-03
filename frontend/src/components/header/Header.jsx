@@ -13,6 +13,7 @@ import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined'
 
 import UserContext from '~/context/user';
 import AlertContext from '~/context/alert';
+import BrandContext from '~/context/brand';
 
 import googleIcon from '../../../public/images/btn_google_light_normal_ios.svg';
 
@@ -24,6 +25,7 @@ export default function Header({ setUser }) {
 
   const user = useContext(UserContext);
   const displayAlert = useContext(AlertContext);
+  const brandConfig = useContext(BrandContext);
 
   /**
    * Automatically refresh a user token a minute before it expires
@@ -112,12 +114,16 @@ export default function Header({ setUser }) {
   return (
     <AppBar position="relative" className="header">
       <Toolbar id="headerToolbar">
-        <Link to="/" id="robokopBrand">Robokop</Link>
+        <Link to="/" id="robokopBrand">{brandConfig.title}</Link>
         <Link to="/questions">Question Library</Link>
         <div className="grow" />
-        <Link to="/about">About</Link>
-        <Link to="/help">Help</Link>
-        <Link to="/guide">Guide</Link>
+        {brandConfig.brand === 'robokop' && (
+          <>
+            <Link to="/about">About</Link>
+            <Link to="/help">Help</Link>
+            <Link to="/guide">Guide</Link>
+          </>
+        )}
         <Divider orientation="vertical" variant="middle" flexItem />
         <IconButton
           onClick={openSignIn}

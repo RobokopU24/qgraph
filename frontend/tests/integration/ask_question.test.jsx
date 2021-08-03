@@ -34,14 +34,13 @@ describe('Full question workflow', () => {
   });
   it('successfully asks a question', async () => {
     // biolink model response
-    mockAxios.mockResponse(biolink);
+    const biolinkCall = mockAxios.mockResponse(biolink);
     render(<App />);
     // wait for initial api calls
-    await screen.findByText('Question Builder');
-    fireEvent.click(screen.getByText('Question Builder'));
+    await waitFor(() => expect(biolinkCall).toHaveBeenCalledTimes(1));
 
     // update n0
-    const n0 = screen.getAllByRole('combobox')[0];
+    const n0 = await screen.getAllByRole('combobox')[0];
     const n0Input = within(n0).getByRole('textbox');
     n0.focus();
     mockAxios.mockNameResolver('MONDO:0005737');

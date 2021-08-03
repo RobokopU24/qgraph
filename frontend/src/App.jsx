@@ -22,12 +22,17 @@ import API from '~/API';
 import UserContext from '~/context/user';
 import AlertContext from '~/context/alert';
 import BiolinkContext from '~/context/biolink';
+import BrandContext from '~/context/brand';
 
 import useBiolinkModel from '~/stores/useBiolinkModel';
+
+import robokop_config from './robokop_config.json';
+import qgraph_config from './qgraph_config.json';
 
 export default function App() {
   const [user, setUser] = useState(null);
   const [alert, setAlert] = useState({});
+  const [brandConfig, setBrandConfig] = useState({});
   const biolink = useBiolinkModel();
 
   function simpleSetAlert(severity, msg) {
@@ -44,55 +49,68 @@ export default function App() {
     }
     biolink.setBiolinkModel(response);
   }
-  useEffect(() => { fetchBiolink(); }, []);
+  useEffect(() => {
+    fetchBiolink();
+    const brand = process.env.BRAND;
+    if (brand === 'robokop') {
+      setBrandConfig(robokop_config);
+      document.title = 'ROBOKOP';
+    } else {
+      setBrandConfig(qgraph_config);
+    }
+  }, []);
 
   return (
     <div id="pageContainer">
       <BrowserRouter>
-        <AlertContext.Provider value={simpleSetAlert}>
-          <UserContext.Provider value={user}>
-            <BiolinkContext.Provider value={biolink}>
-              <ThemeProvider theme={theme}>
-                <StylesProvider injectFirst>
-                  <AlertWrapper
-                    alert={alert}
-                    onClose={() => simpleSetAlert(alert.severity, '')}
-                  />
-                  <Header setUser={setUser} />
-                  <div id="contentContainer">
-                    <Switch>
-                      <Route path="/about">
-                        <About />
-                      </Route>
-                      <Route path="/help">
-                        <Help />
-                      </Route>
-                      <Route path="/guide">
-                        <Guide />
-                      </Route>
-                      <Route path="/questions">
-                        <QuestionList />
-                      </Route>
-                      <Route path="/termsofservice">
-                        <TermsofService />
-                      </Route>
-                      <Route path="/question">
-                        <QueryBuilder />
-                      </Route>
-                      <Route path="/answer/:answer_id?">
-                        <Answer />
-                      </Route>
-                      <Route path="/">
-                        <Landing />
-                      </Route>
-                    </Switch>
-                  </div>
-                  <Footer />
-                </StylesProvider>
-              </ThemeProvider>
-            </BiolinkContext.Provider>
-          </UserContext.Provider>
-        </AlertContext.Provider>
+        <BrandContext.Provider value={brandConfig}>
+          <AlertContext.Provider value={simpleSetAlert}>
+            <UserContext.Provider value={user}>
+              <BiolinkContext.Provider value={biolink}>
+                <ThemeProvider theme={theme}>
+                  <StylesProvider injectFirst>
+                    <AlertWrapper
+                      alert={alert}
+                      onClose={() => simpleSetAlert(alert.severity, '')}
+                    />
+                    <Header setUser={setUser} />
+                    <div id="contentContainer">
+                      <Switch>
+                        <Route path="/about">
+                          <About />
+                        </Route>
+                        <Route path="/help">
+                          <Help />
+                        </Route>
+                        <Route path="/guide">
+                          <Guide />
+                        </Route>
+                        <Route path="/questions">
+                          <QuestionList />
+                        </Route>
+                        <Route path="/termsofservice">
+                          <TermsofService />
+                        </Route>
+                        <Route path="/answer/:answer_id?">
+                          <Answer />
+                        </Route>
+                        <Route path={brandConfig.brand === 'robokop' ? '/question' : '/'}>
+                          <QueryBuilder />
+                        </Route>
+                        {brandConfig.brand === 'robokop' && (
+                          <Route path="/">
+                            <Landing />
+                          </Route>
+                        )}
+                      </Switch>
+                    </div>
+                    <Footer />
+                  </StylesProvider>
+                </ThemeProvider>
+              </BiolinkContext.Provider>
+            </UserContext.Provider>
+          </AlertContext.Provider>
+        </BrandContext.Provider>
       </BrowserRouter>
     </div>
   );
