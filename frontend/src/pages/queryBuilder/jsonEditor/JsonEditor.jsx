@@ -48,16 +48,13 @@ export default function JsonEditor({ show, close }) {
       fr.onload = (e) => {
         const fileContents = e.target.result;
         try {
-          let graph = JSON.parse(fileContents);
-          let errors = [];
-          if (graph.message) {
-            errors = trapiUtils.validateMessage(graph);
-            setErrorMessages(errors);
-            if (!errors.length) {
-              graph = graph.message.query_graph;
-            }
-          } else {
-            setErrorMessages(trapiUtils.validateGraph(graph, 'Query Graph'));
+          const graph = JSON.parse(fileContents);
+          // We only need the query graph, so delete any knowledge_graph and results in message
+          if (graph.message && graph.message.knowledge_graph) {
+            delete graph.message.knowledge_graph;
+          }
+          if (graph.message && graph.message.results) {
+            delete graph.message.results;
           }
           setErrorMessages(trapiUtils.validateMessage(graph));
           updateLocalMessage(graph);
@@ -90,7 +87,10 @@ export default function JsonEditor({ show, close }) {
       open={show}
       fullWidth
       maxWidth="lg"
-      onClose={close}
+      onClose={() => {
+        setErrorMessages('');
+        close();
+      }}
     >
       <DialogTitle style={{ padding: 0 }}>
         <div id="jsonEditorTitle">
@@ -142,7 +142,10 @@ export default function JsonEditor({ show, close }) {
               fontSize: '18px',
             }}
             title="Close Editor"
-            onClick={close}
+            onClick={() => {
+              setErrorMessages('');
+              close();
+            }}
           >
             <CloseIcon />
           </IconButton>

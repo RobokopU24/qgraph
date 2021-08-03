@@ -5,6 +5,13 @@ function reducer(state, action) {
     case 'toggle': {
       const { component, show } = action.payload;
       state[component].show = show;
+      state[component].disabled = false;
+      break;
+    }
+    case 'disable': {
+      const { component } = action.payload;
+      state[component].show = false;
+      state[component].disabled = true;
       break;
     }
     default: {

@@ -23,31 +23,35 @@ function validateGraph(graph, graphName) {
   // Check for nodes
   if (!graph.nodes) {
     errors.push(`${graphName} requires a "nodes" property`);
-  } else if (Array.isArray(graph.nodes)) {
+    return errors;
+  }
+  if (Array.isArray(graph.nodes)) {
     errors.push(`${graphName} nodes should be an object`);
-  } else {
-    // Since every node has an id we can check if they are unique
-    const nodeIds = new Set(Object.keys(graph.nodes));
-    const hasUniqueNodeIds = nodeIds.size === Object.keys(graph.nodes).length;
-    if (!hasUniqueNodeIds) {
-      errors.push(`There are multiple ${graphName.toLowerCase()} nodes with the same ID`);
-    }
+    return errors;
+  }
+  // Since every node has an id we can check if they are unique
+  const nodeIds = new Set(Object.keys(graph.nodes));
+  const hasUniqueNodeIds = nodeIds.size === Object.keys(graph.nodes).length;
+  if (!hasUniqueNodeIds) {
+    errors.push(`There are multiple ${graphName.toLowerCase()} nodes with the same ID`);
   }
 
   // Check for edges
   if (!graph.edges) {
     errors.push(`${graphName} requires an "edges" property`);
-  } else if (Array.isArray(graph.edges)) {
+    return errors;
+  }
+  if (Array.isArray(graph.edges)) {
     errors.push(`${graphName} edges should be an object`);
-  } else {
-    // each edge should have a valid source and target id
-    const edgesHaveIds = Object.keys(graph.edges).reduce((val, e) => {
-      const edge = graph.edges[e];
-      return val && edge && edge.subject && edge.object && graph.nodes[edge.subject] && graph.nodes[edge.object];
-    }, true);
-    if (!edgesHaveIds) {
-      errors.push(`Each ${graphName.toLowerCase()} edge must have a valid "subject" and "object" property`);
-    }
+    return errors;
+  }
+  // each edge should have a valid source and target id
+  const edgesHaveIds = Object.keys(graph.edges).reduce((val, e) => {
+    const edge = graph.edges[e];
+    return val && edge && edge.subject && edge.object && graph.nodes && graph.nodes[edge.subject] && graph.nodes[edge.object];
+  }, true);
+  if (!edgesHaveIds) {
+    errors.push(`Each ${graphName.toLowerCase()} edge must have a valid "subject" and "object" property`);
   }
 
   return errors;
@@ -90,7 +94,7 @@ function validateResults(results) {
 /**
  * Simple verification that a message is formatted correctly
  * Returns a list of validation errors.
- * @param {object} message - TRAPI message
+ * @param {Message} message - TRAPI message
  */
 function validateMessage(message) {
   if (!message || message.constructor !== Object) {
@@ -101,8 +105,13 @@ function validateMessage(message) {
   }
 
   let errors = validateGraph(message.message.query_graph, 'Query Graph');
-  errors = [...errors, ...validateGraph(message.message.knowledge_graph, 'Knowledge Graph')];
-  errors = [...errors, ...validateResults(message.message.results)];
+  // A knowledge_graph and results are not required in a trapi message
+  if (message.message.knowledge_graph) {
+    errors = [...errors, ...validateGraph(message.message.knowledge_graph, 'Knowledge Graph')];
+  }
+  if (message.message.results) {
+    errors = [...errors, ...validateResults(message.message.results)];
+  }
 
   return errors;
 }
