@@ -8,6 +8,7 @@ import Paper from '@material-ui/core/Paper';
 import BiolinkContext from '~/context/biolink';
 import dragUtils from '~/utils/d3/drag';
 import graphUtils from '~/utils/d3/graph';
+import edgeUtils from '~/utils/d3/edges';
 import queryGraphUtils from '~/utils/queryGraph';
 import stringUtils from '~/utils/strings';
 
@@ -124,7 +125,7 @@ export default function QueryGraph({ query_graph }) {
             })
             .each(graphUtils.ellipsisOverflow));
 
-    edges = queryGraphUtils.addEdgeCurveProperties(edges);
+    edges = edgeUtils.addEdgeCurveProperties(edges);
     edge = edge.data(edges)
       .enter()
         .append('g')

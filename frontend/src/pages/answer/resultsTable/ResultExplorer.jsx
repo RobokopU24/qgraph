@@ -8,6 +8,7 @@ import Paper from '@material-ui/core/Paper';
 import BiolinkContext from '~/context/biolink';
 import dragUtils from '~/utils/d3/drag';
 import graphUtils from '~/utils/d3/graph';
+import edgeUtils from '~/utils/d3/edges';
 import stringUtils from '~/utils/strings';
 import queryGraphUtils from '~/utils/queryGraph';
 import ResultMetaData from './ResultMetaData';
@@ -174,7 +175,7 @@ export default function ResultExplorer({ answerStore }) {
           .remove(),
       );
 
-    const edgesWithCurves = queryGraphUtils.addEdgeCurveProperties(edges);
+    const edgesWithCurves = edgeUtils.addEdgeCurveProperties(edges);
     edge.current = edge.current.data(edgesWithCurves, (d) => d.id)
       .join(
         (enter) => enter

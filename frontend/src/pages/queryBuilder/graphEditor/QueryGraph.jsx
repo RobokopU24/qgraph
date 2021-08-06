@@ -253,7 +253,7 @@ export default function QueryGraph({
 
     // edge ends need the x and y of their attached nodes
     // must come after simulation
-    const edgesWithCurves = queryGraphUtils.addEdgeCurveProperties(newEdges);
+    const edgesWithCurves = edgeUtils.addEdgeCurveProperties(newEdges);
 
     edge.current = edge.current.data(edgesWithCurves, (d) => d.id)
       .join(
