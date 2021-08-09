@@ -23,11 +23,11 @@ function getNodeRadius(width, height, numQNodes, numResults) {
 /**
  * Rank categories based on how specific they are
  * @param {object} hierarchies - all biolink hierarchies
- * @param {array} category - list of categories of a specific node
+ * @param {array} categories - list of categories of a specific node
  * @returns {string[]} list of ranked categories
  */
-function getRankedCategories(hierarchies, category) {
-  const rankedCategories = category.sort((a, b) => {
+function getRankedCategories(hierarchies, categories) {
+  const rankedCategories = categories.sort((a, b) => {
     const aLength = (hierarchies[a] && hierarchies[a].length) || 0;
     const bLength = (hierarchies[b] && hierarchies[b].length) || 0;
     return aLength - bLength;
@@ -54,7 +54,7 @@ function makeDisplayNodes(message, hierarchies) {
             categories = [categories];
           }
           categories = getRankedCategories(hierarchies, categories);
-          displayNode.category = categories;
+          displayNode.categories = categories;
           displayNode.name = message.knowledge_graph.nodes[displayNode.id].name;
           displayNode.count = 1;
         } else {
@@ -78,9 +78,9 @@ function getFullDisplay(message) {
     const node = {};
     node.id = nodeId;
     node.name = nodeProps.name;
-    node.category = nodeProps.category;
-    if (node.category && !Array.isArray(node.category)) {
-      node.category = [node.category];
+    node.categories = nodeProps.categories;
+    if (node.categories && !Array.isArray(node.categories)) {
+      node.categories = [node.categories];
     }
     return node;
   });
@@ -89,9 +89,9 @@ function getFullDisplay(message) {
     edge.id = edgeId;
     edge.source = edgeProps.subject;
     edge.target = edgeProps.object;
-    edge.predicate = edgeProps.predicate;
-    if (edge.predicate && !Array.isArray(edge.predicate)) {
-      edge.predicate = [edge.predicate];
+    edge.predicates = edgeProps.predicates;
+    if (edge.predicates && !Array.isArray(edge.predicates)) {
+      edge.predicates = [edge.predicates];
     }
     return edge;
   });

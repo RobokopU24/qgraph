@@ -34,8 +34,8 @@ export default function PredicateSelector({ id }) {
     const objectNode = query_graph.nodes[edge.object];
 
     // get list of categories from each node
-    const subjectCategories = getCategories(subjectNode.category);
-    const objectCategories = getCategories(objectNode.category);
+    const subjectCategories = getCategories(subjectNode.categories);
+    const objectCategories = getCategories(objectNode.categories);
 
     // get hierarchies of all involved node categories
     const subjectNodeCategoryHierarchy = subjectCategories.flatMap((subjectCategory) => biolink.hierarchies[subjectCategory]);
@@ -56,20 +56,20 @@ export default function PredicateSelector({ id }) {
     getFilteredPredicateList,
     [
       // recompute if node categories change
-      JSON.stringify(query_graph.nodes[edge.subject].category),
-      JSON.stringify(query_graph.nodes[edge.object].category),
+      JSON.stringify(query_graph.nodes[edge.subject].categories),
+      JSON.stringify(query_graph.nodes[edge.object].categories),
       biolink,
     ],
   ) || [];
 
-  function editPredicate(predicate) {
-    queryBuilder.dispatch({ type: 'editPredicate', payload: { id, predicate } });
+  function editPredicates(predicates) {
+    queryBuilder.dispatch({ type: 'editPredicate', payload: { id, predicates } });
   }
 
   useEffect(() => {
     if (filteredPredicateList.length) {
-      const keptPredicates = (edge.predicate && edge.predicate.filter((p) => filteredPredicateList.indexOf(p) > -1)) || [];
-      editPredicate(keptPredicates);
+      const keptPredicates = (edge.predicates && edge.predicates.filter((p) => filteredPredicateList.indexOf(p) > -1)) || [];
+      editPredicates(keptPredicates);
     }
   }, [filteredPredicateList]);
 
@@ -77,8 +77,8 @@ export default function PredicateSelector({ id }) {
     <Autocomplete
       options={filteredPredicateList}
       className={`textEditorSelector highlight-${id}`}
-      value={edge.predicate || []}
-      onChange={(e, value) => editPredicate(value)}
+      value={edge.predicates || []}
+      onChange={(e, value) => editPredicates(value)}
       renderInput={(params) => (
         <TextField
           {...params}

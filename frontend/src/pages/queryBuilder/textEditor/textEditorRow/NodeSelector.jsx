@@ -14,8 +14,8 @@ import fetchCuries from '~/utils/fetchCuries';
 import highlighter from '~/utils/d3/highlighter';
 
 function isValidNode(properties) {
-  return (properties.category && properties.category.length) ||
-    (properties.id && properties.id.length);
+  return (properties.categories && properties.categories.length) ||
+    (properties.ids && properties.ids.length);
 }
 
 /**
@@ -75,25 +75,25 @@ export default function NodeSelector({
         includedCategories = includedCategories.flatMap((category) => (
           [
             {
-              category: [category],
+              categories: [category],
               name: strings.displayCategory(category),
             },
             {
-              category: [category],
+              categories: [category],
               name: strings.setify(category),
               is_set: true,
             },
           ]
         ));
       } else {
-        includedCategories = includedCategories.map((category) => ({ category: [category], name: strings.displayCategory(category) }));
+        includedCategories = includedCategories.map((category) => ({ categories: [category], name: strings.displayCategory(category) }));
       }
       newOptions.push(...includedCategories);
     }
     // fetch matching curies from external services
     if (includeCuries && searchTerm.length > 3) {
       if (searchTerm.includes(':')) { // user is typing a specific curie
-        newOptions.push({ name: searchTerm, id: searchTerm });
+        newOptions.push({ name: searchTerm, ids: searchTerm });
       } else {
         const curies = await fetchCuries(searchTerm, displayAlert);
         newOptions.push(...curies);
@@ -128,12 +128,12 @@ export default function NodeSelector({
     if (opt.name) {
       return label + opt.name;
     }
-    if (opt.id && Array.isArray(opt.id) && opt.id.length) {
-      return label + opt.id.join(', ');
+    if (opt.ids && Array.isArray(opt.ids) && opt.ids.length) {
+      return label + opt.ids.join(', ');
     }
-    if (opt.category && Array.isArray(opt.category)) {
-      if (opt.category.length) {
-        return label + opt.category.join(', ');
+    if (opt.categories && Array.isArray(opt.categories)) {
+      if (opt.categories.length) {
+        return label + opt.categories.join(', ');
       }
       return `${label} Something`;
     }

@@ -8,15 +8,15 @@ import queryGraphUtils from '~/utils/queryGraph';
 
 function getDefaultNode() {
   return {
-    category: [],
-    id: [],
+    categories: [],
+    ids: [],
   };
 }
 function getDefaultEdge(subject, object) {
   return {
     subject: subject || '',
     object: object || '',
-    predicate: ['biolink:related_to'],
+    predicates: ['biolink:related_to'],
   };
 }
 
@@ -63,8 +63,8 @@ function reducer(state, action) {
       break;
     }
     case 'editPredicate': {
-      const { id, predicate } = action.payload;
-      state.message.message.query_graph.edges[id].predicate = predicate;
+      const { id, predicates } = action.payload;
+      state.message.message.query_graph.edges[id].predicates = predicates;
       break;
     }
     case 'deleteEdge': {

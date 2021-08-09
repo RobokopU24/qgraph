@@ -10,7 +10,6 @@ import dragUtils from '~/utils/d3/drag';
 import graphUtils from '~/utils/d3/graph';
 import edgeUtils from '~/utils/d3/edges';
 import stringUtils from '~/utils/strings';
-import queryGraphUtils from '~/utils/queryGraph';
 import ResultMetaData from './ResultMetaData';
 
 const nodeRadius = 40;
@@ -201,9 +200,9 @@ export default function ResultExplorer({ answerStore }) {
                   .attr('pointer-events', 'none')
                   .attr('xlink:href', (d) => `#edge${d.id}`)
                   .attr('startOffset', '50%')
-                  .text((d) => (d.predicate ? d.predicate.map((p) => stringUtils.displayPredicate(p)).join(' or ') : '')))
+                  .text((d) => stringUtils.displayPredicate(d.predicate)))
               .call((eLabel) => eLabel.append('title')
-                .text((d) => (d.predicate ? d.predicate.map((p) => stringUtils.displayPredicate(p)).join(' or ') : '')))),
+                .text((d) => (stringUtils.displayPredicate(d.predicate))))),
         (update) => update,
         (exit) => exit
           .remove(),

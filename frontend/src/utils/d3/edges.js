@@ -147,9 +147,9 @@ function enter(edge) {
           .attr('pointer-events', 'none')
           .attr('xlink:href', (d) => `#edge${d.id}`)
           .attr('startOffset', '50%')
-          .text((d) => (d.predicate ? d.predicate.map((p) => strings.displayPredicate(p)).join(', ') : '')))
+          .text((d) => (d.predicates ? d.predicates.map((p) => strings.displayPredicate(p)).join(', ') : '')))
       .call((eLabel) => eLabel.append('title')
-        .text((d) => (d.predicate ? d.predicate.map((p) => strings.displayPredicate(p)).join(', ') : ''))))
+        .text((d) => (d.predicates ? d.predicates.map((p) => strings.displayPredicate(p)).join(', ') : ''))))
     // source edge end circle
     .call((e) => e.append('circle')
       .attr('r', 5)
@@ -228,13 +228,13 @@ function enter(edge) {
 function update(edge) {
   return edge
     .call((e) => e.select('title')
-      .text((d) => (d.predicate ? d.predicate.map((p) => strings.displayPredicate(p)).join(', ') : '')))
+      .text((d) => (d.predicates ? d.predicates.map((p) => strings.displayPredicate(p)).join(', ') : '')))
     .call((e) => e.select('.edgePath')
       // .attr('stroke-width', (d) => d.strokeWidth)
       .attr('marker-end', (d) => (graphUtils.shouldShowArrow(d) ? 'url(#arrow)' : '')))
     .call((e) => e.select('text')
       .select('textPath')
-        .text((d) => (d.predicate ? d.predicate.map((p) => strings.displayPredicate(p)).join(', ') : '')));
+        .text((d) => (d.predicates ? d.predicates.map((p) => strings.displayPredicate(p)).join(', ') : '')));
     //   .attr('dy', (d) => -d.strokeWidth));
 }
 

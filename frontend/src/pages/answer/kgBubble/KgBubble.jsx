@@ -75,7 +75,7 @@ export default function KgBubble({
           .call(dragUtils.dragNode(simulation))
           .call((n) => n.append('circle')
             .attr('r', (d) => getNodeRadius(d.count))
-            .attr('fill', (d) => colorMap((d.category && d.category[0]) || 'unknown'))
+            .attr('fill', (d) => colorMap((d.categories && d.categories[0]) || 'unknown'))
             .call((nCircle) => nCircle.append('title')
               .text((d) => d.name)))
           .call((n) => n.append('text')

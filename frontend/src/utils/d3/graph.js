@@ -156,7 +156,7 @@ function isInside(x, y, cx, cy, r) {
  * @returns {str} url(#arrow) or empty string
  */
 function shouldShowArrow(edge) {
-  return edge.predicate && edge.predicate.findIndex((p) => p !== 'biolink:related_to') > -1;
+  return edge.predicates && edge.predicates.findIndex((p) => p !== 'biolink:related_to') > -1;
 }
 
 /**
