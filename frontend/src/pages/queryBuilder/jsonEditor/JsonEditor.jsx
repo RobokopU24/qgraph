@@ -14,6 +14,7 @@ import FileCopyIcon from '@material-ui/icons/FileCopy';
 import SaveIcon from '@material-ui/icons/Save';
 
 import trapiUtils from '~/utils/trapi';
+import queryGraphUtils from '~/utils/queryGraph';
 import usePageStatus from '~/stores/usePageStatus';
 import AlertContext from '~/context/alert';
 import QueryBuilderContext from '~/context/queryBuilder';
@@ -56,7 +57,11 @@ export default function JsonEditor({ show, close }) {
           if (graph.message && graph.message.results) {
             delete graph.message.results;
           }
-          setErrorMessages(trapiUtils.validateMessage(graph));
+          const errors = trapiUtils.validateMessage(graph);
+          setErrorMessages(errors);
+          if (!errors.length) {
+            graph.message.query_graph = queryGraphUtils.toCurrentTRAPI(graph.message.query_graph);
+          }
           updateLocalMessage(graph);
         } catch (err) {
           displayAlert('error', 'Failed to read this query graph. Are you sure this is valid JSON?');

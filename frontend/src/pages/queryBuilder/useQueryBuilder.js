@@ -106,7 +106,7 @@ function reducer(state, action) {
       break;
     }
     case 'saveGraph': {
-      state.message.message.query_graph = queryGraphUtils.standardize(action.payload.message.query_graph);
+      state.message.message.query_graph = queryGraphUtils.toCurrentTRAPI(action.payload.message.query_graph);
       state.rootNode = queryBuilderUtils.getRootNode(state.message.message.query_graph);
       break;
     }
