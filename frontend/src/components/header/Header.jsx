@@ -116,6 +116,7 @@ export default function Header({ setUser }) {
       <Toolbar id="headerToolbar">
         <Link to="/" id="robokopBrand">{brandConfig.title}</Link>
         <Link to="/questions">Question Library</Link>
+        <Link to="/answer">Answer Viewer</Link>
         <div className="grow" />
         {brandConfig.brand === 'robokop' && (
           <>
