@@ -67,7 +67,7 @@ function clickReducer(state, action) {
  */
 export default function GraphEditor() {
   const queryBuilder = useContext(QueryBuilderContext);
-  const { query_graph } = queryBuilder.state;
+  const { query_graph } = queryBuilder;
 
   const [clickState, clickDispatch] = useReducer(clickReducer, {
     creatingConnection: false,

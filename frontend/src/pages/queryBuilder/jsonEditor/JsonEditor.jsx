@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 
-import ReactJson from 'react-json-view';
+import ReactJsonView from 'react-json-view';
+import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -8,14 +9,15 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import CheckIcon from '@material-ui/icons/Check';
-// import UndoIcon from '@material-ui/icons/Undo';
 import CloseIcon from '@material-ui/icons/Close';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
+import SaveIcon from '@material-ui/icons/Save';
 
 import trapiUtils from '~/utils/trapi';
 import usePageStatus from '~/stores/usePageStatus';
 import AlertContext from '~/context/alert';
 import QueryBuilderContext from '~/context/queryBuilder';
+import ClipboardButton from '~/components/shared/ClipboardButton';
 
 /**
  * Query Builder json editor interface
@@ -25,16 +27,16 @@ import QueryBuilderContext from '~/context/queryBuilder';
 export default function JsonEditor({ show, close }) {
   const queryBuilder = useContext(QueryBuilderContext);
   const [errorMessages, setErrorMessages] = useState('');
-  const { query_graph } = queryBuilder.state;
-  const [internalQueryGraph, updateInternalQueryGraph] = useState(query_graph);
+  const { message } = queryBuilder.state;
+  const [localMessage, updateLocalMessage] = useState(message);
   const pageStatus = usePageStatus(false);
   const displayAlert = useContext(AlertContext);
 
   function updateJson(e) {
     // updated_src is the updated graph RJV gives back
     const data = e.updated_src;
-    setErrorMessages(trapiUtils.validateGraph(data, 'Query Graph'));
-    updateInternalQueryGraph(data);
+    setErrorMessages(trapiUtils.validateMessage(data));
+    updateLocalMessage(data);
   }
 
   function onUpload(event) {
@@ -46,18 +48,16 @@ export default function JsonEditor({ show, close }) {
       fr.onload = (e) => {
         const fileContents = e.target.result;
         try {
-          let graph = JSON.parse(fileContents);
-          let errors = [];
-          if (graph.message) {
-            errors = trapiUtils.validateMessage(graph);
-            setErrorMessages(errors);
-            if (!errors.length) {
-              graph = graph.message.query_graph;
-            }
-          } else {
-            setErrorMessages(trapiUtils.validateGraph(graph, 'Query Graph'));
+          const graph = JSON.parse(fileContents);
+          // We only need the query graph, so delete any knowledge_graph and results in message
+          if (graph.message && graph.message.knowledge_graph) {
+            delete graph.message.knowledge_graph;
           }
-          updateInternalQueryGraph(graph);
+          if (graph.message && graph.message.results) {
+            delete graph.message.results;
+          }
+          setErrorMessages(trapiUtils.validateMessage(graph));
+          updateLocalMessage(graph);
         } catch (err) {
           displayAlert('error', 'Failed to read this query graph. Are you sure this is valid JSON?');
         }
@@ -73,12 +73,13 @@ export default function JsonEditor({ show, close }) {
 
   useEffect(() => {
     if (show) {
-      updateInternalQueryGraph(query_graph);
+      setErrorMessages(trapiUtils.validateMessage(message));
+      updateLocalMessage(message);
     }
   }, [show]);
 
   function saveGraph() {
-    queryBuilder.dispatch({ type: 'saveGraph', payload: internalQueryGraph });
+    queryBuilder.dispatch({ type: 'saveGraph', payload: localMessage });
   }
 
   return (
@@ -86,7 +87,10 @@ export default function JsonEditor({ show, close }) {
       open={show}
       fullWidth
       maxWidth="lg"
-      onClose={close}
+      onClose={() => {
+        setErrorMessages('');
+        close();
+      }}
     >
       <DialogTitle style={{ padding: 0 }}>
         <div id="jsonEditorTitle">
@@ -111,15 +115,24 @@ export default function JsonEditor({ show, close }) {
                 onChange={(e) => onUpload(e)}
                 disabled={!pageStatus.displayPage}
               />
-              <IconButton
+              <Button
                 component="span"
+                variant="contained"
                 disabled={!pageStatus.displayPage}
-                style={{ fontSize: '18px' }}
-                title="Load"
+                style={{ margin: '0px 10px' }}
+                title="Load Message"
+                startIcon={<CloudUploadIcon />}
               >
-                <CloudUploadIcon />
-              </IconButton>
+                Upload
+              </Button>
             </label>
+            <ClipboardButton
+              startIcon={<FileCopyIcon />}
+              displayText="Copy"
+              clipboardText={JSON.stringify(localMessage, null, 2)}
+              notificationText="Copied JSON to clipboard!"
+              disabled={!pageStatus.displayPage}
+            />
           </div>
           <div style={{ color: '#777' }}>
             Query Graph JSON Editor
@@ -129,7 +142,10 @@ export default function JsonEditor({ show, close }) {
               fontSize: '18px',
             }}
             title="Close Editor"
-            onClick={close}
+            onClick={() => {
+              setErrorMessages('');
+              close();
+            }}
           >
             <CloseIcon />
           </IconButton>
@@ -146,16 +162,17 @@ export default function JsonEditor({ show, close }) {
                 flexGrow: 1,
               }}
             >
-              <ReactJson
+              <ReactJsonView
                 name={false}
                 theme="rjv-default"
                 collapseStringsAfterLength={15}
                 indentWidth={2}
                 iconStyle="triangle"
+                enableClipboard={false}
                 displayObjectSize={false}
                 displayDataTypes={false}
                 defaultValue=""
-                src={internalQueryGraph}
+                src={localMessage}
                 onEdit={updateJson}
                 onAdd={updateJson}
                 onDelete={updateJson}
@@ -175,19 +192,18 @@ export default function JsonEditor({ show, close }) {
         )}
       </DialogContent>
       <DialogActions>
-        <IconButton
+        <Button
+          startIcon={<SaveIcon />}
           disabled={errorMessages.length > 0 || !pageStatus.displayPage}
-          style={{
-            fontSize: '18px',
-          }}
+          variant="contained"
           title="Save Changes"
           onClick={() => {
             saveGraph();
             close();
           }}
         >
-          <CheckIcon />
-        </IconButton>
+          Save
+        </Button>
       </DialogActions>
     </Dialog>
   );

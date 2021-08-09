@@ -34,7 +34,7 @@ export default function LeftDrawer({
    * Download the current message
    */
   async function download() {
-    const blob = new Blob([JSON.stringify(message, null, 2)], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify({ message }, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
     a.download = `${brandConfig.title}_message.json`;
     a.href = window.URL.createObjectURL(blob);

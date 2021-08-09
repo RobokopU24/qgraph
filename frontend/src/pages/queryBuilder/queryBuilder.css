@@ -1,3 +1,6 @@
+#queryBuilderContainer > button {
+    margin-left: 10px;
+}
 #queryEditorContainer {
     display: flex;
 }

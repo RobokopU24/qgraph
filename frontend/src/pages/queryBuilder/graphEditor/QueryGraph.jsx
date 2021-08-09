@@ -29,7 +29,7 @@ export default function QueryGraph({
   const { concepts } = useContext(BiolinkContext);
   const queryBuilder = useContext(QueryBuilderContext);
   const nodeCategoryColorMap = useMemo(() => getNodeCategoryColorMap(concepts), [concepts]);
-  const { query_graph } = queryBuilder.state;
+  const { query_graph } = queryBuilder;
   const { nodes, edges } = useMemo(() => queryGraphUtils.getNodeAndEdgeListsForDisplay(query_graph), [queryBuilder.state]);
   const node = useRef({});
   const edge = useRef({});

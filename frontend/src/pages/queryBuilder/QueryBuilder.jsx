@@ -32,23 +32,11 @@ export default function QueryBuilder() {
   const history = useHistory();
 
   /**
-   * Open iframe in new tab and display query graph json
-   */
-  function newTabJSON() {
-    const prunedQueryGraph = queryGraphUtils.prune(queryBuilder.state.query_graph);
-    const win = window.open();
-    win.document.write(`
-      <iframe src="data:text/json,${encodeURIComponent(JSON.stringify(prunedQueryGraph, null, 2))}"
-      frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen>
-      </iframe>`);
-  }
-
-  /**
    * Submit this query directly to an ARA and then navigate to the answer page
    */
   async function onQuickSubmit() {
     pageStatus.setLoading('Fetching answer, this may take a while');
-    const prunedQueryGraph = queryGraphUtils.prune(queryBuilder.state.query_graph);
+    const prunedQueryGraph = queryGraphUtils.prune(queryBuilder.query_graph);
     const response = await API.ara.getAnswer({ message: { query_graph: prunedQueryGraph } });
 
     if (response.status === 'error') {
@@ -122,7 +110,7 @@ export default function QueryBuilder() {
     const questionId = response.id;
 
     // Strip labels from nodes
-    const prunedQueryGraph = queryGraphUtils.prune(queryBuilder.state.query_graph);
+    const prunedQueryGraph = queryGraphUtils.prune(queryBuilder.query_graph);
 
     // Upload question data
     const questionData = JSON.stringify({ message: { query_graph: prunedQueryGraph } }, null, 2);
@@ -174,7 +162,7 @@ export default function QueryBuilder() {
       <pageStatus.Display />
 
       {pageStatus.displayPage && (
-        <>
+        <div id="queryBuilderContainer">
           <div id="queryEditorContainer">
             <QueryBuilderContext.Provider value={queryBuilder}>
               <TextEditor
@@ -193,18 +181,10 @@ export default function QueryBuilder() {
           >
             Edit JSON
           </Button>
-          <Button
-            onClick={newTabJSON}
-            variant="contained"
-            style={{ marginLeft: '10px' }}
-          >
-            View JSON
-          </Button>
           {user && (
             <Button
               onClick={onSubmit}
               variant="contained"
-              style={{ marginLeft: '10px' }}
             >
               Submit
             </Button>
@@ -212,11 +192,10 @@ export default function QueryBuilder() {
           <Button
             onClick={onQuickSubmit}
             variant="contained"
-            style={{ marginLeft: '10px' }}
           >
             Quick Submit
           </Button>
-        </>
+        </div>
       )}
     </>
   );

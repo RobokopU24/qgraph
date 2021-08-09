@@ -1,21 +1,37 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 
 import Alert from '@material-ui/lab/Alert';
 import Snackbar from '@material-ui/core/Snackbar';
 
+/**
+ * Generic copy-to-clipboard button
+ * @param {*} startIcon - icon to show in button
+ * @param {string} displayText - text of copy button
+ * @param {string} clipboardText - text to copy to clipboard
+ * @param {string} notificationText - text of snackbar notification
+ * @param {boolean} disabled - is button disabled
+ */
 export default function ClipboardButton({
-  startIcon, displayText, clipboardText, notificationText,
+  startIcon, displayText, clipboardText, notificationText, disabled,
 }) {
   const [snackbarNotification, updateSnackbarNotification] = useState('');
 
-  const shareableLinkInputRef = useRef();
-
+  /**
+   * Copy text into user clipboard on button click, and then show
+   * successful notification
+   */
   function copyToClipboard() {
-    shareableLinkInputRef.current.type = 'text';
-    shareableLinkInputRef.current.select();
+    // Using textarea to keep newlines in JSON
+    const textarea = document.createElement('textarea');
+    textarea.innerHTML = clipboardText;
+    document.body.appendChild(textarea);
+    textarea.select();
+    // focus is needed in case copying is done from modal
+    // also needs to come after select for unknown reason
+    textarea.focus();
     document.execCommand('copy');
-    shareableLinkInputRef.current.type = 'hidden';
+    textarea.remove();
     updateSnackbarNotification(notificationText);
   }
 
@@ -24,20 +40,21 @@ export default function ClipboardButton({
       <Button
         startIcon={startIcon}
         variant="contained"
-        size="large"
-        color="secondary"
-        onClick={() => copyToClipboard()}
+        onClick={copyToClipboard}
+        disabled={disabled}
       >
         {displayText}
       </Button>
 
-      <input
-        type="hidden"
-        ref={shareableLinkInputRef}
-        value={clipboardText}
-      />
-
-      <Snackbar open={!!snackbarNotification} autoHideDuration={6000} onClose={() => updateSnackbarNotification('')}>
+      <Snackbar
+        open={!!snackbarNotification}
+        autoHideDuration={6000}
+        onClose={() => updateSnackbarNotification('')}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
         <Alert severity="success">
           {snackbarNotification}
         </Alert>

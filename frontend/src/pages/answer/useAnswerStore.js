@@ -36,9 +36,15 @@ export default function useAnswerStore() {
    * and resets any results table info
    * @param {object} msg - TRAPI message
    */
-  function initialize(msg) {
+  function initialize(msg, updateDisplayState) {
     setMessage(msg);
-    setKgNodes(kgUtils.makeDisplayNodes(msg, hierarchies));
+    if (msg.knowledge_graph && msg.results) {
+      setKgNodes(kgUtils.makeDisplayNodes(msg, hierarchies));
+    } else {
+      // if knowledge_graph and results are undefined, then disable those components
+      updateDisplayState({ type: 'disable', payload: { component: 'kg' } });
+      updateDisplayState({ type: 'disable', payload: { component: 'results' } });
+    }
     resetAnswerExplorer();
   }
 

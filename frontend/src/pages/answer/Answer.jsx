@@ -83,7 +83,7 @@ export default function Answer() {
     try {
       answerResponseJSON.message.query_graph = queryGraphUtils.standardize(answerResponseJSON.message.query_graph);
       try {
-        answerStore.initialize(answerResponseJSON.message);
+        answerStore.initialize(answerResponseJSON.message, updateDisplayState);
         pageStatus.setSuccess();
       } catch (err) {
         displayAlert('error', `Failed to initialize message. Please submit an issue: ${err}`);
@@ -155,24 +155,26 @@ export default function Answer() {
             msg.message.query_graph = queryGraphUtils.standardize(msg.message.query_graph);
             try {
               idbSet('quick_message', JSON.stringify(msg));
-              answerStore.initialize(msg.message);
-              pageStatus.setSuccess();
+              answerStore.initialize(msg.message, updateDisplayState);
               // user uploaded a new answer, reset the url
               if (match) {
                 history.push('/answer');
               }
             } catch (err) {
               displayAlert('error', `Failed to initialize message. Please submit an issue: ${err}`);
+              answerStore.reset();
             }
           } catch (err) {
             displayAlert('error', 'Failed to parse this query graph. Please make sure it is TRAPI compliant.');
           }
+          pageStatus.setSuccess();
         } else {
           pageStatus.setFailure(errors.join(', '));
         }
       };
       fr.onerror = () => {
         displayAlert('error', 'Sorry but there was a problem uploading the file. The file may be invalid JSON.');
+        pageStatus.setSuccess();
       };
       fr.readAsText(file);
     });

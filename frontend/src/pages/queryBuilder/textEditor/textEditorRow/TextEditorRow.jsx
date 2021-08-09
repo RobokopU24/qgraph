@@ -11,7 +11,7 @@ import './textEditorRow.css';
 
 export default function TextEditorRow({ row, index }) {
   const queryBuilder = useContext(QueryBuilderContext);
-  const { query_graph } = queryBuilder.state;
+  const { query_graph } = queryBuilder;
   const edge = query_graph.edges[row.edgeId];
   const { edgeId, subjectIsReference, objectIsReference } = row;
 

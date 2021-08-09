@@ -19,7 +19,7 @@ function getCategories(categories) {
 export default function PredicateSelector({ id }) {
   const biolink = useContext(BiolinkContext);
   const queryBuilder = useContext(QueryBuilderContext);
-  const { query_graph } = queryBuilder.state;
+  const { query_graph } = queryBuilder;
   const edge = query_graph.edges[id];
 
   /**
