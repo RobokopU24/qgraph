@@ -81,7 +81,7 @@ export default function Answer() {
     }
 
     try {
-      answerResponseJSON.message.query_graph = queryGraphUtils.standardize(answerResponseJSON.message.query_graph);
+      answerResponseJSON.message.query_graph = queryGraphUtils.toCurrentTRAPI(answerResponseJSON.message.query_graph);
       try {
         answerStore.initialize(answerResponseJSON.message, updateDisplayState);
         pageStatus.setSuccess();
@@ -152,7 +152,7 @@ export default function Answer() {
         const errors = trapiUtils.validateMessage(msg);
         if (!errors.length) {
           try {
-            msg.message.query_graph = queryGraphUtils.standardize(msg.message.query_graph);
+            msg.message.query_graph = queryGraphUtils.toCurrentTRAPI(msg.message.query_graph);
             try {
               idbSet('quick_message', JSON.stringify(msg));
               answerStore.initialize(msg.message, updateDisplayState);

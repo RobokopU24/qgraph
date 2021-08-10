@@ -8,6 +8,7 @@ import Paper from '@material-ui/core/Paper';
 import BiolinkContext from '~/context/biolink';
 import dragUtils from '~/utils/d3/drag';
 import graphUtils from '~/utils/d3/graph';
+import edgeUtils from '~/utils/d3/edges';
 import queryGraphUtils from '~/utils/queryGraph';
 import stringUtils from '~/utils/strings';
 
@@ -109,7 +110,7 @@ export default function QueryGraph({ query_graph }) {
           .call(dragUtils.dragNode(simulation))
           .call((n) => n.append('circle')
             .attr('r', nodeRadius)
-            .attr('fill', (d) => colorMap((d.category && d.category[0]) || 'unknown'))
+            .attr('fill', (d) => colorMap((d.categories && d.categories[0]) || 'unknown'))
             .call((nCircle) => nCircle.append('title')
               .text((d) => d.name)))
           .call((n) => n.append('text')
@@ -124,7 +125,7 @@ export default function QueryGraph({ query_graph }) {
             })
             .each(graphUtils.ellipsisOverflow));
 
-    edges = queryGraphUtils.addEdgeCurveProperties(edges);
+    edges = edgeUtils.addEdgeCurveProperties(edges);
     edge = edge.data(edges)
       .enter()
         .append('g')
@@ -149,9 +150,9 @@ export default function QueryGraph({ query_graph }) {
                 .attr('pointer-events', 'none')
                 .attr('xlink:href', (d) => `#edge${d.id}`)
                 .attr('startOffset', '50%')
-                .text((d) => (d.predicate ? d.predicate.map((p) => stringUtils.displayPredicate(p)).join(' or ') : '')))
+                .text((d) => (d.predicates ? d.predicates.map((p) => stringUtils.displayPredicate(p)).join(' or ') : '')))
             .call((eLabel) => eLabel.append('title')
-              .text((d) => (d.predicate ? d.predicate.map((p) => stringUtils.displayPredicate(p)).join(' or ') : ''))));
+              .text((d) => (d.predicates ? d.predicates.map((p) => stringUtils.displayPredicate(p)).join(' or ') : ''))));
 
     simulation.alpha(1).restart();
   }

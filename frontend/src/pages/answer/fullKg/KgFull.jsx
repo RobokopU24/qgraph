@@ -47,11 +47,11 @@ export default function KgFull({ message }) {
       context.beginPath();
       context.moveTo(d.x + 5, d.y);
       context.arc(d.x, d.y, 5, 0, 2 * Math.PI);
-      if (d.category && Array.isArray(d.category)) {
-        d.category = kgUtils.getRankedCategories(hierarchies, d.category);
+      if (d.categories && Array.isArray(d.categories)) {
+        d.categories = kgUtils.getRankedCategories(hierarchies, d.categories);
       }
-      context.strokeStyle = colorMap((d.category && d.category[0]) || 'unknown');
-      context.fillStyle = colorMap((d.category && d.category[0]) || 'unknown');
+      context.strokeStyle = colorMap((d.categories && d.categories[0]) || 'unknown');
+      context.fillStyle = colorMap((d.categories && d.categories[0]) || 'unknown');
       context.fill();
       context.stroke();
     }

@@ -76,9 +76,6 @@ export default function useAnswerStore() {
             target: kgEdge.object,
             predicate: kgEdge.predicate,
           };
-          if (graphEdge.predicate && !Array.isArray(graphEdge.predicate)) {
-            graphEdge.predicate = [graphEdge.predicate];
-          }
           edges.push(graphEdge);
 
           // EDAM:data_0971 is the publications type

@@ -12,53 +12,19 @@ function getEmptyGraph() {
 }
 
 /**
- * Convert a list of objects with an "id" property
- * to a dictionary
- * @param {array} list - a list of node or edge objects that each have an ID property
+ * Convert an array of objects with "id" properties
+ * to an object
+ * @param {array} array - a list of objects that each have an ID property
  */
-function listWithIdsToDict(list) {
-  const ret = {};
+function arrayWithIdsToObj(array) {
+  const object = {};
 
-  list.forEach((node) => {
-    ret[node.id] = { ...node };
-    delete ret[node.id].id;
+  array.forEach((item) => {
+    object[item.id] = { ...item };
+    delete object[item.id].id;
   });
 
-  return ret;
-}
-
-/**
- * Convert a dictionary of key-value pairs to a list of objects
- * with an internal "id" property
- * @param {object} dict - dictionary with keys and values
- */
-function dictToListWithIds(dict) {
-  return Object.entries(dict).map(
-    ([key, node]) => ({ ...node, key }),
-  );
-}
-
-/**
- * Convert property that could be a string to an array if not given as array
- * @param {object} obj - object to modify
- * @param {string} property - property to modify
- */
-function standardizeArrayProperty(obj, property) {
-  if (obj[property] && !_.isArray(obj[property])) {
-    obj[property] = [obj[property]];
-  }
-  if (obj[property] && property === 'ids') {
-    obj.id = obj.ids;
-    delete obj.ids;
-  }
-  if (obj[property] && property === 'categories') {
-    obj.category = obj.categories;
-    delete obj.categories;
-  }
-  if (obj[property] && property === 'predicates') {
-    obj.predicate = obj.predicates;
-    delete obj.predicates;
-  }
+  return object;
 }
 
 /**
@@ -81,157 +47,91 @@ function makeArray(value) {
   throw TypeError('Unexpected input. Should be either an array or string.');
 }
 
-const standardizeIDs = (o) => standardizeArrayProperty(o, 'ids');
-const standardizePredicate = (o) => standardizeArrayProperty(o, 'predicates');
-const standardizeCategory = (o) => standardizeArrayProperty(o, 'categories');
-
 /**
  * Remove empty arrays
  * @param {object} obj - object to prune
  * @param {string} property - property of object to prune
 */
 function pruneEmptyArray(obj, property) {
-  if (obj[property] && _.isArray(obj[property]) &&
-      obj[property].length === 0) {
+  if (obj[property] && Array.isArray(obj[property]) && obj[property].length === 0) {
     delete obj[property];
   }
 }
 
 /**
- * Conversion utilities between
- * different query graph representations
+ * Convert an old Reasoner standard query graph to the current TRAPI version format
+ * @param {object} qGraph - a query graph in an older format
+ * @returns {object} a query graph in the current TRAPI format
  */
-const convert = {
-  /**
-   * Convert an old Reasoner standard query graph to a newer internal representation
-   * @param {object} q - a query graph containing lists of nodes and edges
-   * @returns {object} a query graph containing objects of nodes and edges
-   */
-  reasonerToInternal(q) {
-    const internalRepresentation = {};
-    internalRepresentation.nodes = listWithIdsToDict(q.nodes);
-    internalRepresentation.edges = listWithIdsToDict(q.edges);
+function toCurrentTRAPI(qGraph) {
+  const query_graph = _.cloneDeep(qGraph);
+  // convert arrays to objects
+  if (Array.isArray(qGraph.nodes)) {
+    query_graph.nodes = arrayWithIdsToObj(qGraph.nodes);
+  } else {
+    query_graph.nodes = qGraph.nodes;
+  }
+  if (Array.isArray(qGraph.edges)) {
+    query_graph.edges = arrayWithIdsToObj(qGraph.edges);
+  } else {
+    query_graph.edges = qGraph.edges;
+  }
 
-    Object.values(internalRepresentation.nodes).forEach(standardizeIDs);
-    Object.values(internalRepresentation.nodes).forEach(standardizeCategory);
-
-    Object.values(internalRepresentation.edges).forEach(standardizeCategory);
-    return internalRepresentation;
-  },
-  /**
-   * Convert a newer internal representation to the older Reasoner standard query graph
-   * @param {object} q - a query graph containing objects of nodes and edges
-   * @returns {object} a query graph containing a list of nodes and edges
-   */
-  internalToReasoner(q) {
-    const reasonerRepresentation = {};
-    reasonerRepresentation.nodes = dictToListWithIds(q.nodes);
-    reasonerRepresentation.edges = dictToListWithIds(q.edges);
-
-    reasonerRepresentation.nodes.forEach((node) => {
-      pruneEmptyArray(node, 'id');
-      pruneEmptyArray(node, 'category');
-      node.id = node.key;
-      delete node.key;
-    });
-
-    reasonerRepresentation.edges.forEach((edge) => {
-      pruneEmptyArray(edge, 'predicate');
-      edge.id = edge.key;
-      delete edge.key;
-    });
-
-    return reasonerRepresentation;
-  },
-};
-
-/**
- * Find curve id regardless of node id order
- * @param {object[]} edgeCurves - list of edges with curve properties
- * @param {string} id - `{nodeId}--{nodeId}`
- * @returns {string} `{nodeId}--{nodeId}`
- */
-function findCurveId(edgeCurves, id) {
-  const [subject, object] = id.split('--');
-  const curveId = Object.keys(edgeCurves).find((curve) => {
-    const nodeIds = curve.split('--');
-    if (nodeIds.indexOf(subject) > -1 && nodeIds.indexOf(object) > -1) {
-      return true;
+  // convert outdated node properties
+  Object.values(query_graph.nodes).forEach((node) => {
+    if (node.curie) {
+      node.ids = node.curie;
+      delete node.curie;
+    } else if (node.id) {
+      node.ids = node.id;
+      delete node.id;
     }
-    return false;
+    if (node.ids) {
+      node.ids = makeArray(node.ids);
+    }
+
+    if (node.type) {
+      node.categories = node.type;
+      delete node.type;
+    } else if (node.category) {
+      node.categories = node.category;
+      delete node.category;
+    }
+    if (node.categories) {
+      node.categories = makeArray(node.categories);
+    }
+
+    if (typeof node.set === 'boolean') {
+      node.is_set = node.set;
+      delete node.set;
+    }
+    if (!node.name) {
+      node.name =
+        (node.ids && node.ids.length && node.ids.join(', ')) ||
+        (node.categories && node.categories.length && stringUtils.displayCategory(node.categories)) ||
+        '';
+    }
   });
-  return curveId;
-}
 
-const edgeCurveProps = {
-  get: (edgeCurves, id) => {
-    const curveId = findCurveId(edgeCurves, id);
-    let flip = false;
-    if (curveId) {
-      // n0--n1 != n1--n0
-      // we need to flip in order to have all edges right side up
-      if (curveId !== id) {
-        flip = true;
-      }
-      // return existing edge curve props
-      return { indices: edgeCurves[curveId], flip };
+  // convert outdated edge properties
+  Object.values(query_graph.edges).forEach((edge) => {
+    if (edge.source_id) {
+      edge.subject = edge.source_id;
+      delete edge.source_id;
     }
-    // return new edge curve props
-    return { indices: [], flip };
-  },
-  set: (edgeCurves, id, val) => {
-    const curveId = findCurveId(edgeCurves, id);
-    if (curveId) {
-      edgeCurves[curveId] = val;
-    } else {
-      edgeCurves[id] = val;
+    if (edge.target_id) {
+      edge.object = edge.target_id;
+      delete edge.target_id;
     }
-    return true;
-  },
-};
-
-/**
- * Add numEdges, index, and strokeWidth to edge objects
- *
- * **Must modify the existing edges array to keep the same reference for d3**
- * @param {object[]} edges - list of graph edges
- * @returns {object[]} list of edges with properties for d3 curves
- */
-function addEdgeCurveProperties(edges) {
-  const curveProps = new Proxy({}, edgeCurveProps);
-  edges.forEach((e, i) => {
-    const curve = curveProps[`${e.source.id}--${e.target.id}`];
-    curve.indices.push(i);
-    curveProps[`${e.source.id}--${e.target.id}`] = curve.indices;
+    if (edge.predicate) {
+      edge.predicates = edge.predicate;
+      delete edge.predicate;
+    }
+    if (edge.predicates) {
+      edge.predicates = makeArray(edge.predicates);
+    }
   });
-  edges.forEach((e, i) => {
-    const curve = curveProps[`${e.source.id}--${e.target.id}`];
-    e.numEdges = curve.indices.length;
-    const edgeIndex = curve.indices.indexOf(i);
-    e.index = edgeIndex;
-    // if an even number of edges, move first middle edge to outside
-    // to keep edges symmetrical
-    if (curve.indices.length % 2 === 0 && edgeIndex === 0) {
-      e.index = curve.indices.length - 1;
-    }
-    // if not the first index (0)
-    if (edgeIndex) {
-      // all even index should be one less and odd indices
-      // should be flipped
-      const edgeL = edgeIndex % 2;
-      if (!edgeL) {
-        e.index -= 1;
-      } else {
-        e.index = -e.index;
-      }
-    }
-    // flip curve on any inverse edges
-    if (curve.flip) {
-      e.index = -e.index;
-    }
-    e.strokeWidth = '3';
-  });
-  return edges;
+  return query_graph;
 }
 
 /**
@@ -242,53 +142,11 @@ function addEdgeCurveProperties(edges) {
 function prune(q_graph) {
   const clonedQueryGraph = _.cloneDeep(q_graph);
   Object.keys(clonedQueryGraph.nodes).forEach((n) => {
-    pruneEmptyArray(clonedQueryGraph.nodes[n], 'category');
-    pruneEmptyArray(clonedQueryGraph.nodes[n], 'id');
-    if (clonedQueryGraph.nodes[n].id) {
-      clonedQueryGraph.nodes[n].ids = clonedQueryGraph.nodes[n].id;
-      delete clonedQueryGraph.nodes[n].id;
-      if (!Array.isArray(clonedQueryGraph.nodes[n].ids)) {
-        clonedQueryGraph.nodes[n].ids = [clonedQueryGraph.nodes[n].ids];
-      }
-    }
-    if (clonedQueryGraph.nodes[n].category) {
-      clonedQueryGraph.nodes[n].categories = clonedQueryGraph.nodes[n].category;
-      delete clonedQueryGraph.nodes[n].category;
-    }
+    pruneEmptyArray(clonedQueryGraph.nodes[n], 'categories');
+    pruneEmptyArray(clonedQueryGraph.nodes[n], 'ids');
   });
   Object.keys(clonedQueryGraph.edges).forEach((e) => {
-    pruneEmptyArray(clonedQueryGraph.edges[e], 'predicate');
-    if (clonedQueryGraph.edges[e].predicate) {
-      clonedQueryGraph.edges[e].predicates = clonedQueryGraph.edges[e].predicate;
-      delete clonedQueryGraph.edges[e].predicate;
-    }
-  });
-  return clonedQueryGraph;
-}
-
-/**
- * Standardize properties in a valid query graph
- *
- * - wraps ids, categories, and predicates in arrays
- * - adds a 'name' property to nodes
- * @param {object} q_graph - query graph object
- * @returns {{}} query graph
- */
-function standardize(q_graph) {
-  const clonedQueryGraph = _.cloneDeep(q_graph);
-  Object.keys(clonedQueryGraph.nodes).forEach((n) => {
-    const node = clonedQueryGraph.nodes[n];
-    standardizeIDs(node);
-    standardizeCategory(node);
-    if (!node.name) {
-      node.name =
-        (node.id && node.id.length && node.id.join(', ')) ||
-        (node.category && node.category.length && stringUtils.displayCategory(node.category)) ||
-        '';
-    }
-  });
-  Object.keys(clonedQueryGraph.edges).forEach((e) => {
-    standardizePredicate(clonedQueryGraph.edges[e]);
+    pruneEmptyArray(clonedQueryGraph.edges[e], 'predicates');
   });
   return clonedQueryGraph;
 }
@@ -298,39 +156,39 @@ function standardize(q_graph) {
  * @param {object} node - query graph node
  * @returns {string} human-readable id label
  */
-function getNodeIdLabel(node) {
-  if (node.id && Array.isArray(node.id)) {
-    return node.id.join(', ');
+function getTableHeaderLabel(node) {
+  if (node.ids && Array.isArray(node.ids)) {
+    return node.ids.join(', ');
   }
-  return node.id;
+  return node.ids;
 }
 
 /**
  * Convert nodes and edges objects to lists for d3
- * @param {obj} q_graph
+ * @param {obj} query_graph
  * @returns {obj} query graph with node and edge lists
  */
-function getNodeAndEdgeListsForDisplay(q_graph) {
-  const query_graph = standardize(q_graph);
+function getNodeAndEdgeListsForDisplay(query_graph) {
   const nodes = Object.entries(query_graph.nodes).map(([nodeId, obj]) => {
     let { name } = obj;
     if (!obj.name) {
-      name = obj.id && obj.id.length ? obj.id.join(', ') : stringUtils.displayCategory(obj.category);
+      name = obj.ids && obj.ids.length ? obj.ids.join(', ') : stringUtils.displayCategory(obj.categories);
     }
     if (!name) {
       name = 'Something';
     }
-    obj.category = makeArray(obj.category);
     return {
       id: nodeId,
       name,
-      category: obj.category,
+      categories: obj.categories,
+      is_set: obj.is_set,
     };
   });
   const edges = Object.entries(query_graph.edges).map(([edgeId, obj]) => (
     {
       id: edgeId,
-      predicate: obj.predicate,
+      predicates: obj.predicates,
+      // source and target are specifically for d3
       source: obj.subject,
       target: obj.object,
     }
@@ -340,13 +198,8 @@ function getNodeAndEdgeListsForDisplay(q_graph) {
 
 export default {
   getEmptyGraph,
-  convert,
-  standardizeCategory,
-  standardizePredicate,
-  standardizeIDs,
-  addEdgeCurveProperties,
+  toCurrentTRAPI,
   prune,
-  standardize,
   getNodeAndEdgeListsForDisplay,
-  getNodeIdLabel,
+  getTableHeaderLabel,
 };

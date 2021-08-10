@@ -7,7 +7,7 @@
           "is_set": true
         },
         "n1": {
-          "id": ["MONDO:0005737"],
+          "ids": ["MONDO:0005737"],
           "is_set": false
         }
       },
@@ -33,7 +33,7 @@
         "1": {
           "subject": "1",
           "object": "2",
-          "predicate": []
+          "predicates": []
         }
       }
     },

@@ -16,7 +16,7 @@ export function findStartingNode(query_graph) {
   const nodes = Object.entries(query_graph.nodes).map(([key, node]) => (
     {
       key,
-      pinned: node.id && Array.isArray(node.id) && node.id.length > 0,
+      pinned: node.ids && Array.isArray(node.ids) && node.ids.length > 0,
     }
   ));
   const edgeNums = queryBuilderUtils.getNumEdgesPerNode(query_graph);
@@ -94,9 +94,9 @@ function makeTableHeaders(message, colorMap) {
   const sortedNodes = sortNodes(query_graph, startingNode);
   const headerColumns = sortedNodes.map((id) => {
     const qgNode = query_graph.nodes[id];
-    const backgroundColor = colorMap(qgNode.category && Array.isArray(qgNode.category) && qgNode.category[0]);
-    const nodeIdLabel = queryGraphUtils.getNodeIdLabel(qgNode);
-    const headerText = qgNode.name || nodeIdLabel || stringUtils.displayCategory(qgNode.category) || 'Something';
+    const backgroundColor = colorMap(qgNode.categories && Array.isArray(qgNode.categories) && qgNode.categories[0]);
+    const nodeIdLabel = queryGraphUtils.getTableHeaderLabel(qgNode);
+    const headerText = qgNode.name || nodeIdLabel || stringUtils.displayCategory(qgNode.categories) || 'Something';
     return {
       Header: `${headerText} (${id})`,
       color: backgroundColor,
@@ -105,7 +105,7 @@ function makeTableHeaders(message, colorMap) {
       Cell: ({ value }) => {
         if (value.length > 1) {
           // this is a set
-          return `Set of ${stringUtils.displayCategory(qgNode.category)} [${value.length}]`;
+          return `Set of ${stringUtils.displayCategory(qgNode.categories)} [${value.length}]`;
         }
         return knowledge_graph.nodes[value[0].id].name || value[0].id;
       },

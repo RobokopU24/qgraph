@@ -27,8 +27,8 @@ export default async function fetchCuries(entity, displayAlert) {
   // so we use a filter to remove those
   const newOptions = Object.values(normalizationResponse).filter((c) => c).map((c) => ({
     name: c.id.label || c.id.identifier,
-    category: c.type,
-    id: c.id.identifier,
+    categories: c.type,
+    ids: [c.id.identifier],
   }));
 
   return newOptions;

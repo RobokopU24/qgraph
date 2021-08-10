@@ -22,24 +22,17 @@ function toSnakeCase(str) {
 
 /**
  * Convert to pascal case with biolink curie format
- * @param {string} str string to convert to pascal case
+ * @param {string} str - string to convert to pascal case
  */
 function toPascalCase(str) {
   const camelCaseStr = _.camelCase(str);
-  const pascalCategory = `${camelCaseStr.charAt(0).toUpperCase()}${camelCaseStr.slice(1)}`;
-  return pascalCategory;
-}
-
-function toArray(categories) {
-  if (!Array.isArray(categories)) {
-    return [categories];
-  }
-  return categories;
+  const pascalCase = `${camelCaseStr.charAt(0).toUpperCase()}${camelCaseStr.slice(1)}`;
+  return pascalCase;
 }
 
 /**
  * Convert category from biolink into snake case
- * @param {string} category biolink category to ingest
+ * @param {string} category - biolink category to ingest
  */
 function nodeFromBiolink(category) {
   return category && `biolink:${toPascalCase(category)}`;
@@ -47,7 +40,7 @@ function nodeFromBiolink(category) {
 
 /**
  * Convert type from biolink into snake case
- * @param {string} type biolink type to ingest
+ * @param {string} type - biolink type to ingest
  * @returns {string} 'biolink:snake_case'
  */
 function edgeFromBiolink(type) {
@@ -56,7 +49,7 @@ function edgeFromBiolink(type) {
 
 /**
  * Convert label into prettier display
- * @param {string|array} arg string or array of wanted pretty display
+ * @param {string|array} arg - string or array of wanted pretty display
  * will only grab the first item in array
  */
 function displayCategory(arg) {
@@ -71,8 +64,8 @@ function displayCategory(arg) {
     // remove 'biolink:'
     const [, pascalCategory] = label.split(':');
     // split pascal case
-    const out = pascalCategory.split(/(?=[A-Z][a-z])/g);
-    return out.join(' ');
+    const splitCategory = pascalCategory.split(/(?=[A-Z][a-z])/g);
+    return splitCategory.join(' ');
   } catch (err) {
     return '';
   }
@@ -80,25 +73,25 @@ function displayCategory(arg) {
 
 /**
  * Readable version of 'Set of {category}'
- * @param {string} category node category
+ * @param {string} category - node category
  * @returns Set of {category}
  */
-function setify(cat) {
-  let category = displayCategory(cat);
-  if (category.endsWith('ay')) {
+function setify(category) {
+  let pluralCategory = displayCategory(category);
+  if (pluralCategory.endsWith('ay')) {
     // Pathway
-    category = `${category}s`;
-  } else if (category.endsWith('y')) {
-    category = `${category.slice(0, category.length - 1)}ies`;
-  } else if (category.endsWith('ms')) {
+    pluralCategory = `${pluralCategory}s`;
+  } else if (pluralCategory.endsWith('y')) {
+    pluralCategory = `${pluralCategory.slice(0, pluralCategory.length - 1)}ies`;
+  } else if (pluralCategory.endsWith('ms')) {
     // Population Of Individual Organisms
-    category = `${category}`;
-  } else if (category.endsWith('s')) {
-    category = `${category}es`;
+    pluralCategory = `${pluralCategory}`;
+  } else if (pluralCategory.endsWith('s')) {
+    pluralCategory = `${pluralCategory}es`;
   } else {
-    category = `${category}s`;
+    pluralCategory = `${pluralCategory}s`;
   }
-  return `Set of ${category}`;
+  return `Set of ${pluralCategory}`;
 }
 
 function displayPredicate(arg) {
@@ -144,7 +137,6 @@ export default {
   toCamelCase,
   toPascalCase,
   toSnakeCase,
-  toArray,
   prettyDisplay,
   displayPredicate,
   displayCategory,
