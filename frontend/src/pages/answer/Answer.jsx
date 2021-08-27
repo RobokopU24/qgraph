@@ -1,11 +1,11 @@
 import React, { useEffect, useContext, useMemo } from 'react';
 import { useRouteMatch, useHistory } from 'react-router-dom';
 import { get as idbGet, del as idbDelete, set as idbSet } from 'idb-keyval';
+import { useAuth0 } from '@auth0/auth0-react';
 
 import API from '~/API';
 import trapiUtils from '~/utils/trapi';
 import usePageStatus from '~/stores/usePageStatus';
-import UserContext from '~/context/user';
 import AlertContext from '~/context/alert';
 import queryGraphUtils from '~/utils/queryGraph';
 
@@ -30,12 +30,12 @@ import './answer.css';
  * - results table
  */
 export default function Answer() {
-  const answerStore = useAnswerStore();
-  const pageStatus = usePageStatus(false);
   const displayAlert = useContext(AlertContext);
-  const user = useContext(UserContext);
+  const answerStore = useAnswerStore();
   const history = useHistory();
   const { displayState, updateDisplayState } = useDisplayState();
+  const { isAuthenticated, getAccessTokenSilently, isLoading } = useAuth0();
+  const pageStatus = usePageStatus(isLoading, 'Loading Message...');
 
   /**
    * If we are rendering an answer, get answer_id with useRouteMatch
@@ -98,7 +98,15 @@ export default function Answer() {
    */
   async function fetchAnswerData() {
     pageStatus.setLoading('Loading Message...');
-    const answerResponse = await API.cache.getAnswerData(answer_id, user && user.id_token);
+    let accessToken;
+    if (isAuthenticated) {
+      try {
+        accessToken = await getAccessTokenSilently();
+      } catch (err) {
+        displayAlert('error', `Failed to validate user. Error: ${err}`);
+      }
+    }
+    const answerResponse = await API.cache.getAnswerData(answer_id, accessToken);
 
     validateAndInitializeMessage(answerResponse);
   }
@@ -107,30 +115,32 @@ export default function Answer() {
    * Get or reset stored message whenever the answer id or user changes
    */
   useEffect(() => {
-    if (answer_id) {
-      idbDelete('quick_message');
-      fetchAnswerData();
-    } else {
-      pageStatus.setLoading('Loading Message...');
-      idbGet('quick_message')
-        .then((val) => {
-          if (val) {
-            validateAndInitializeMessage(val);
-          } else {
-            // if quick_message === undefined
+    if (!isLoading) {
+      if (answer_id) {
+        idbDelete('quick_message');
+        fetchAnswerData();
+      } else {
+        pageStatus.setLoading('Loading Message...');
+        idbGet('quick_message')
+          .then((val) => {
+            if (val) {
+              validateAndInitializeMessage(val);
+            } else {
+              // if quick_message === undefined
+              answerStore.reset();
+              // stop loading message
+              pageStatus.setSuccess();
+            }
+          })
+          .catch((err) => {
             answerStore.reset();
+            displayAlert('error', `Failed to load answer. Please try refreshing the page. Error: ${err}`);
             // stop loading message
             pageStatus.setSuccess();
-          }
-        })
-        .catch((err) => {
-          answerStore.reset();
-          displayAlert('error', `Failed to load answer. Please try refreshing the page. Error: ${err}`);
-          // stop loading message
-          pageStatus.setSuccess();
-        });
+          });
+      }
     }
-  }, [answer_id, user]);
+  }, [answer_id, isLoading]);
 
   /**
    * Upload a TRAPI message for viewing

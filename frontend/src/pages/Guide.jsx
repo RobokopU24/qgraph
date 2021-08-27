@@ -1,17 +1,14 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 
 import {
   Grid, Row, Col, ButtonToolbar, Button,
 } from 'react-bootstrap';
 
-import UserContext from '~/context/user';
-
 /**
  * Robokop Guide Page
  */
 export default function Guide() {
-  const user = useContext(UserContext);
   return (
     <Grid>
       <Row>
@@ -101,19 +98,11 @@ export default function Guide() {
                 Browse Questions
               </Button>
             </Link>
-            {user ? (
-              <Link to="/q/new">
-                <Button bsSize="large">
-                  Ask a Question
-                </Button>
-              </Link>
-            ) : (
-              <Link to="/simple/question">
-                <Button bsSize="large">
-                  Ask a Quick Question
-                </Button>
-              </Link>
-            )}
+            <Link to="/question">
+              <Button bsSize="large">
+                Ask a Question
+              </Button>
+            </Link>
           </ButtonToolbar>
           <br />
         </Col>

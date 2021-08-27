@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
+import { useAuth0 } from '@auth0/auth0-react';
 
 import Alert from '@material-ui/lab/Alert';
 import Paper from '@material-ui/core/Paper';
@@ -16,8 +17,8 @@ import API from '~/API';
 
 import './questionList.css';
 
-import UserContext from '~/context/user';
 import BrandContext from '~/context/brand';
+import AlertContext from '~/context/alert';
 
 import usePageStatus from '~/stores/usePageStatus';
 
@@ -32,13 +33,23 @@ export default function QuestionList() {
   const [publicQuestionsPage, publicQuestionsUpdatePage] = useState(0);
   const [publicQuestionsRowsPerPage, publicQuestionsUpdateRowsPerPage] = useState(5);
 
-  const user = useContext(UserContext);
+  const { isAuthenticated, getAccessTokenSilently, isLoading } = useAuth0();
+
   const brandConfig = useContext(BrandContext);
 
-  const pageStatus = usePageStatus(true);
+  const pageStatus = usePageStatus(isLoading, 'Loading Questions...');
+  const displayAlert = useContext(AlertContext);
 
   async function fetchQuestions() {
-    const response = await API.cache.getQuestions(user && user.id_token);
+    let accessToken;
+    if (isAuthenticated) {
+      try {
+        accessToken = await getAccessTokenSilently();
+      } catch (err) {
+        displayAlert('error', `Failed to get user questions. Error: ${err}`);
+      }
+    }
+    const response = await API.cache.getQuestions(accessToken);
     if (response.status === 'error') {
       pageStatus.setFailure(response.message);
       return;
@@ -51,7 +62,11 @@ export default function QuestionList() {
     pageStatus.setSuccess();
   }
 
-  useEffect(() => { fetchQuestions(); }, [user]);
+  useEffect(() => {
+    if (!isLoading) {
+      fetchQuestions();
+    }
+  }, [isLoading]);
 
   return (
     <>
@@ -63,15 +78,14 @@ export default function QuestionList() {
 
       <pageStatus.Display />
 
-      { pageStatus.displayPage && (
+      {pageStatus.displayPage && (
         <>
           <Box my={3}>
             <Typography variant="h4">
               My Questions
             </Typography>
           </Box>
-
-          { myQuestions.length === 0 ? (
+          {myQuestions.length === 0 ? (
             <Box my={4}>
               <Alert severity="info">
                 You do not have any questions that belong to you.
@@ -92,7 +106,7 @@ export default function QuestionList() {
                   </TableHead>
                   <TableBody>
                     {myQuestions
-                      .slice(myQuestionsPage * myQuestionsRowsPerPage, myQuestionsPage * myQuestionsRowsPerPage + myQuestionsRowsPerPage)
+                      .slice(myQuestionsPage * myQuestionsRowsPerPage, (myQuestionsPage * myQuestionsRowsPerPage) + myQuestionsRowsPerPage)
                       .map((question) => (
                         <QuestionTableRow
                           key={question.id}
@@ -124,7 +138,6 @@ export default function QuestionList() {
               Public Questions
             </Typography>
           </Box>
-
           <Paper id="questionListContainer">
             <TableContainer>
               <Table>
@@ -137,7 +150,7 @@ export default function QuestionList() {
                 </TableHead>
                 <TableBody>
                   {publicQuestions
-                    .slice(publicQuestionsPage * publicQuestionsRowsPerPage, publicQuestionsPage * publicQuestionsRowsPerPage + publicQuestionsRowsPerPage)
+                    .slice(publicQuestionsPage * publicQuestionsRowsPerPage, (publicQuestionsPage * publicQuestionsRowsPerPage) + publicQuestionsRowsPerPage)
                     .map((question) => (
                       <QuestionTableRow
                         key={question.id}
@@ -161,7 +174,6 @@ export default function QuestionList() {
               }}
             />
           </Paper>
-
         </>
       )}
     </>

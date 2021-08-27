@@ -7,18 +7,18 @@ services:
       - "7080:7080"
     environment:
       DNS_SERVER: 127.0.0.11
-      ROBOKACHE_URL: http://robokache
+      ROBOKACHE_URL: http://robokache:8080
       FRONTEND_URL: http://frontend:7080
       QUERYDISPATCHER_URL: http://query-dispatcher
       STRIDER_URL: https://strider.renci.org/1.1
   frontend:
     build: frontend/
   robokache:
-    image: ghcr.io/ncats-gamma/robokache:v4.1.4
+    image: ghcr.io/ncats-gamma/robokache:v4.1.5
     volumes:
       - ./robokache-data:/app/data
   query-dispatcher:
     build: query-dispatcher/
     environment:
-      ROBOKACHE_URL: http://robokache
+      ROBOKACHE_URL: http://robokache:8080
       STRIDER_URL: https://strider.renci.org/1.1

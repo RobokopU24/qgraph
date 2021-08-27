@@ -66,6 +66,7 @@ describe('Full question workflow', () => {
     await waitFor(() => fireEvent.click(screen.getByText('Quick Submit')));
 
     // answer page loaded, check that things showed up
+    await screen.findAllByText('Ebola Hemorrhagic Fever');
     expect(await screen.queryByRole('cell', { name: 'Ebola Hemorrhagic Fever' })).toBeTruthy();
     expect(await screen.queryByRole('cell', { name: 'NPC1' })).toBeTruthy();
   });

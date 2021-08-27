@@ -3,20 +3,39 @@
  */
 import React from 'react';
 import { render } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
+import { Auth0Provider } from '@auth0/auth0-react';
 
-import UserContext from '~/context/user';
 import AlertContext from '~/context/alert';
 import BiolinkContext from '~/context/biolink';
 
+import biolink from './biolink.json';
+
+// We need to mock the whole Auth0 provider so it doesn't try and use
+// window.crypto
+// https://github.com/auth0/auth0-react/issues/248#issuecomment-840478152
+jest.mock('@auth0/auth0-react', () => ({
+  Auth0Provider: ({ children }) => (
+    <div>{children}</div>
+  ),
+  useAuth0: () => ({
+    isLoading: false,
+    isAuthenticated: true,
+    loginWithPopup: jest.fn(),
+  }),
+}));
+
 function ProviderWrapper({ children }) {
   return (
-    <AlertContext.Provider value={{}}>
-      <UserContext.Provider value={{}}>
-        <BiolinkContext.Provider value={{}}>
-          {children}
-        </BiolinkContext.Provider>
-      </UserContext.Provider>
-    </AlertContext.Provider>
+    <MemoryRouter>
+      <Auth0Provider>
+        <AlertContext.Provider value={jest.fn}>
+          <BiolinkContext.Provider value={biolink}>
+            {children}
+          </BiolinkContext.Provider>
+        </AlertContext.Provider>
+      </Auth0Provider>
+    </MemoryRouter>
   );
 }
 

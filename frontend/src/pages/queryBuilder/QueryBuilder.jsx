@@ -2,10 +2,10 @@ import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import { set as idbSet } from 'idb-keyval';
+import { useAuth0 } from '@auth0/auth0-react';
 
 import API from '~/API';
 import QueryBuilderContext from '~/context/queryBuilder';
-import UserContext from '~/context/user';
 import AlertContext from '~/context/alert';
 import queryGraphUtils from '~/utils/queryGraph';
 import { useVisibility } from '~/utils/cache';
@@ -28,8 +28,8 @@ export default function QueryBuilder() {
   const pageStatus = usePageStatus(false);
   const [showJson, toggleJson] = useState(false);
   const displayAlert = useContext(AlertContext);
-  const user = useContext(UserContext);
   const history = useHistory();
+  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
 
   /**
    * Submit this query directly to an ARA and then navigate to the answer page
@@ -64,14 +64,14 @@ export default function QueryBuilder() {
    * @param {string} questionId - question id
    * @returns {object} response
    */
-  async function fetchAnswer(questionId) {
-    let response = await API.queryDispatcher.getAnswer(questionId, user.id_token);
+  async function fetchAnswer(questionId, accessToken) {
+    let response = await API.queryDispatcher.getAnswer(questionId, accessToken);
     if (response.status === 'error') {
       return response;
     }
     const answerId = response.id;
 
-    response = await API.cache.getQuestion(questionId, user.id_token);
+    response = await API.cache.getQuestion(questionId, accessToken);
     if (response.status === 'error') {
       return response;
     }
@@ -79,7 +79,7 @@ export default function QueryBuilder() {
     // Set hasAnswers in metadata to true
     const questionMeta = response;
     questionMeta.metadata.hasAnswers = true;
-    response = await API.cache.updateQuestion(questionMeta, user.id_token);
+    response = await API.cache.updateQuestion(questionMeta, accessToken);
     if (response.status === 'error') {
       return response;
     }
@@ -95,6 +95,15 @@ export default function QueryBuilder() {
    * - Notifies the user when the answer is ready
    */
   async function onSubmit() {
+    let accessToken;
+    if (isAuthenticated) {
+      try {
+        accessToken = await getAccessTokenSilently();
+      } catch (err) {
+        displayAlert('error', `Failed to validate user. Error: ${err}`);
+        return;
+      }
+    }
     const defaultQuestion = {
       parent: '',
       visibility: visibility.toInt('Private'),
@@ -102,7 +111,7 @@ export default function QueryBuilder() {
     };
     let response;
 
-    response = await API.cache.createQuestion(defaultQuestion, user.id_token);
+    response = await API.cache.createQuestion(defaultQuestion, accessToken);
     if (response.status === 'error') {
       displayAlert('error', response.message);
       return;
@@ -114,7 +123,7 @@ export default function QueryBuilder() {
 
     // Upload question data
     const questionData = JSON.stringify({ message: { query_graph: prunedQueryGraph } }, null, 2);
-    response = await API.cache.setQuestionData(questionId, questionData, user.id_token);
+    response = await API.cache.setQuestionData(questionId, questionData, accessToken);
     if (response.status === 'error') {
       displayAlert('error', response.message);
       return;
@@ -123,7 +132,7 @@ export default function QueryBuilder() {
     pageStatus.setLoading('Fetching answer, this may take a while');
 
     // Start the process of getting an answer and display to user when done
-    response = await fetchAnswer(questionId);
+    response = await fetchAnswer(questionId, accessToken);
 
     if (response.status === 'error') {
       const failedToAnswer = 'Please try asking this question later.';
@@ -181,7 +190,7 @@ export default function QueryBuilder() {
           >
             Edit JSON
           </Button>
-          {user && (
+          {isAuthenticated && (
             <Button
               onClick={onSubmit}
               variant="contained"
