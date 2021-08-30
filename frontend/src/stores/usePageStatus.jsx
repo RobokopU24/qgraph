@@ -17,10 +17,10 @@ const CenteredAlert = withStyles({
  * Handles the display of a loading indicator when the page is first
  * rendered and an optional error message.
  */
-export default function usePageStatus(startAsLoading) {
+export default function usePageStatus(startAsLoading, initialLoadingMessage) {
   // Full page loading indicator
   const [loading, toggleLoading] = useState(!!startAsLoading);
-  const [loadingMessage, setLoadingMessage] = useState('');
+  const [loadingMessage, setLoadingMessage] = useState(initialLoadingMessage || '');
   // Full page error indicator
   const [error, setError] = useState('');
 

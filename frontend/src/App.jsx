@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { ThemeProvider, StylesProvider } from '@material-ui/core/styles';
+import { Auth0Provider } from '@auth0/auth0-react';
 
 import Landing from '~/pages/Landing';
+import Logout from '~/pages/Logout';
 import About from '~/pages/About';
 import Help from '~/pages/Help';
 import Guide from '~/pages/Guide';
@@ -19,7 +21,6 @@ import AlertWrapper from '~/components/AlertWrapper';
 import theme from '~/theme';
 import API from '~/API';
 
-import UserContext from '~/context/user';
 import AlertContext from '~/context/alert';
 import BiolinkContext from '~/context/biolink';
 import BrandContext from '~/context/brand';
@@ -30,7 +31,6 @@ import robokop_config from './robokop_config.json';
 import qgraph_config from './qgraph_config.json';
 
 export default function App() {
-  const [user, setUser] = useState(null);
   const [alert, setAlert] = useState({});
   const [brandConfig, setBrandConfig] = useState({});
   const biolink = useBiolinkModel();
@@ -63,9 +63,14 @@ export default function App() {
   return (
     <div id="pageContainer">
       <BrowserRouter>
-        <BrandContext.Provider value={brandConfig}>
-          <AlertContext.Provider value={simpleSetAlert}>
-            <UserContext.Provider value={user}>
+        <Auth0Provider
+          domain="qgraph.us.auth0.com"
+          clientId="sgJrK1gGAbzrXwUp0WG7jAV0ivCIF6jr"
+          redirectUri={window.location.origin}
+          audience="https://qgraph.org/api"
+        >
+          <BrandContext.Provider value={brandConfig}>
+            <AlertContext.Provider value={simpleSetAlert}>
               <BiolinkContext.Provider value={biolink}>
                 <ThemeProvider theme={theme}>
                   <StylesProvider injectFirst>
@@ -73,7 +78,7 @@ export default function App() {
                       alert={alert}
                       onClose={() => simpleSetAlert(alert.severity, '')}
                     />
-                    <Header setUser={setUser} />
+                    <Header />
                     <div id="contentContainer">
                       <Switch>
                         <Route path="/about">
@@ -90,6 +95,9 @@ export default function App() {
                         </Route>
                         <Route path="/termsofservice">
                           <TermsofService />
+                        </Route>
+                        <Route path="/logout">
+                          <Logout />
                         </Route>
                         <Route path="/answer/:answer_id?">
                           <Answer />
@@ -108,9 +116,9 @@ export default function App() {
                   </StylesProvider>
                 </ThemeProvider>
               </BiolinkContext.Provider>
-            </UserContext.Provider>
-          </AlertContext.Provider>
-        </BrandContext.Provider>
+            </AlertContext.Provider>
+          </BrandContext.Provider>
+        </Auth0Provider>
       </BrowserRouter>
     </div>
   );

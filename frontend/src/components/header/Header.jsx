@@ -1,5 +1,5 @@
 import React, {
-  useEffect, useState, useContext, useRef,
+  useState, useContext,
 } from 'react';
 import { Link } from 'react-router-dom';
 import AppBar from '@material-ui/core/AppBar';
@@ -10,106 +10,19 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
+import { useAuth0 } from '@auth0/auth0-react';
 
-import UserContext from '~/context/user';
-import AlertContext from '~/context/alert';
 import BrandContext from '~/context/brand';
-
-import googleIcon from '../../../public/images/btn_google_light_normal_ios.svg';
 
 import './header.css';
 
-export default function Header({ setUser }) {
+export default function Header() {
   const [anchorEl, setAnchorEl] = useState(null);
-  const timeoutId = useRef(null);
 
-  const user = useContext(UserContext);
-  const displayAlert = useContext(AlertContext);
+  const {
+    logout, isAuthenticated, loginWithPopup,
+  } = useAuth0();
   const brandConfig = useContext(BrandContext);
-
-  /**
-   * Automatically refresh a user token a minute before it expires
-   * This will run in the background and ping google every 30 mins or so
-   * @param {number} timeToRefresh number of seconds before a token is set to expire
-   * @param {object} googleUser google user object
-   */
-  function refreshToken(timeToRefresh, googleUser) {
-    timeoutId.current = setTimeout(async () => {
-      try {
-        const { id_token, expires_in } = await googleUser.reloadAuthResponse();
-        const userProfile = googleUser.getBasicProfile();
-        const username = userProfile.getEmail();
-        setUser({ username, id_token });
-        const newRefreshTime = (expires_in - 60) * 1000;
-        refreshToken(newRefreshTime, googleUser);
-      } catch (err) {
-        displayAlert('error', 'Lost connection to Google. Please sign in again.');
-        setUser(null);
-      }
-    }, timeToRefresh);
-  }
-
-  function signInSuccess(googleUser) {
-    const userProfile = googleUser.getBasicProfile();
-    const username = userProfile.getEmail();
-    const { id_token, expires_in } = googleUser.getAuthResponse();
-    setUser({ username, id_token });
-    const timeToRefresh = (expires_in - 60) * 1000;
-    refreshToken(timeToRefresh, googleUser);
-  }
-
-  function onSignIn() {
-    setAnchorEl(null);
-    const GoogleAuth = window.gapi.auth2.getAuthInstance();
-    GoogleAuth.signIn({
-      scope: 'profile email',
-    })
-      .then((googleUser) => {
-        signInSuccess(googleUser);
-      })
-      .catch(() => {
-        displayAlert('error', 'Sign in failed. Please make sure you are connected to the internet and that you have popups allowed.');
-      });
-  }
-
-  function signOut() {
-    const GoogleAuth = window.gapi.auth2.getAuthInstance();
-    GoogleAuth.signOut()
-      .then(() => {
-        setUser(null);
-        clearTimeout(timeoutId.current);
-        // This disconnect closes the scope to the Robokop google credentials
-        GoogleAuth.disconnect();
-      });
-  }
-
-  function openSignIn(e) {
-    setAnchorEl(e.currentTarget);
-  }
-
-  useEffect(() => {
-    if (window.gapi && !user) {
-      window.gapi.load('auth2', () => {
-        let GoogleAuth = window.gapi.auth2.getAuthInstance();
-        if (!GoogleAuth) {
-          window.gapi.auth2.init({
-            client_id: '297705140796-41v2ra13t7mm8uvu2dp554ov1btt80dg.apps.googleusercontent.com',
-          })
-            .then(() => {
-              GoogleAuth = window.gapi.auth2.getAuthInstance();
-              if (GoogleAuth.isSignedIn.get()) {
-                signInSuccess(GoogleAuth.currentUser.get());
-              }
-            })
-            .catch(() => {
-              displayAlert('error', 'Failed to automatically sign you in. Please sign in manually.');
-            });
-        } else if (GoogleAuth.isSignedIn.get()) {
-          onSignIn(GoogleAuth.currentUser.get());
-        }
-      });
-    }
-  }, []);
 
   return (
     <AppBar position="relative" className="header">
@@ -127,13 +40,16 @@ export default function Header({ setUser }) {
         )}
         <Divider orientation="vertical" variant="middle" flexItem />
         <IconButton
-          onClick={openSignIn}
+          onClick={(e) => (
+            isAuthenticated ? setAnchorEl(e.currentTarget) : loginWithPopup()
+          )}
           fontSize="large"
+          aria-label="signinButton"
         >
-          {user ? (
+          {isAuthenticated ? (
             <AccountCircle id="signedInIcon" fontSize="large" />
           ) : (
-            <AccountCircleOutlinedIcon fontSize="large" />
+            <AccountCircleOutlinedIcon id="signedOutIcon" fontSize="large" />
           )}
         </IconButton>
         <Popover
@@ -143,14 +59,7 @@ export default function Header({ setUser }) {
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
           transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
-          {user ? (
-            <Button onClick={signOut}>Sign Out</Button>
-          ) : (
-            <Button onClick={onSignIn} id="googleSignIn">
-              <img src={googleIcon} alt="google icon" />
-              <span>Sign in with Google</span>
-            </Button>
-          )}
+          <Button onClick={() => logout({ returnTo: `${window.location.origin}/logout` })}>Sign Out</Button>
         </Popover>
       </Toolbar>
     </AppBar>
