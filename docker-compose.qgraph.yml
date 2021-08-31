@@ -1,15 +1,18 @@
 version: '3.5'
 
 services:
+  proxy:
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # need to copy both live and archive because live is symlink to archive
+      - /etc/letsencrypt/live/qgraph.org/:/etc/nginx/ssl/certs/
+      - /etc/letsencrypt/archive/qgraph.org/:/etc/nginx/archive/qgraph.org/
+      # use qgraph server block in nginx
+      - ./proxy/qgraph_server.conf:/etc/nginx/templates/server.conf.template
   frontend:
     build:
       dockerfile: Dockerfile.prod
     environment:
       BRAND: qgraph
-  proxy:
-    environment:
-      # deployed on AWS, we need to use external robokop ara url
-      ROBOKOP_URL: http://robokop.renci.org:7092
-  query-dispatcher:
-    environment:
-      ROBOKOP_URL: http://robokop.renci.org:7092

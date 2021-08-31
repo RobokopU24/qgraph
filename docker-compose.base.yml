@@ -3,14 +3,13 @@ version: '3.5'
 services:
   proxy:
     build: proxy/
-    ports:
-      - "7080:7080"
+    env_file:
+      - ./.env
     environment:
       DNS_SERVER: 127.0.0.11
-      ROBOKACHE_URL: http://robokache:8080
-      FRONTEND_URL: http://frontend:7080
-      QUERYDISPATCHER_URL: http://query-dispatcher
-      STRIDER_URL: https://strider.renci.org/1.1
+      FRONTEND: http://frontend:7080
+      QUERY_DISPATCHER: http://query-dispatcher
+      ROBOKACHE: http://robokache:8080
   frontend:
     build: frontend/
   robokache:
@@ -19,6 +18,7 @@ services:
       - ./robokache-data:/app/data
   query-dispatcher:
     build: query-dispatcher/
+    env_file:
+      - ./.env
     environment:
-      ROBOKACHE_URL: http://robokache:8080
-      STRIDER_URL: https://strider.renci.org/1.1
+      ROBOKACHE: http://robokache:8080

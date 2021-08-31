@@ -35,11 +35,7 @@ Deploy using the following command (recommended):
 docker-compose -f docker-compose.base.yml -f docker-compose.prod.yml up --build --renew-anon-volumes --abort-on-container-exit
 ```
 
-You may also use the management script (not recommended for actual deployment but may be useful for local testing of the production environment):
-
-```bash
-node manage.js local-prod
-```
+External services can be updated by editing the variables in the `.env` file
 
 ## Contributing
 

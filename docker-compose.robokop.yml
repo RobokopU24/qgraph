@@ -1,15 +1,15 @@
 version: '3.5'
 
 services:
+  proxy:
+    ports:
+      - "7080:7080"
+    volumes:
+      - /local/certs:/etc/nginx/ssl/certs
+      # use robokop server block in nginx
+      - ./proxy/robokop_server.conf:/etc/nginx/templates/server.conf.template
   frontend:
     build:
       dockerfile: Dockerfile.prod
     environment:
       BRAND: robokop
-  proxy:
-    environment:
-      # deployed on renci servers, we need to look at local docker container
-      ROBOKOP_URL: http://robokop-ara:7092
-  query-dispatcher:
-    environment:
-      ROBOKOP_URL: http://robokop-ara:7092

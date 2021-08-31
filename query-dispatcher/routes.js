@@ -8,7 +8,7 @@ const { handleAxiosError } = require('./utils');
 //                    'http://robokop.renci.org:4868/answer';
 // const strider = process.env.STRIDER_URL ||
 //                     'http://robokop.renci.org:5781';
-const robokop = process.env.ROBOKOP_URL || 'http://robokop.renci.org:7092';
+const robokop = process.env.ROBOKOP || 'http://robokop.renci.org:7092';
 
 router.route('/answer')
   .post(async (req, res) => {
