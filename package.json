@@ -2,7 +2,7 @@
   "name": "manage",
   "type": "module",
   "version": "1.0.0",
-  "description": "Management script for automating robokop dev commands",
+  "description": "Management script for automating qgraph dev commands",
   "main": "manage.js",
   "dependencies": {
     "colors": "^1.4.0",
@@ -13,19 +13,19 @@
   },
   "scripts": {
 	  "dev"  : "node manage.js dev",
-	  "prod" : "node manage.js local-prod",
+	  "hot" : "node manage.js dev --hotReload",
 	  "test" : "node manage.js test",
 	  "frontend-lint" : "node manage.js frontend lint",
 	  "frontend-lint-summary" : "node manage.js frontend lint-summary"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/NCATS-Gamma/robokop-rewrite.git"
+    "url": "git+https://github.com/NCATS-Gamma/qgraph.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/NCATS-Gamma/robokop-rewrite/issues"
+    "url": "https://github.com/NCATS-Gamma/qgraph/issues"
   },
-  "homepage": "https://github.com/NCATS-Gamma/robokop-rewrite#readme"
+  "homepage": "https://github.com/NCATS-Gamma/qgraph#readme"
 }
