@@ -4,6 +4,6 @@ services:
   frontend:
     build:
       dockerfile: Dockerfile.test
-    environment:
-      BRAND: qgraph
+      args:
+        BRAND: qgraph
     command: npm run test:cov
