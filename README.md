@@ -8,12 +8,13 @@ A friendly interface for users to create, upload, ask, and view biomedical quest
 ### Setup
 
 1. Clone this repository locally.
-1. Install the following dependencies.
+2. Install the following dependencies.
     * [Docker](https://docs.docker.com/get-docker/)
     * [Docker Compose](https://docs.docker.com/compose/install/)
     * Optional to use management script:
 		* Install [Node.js](https://nodejs.org/)
 		* Run `npm install`
+3. (Optional) Add an `.env` file to the root directory to override any external service urls.
 
 ### Run
 
@@ -35,7 +36,7 @@ Deploy using the following command (recommended):
 docker-compose -f docker-compose.base.yml -f docker-compose.prod.yml up --build --renew-anon-volumes --abort-on-container-exit
 ```
 
-External services can be updated by editing the variables in the `.env` file
+External service urls can be changed in an `.env` file in the root directory.
 
 ## Contributing
 
