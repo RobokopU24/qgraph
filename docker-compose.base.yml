@@ -3,14 +3,18 @@ version: '3.5'
 services:
   proxy:
     build: proxy/
-    ports:
-      - "7080:7080"
     environment:
       DNS_SERVER: 127.0.0.11
-      ROBOKACHE_URL: http://robokache:8080
-      FRONTEND_URL: http://frontend:7080
-      QUERYDISPATCHER_URL: http://query-dispatcher
-      STRIDER_URL: https://strider.renci.org/1.1
+      FRONTEND: http://frontend:7080
+      QUERY_DISPATCHER: http://query-dispatcher
+      ROBOKACHE: http://robokache:8080
+      # https://docs.docker.com/compose/environment-variables/#substitute-environment-variables-in-compose-files
+      # default external service urls with option to override with .env file
+      STRIDER: ${STRIDER:-https://strider.renci.org/1.1}
+      ROBOKOP: ${ROBOKOP:-http://robokop.renci.org:7092}
+      NODE_NORMALIZER: ${NODE_NORMALIZER:-https://nodenormalization-sri.renci.org/1.1/}
+      NAME_RESOLVER: ${NAME_RESOLVER:-https://name-resolution-sri.renci.org/}
+      BIOLINK: ${BIOLINK:-https://raw.githubusercontent.com/biolink/biolink-model/1.8.2/biolink-model.yaml}
   frontend:
     build: frontend/
   robokache:
@@ -20,5 +24,5 @@ services:
   query-dispatcher:
     build: query-dispatcher/
     environment:
-      ROBOKACHE_URL: http://robokache:8080
-      STRIDER_URL: https://strider.renci.org/1.1
+      ROBOKACHE: http://robokache:8080
+      ROBOKOP: ${ROBOKOP:-http://robokop.renci.org:7092}

@@ -3,13 +3,15 @@ import yaml from 'js-yaml';
 
 import utils from './utils';
 
+const biolink_url = `${window.location.origin}/api/external/biolink`;
+
 const routes = {
   /**
    * Get biolink model specification
    */
   async getModelSpecification() {
     const config = {
-      url: 'https://raw.githubusercontent.com/biolink/biolink-model/1.8.2/biolink-model.yaml',
+      url: biolink_url,
       method: 'GET',
     };
     let response;

@@ -1,6 +1,12 @@
 version: '3.5'
 
 services:
+  proxy:
+    ports:
+      - "7080:7080"
+    volumes:
+      # use dev server block in nginx
+      - ./proxy/dev_server.conf:/etc/nginx/templates/server.conf.template
   frontend:
     build:
       dockerfile: Dockerfile.dev
@@ -16,10 +22,4 @@ services:
     volumes:
       - ./query-dispatcher:/app
       - /app/node_modules
-    environment:
-      # deployed locally, we need to look at external robokop ara url
-      ROBOKOP_URL: http://robokop.renci.org:7092
     command: npm run dev
-  proxy:
-    environment:
-      ROBOKOP_URL: http://robokop.renci.org:7092
