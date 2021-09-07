@@ -1,4 +1,6 @@
-import React, { useEffect, useContext, useMemo } from 'react';
+import React, {
+  useState, useEffect, useContext, useMemo,
+} from 'react';
 import { useRouteMatch, useHistory } from 'react-router-dom';
 import { get as idbGet, del as idbDelete, set as idbSet } from 'idb-keyval';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -11,6 +13,7 @@ import queryGraphUtils from '~/utils/queryGraph';
 
 import useAnswerStore from './useAnswerStore';
 import useDisplayState from './useDisplayState';
+import { defaultAnswer } from '~/utils/cache';
 
 import LeftDrawer from './leftDrawer/LeftDrawer';
 import KgBubble from './kgBubble/KgBubble';
@@ -36,6 +39,7 @@ export default function Answer() {
   const { displayState, updateDisplayState } = useDisplayState();
   const { isAuthenticated, getAccessTokenSilently, isLoading } = useAuth0();
   const pageStatus = usePageStatus(isLoading, 'Loading Message...');
+  const [owned, setOwned] = useState(false);
 
   /**
    * If we are rendering an answer, get answer_id with useRouteMatch
@@ -97,7 +101,6 @@ export default function Answer() {
    * Get a message by id from Robokache
    */
   async function fetchAnswerData() {
-    pageStatus.setLoading('Loading Message...');
     let accessToken;
     if (isAuthenticated) {
       try {
@@ -112,15 +115,36 @@ export default function Answer() {
   }
 
   /**
+   * Get metadata of answer to see if current user owns it
+   */
+  async function checkIfAnswerOwned() {
+    let accessToken;
+    if (isAuthenticated) {
+      try {
+        accessToken = await getAccessTokenSilently();
+      } catch (err) {
+        displayAlert('error', `Failed to validate user. Error: ${err}`);
+      }
+    }
+    const answerResponse = await API.cache.getAnswer(answer_id, accessToken);
+    if (answerResponse.status === 'error') {
+      pageStatus.setFailure(answerResponse.message);
+      return;
+    }
+    setOwned(answerResponse.owned);
+  }
+
+  /**
    * Get or reset stored message whenever the answer id or user changes
    */
   useEffect(() => {
     if (!isLoading) {
+      pageStatus.setLoading('Loading Message...');
       if (answer_id) {
         idbDelete('quick_message');
+        checkIfAnswerOwned();
         fetchAnswerData();
       } else {
-        pageStatus.setLoading('Loading Message...');
         idbGet('quick_message')
           .then((val) => {
             if (val) {
@@ -192,6 +216,54 @@ export default function Answer() {
     event.target.value = '';
   }
 
+  /**
+   * Save an uploaded answer to Robokache
+   */
+  async function saveAnswer() {
+    let accessToken;
+    if (isAuthenticated) {
+      try {
+        accessToken = await getAccessTokenSilently();
+      } catch (err) {
+        displayAlert('error', `Failed to validate user. Error: ${err}`);
+      }
+    } else {
+      return displayAlert('warning', 'You need to be signed in to save an answer.');
+    }
+    let response = await API.cache.createAnswer(defaultAnswer, accessToken);
+    if (response.status === 'error') {
+      return displayAlert('error', 'Failed to create answer.');
+    }
+    const answerId = response.id;
+    response = await API.cache.setAnswerData(answerId, { message: answerStore.message }, accessToken);
+    if (response.status === 'error') {
+      return displayAlert('error', 'Failed to save answer.');
+    }
+    return displayAlert('success', 'Your answer has been saved!');
+  }
+
+  /**
+   * Delete an answer from Robokache
+   */
+  async function deleteAnswer() {
+    let accessToken;
+    if (isAuthenticated) {
+      try {
+        accessToken = await getAccessTokenSilently();
+      } catch (err) {
+        displayAlert('error', `Failed to validate user. Error: ${err}`);
+      }
+    } else {
+      return displayAlert('warning', 'You need to be signed in to delete an answer.');
+    }
+    const response = await API.cache.deleteAnswer(answer_id, accessToken);
+    if (response.status === 'error') {
+      return displayAlert('error', `Failed to delete answer: ${response.message}`);
+    }
+    displayAlert('success', 'Your answer has been deleted.');
+    return history.push('/answer');
+  }
+
   return (
     <>
       <LeftDrawer
@@ -199,6 +271,9 @@ export default function Answer() {
         updateDisplayState={updateDisplayState}
         onUpload={onUpload}
         message={answerStore.message}
+        saveAnswer={saveAnswer}
+        deleteAnswer={deleteAnswer}
+        owned={owned}
       />
       <div id="answerContentContainer">
         <pageStatus.Display />
