@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import Drawer from '@material-ui/core/Drawer';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -17,6 +17,8 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 
 import BrandContext from '~/context/brand';
+
+import ConfirmDialog from '~/components/ConfirmDialog';
 
 import './leftDrawer.css';
 
@@ -37,6 +39,7 @@ export default function LeftDrawer({
   const { isAuthenticated } = useAuth0();
   const brandConfig = useContext(BrandContext);
   const urlHasAnswerId = useRouteMatch('/answer/:answer_id');
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   function toggleDisplay(component, show) {
     updateDisplayState({ type: 'toggle', payload: { component, show } });
@@ -145,7 +148,7 @@ export default function LeftDrawer({
           component="label"
           button
           disabled={!urlHasAnswerId || !isAuthenticated || !owned}
-          onClick={deleteAnswer}
+          onClick={() => setConfirmOpen(true)}
         >
           <ListItemIcon>
             <IconButton
@@ -160,6 +163,17 @@ export default function LeftDrawer({
           <ListItemText primary="Delete Answer" />
         </ListItem>
       </List>
+      <ConfirmDialog
+        open={confirmOpen}
+        handleOk={() => {
+          setConfirmOpen(false);
+          deleteAnswer();
+        }}
+        handleCancel={() => setConfirmOpen(false)}
+        content="Are you sure you want to delete this answer? This action cannot be undone."
+        title="Confirm Answer Deletion"
+        confirmText="Delete Answer"
+      />
     </Drawer>
   );
 }
