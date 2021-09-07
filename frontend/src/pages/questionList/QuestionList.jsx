@@ -102,6 +102,7 @@ export default function QuestionList() {
                       <TableCell>Has Answers</TableCell>
                       <TableCell>Visibility</TableCell>
                       <TableCell>Created</TableCell>
+                      <TableCell>Delete</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>

@@ -1,15 +1,17 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
+import IconButton from '@material-ui/core/IconButton';
 
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 
 import CheckIcon from '@material-ui/icons/Check';
 import ClearIcon from '@material-ui/icons/Clear';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 
 import { green, red } from '@material-ui/core/colors';
 
@@ -17,11 +19,14 @@ import API from '~/API';
 import { useVisibility, formatDateTimeNicely } from '~/utils/cache';
 import AlertContext from '~/context/alert';
 
+import ConfirmDialog from '~/components/ConfirmDialog';
+
 export default function QuestionTableRow({ question, onQuestionUpdated }) {
   const history = useHistory();
   const visibility = useVisibility();
   const displayAlert = useContext(AlertContext);
   const { isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   /**
    * Update question visibility on Robokache
@@ -79,6 +84,40 @@ export default function QuestionTableRow({ question, onQuestionUpdated }) {
     }
   }
 
+  async function deleteQuestion() {
+    let accessToken;
+    if (isAuthenticated) {
+      try {
+        accessToken = await getAccessTokenSilently();
+      } catch (err) {
+        displayAlert('error', `Failed to get user questions. Error: ${err}`);
+      }
+    }
+    let response = await API.cache.getAnswersByQuestion(question.id, accessToken);
+    if (response.status === 'error') {
+      displayAlert('error', 'Failed to load answers.');
+      return;
+    }
+    const answerErrors = [];
+    response.forEach(async (answer) => {
+      const res = await API.cache.deleteAnswer(answer.id, accessToken);
+      if (res.status === 'error') {
+        answerErrors.push(answer.id);
+      }
+    });
+    if (answerErrors.length) {
+      displayAlert('error', `Failed to delete answers: ${answerErrors.join(', ')}`);
+    } else {
+      response = await API.cache.deleteQuestion(question.id, accessToken);
+      if (response.status === 'error') {
+        displayAlert('error', 'Failed to delete this question.');
+      } else {
+        displayAlert('success', 'Question and answers deleted successfully!');
+        onQuestionUpdated();
+      }
+    }
+  }
+
   return (
     <TableRow
       key={question.id}
@@ -115,6 +154,32 @@ export default function QuestionTableRow({ question, onQuestionUpdated }) {
       <TableCell>
         { formatDateTimeNicely(question.created_at) }
       </TableCell>
+      {question.owned && (
+        <TableCell>
+          <IconButton
+            onClick={(e) => {
+              e.stopPropagation();
+              setConfirmOpen(true);
+            }}
+          >
+            <DeleteForeverIcon />
+          </IconButton>
+        </TableCell>
+      )}
+      <ConfirmDialog
+        open={confirmOpen}
+        handleOk={(e) => {
+          e.stopPropagation();
+          deleteQuestion();
+        }}
+        handleCancel={(e) => {
+          e.stopPropagation();
+          setConfirmOpen(false);
+        }}
+        content="Are you sure you want to delete this question? All associated answers will also be deleted. This action cannot be undone."
+        title="Confirm Question Deletion"
+        confirmText="Delete Question"
+      />
     </TableRow>
   );
 }
