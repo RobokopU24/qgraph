@@ -109,8 +109,19 @@ function makeTableHeaders(message, colorMap) {
         }
         return knowledge_graph.nodes[value[0].id].name || value[0].id;
       },
+      disableSortBy: true,
     };
   });
+  if (results[0].score) {
+    const scoreColumn = {
+      Header: 'Score',
+      id: 'score',
+      accessor: (row) => Math.round(row.score * 1000) / 1000,
+      width: 30,
+      sortDescFirst: true,
+    };
+    headerColumns.push(scoreColumn);
+  }
   return headerColumns;
 }
 

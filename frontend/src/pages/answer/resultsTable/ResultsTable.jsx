@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useTable, usePagination } from 'react-table';
+import { useTable, usePagination, useSortBy } from 'react-table';
 
 import Paper from '@material-ui/core/Paper';
 import TableContainer from '@material-ui/core/TableContainer';
@@ -9,6 +9,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TablePagination from '@material-ui/core/TablePagination';
+import TableSortLabel from '@material-ui/core/TableSortLabel';
 
 import ResultExplorer from './ResultExplorer';
 
@@ -44,6 +45,7 @@ export default function ResultsTable({ answerStore }) {
         ],
       },
     },
+    useSortBy,
     usePagination,
   );
 
@@ -61,9 +63,28 @@ export default function ResultsTable({ answerStore }) {
                         <TableCell
                           key={column.id}
                           className="resultsTableHeader"
-                          style={{ backgroundColor: column.color }}
+                          {...column.getHeaderProps(column.getSortByToggleProps(
+                            {
+                              style: {
+                                backgroundColor: column.color,
+                                cursor: column.canSort ? 'pointer' : '',
+                                width: column.width,
+                              },
+                            },
+                          ))}
                         >
-                          {column.render('Header')}
+                          {column.canSort ? (
+                            <TableSortLabel
+                              active={column.isSorted}
+                              direction={column.isSortedDesc ? 'desc' : 'asc'}
+                            >
+                              {column.render('Header')}
+                            </TableSortLabel>
+                          ) : (
+                            <>
+                              {column.render('Header')}
+                            </>
+                          )}
                         </TableCell>
                       ))}
                     </TableRow>

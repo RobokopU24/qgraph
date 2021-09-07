@@ -45,3 +45,7 @@
     max-height: 300px;
     overflow-y: auto;
 }
+
+.verticalCenter {
+    vertical-align: middle;
+}
