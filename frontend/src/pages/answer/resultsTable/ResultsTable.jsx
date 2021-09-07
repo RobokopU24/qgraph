@@ -93,7 +93,7 @@ export default function ResultsTable({ answerStore }) {
             </TableContainer>
             <TablePagination
               component="div"
-              rowsPerPageOptions={[5, 10, 15]}
+              rowsPerPageOptions={[5, 10, 15, 50, 100]}
               count={data.length}
               rowsPerPage={state.pageSize}
               page={state.pageIndex}

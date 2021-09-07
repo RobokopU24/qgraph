@@ -6,6 +6,7 @@
 #resultsTable {
     flex-grow: 1;
     min-height: 600px;
+    max-height: 750px;
     display: inline-block;
     overflow-y: auto;
 }
