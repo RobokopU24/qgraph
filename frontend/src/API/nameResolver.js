@@ -7,7 +7,7 @@ const baseRoutes = {
   /**
    * Look up possible entities using a search string
    */
-  async entityLookup(search_string, limit, offset) {
+  async entityLookup(search_string, limit, cancel) {
     const config = {
       headers: {
         'Content-Type': 'text/plain',
@@ -17,13 +17,16 @@ const baseRoutes = {
       params: {
         string: search_string,
         limit,
-        offset,
       },
+      cancelToken: cancel,
     };
     try {
-      const response = await axios(config);
+      const response = await axios.request(config);
       return response.data;
     } catch (error) {
+      if (axios.isCancel(error)) {
+        return {};
+      }
       return utils.handleAxiosError(error);
     }
   },

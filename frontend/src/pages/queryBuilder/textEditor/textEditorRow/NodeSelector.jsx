@@ -1,6 +1,7 @@
 import React, {
   useState, useEffect, useContext, useMemo,
 } from 'react';
+import axios from 'axios';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -17,6 +18,9 @@ function isValidNode(properties) {
   return (properties.categories && properties.categories.length) ||
     (properties.ids && properties.ids.length);
 }
+
+const { CancelToken } = axios;
+let cancel;
 
 /**
  * Generic node selector component
@@ -95,7 +99,11 @@ export default function NodeSelector({
       if (searchTerm.includes(':')) { // user is typing a specific curie
         newOptions.push({ name: searchTerm, ids: searchTerm });
       } else {
-        const curies = await fetchCuries(searchTerm, displayAlert);
+        if (cancel) {
+          cancel.cancel();
+        }
+        cancel = CancelToken.source();
+        const curies = await fetchCuries(searchTerm, displayAlert, cancel.token);
         newOptions.push(...curies);
       }
     }
@@ -114,6 +122,15 @@ export default function NodeSelector({
       setOptions([]);
     }
   }, [open, searchTerm]);
+
+  /**
+   * Cancel any api calls on unmount
+   */
+  useEffect(() => () => {
+    if (cancel) {
+      cancel.cancel();
+    }
+  }, []);
 
   /**
    * Create a human-readable label for every option
