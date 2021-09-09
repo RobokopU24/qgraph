@@ -95,7 +95,7 @@ export default function NodeSelector({
       newOptions.push(...includedCategories);
     }
     // fetch matching curies from external services
-    if (includeCuries && searchTerm.length > 3) {
+    if (includeCuries) {
       if (searchTerm.includes(':')) { // user is typing a specific curie
         newOptions.push({ name: searchTerm, ids: [searchTerm] });
       } else {
@@ -116,7 +116,7 @@ export default function NodeSelector({
    * after debounce
    */
   useEffect(() => {
-    if (open) {
+    if (open && searchTerm.length > 3) {
       getOptions();
     } else {
       setOptions([]);
