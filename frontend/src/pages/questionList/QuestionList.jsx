@@ -70,19 +70,13 @@ export default function QuestionList() {
 
   return (
     <>
-      <Box my={4}>
-        <Typography variant="h3">
-          {brandConfig.title} Question Library
-        </Typography>
-      </Box>
-
       <pageStatus.Display />
 
       {pageStatus.displayPage && (
         <>
           <Box my={3}>
             <Typography variant="h4">
-              My Questions
+              My Library
             </Typography>
           </Box>
           {myQuestions.length === 0 ? (
@@ -98,7 +92,7 @@ export default function QuestionList() {
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell>Question Name</TableCell>
+                      <TableCell>Name</TableCell>
                       <TableCell>Has Answers</TableCell>
                       <TableCell>Visibility</TableCell>
                       <TableCell>Created</TableCell>
@@ -136,7 +130,7 @@ export default function QuestionList() {
           {/* Always show public questions */}
           <Box my={3}>
             <Typography variant="h4">
-              Public Questions
+              Public Library
             </Typography>
           </Box>
           <Paper id="questionListContainer">
@@ -144,7 +138,7 @@ export default function QuestionList() {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Question Name</TableCell>
+                    <TableCell>Name</TableCell>
                     <TableCell>Has Answers</TableCell>
                     <TableCell>Created</TableCell>
                   </TableRow>

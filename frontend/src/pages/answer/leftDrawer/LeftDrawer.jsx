@@ -142,7 +142,7 @@ export default function LeftDrawer({
               <CloudUploadIcon />
             </IconButton>
           </ListItemIcon>
-          <ListItemText primary="Save Answer" />
+          <ListItemText primary="Save To Library" />
         </ListItem>
         <ListItem
           component="label"
