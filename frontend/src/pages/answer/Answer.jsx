@@ -244,6 +244,9 @@ export default function Answer() {
 
   /**
    * Delete an answer from Robokache
+   *
+   * Also check if the associated question has other answers
+   * and set `hasAnswers` to false if it doesn't
    */
   async function deleteAnswer() {
     let accessToken;
@@ -256,12 +259,43 @@ export default function Answer() {
     } else {
       return displayAlert('warning', 'You need to be signed in to delete an answer.');
     }
-    const response = await API.cache.deleteAnswer(answer_id, accessToken);
+    // get associated question
+    let response = await API.cache.getAnswer(answer_id, accessToken);
+    if (response.status === 'error') {
+      return displayAlert('error', `Failed to fetch answer: ${response.message}`);
+    }
+    const questionId = response.parent;
+    // delete answer from Robokache
+    response = await API.cache.deleteAnswer(answer_id, accessToken);
     if (response.status === 'error') {
       return displayAlert('error', `Failed to delete answer: ${response.message}`);
     }
-    displayAlert('success', 'Your answer has been deleted.');
-    return history.push('/answer');
+    history.push('/answer');
+    let alertType = 'success';
+    let alertText = 'Your answer has been deleted!';
+    // check if question has other answers
+    if (questionId) {
+      response = await API.cache.getAnswersByQuestion(questionId, accessToken);
+      if (response.status === 'error') {
+        alertType = 'error';
+        alertText += ` However, failed to get sibling answers: ${response.message}`;
+      } else if (!response.length) {
+        // if question has no answers, set hasAnswers to false
+        response = await API.cache.getQuestion(questionId, accessToken);
+        if (response.status === 'error') {
+          alertType = 'error';
+          alertText += ` However, failed to get associated question data: ${response.message}`;
+        } else {
+          response.metadata.hasAnswers = false;
+          response = await API.cache.updateQuestion(response, accessToken);
+          if (response.status === 'error') {
+            alertType = 'error';
+            alertText += ' However, failed to update associated question to no answers.';
+          }
+        }
+      }
+    }
+    return displayAlert(alertType, alertText);
   }
 
   return (
