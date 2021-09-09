@@ -12,6 +12,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 
 import ResultExplorer from './ResultExplorer';
+import EmptyTable from '~/components/shared/emptyTableRows/EmptyTable';
 
 import './resultsTable.css';
 
@@ -51,94 +52,98 @@ export default function ResultsTable({ answerStore }) {
 
   return (
     <>
-      {page.length > 0 ? (
-        <div id="resultsContainer">
-          <Paper id="resultsTable" elevation={3}>
-            <TableContainer>
-              <Table {...getTableProps()}>
-                <TableHead>
-                  {headerGroups.map((headerGroup, i) => (
-                    <TableRow key={i} {...headerGroup.getHeaderGroupProps()}>
-                      {headerGroup.headers.map((column) => (
-                        <TableCell
-                          key={column.id}
-                          className="resultsTableHeader"
-                          {...column.getHeaderProps(column.getSortByToggleProps(
-                            {
-                              style: {
-                                backgroundColor: column.color,
-                                cursor: column.canSort ? 'pointer' : '',
-                                width: column.width,
-                              },
+      <div id="resultsContainer">
+        <Paper id="resultsTable" elevation={3}>
+          <TableContainer>
+            <Table {...getTableProps()}>
+              <TableHead>
+                {headerGroups.map((headerGroup, i) => (
+                  <TableRow key={i} {...headerGroup.getHeaderGroupProps()}>
+                    {headerGroup.headers.map((column) => (
+                      <TableCell
+                        key={column.id}
+                        className="resultsTableHeader"
+                        {...column.getHeaderProps(column.getSortByToggleProps(
+                          {
+                            style: {
+                              backgroundColor: column.color,
+                              cursor: column.canSort ? 'pointer' : '',
+                              width: column.width,
                             },
-                          ))}
-                        >
-                          {column.canSort ? (
-                            <TableSortLabel
-                              active={column.isSorted}
-                              direction={column.isSortedDesc ? 'desc' : 'asc'}
-                            >
-                              {column.render('Header')}
-                            </TableSortLabel>
-                          ) : (
-                            <>
-                              {column.render('Header')}
-                            </>
-                          )}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))}
-                </TableHead>
-                <TableBody {...getTableBodyProps()}>
-                  {page.map((row) => {
-                    prepareRow(row);
-                    return (
-                      <TableRow
-                        {...row.getRowProps()}
-                        hover
-                        selected={answerStore.selectedRowId === row.id}
-                        onClick={() => answerStore.selectRow(row.original, row.id)}
-                        role="button"
-                      >
-                        {row.cells.map((cell) => (
-                          <TableCell {...cell.getCellProps()}>
-                            {cell.render('Cell')}
-                          </TableCell>
+                          },
                         ))}
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TablePagination
-              component="div"
-              rowsPerPageOptions={[5, 10, 15, 50, 100]}
-              count={data.length}
-              rowsPerPage={state.pageSize}
-              page={state.pageIndex}
-              backIconButtonProps={{
-                onClick: previousPage,
-                disabled: !canPreviousPage,
-              }}
-              nextIconButtonProps={{
-                onClick: nextPage,
-                disabled: !canNextPage,
-              }}
-              onChangePage={() => {}} // required prop
-              onChangeRowsPerPage={(e) => setPageSize(e.target.value)}
-            />
-          </Paper>
-          <ResultExplorer
-            answerStore={answerStore}
+                      >
+                        {column.canSort ? (
+                          <TableSortLabel
+                            active={column.isSorted}
+                            direction={column.isSortedDesc ? 'desc' : 'asc'}
+                          >
+                            {column.render('Header')}
+                          </TableSortLabel>
+                        ) : (
+                          <>
+                            {column.render('Header')}
+                          </>
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableHead>
+              <TableBody style={{ position: 'relative' }} {...getTableBodyProps()}>
+                {page.length > 0 ? (
+                  <>
+                    {page.map((row) => {
+                      prepareRow(row);
+                      return (
+                        <TableRow
+                          {...row.getRowProps()}
+                          hover
+                          selected={answerStore.selectedRowId === row.id}
+                          onClick={() => answerStore.selectRow(row.original, row.id)}
+                          role="button"
+                        >
+                          {row.cells.map((cell) => (
+                            <TableCell {...cell.getCellProps()}>
+                              {cell.render('Cell')}
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      );
+                    })}
+                  </>
+                ) : (
+                  <EmptyTable
+                    numRows={10}
+                    numCells={columns.length}
+                    text="No Results"
+                  />
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            component="div"
+            rowsPerPageOptions={[5, 10, 15, 50, 100]}
+            count={data.length}
+            rowsPerPage={state.pageSize}
+            page={state.pageIndex}
+            backIconButtonProps={{
+              onClick: previousPage,
+              disabled: !canPreviousPage,
+            }}
+            nextIconButtonProps={{
+              onClick: nextPage,
+              disabled: !canNextPage,
+            }}
+            onChangePage={() => {}} // required prop
+            onChangeRowsPerPage={(e) => setPageSize(e.target.value)}
           />
-        </div>
-      ) : (
-        <div id="noAnswersMessage">
-          <h4>This message has no answers.</h4>
-        </div>
-      )}
+        </Paper>
+        <ResultExplorer
+          answerStore={answerStore}
+        />
+      </div>
     </>
   );
 }
