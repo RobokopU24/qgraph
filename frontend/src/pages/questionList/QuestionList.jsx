@@ -17,7 +17,6 @@ import API from '~/API';
 
 import './questionList.css';
 
-import BrandContext from '~/context/brand';
 import AlertContext from '~/context/alert';
 
 import usePageStatus from '~/stores/usePageStatus';
@@ -34,8 +33,6 @@ export default function QuestionList() {
   const [publicQuestionsRowsPerPage, publicQuestionsUpdateRowsPerPage] = useState(5);
 
   const { isAuthenticated, getAccessTokenSilently, isLoading } = useAuth0();
-
-  const brandConfig = useContext(BrandContext);
 
   const pageStatus = usePageStatus(isLoading, 'Loading Questions...');
   const displayAlert = useContext(AlertContext);
