@@ -97,7 +97,7 @@ export default function NodeSelector({
     // fetch matching curies from external services
     if (includeCuries && searchTerm.length > 3) {
       if (searchTerm.includes(':')) { // user is typing a specific curie
-        newOptions.push({ name: searchTerm, ids: searchTerm });
+        newOptions.push({ name: searchTerm, ids: [searchTerm] });
       } else {
         if (cancel) {
           cancel.cancel();
