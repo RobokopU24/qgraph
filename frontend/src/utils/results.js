@@ -133,7 +133,7 @@ function makeTableHeaders(message, colorMap) {
       width,
     };
   });
-  if (results[0].score) {
+  if (results.length && results[0].score) {
     const scoreColumn = {
       Header: 'Score',
       id: 'score',
