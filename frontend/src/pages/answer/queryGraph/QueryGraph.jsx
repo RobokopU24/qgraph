@@ -1,6 +1,6 @@
 /* eslint-disable indent, no-use-before-define, func-names, no-return-assign */
 import React, {
-  useEffect, useRef, useContext,
+  useState, useEffect, useRef, useContext,
 } from 'react';
 import * as d3 from 'd3';
 import Paper from '@material-ui/core/Paper';
@@ -11,6 +11,7 @@ import graphUtils from '~/utils/d3/graph';
 import edgeUtils from '~/utils/d3/edges';
 import queryGraphUtils from '~/utils/queryGraph';
 import stringUtils from '~/utils/strings';
+import Loading from '~/components/loading/Loading';
 
 import './queryGraph.css';
 
@@ -23,11 +24,12 @@ const nodeRadius = 40;
 export default function QueryGraph({ query_graph }) {
   const svgRef = useRef();
   const { colorMap } = useContext(BiolinkContext);
+  const [drawing, setDrawing] = useState(false);
 
   /**
    * Initialize the svg size
    */
-  useEffect(() => {
+  function setSvgSize() {
     const svg = d3.select(svgRef.current);
     const { width, height } = svg.node().parentNode.getBoundingClientRect();
     svg
@@ -35,6 +37,10 @@ export default function QueryGraph({ query_graph }) {
       .attr('height', height)
       .attr('preserveAspectRatio', 'xMinYMin meet')
       .attr('viewBox', [0, 0, width, height]);
+  }
+
+  useEffect(() => {
+    setSvgSize();
   }, []);
 
   function drawQueryGraph() {
@@ -163,9 +169,32 @@ export default function QueryGraph({ query_graph }) {
     }
   }, [query_graph]);
 
+  useEffect(() => {
+    let timer;
+    function handleResize() {
+      const svg = d3.select(svgRef.current);
+      // clear the graph
+      svg.selectAll('*').remove();
+      setDrawing(true);
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        setSvgSize();
+        drawQueryGraph();
+        setDrawing(false);
+      }, 1000);
+    }
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [query_graph]);
+
   return (
     <Paper id="queryGraphContainer" elevation={3}>
       <h5 className="cardLabel">Question Graph</h5>
+      {drawing && (
+        <Loading positionStatic message="Redrawing question graph..." />
+      )}
       <svg ref={svgRef} />
     </Paper>
   );

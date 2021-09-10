@@ -42,6 +42,7 @@ export default function KgBubble({
         .attr('viewBox', [0, 0, width, height]);
     }
   }
+
   useEffect(() => {
     setSvgSize();
   }, [nodes]);
@@ -109,7 +110,7 @@ export default function KgBubble({
 
   useEffect(() => {
     let timer;
-    window.addEventListener('resize', () => {
+    function handleResize() {
       const svg = d3.select(svgRef.current);
       // clear the graph
       svg.selectAll('*').remove();
@@ -119,21 +120,11 @@ export default function KgBubble({
         setSvgSize();
         drawBubbleGraph();
         setDrawing(false);
-      }, 500);
-    });
+      }, 1000);
+    }
+    window.addEventListener('resize', handleResize);
     return () => {
-      window.removeEventListener('resize', () => {
-        const svg = d3.select(svgRef.current);
-        // clear the graph
-        svg.selectAll('*').remove();
-        setDrawing(true);
-        clearTimeout(timer);
-        timer = setTimeout(() => {
-          setSvgSize();
-          drawBubbleGraph();
-          setDrawing(false);
-        }, 500);
-      });
+      window.removeEventListener('resize', handleResize);
     };
   }, [nodes]);
 
@@ -143,7 +134,7 @@ export default function KgBubble({
         <Paper id="kgBubbleContainer" elevation={3}>
           <h5 className="cardLabel">Knowledge Graph Bubble</h5>
           {drawing && (
-            <Loading positionStatic />
+            <Loading positionStatic message="Redrawing knowledge graph..." />
           )}
           <svg ref={svgRef} />
         </Paper>
