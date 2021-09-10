@@ -13,7 +13,8 @@ import QueryBuilderContext from '~/context/queryBuilder';
 import getNodeCategoryColorMap from '~/utils/colors';
 import queryGraphUtils from '~/utils/queryGraph';
 
-const nodeRadius = 40;
+const nodeRadius = 48;
+const edgeLength = 225;
 
 /**
  * Main D3 query graph component
@@ -143,7 +144,7 @@ export default function QueryGraph({
   useEffect(() => {
     simulation.current = d3.forceSimulation()
       .force('collide', d3.forceCollide().radius(nodeRadius))
-      .force('link', d3.forceLink().id((d) => d.id).distance(200).strength(1))
+      .force('link', d3.forceLink().id((d) => d.id).distance(edgeLength).strength(1))
       .force('center', d3.forceCenter(width / 2, height / 2).strength(0.05))
       .on('tick', ticked);
   }, []);
