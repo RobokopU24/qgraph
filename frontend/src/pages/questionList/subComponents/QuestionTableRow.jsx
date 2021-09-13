@@ -129,14 +129,15 @@ export default function QuestionTableRow({ question, onQuestionUpdated }) {
         {question.metadata.name}
       </TableCell>
       <TableCell>
-        {question.metadata.hasAnswers ?
-          <CheckIcon style={{ color: green[500] }} /> :
-          <ClearIcon style={{ color: red[500] }} />}
+        {question.metadata.hasAnswers ? (
+          <CheckIcon style={{ color: green[500] }} />
+        ) : (
+          <ClearIcon style={{ color: red[500] }} />
+        )}
       </TableCell>
-      { question.owned && (
+      {question.owned && (
         <TableCell>
           <FormControlLabel
-            label="Public"
             onClick={(e) => {
               // stop from going to answer page
               e.stopPropagation();
