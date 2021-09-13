@@ -51,7 +51,9 @@ export default function QuestionList() {
       pageStatus.setFailure(response.message);
       return;
     }
-    const questions = response;
+    // response questions are in order by creation date
+    // reverse to show new questions first
+    const questions = response.reverse();
 
     updateMyQuestions(questions.filter((question) => question.owned));
     updatePublicQuestions(questions.filter((question) => !question.owned));
