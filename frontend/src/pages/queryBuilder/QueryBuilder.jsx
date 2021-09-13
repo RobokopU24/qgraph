@@ -99,7 +99,7 @@ export default function QueryBuilder() {
       try {
         accessToken = await getAccessTokenSilently();
       } catch (err) {
-        displayAlert('error', `Failed to validate user. Error: ${err}`);
+        displayAlert('error', `Failed to authenticate user: ${err}`);
         return;
       }
     }

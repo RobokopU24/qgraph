@@ -43,7 +43,7 @@ export default function QuestionList() {
       try {
         accessToken = await getAccessTokenSilently();
       } catch (err) {
-        displayAlert('error', `Failed to get user questions. Error: ${err}`);
+        displayAlert('error', `Failed to authenticate user: ${err}`);
       }
     }
     const response = await API.cache.getQuestions(accessToken);

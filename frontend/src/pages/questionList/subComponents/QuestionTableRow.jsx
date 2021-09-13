@@ -38,13 +38,13 @@ export default function QuestionTableRow({ question, onQuestionUpdated }) {
       try {
         accessToken = await getAccessTokenSilently();
       } catch (err) {
-        displayAlert('error', `Failed to get user questions. Error: ${err}`);
+        displayAlert('error', `Failed to authenticate user: ${err}`);
       }
     }
     question.visibility = checked ? visibility.toInt('Public') : visibility.toInt('Shareable');
     const response = await API.cache.updateQuestion(question, accessToken);
     if (response.status === 'error') {
-      displayAlert('error', 'Failed to set question visibility.');
+      displayAlert('error', `Failed to set question visibility: ${response.message}`);
       return;
     }
     onQuestionUpdated();
@@ -59,7 +59,7 @@ export default function QuestionTableRow({ question, onQuestionUpdated }) {
       try {
         accessToken = await getAccessTokenSilently();
       } catch (err) {
-        displayAlert('error', `Failed to get user questions. Error: ${err}`);
+        displayAlert('error', `Failed to authenticate user: ${err}`);
       }
     }
     if (question.metadata.answerOnly) {
@@ -70,7 +70,7 @@ export default function QuestionTableRow({ question, onQuestionUpdated }) {
       // Get all answers for selected parent question
       const response = await API.cache.getAnswersByQuestion(question.id, accessToken);
       if (response.status === 'error') {
-        displayAlert('error', 'Failed to load answers.');
+        displayAlert('error', `Failed to load answers: ${response.message}`);
         return;
       }
 
@@ -90,12 +90,12 @@ export default function QuestionTableRow({ question, onQuestionUpdated }) {
       try {
         accessToken = await getAccessTokenSilently();
       } catch (err) {
-        displayAlert('error', `Failed to get user questions. Error: ${err}`);
+        displayAlert('error', `Failed to authenticate user: ${err}`);
       }
     }
     let response = await API.cache.getAnswersByQuestion(question.id, accessToken);
     if (response.status === 'error') {
-      displayAlert('error', 'Failed to load answers.');
+      displayAlert('error', `Failed to load answers: ${response.message}`);
       return;
     }
     const answerErrors = [];
@@ -110,7 +110,7 @@ export default function QuestionTableRow({ question, onQuestionUpdated }) {
     } else {
       response = await API.cache.deleteQuestion(question.id, accessToken);
       if (response.status === 'error') {
-        displayAlert('error', 'Failed to delete this question.');
+        displayAlert('error', `Failed to delete this question: ${response.message}`);
       } else {
         displayAlert('success', 'Question and answers deleted successfully!');
         onQuestionUpdated();

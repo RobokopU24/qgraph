@@ -106,7 +106,7 @@ export default function Answer() {
       try {
         accessToken = await getAccessTokenSilently();
       } catch (err) {
-        displayAlert('error', `Failed to validate user. Error: ${err}`);
+        displayAlert('error', `Failed to authenticate user: ${err}`);
       }
     }
     const answerResponse = await API.cache.getAnswerData(answer_id, accessToken);
@@ -125,7 +125,7 @@ export default function Answer() {
       try {
         accessToken = await getAccessTokenSilently();
       } catch (err) {
-        displayAlert('error', `Failed to validate user. Error: ${err}`);
+        displayAlert('error', `Failed to authenticate user: ${err}`);
       }
     }
     const answerResponse = await API.cache.getAnswer(answer_id, accessToken);
@@ -227,19 +227,19 @@ export default function Answer() {
       try {
         accessToken = await getAccessTokenSilently();
       } catch (err) {
-        displayAlert('error', `Failed to validate user. Error: ${err}`);
+        displayAlert('error', `Failed to authenticate user: ${err}`);
       }
     } else {
       return displayAlert('warning', 'You need to be signed in to save an answer.');
     }
     let response = await API.cache.createAnswer(defaultAnswer, accessToken);
     if (response.status === 'error') {
-      return displayAlert('error', 'Failed to create answer.');
+      return displayAlert('error', `Failed to create answer: ${response.message}`);
     }
     const answerId = response.id;
     response = await API.cache.setAnswerData(answerId, { message: answerStore.message }, accessToken);
     if (response.status === 'error') {
-      return displayAlert('error', 'Failed to save answer.');
+      return displayAlert('error', `Failed to save answer: ${response.message}`);
     }
     return displayAlert('success', 'Your answer has been saved!');
   }
@@ -256,7 +256,7 @@ export default function Answer() {
       try {
         accessToken = await getAccessTokenSilently();
       } catch (err) {
-        displayAlert('error', `Failed to validate user. Error: ${err}`);
+        displayAlert('error', `Failed to authenticate user: ${err}`);
       }
     } else {
       return displayAlert('warning', 'You need to be signed in to delete an answer.');
