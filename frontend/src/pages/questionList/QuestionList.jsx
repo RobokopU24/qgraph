@@ -17,7 +17,6 @@ import API from '~/API';
 
 import './questionList.css';
 
-import BrandContext from '~/context/brand';
 import AlertContext from '~/context/alert';
 
 import usePageStatus from '~/stores/usePageStatus';
@@ -35,8 +34,6 @@ export default function QuestionList() {
 
   const { isAuthenticated, getAccessTokenSilently, isLoading } = useAuth0();
 
-  const brandConfig = useContext(BrandContext);
-
   const pageStatus = usePageStatus(isLoading, 'Loading Questions...');
   const displayAlert = useContext(AlertContext);
 
@@ -46,7 +43,7 @@ export default function QuestionList() {
       try {
         accessToken = await getAccessTokenSilently();
       } catch (err) {
-        displayAlert('error', `Failed to get user questions. Error: ${err}`);
+        displayAlert('error', `Failed to authenticate user: ${err}`);
       }
     }
     const response = await API.cache.getQuestions(accessToken);
@@ -70,19 +67,13 @@ export default function QuestionList() {
 
   return (
     <>
-      <Box my={4}>
-        <Typography variant="h3">
-          {brandConfig.title} Question Library
-        </Typography>
-      </Box>
-
       <pageStatus.Display />
 
       {pageStatus.displayPage && (
         <>
           <Box my={3}>
             <Typography variant="h4">
-              My Questions
+              My Library
             </Typography>
           </Box>
           {myQuestions.length === 0 ? (
@@ -98,10 +89,11 @@ export default function QuestionList() {
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell>Question Name</TableCell>
+                      <TableCell>Name</TableCell>
                       <TableCell>Has Answers</TableCell>
-                      <TableCell>Visibility</TableCell>
+                      <TableCell>Public</TableCell>
                       <TableCell>Created</TableCell>
+                      <TableCell>Delete</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -135,7 +127,7 @@ export default function QuestionList() {
           {/* Always show public questions */}
           <Box my={3}>
             <Typography variant="h4">
-              Public Questions
+              Public Library
             </Typography>
           </Box>
           <Paper id="questionListContainer">
@@ -143,7 +135,7 @@ export default function QuestionList() {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Question Name</TableCell>
+                    <TableCell>Name</TableCell>
                     <TableCell>Has Answers</TableCell>
                     <TableCell>Created</TableCell>
                   </TableRow>

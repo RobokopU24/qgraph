@@ -47,7 +47,7 @@ router.route('/answer')
       }
 
       // Create a new answer in Robokache
-      response = await robokache.createAnswer({ parent: questionId, visibility: 1 }, req.headers.authorization);
+      response = await robokache.createAnswer({ parent: questionId, visibility: 2 }, req.headers.authorization);
       if (response.status === 'error') {
         return res.send(response);
       }

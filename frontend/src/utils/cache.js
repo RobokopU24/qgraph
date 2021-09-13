@@ -1,8 +1,10 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+
 /**
  * Convert a type of visibility to what Robokache is expecting
  * @param {('Invisible'|'Private'|'Shareable'|'Public')} value
  */
-export function useVisibility() {
+function useVisibility() {
   const visibilityMapping = {
     0: 'Invisible',
     1: 'Private',
@@ -24,7 +26,7 @@ export function useVisibility() {
   };
 }
 
-export function formatDateTimeNicely(dateString) {
+function formatDateTimeNicely(dateString) {
   const jsDate = new Date(dateString);
   const options = {
     dateStyle: 'long',
@@ -34,7 +36,7 @@ export function formatDateTimeNicely(dateString) {
   return Intl.DateTimeFormat('en-US', options).format(jsDate);
 }
 
-export function formatDateTimeShort(dateString) {
+function formatDateTimeShort(dateString) {
   const jsDate = new Date(dateString);
   const options = {
     dateStyle: 'short',
@@ -43,3 +45,33 @@ export function formatDateTimeShort(dateString) {
   };
   return Intl.DateTimeFormat('en-US', options).format(jsDate);
 }
+
+/**
+ * Default new question object for Robokache
+ */
+const defaultQuestion = {
+  parent: '',
+  visibility: useVisibility().toInt('Shareable'),
+  metadata: { name: 'New Question' },
+};
+
+/**
+ * Default new answer only object for Robokache
+ */
+const defaultAnswer = {
+  parent: '',
+  visibility: useVisibility().toInt('Shareable'),
+  metadata: {
+    name: 'Uploaded Answer',
+    answerOnly: true,
+    hasAnswers: true,
+  },
+};
+
+export {
+  useVisibility,
+  formatDateTimeNicely,
+  formatDateTimeShort,
+  defaultQuestion,
+  defaultAnswer,
+};

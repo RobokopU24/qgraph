@@ -1,4 +1,5 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
+import { useRouteMatch } from 'react-router-dom';
 import Drawer from '@material-ui/core/Drawer';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
@@ -8,10 +9,16 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 
+import { useAuth0 } from '@auth0/auth0-react';
+
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
+import PublishIcon from '@material-ui/icons/Publish';
+import GetAppIcon from '@material-ui/icons/GetApp';
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 
 import BrandContext from '~/context/brand';
+
+import ConfirmDialog from '~/components/ConfirmDialog';
 
 import './leftDrawer.css';
 
@@ -21,11 +28,19 @@ import './leftDrawer.css';
  * @param {object} displayState - state of card components
  * @param {function} updateDisplayState - dispatch function for changing which cards are shown
  * @param {object} message - full TRAPI message
+ * @param {function} saveAnswer - save an answer to Robokache
+ * @param {function} deleteAnswer - delete an answer from Robokache
+ * @param {boolean} owned - does the user own this answer
  */
 export default function LeftDrawer({
   onUpload, displayState, updateDisplayState, message,
+  saveAnswer, deleteAnswer, owned,
 }) {
+  const { isAuthenticated } = useAuth0();
   const brandConfig = useContext(BrandContext);
+  const urlHasAnswerId = useRouteMatch('/answer/:answer_id');
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
   function toggleDisplay(component, show) {
     updateDisplayState({ type: 'toggle', payload: { component, show } });
   }
@@ -73,15 +88,33 @@ export default function LeftDrawer({
         <ListItem
           component="label"
           button
+          disabled={!Object.keys(message).length}
+          onClick={download}
         >
           <ListItemIcon>
             <IconButton
               component="span"
               style={{ fontSize: '18px' }}
-              title="Load"
+              title="Download"
               disableRipple
             >
-              <CloudUploadIcon />
+              <GetAppIcon />
+            </IconButton>
+          </ListItemIcon>
+          <ListItemText primary="Download Answer" />
+        </ListItem>
+        <ListItem
+          component="label"
+          button
+        >
+          <ListItemIcon>
+            <IconButton
+              component="span"
+              style={{ fontSize: '18px' }}
+              title="Upload Answer"
+              disableRipple
+            >
+              <PublishIcon />
             </IconButton>
           </ListItemIcon>
           <ListItemText primary="Upload Answer" />
@@ -96,22 +129,51 @@ export default function LeftDrawer({
         <ListItem
           component="label"
           button
-          disabled={!Object.keys(message).length}
-          onClick={download}
+          disabled={!Object.keys(message).length || !!urlHasAnswerId || !isAuthenticated}
+          onClick={saveAnswer}
         >
           <ListItemIcon>
             <IconButton
               component="span"
               style={{ fontSize: '18px' }}
-              title="Download"
+              title="Save Answer"
               disableRipple
             >
-              <CloudDownloadIcon />
+              <CloudUploadIcon />
             </IconButton>
           </ListItemIcon>
-          <ListItemText primary="Download Answer" />
+          <ListItemText primary="Save To Library" />
+        </ListItem>
+        <ListItem
+          component="label"
+          button
+          disabled={!urlHasAnswerId || !isAuthenticated || !owned}
+          onClick={() => setConfirmOpen(true)}
+        >
+          <ListItemIcon>
+            <IconButton
+              component="span"
+              style={{ fontSize: '18px' }}
+              title="Delete Answer"
+              disableRipple
+            >
+              <HighlightOffIcon />
+            </IconButton>
+          </ListItemIcon>
+          <ListItemText primary="Delete Answer" />
         </ListItem>
       </List>
+      <ConfirmDialog
+        open={confirmOpen}
+        handleOk={() => {
+          setConfirmOpen(false);
+          deleteAnswer();
+        }}
+        handleCancel={() => setConfirmOpen(false)}
+        content="Are you sure you want to delete this answer? This action cannot be undone."
+        title="Confirm Answer Deletion"
+        confirmText="Delete Answer"
+      />
     </Drawer>
   );
 }

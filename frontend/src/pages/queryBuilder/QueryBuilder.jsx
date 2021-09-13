@@ -8,7 +8,7 @@ import API from '~/API';
 import QueryBuilderContext from '~/context/queryBuilder';
 import AlertContext from '~/context/alert';
 import queryGraphUtils from '~/utils/queryGraph';
-import { useVisibility } from '~/utils/cache';
+import { defaultQuestion } from '~/utils/cache';
 import usePageStatus from '~/stores/usePageStatus';
 import useQueryBuilder from './useQueryBuilder';
 import GraphEditor from './graphEditor/GraphEditor';
@@ -24,7 +24,6 @@ import './queryBuilder.css';
  */
 export default function QueryBuilder() {
   const queryBuilder = useQueryBuilder();
-  const visibility = useVisibility();
   const pageStatus = usePageStatus(false);
   const [showJson, toggleJson] = useState(false);
   const displayAlert = useContext(AlertContext);
@@ -100,15 +99,10 @@ export default function QueryBuilder() {
       try {
         accessToken = await getAccessTokenSilently();
       } catch (err) {
-        displayAlert('error', `Failed to validate user. Error: ${err}`);
+        displayAlert('error', `Failed to authenticate user: ${err}`);
         return;
       }
     }
-    const defaultQuestion = {
-      parent: '',
-      visibility: visibility.toInt('Private'),
-      metadata: { name: 'New Question' },
-    };
     let response;
 
     response = await API.cache.createQuestion(defaultQuestion, accessToken);
