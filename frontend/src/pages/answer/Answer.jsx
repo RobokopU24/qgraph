@@ -116,6 +116,8 @@ export default function Answer() {
 
   /**
    * Get metadata of answer to see if current user owns it
+   *
+   * Disable the "Delete Answer" button if answer is not owned.
    */
   async function checkIfAnswerOwned() {
     let accessToken;

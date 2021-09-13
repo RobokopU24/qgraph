@@ -2,7 +2,7 @@
 
 1. You need to have an email/password account through the qgraph UI. Please visit https://qgraph.org and create an account.
 
-2. The following cURL will validate your user and provide you an access token that you can use with Robokache
+2. The following cURL will validate your user and provide you an access token that you can use with Robokache. The `client_id` is specific to Auth0 and you shouldn't have to do anything with it.
 ```bash
 curl --request POST \
   --url 'https://qgraph.us.auth0.com/oauth/token' \
