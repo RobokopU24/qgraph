@@ -147,6 +147,7 @@ function enter(edge) {
           .attr('pointer-events', 'none')
           .attr('xlink:href', (d) => `#edge${d.id}`)
           .style('user-select', 'none')
+          .attr('startOffset', '50%')
           .text((d) => (d.predicates ? d.predicates.map((p) => strings.displayPredicate(p)).join(', ') : '')))
       .call((eLabel) => eLabel.append('title')
         .text((d) => (d.predicates ? d.predicates.map((p) => strings.displayPredicate(p)).join(', ') : ''))))
