@@ -42,6 +42,16 @@
     margin-bottom: 0;
 }
 
+#queryBuilderButtons {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#queryBuilderButtons > * {
+    margin: 0px 25px;
+}
+
 @media (max-width: 1450px) {
     #queryEditorContainer {
         flex-direction: column;

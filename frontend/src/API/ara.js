@@ -1,17 +1,14 @@
 import axios from 'axios';
 import utils from './utils';
 
-// const strider_url = `${window.location.origin}/api/external/strider`;
-const robokop_url = `${window.location.origin}/api/external/robokop`;
-
 const baseRoutes = {
   /**
    * Send a query graph to ask an ARA for an answer
    * @param {object} message message standard object
    */
-  async getAnswer(message) {
+  async getAnswer(url, message) {
     const config = {
-      url: `${robokop_url}/query`,
+      url,
       method: 'POST',
       data: message,
     };

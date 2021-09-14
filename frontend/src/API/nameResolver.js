@@ -1,7 +1,6 @@
 import axios from 'axios';
 import utils from './utils';
-
-const baseUrl = `${window.location.origin}/api/external/nameResolver`;
+import { name_resolver } from './services';
 
 const baseRoutes = {
   /**
@@ -12,7 +11,7 @@ const baseRoutes = {
       headers: {
         'Content-Type': 'text/plain',
       },
-      url: `${baseUrl}/lookup`,
+      url: `${name_resolver}/lookup`,
       method: 'POST',
       params: {
         string: search_string,

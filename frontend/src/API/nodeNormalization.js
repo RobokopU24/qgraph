@@ -1,7 +1,6 @@
 import axios from 'axios';
 import utils from './utils';
-
-const baseUrl = `${window.location.origin}/api/external/nodeNormalization`;
+import { node_norm } from './services';
 
 const baseRoutes = {
   /**
@@ -10,7 +9,7 @@ const baseRoutes = {
    */
   async getNormalizedNodes(curies, cancel) {
     const config = {
-      url: `${baseUrl}/get_normalized_nodes`,
+      url: `${node_norm}/get_normalized_nodes`,
       method: 'POST',
       data: curies,
       cancelToken: cancel,

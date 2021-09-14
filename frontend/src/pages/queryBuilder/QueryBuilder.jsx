@@ -1,10 +1,15 @@
 import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 import { set as idbSet } from 'idb-keyval';
 import { useAuth0 } from '@auth0/auth0-react';
 
 import API from '~/API';
+import ARAs from '~/API/services';
 import QueryBuilderContext from '~/context/queryBuilder';
 import BrandContext from '~/context/brand';
 import AlertContext from '~/context/alert';
@@ -27,6 +32,7 @@ export default function QueryBuilder() {
   const queryBuilder = useQueryBuilder();
   const pageStatus = usePageStatus(false);
   const [showJson, toggleJson] = useState(false);
+  const [ara, setAra] = useState(Object.keys(ARAs)[0]);
   const brandConfig = useContext(BrandContext);
   const displayAlert = useContext(AlertContext);
   const history = useHistory();
@@ -38,7 +44,7 @@ export default function QueryBuilder() {
   async function onQuickSubmit() {
     pageStatus.setLoading('Fetching answer, this may take a while');
     const prunedQueryGraph = queryGraphUtils.prune(queryBuilder.query_graph);
-    const response = await API.ara.getAnswer({ message: { query_graph: prunedQueryGraph } });
+    const response = await API.ara.getAnswer(ARAs[ara], { message: { query_graph: prunedQueryGraph } });
 
     if (response.status === 'error') {
       const failedToAnswer = 'Please try asking this question later.';
@@ -66,7 +72,7 @@ export default function QueryBuilder() {
    * @returns {object} response
    */
   async function fetchAnswer(questionId, accessToken) {
-    let response = await API.queryDispatcher.getAnswer(questionId, accessToken);
+    let response = await API.queryDispatcher.getAnswer(ARAs[ara], questionId, accessToken);
     if (response.status === 'error') {
       return response;
     }
@@ -181,26 +187,41 @@ export default function QueryBuilder() {
               />
             </QueryBuilderContext.Provider>
           </div>
-          <Button
-            onClick={() => toggleJson(true)}
-            variant="contained"
-          >
-            Edit JSON
-          </Button>
-          {isAuthenticated && (
+          <div id="queryBuilderButtons">
+            <FormControl>
+              <InputLabel id="ara-select">ARA</InputLabel>
+              <Select
+                labelId="ara-select"
+                value={ara}
+                onChange={(e) => setAra(e.target.value)}
+                style={{ width: 115 }}
+              >
+                {Object.keys(ARAs).map((a) => (
+                  <MenuItem value={a} key={a}>{a}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
             <Button
-              onClick={onSubmit}
+              onClick={() => toggleJson(true)}
               variant="contained"
             >
-              Submit
+              Edit JSON
             </Button>
-          )}
-          <Button
-            onClick={onQuickSubmit}
-            variant="contained"
-          >
-            Quick Submit
-          </Button>
+            <Button
+              onClick={onQuickSubmit}
+              variant="contained"
+            >
+              Quick Submit
+            </Button>
+            {isAuthenticated && (
+              <Button
+                onClick={onSubmit}
+                variant="contained"
+              >
+                Submit
+              </Button>
+            )}
+          </div>
         </div>
       )}
     </>

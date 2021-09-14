@@ -2,8 +2,7 @@ import axios from 'axios';
 import yaml from 'js-yaml';
 
 import utils from './utils';
-
-const biolink_url = `${window.location.origin}/api/external/biolink`;
+import { biolink } from './services';
 
 const routes = {
   /**
@@ -11,7 +10,7 @@ const routes = {
    */
   async getModelSpecification() {
     const config = {
-      url: biolink_url,
+      url: biolink,
       method: 'GET',
     };
     let response;

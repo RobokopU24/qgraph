@@ -1,13 +1,12 @@
 import axios from 'axios';
 
 import utils from './utils';
-
-const base_url = `${window.location.origin}/api/robokache/`;
+import { robokache } from './services';
 
 // Base request method for all endpoints
 async function baseRequest(path, method, body, token) {
   const config = {
-    url: base_url + path,
+    url: `${robokache}/${path}`,
     method,
     data: body,
     withCredentials: true,
@@ -42,7 +41,7 @@ const baseRoutes = {
 
   async getDocumentData(doc_id, token) {
     const config = {
-      url: `${base_url}document/${doc_id}/data`,
+      url: `${robokache}/document/${doc_id}/data`,
       method: 'GET',
       withCredentials: true,
       headers: {},
@@ -60,7 +59,7 @@ const baseRoutes = {
   },
   async setDocumentData(doc_id, newData, token) {
     const config = {
-      url: `${base_url}document/${doc_id}/data`,
+      url: `${robokache}/document/${doc_id}/data`,
       method: 'PUT',
       data: newData,
       withCredentials: true,

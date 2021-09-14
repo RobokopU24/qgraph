@@ -1,5 +1,6 @@
 import axios from 'axios';
 import utils from './utils';
+import { query_dispatcher } from './services';
 
 const baseRoutes = {
   /**
@@ -8,12 +9,13 @@ const baseRoutes = {
    * @param {object} questionData query graph object
    * @param {string} token jws token
    */
-  async getAnswer(questionId, token) {
+  async getAnswer(ara, questionId, token) {
     const config = {
-      url: '/api/queryDispatcher/answer',
+      url: `${query_dispatcher}/answer`,
       method: 'POST',
       params: {
         questionId,
+        ara,
       },
       headers: {},
     };
