@@ -7,13 +7,8 @@ const baseRoutes = {
    * @param {object} message message standard object
    */
   async getAnswer(url, message) {
-    const config = {
-      url,
-      method: 'POST',
-      data: message,
-    };
     try {
-      const response = await axios(config);
+      const response = await axios.post(url, message);
       return response.data;
     } catch (error) {
       return utils.handleAxiosError(error);

@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from 'axios';
 import {
   render, fireEvent, waitFor, screen,
 } from '&/test_utils';
@@ -8,7 +7,6 @@ import QueryBuilder from '~/pages/queryBuilder/QueryBuilder';
 
 const mockHistoryPush = jest.fn();
 
-jest.mock('axios');
 jest.mock('idb-keyval', () => ({
   set: jest.fn(() => Promise.resolve({})),
 }));
@@ -26,11 +24,6 @@ describe('Full Workflow', () => {
     SVGElement.prototype.getComputedTextLength = () => 40;
   });
   it('asks a question', async () => {
-    axios.mockResolvedValue({
-      data: {
-        message: {},
-      },
-    });
     render(<QueryBuilder />);
     fireEvent.click(screen.getByText('Quick Submit'));
     await waitFor(() => expect(mockHistoryPush).toHaveBeenCalledWith('/answer'));

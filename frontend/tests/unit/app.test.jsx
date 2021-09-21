@@ -1,11 +1,10 @@
 import React from 'react';
+import axios from 'axios';
 import {
   render, screen, waitFor,
 } from '&/test_utils';
 
-import mockAxios from '&/axios';
 import App from '~/App';
-import biolink from '&/biolink_model.json';
 
 // needed for web worker import
 jest.mock('~/pages/answer/fullKg/simulation.worker.js');
@@ -21,20 +20,19 @@ describe('<App />', () => {
   });
   afterEach(() => {
     process.env = OLD_ENV;
+    jest.clearAllMocks();
   });
   it('loads the Robokop homepage', async () => {
-    jest.clearAllMocks();
+    const spy = jest.spyOn(axios, 'get');
     process.env.BRAND = 'robokop';
-    const biolinkCall = mockAxios.mockResponse(biolink);
     render(<App />);
-    await waitFor(() => expect(biolinkCall).toHaveBeenCalledTimes(1));
-    expect(screen.getByText('ROBOKOP Apps')).toBeTruthy();
+    await waitFor(() => expect(spy).toHaveBeenCalledTimes(1));
+    expect(screen.findByText('ROBOKOP Apps')).toBeTruthy();
   });
   it('loads the qgraph query builder', async () => {
-    jest.clearAllMocks();
-    const biolinkCall = mockAxios.mockResponse(biolink);
+    const spy = jest.spyOn(axios, 'get');
     render(<App />);
-    await waitFor(() => expect(biolinkCall).toHaveBeenCalledTimes(1));
-    expect(screen.getByText('Quick Submit')).toBeTruthy();
+    await waitFor(() => expect(spy).toHaveBeenCalledTimes(1));
+    expect(screen.findByText('Quick Submit')).toBeTruthy();
   });
 });

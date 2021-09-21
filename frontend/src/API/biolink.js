@@ -9,13 +9,9 @@ const routes = {
    * Get biolink model specification
    */
   async getModelSpecification() {
-    const config = {
-      url: biolink,
-      method: 'GET',
-    };
     let response;
     try {
-      response = await axios(config);
+      response = await axios.get(biolink);
     } catch (error) {
       return utils.handleAxiosError(error);
     }

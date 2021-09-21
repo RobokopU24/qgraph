@@ -11,8 +11,6 @@ const baseRoutes = {
       headers: {
         'Content-Type': 'text/plain',
       },
-      url: `${name_resolver}/lookup`,
-      method: 'POST',
       params: {
         string: search_string,
         limit,
@@ -20,7 +18,7 @@ const baseRoutes = {
       cancelToken: cancel,
     };
     try {
-      const response = await axios.request(config);
+      const response = await axios.post(`${name_resolver}/lookup`, {}, config);
       return response.data;
     } catch (error) {
       if (axios.isCancel(error)) {

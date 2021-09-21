@@ -9,13 +9,10 @@ const baseRoutes = {
    */
   async getNormalizedNodes(curies, cancel) {
     const config = {
-      url: `${node_norm}/get_normalized_nodes`,
-      method: 'POST',
-      data: curies,
       cancelToken: cancel,
     };
     try {
-      const response = await axios.request(config);
+      const response = await axios.post(`${node_norm}/get_normalized_nodes`, curies, config);
       return response.data;
     } catch (error) {
       if (axios.isCancel(error)) {
