@@ -116,7 +116,7 @@ export default function NodeSelector({
    * after debounce
    */
   useEffect(() => {
-    if (open && searchTerm.length > 3) {
+    if (open && searchTerm.length >= 3) {
       getOptions();
     } else {
       setOptions([]);
