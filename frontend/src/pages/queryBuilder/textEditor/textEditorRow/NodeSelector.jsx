@@ -1,6 +1,7 @@
 import React, {
   useState, useEffect, useContext, useMemo,
 } from 'react';
+import axios from 'axios';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -17,6 +18,9 @@ function isValidNode(properties) {
   return (properties.categories && properties.categories.length) ||
     (properties.ids && properties.ids.length);
 }
+
+const { CancelToken } = axios;
+let cancel;
 
 /**
  * Generic node selector component
@@ -91,11 +95,15 @@ export default function NodeSelector({
       newOptions.push(...includedCategories);
     }
     // fetch matching curies from external services
-    if (includeCuries && searchTerm.length > 3) {
+    if (includeCuries) {
       if (searchTerm.includes(':')) { // user is typing a specific curie
-        newOptions.push({ name: searchTerm, ids: searchTerm });
+        newOptions.push({ name: searchTerm, ids: [searchTerm] });
       } else {
-        const curies = await fetchCuries(searchTerm, displayAlert);
+        if (cancel) {
+          cancel.cancel();
+        }
+        cancel = CancelToken.source();
+        const curies = await fetchCuries(searchTerm, displayAlert, cancel.token);
         newOptions.push(...curies);
       }
     }
@@ -108,12 +116,21 @@ export default function NodeSelector({
    * after debounce
    */
   useEffect(() => {
-    if (open) {
+    if (open && searchTerm.length >= 3) {
       getOptions();
     } else {
       setOptions([]);
     }
   }, [open, searchTerm]);
+
+  /**
+   * Cancel any api calls on unmount
+   */
+  useEffect(() => () => {
+    if (cancel) {
+      cancel.cancel();
+    }
+  }, []);
 
   /**
    * Create a human-readable label for every option

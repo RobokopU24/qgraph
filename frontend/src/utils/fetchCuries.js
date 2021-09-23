@@ -1,8 +1,8 @@
 import API from '~/API';
 
-export default async function fetchCuries(entity, displayAlert) {
+export default async function fetchCuries(entity, displayAlert, cancel) {
   // Get list of curies that match this search term
-  const response = await API.nameResolver.entityLookup(entity, 1000);
+  const response = await API.nameResolver.entityLookup(entity, 1000, cancel);
   if (response.status === 'error') {
     displayAlert('error',
       'Failed to contact name resolver to search curies. Please try again later.');
@@ -15,7 +15,7 @@ export default async function fetchCuries(entity, displayAlert) {
 
   // Pass curies to nodeNormalizer to get category information and
   // a better curie identifier
-  const normalizationResponse = await API.nodeNormalization.getNormalizedNodesPost({ curies: curieResponse });
+  const normalizationResponse = await API.nodeNormalization.getNormalizedNodes({ curies: curieResponse }, cancel);
 
   if (normalizationResponse.status === 'error') {
     displayAlert('error',

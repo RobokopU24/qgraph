@@ -1,12 +1,12 @@
 const axios = require('axios');
 const { handleAxiosError } = require('./utils');
 
-const base_url = `${process.env.ROBOKACHE}/api/`;
+const base_url = `${process.env.PROXY}/api/robokache`;
 
 const baseRoutes = {
   async getDocumentData(doc_id, token) {
     const config = {
-      url: `${base_url}document/${doc_id}/data`,
+      url: `${base_url}/document/${doc_id}/data`,
       method: 'GET',
       withCredentials: true,
       headers: {},
@@ -23,7 +23,7 @@ const baseRoutes = {
   },
   async setDocumentData(doc_id, newData, token) {
     const config = {
-      url: `${base_url}document/${doc_id}/data`,
+      url: `${base_url}/document/${doc_id}/data`,
       method: 'PUT',
       data: newData,
       withCredentials: true,
@@ -40,7 +40,7 @@ const baseRoutes = {
 
   async createDocument(doc, token) {
     const config = {
-      url: `${base_url}document`,
+      url: `${base_url}/document`,
       method: 'POST',
       data: doc,
       withCredentials: true,

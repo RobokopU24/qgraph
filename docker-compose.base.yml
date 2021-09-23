@@ -10,9 +10,10 @@ services:
       ROBOKACHE: http://robokache:8080
       # https://docs.docker.com/compose/environment-variables/#substitute-environment-variables-in-compose-files
       # default external service urls with option to override with .env file
-      STRIDER: ${STRIDER:-https://strider.renci.org/1.1}
+      STRIDER: ${STRIDER:-https://strider.renci.org/1.2}
+      ARAGORN: ${ARAGORN:-https://aragorn.renci.org/1.2}
       ROBOKOP: ${ROBOKOP:-http://robokop.renci.org:7092}
-      NODE_NORMALIZER: ${NODE_NORMALIZER:-https://nodenormalization-sri.renci.org/1.1/}
+      NODE_NORMALIZER: ${NODE_NORMALIZER:-https://nodenormalization-sri.renci.org/}
       NAME_RESOLVER: ${NAME_RESOLVER:-https://name-resolution-sri.renci.org/}
       BIOLINK: ${BIOLINK:-https://raw.githubusercontent.com/biolink/biolink-model/1.8.2/biolink-model.yaml}
   frontend:
@@ -24,5 +25,4 @@ services:
   query-dispatcher:
     build: query-dispatcher/
     environment:
-      ROBOKACHE: http://robokache:8080
-      ROBOKOP: ${ROBOKOP:-http://robokop.renci.org:7092}
+      PROXY: ${PROXY:-http://proxy}

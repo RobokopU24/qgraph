@@ -12,7 +12,7 @@ function makeEmptyArray(num) {
   return emptyArray;
 }
 
-export default function EmptyTable({ numRows, numCells }) {
+export default function EmptyTable({ numRows, numCells, text }) {
   const emptyRows = makeEmptyArray(numRows);
   const emptyCells = makeEmptyArray(numCells);
   return (
@@ -24,6 +24,9 @@ export default function EmptyTable({ numRows, numCells }) {
           ))}
         </TableRow>
       ))}
+      <TableRow id="emptyTableRowsText">
+        <TableCell>{text}</TableCell>
+      </TableRow>
     </>
   );
 }

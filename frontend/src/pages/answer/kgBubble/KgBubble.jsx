@@ -1,6 +1,6 @@
 /* eslint-disable indent, no-use-before-define, func-names, no-return-assign */
 import React, {
-  useEffect, useRef, useContext,
+  useState, useEffect, useRef, useContext,
 } from 'react';
 import * as d3 from 'd3';
 import Paper from '@material-ui/core/Paper';
@@ -9,6 +9,7 @@ import BiolinkContext from '~/context/biolink';
 import kgUtils from '~/utils/knowledgeGraph';
 import dragUtils from '~/utils/d3/drag';
 import graphUtils from '~/utils/d3/graph';
+import Loading from '~/components/loading/Loading';
 
 import './kgBubble.css';
 
@@ -25,11 +26,12 @@ export default function KgBubble({
 }) {
   const svgRef = useRef();
   const { colorMap } = useContext(BiolinkContext);
+  const [drawing, setDrawing] = useState(false);
 
   /**
    * Initialize the svg size
    */
-  useEffect(() => {
+  function setSvgSize() {
     if (nodes.length) {
       const svg = d3.select(svgRef.current);
       const { width, height } = svg.node().parentNode.getBoundingClientRect();
@@ -39,6 +41,10 @@ export default function KgBubble({
         .attr('preserveAspectRatio', 'xMinYMin meet')
         .attr('viewBox', [0, 0, width, height]);
     }
+  }
+
+  useEffect(() => {
+    setSvgSize();
   }, [nodes]);
 
   function drawBubbleGraph() {
@@ -102,11 +108,34 @@ export default function KgBubble({
     }
   }, [nodes]);
 
+  useEffect(() => {
+    let timer;
+    function handleResize() {
+      const svg = d3.select(svgRef.current);
+      // clear the graph
+      svg.selectAll('*').remove();
+      setDrawing(true);
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        setSvgSize();
+        drawBubbleGraph();
+        setDrawing(false);
+      }, 1000);
+    }
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [nodes]);
+
   return (
     <>
       {nodes.length > 0 && (
         <Paper id="kgBubbleContainer" elevation={3}>
           <h5 className="cardLabel">Knowledge Graph Bubble</h5>
+          {drawing && (
+            <Loading positionStatic message="Redrawing knowledge graph..." />
+          )}
           <svg ref={svgRef} />
         </Paper>
       )}

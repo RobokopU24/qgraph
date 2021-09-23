@@ -2,21 +2,16 @@ import axios from 'axios';
 import yaml from 'js-yaml';
 
 import utils from './utils';
-
-const biolink_url = `${window.location.origin}/api/external/biolink`;
+import { biolink } from './services';
 
 const routes = {
   /**
    * Get biolink model specification
    */
   async getModelSpecification() {
-    const config = {
-      url: biolink_url,
-      method: 'GET',
-    };
     let response;
     try {
-      response = await axios(config);
+      response = await axios.get(biolink);
     } catch (error) {
       return utils.handleAxiosError(error);
     }

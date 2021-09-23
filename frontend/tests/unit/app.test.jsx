@@ -1,11 +1,13 @@
 import React from 'react';
+import axios from 'axios';
+import { rest } from 'msw';
+import '@testing-library/jest-dom';
 import {
   render, screen, waitFor,
 } from '&/test_utils';
+import server from '&/mocks/server';
 
-import mockAxios from '&/axios';
 import App from '~/App';
-import biolink from '&/biolink_model.json';
 
 // needed for web worker import
 jest.mock('~/pages/answer/fullKg/simulation.worker.js');
@@ -14,27 +16,38 @@ describe('<App />', () => {
   // https://stackoverflow.com/a/48042799/8250415
   const OLD_ENV = process.env;
   beforeEach(() => {
-    jest.resetModules();
     process.env = { ...OLD_ENV };
     // We have to override some svg functions: https://stackoverflow.com/a/66248540/8250415
     SVGElement.prototype.getComputedTextLength = () => 40;
   });
   afterEach(() => {
     process.env = OLD_ENV;
+    jest.clearAllMocks();
   });
   it('loads the Robokop homepage', async () => {
-    jest.clearAllMocks();
+    const spy = jest.spyOn(axios, 'get');
+    server.use(
+      rest.get('/api/external/biolink', (req, res, ctx) => res(
+        ctx.status(404),
+      )),
+    );
     process.env.BRAND = 'robokop';
-    const biolinkCall = mockAxios.mockResponse(biolink);
     render(<App />);
-    await waitFor(() => expect(biolinkCall).toHaveBeenCalledTimes(1));
-    expect(screen.getByText('ROBOKOP Apps')).toBeTruthy();
+    await waitFor(() => expect(spy).toHaveBeenCalledTimes(1));
+    await waitFor(() => screen.findByText(/Failed to contact server to download biolink model/i));
+    expect(screen.findByText('ROBOKOP')).toBeTruthy();
+    expect(screen.getByText(/robokop apps/i)).toBeInTheDocument();
   });
   it('loads the qgraph query builder', async () => {
-    jest.clearAllMocks();
-    const biolinkCall = mockAxios.mockResponse(biolink);
+    const spy = jest.spyOn(axios, 'get');
+    server.use(
+      rest.get('/api/external/biolink', (req, res, ctx) => res(
+        ctx.status(404),
+      )),
+    );
     render(<App />);
-    await waitFor(() => expect(biolinkCall).toHaveBeenCalledTimes(1));
-    expect(screen.getByText('Quick Submit')).toBeTruthy();
+    await waitFor(() => expect(spy).toHaveBeenCalledTimes(1));
+    await waitFor(() => screen.findByText(/Failed to contact server to download biolink model/i));
+    expect(screen.findByText('qgraph')).toBeTruthy();
   });
 });

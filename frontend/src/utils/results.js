@@ -77,13 +77,32 @@ export function sortNodes(query_graph, startingNode) {
 }
 
 /**
+ * Get the width of a specific column based on the lengths of all its values
+ * @param {array} rows - all rows of the table
+ * @param {string} qg_id - query graph id
+ * @param {object} kg_nodes - knowledge graph nodes
+ * @param {string} headerText - header text of table column
+ * @returns column width as an integer
+ */
+function getColumnWidth(rows, qg_id, kg_nodes, headerText) {
+  // https://lifesaver.codes/answer/possible-to-set-a-column-width-based-on-the-longest-cell-width
+  const maxWidth = 400;
+  const magicSpacing = 10;
+  const cellLength = Math.max(
+    ...rows.map((row) => (kg_nodes[row.node_bindings[qg_id][0].id].name || '').length),
+    headerText.length,
+  );
+  return Math.min(maxWidth, cellLength * magicSpacing);
+}
+
+/**
  * Make a list of table headers for the result table
  * @param {object} message - full TRAPI message
  * @param {function} colorMap - function to get color from node category
  * @returns {object[]} list of table header objects
  */
 function makeTableHeaders(message, colorMap) {
-  const { query_graph, knowledge_graph } = message;
+  const { query_graph, knowledge_graph, results } = message;
   // startingNode could be undefined for fully cyclic graph
   // topologically sort query graph nodes
   const startingNode = findStartingNode(query_graph);
@@ -97,6 +116,7 @@ function makeTableHeaders(message, colorMap) {
     const backgroundColor = colorMap(qgNode.categories && Array.isArray(qgNode.categories) && qgNode.categories[0]);
     const nodeIdLabel = queryGraphUtils.getTableHeaderLabel(qgNode);
     const headerText = qgNode.name || nodeIdLabel || stringUtils.displayCategory(qgNode.categories) || 'Something';
+    const width = getColumnWidth(results, id, knowledge_graph.nodes, headerText);
     return {
       Header: `${headerText} (${id})`,
       color: backgroundColor,
@@ -109,8 +129,20 @@ function makeTableHeaders(message, colorMap) {
         }
         return knowledge_graph.nodes[value[0].id].name || value[0].id;
       },
+      disableSortBy: true,
+      width,
     };
   });
+  if (results.length && results[0].score) {
+    const scoreColumn = {
+      Header: 'Score',
+      id: 'score',
+      accessor: (row) => Math.round(row.score * 1000) / 1000,
+      width: 30,
+      sortDescFirst: true,
+    };
+    headerColumns.push(scoreColumn);
+  }
   return headerColumns;
 }
 

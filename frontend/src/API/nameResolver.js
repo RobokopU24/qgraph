@@ -1,29 +1,29 @@
 import axios from 'axios';
 import utils from './utils';
-
-const baseUrl = `${window.location.origin}/api/external/nameResolver`;
+import { name_resolver } from './services';
 
 const baseRoutes = {
   /**
    * Look up possible entities using a search string
    */
-  async entityLookup(search_string, limit, offset) {
+  async entityLookup(search_string, limit, cancel) {
     const config = {
       headers: {
         'Content-Type': 'text/plain',
       },
-      url: `${baseUrl}/lookup`,
-      method: 'POST',
       params: {
         string: search_string,
         limit,
-        offset,
       },
+      cancelToken: cancel,
     };
     try {
-      const response = await axios(config);
+      const response = await axios.post(`${name_resolver}/lookup`, {}, config);
       return response.data;
     } catch (error) {
+      if (axios.isCancel(error)) {
+        return {};
+      }
       return utils.handleAxiosError(error);
     }
   },

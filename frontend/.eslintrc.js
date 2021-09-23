@@ -55,7 +55,7 @@ module.exports = {
     'import/no-extraneous-dependencies': [
       'error',
       {
-        devDependencies: ['**/webpack*', '**/tests/**'],
+        devDependencies: ['**/webpack*', '**/tests/**', '**/test_config/**'],
       },
     ],
     'react/jsx-filename-extension': [

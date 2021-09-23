@@ -1,6 +1,6 @@
 /* eslint-disable indent, no-use-before-define, func-names, no-return-assign */
 import React, {
-  useEffect, useRef, useContext,
+  useState, useEffect, useRef, useContext,
 } from 'react';
 import * as d3 from 'd3';
 import Paper from '@material-ui/core/Paper';
@@ -11,10 +11,12 @@ import graphUtils from '~/utils/d3/graph';
 import edgeUtils from '~/utils/d3/edges';
 import queryGraphUtils from '~/utils/queryGraph';
 import stringUtils from '~/utils/strings';
+import Loading from '~/components/loading/Loading';
 
 import './queryGraph.css';
 
-const nodeRadius = 40;
+const nodeRadius = 48;
+const edgeLength = 225;
 
 /**
  * Query Graph Display
@@ -23,11 +25,12 @@ const nodeRadius = 40;
 export default function QueryGraph({ query_graph }) {
   const svgRef = useRef();
   const { colorMap } = useContext(BiolinkContext);
+  const [drawing, setDrawing] = useState(false);
 
   /**
    * Initialize the svg size
    */
-  useEffect(() => {
+  function setSvgSize() {
     const svg = d3.select(svgRef.current);
     const { width, height } = svg.node().parentNode.getBoundingClientRect();
     svg
@@ -35,6 +38,10 @@ export default function QueryGraph({ query_graph }) {
       .attr('height', height)
       .attr('preserveAspectRatio', 'xMinYMin meet')
       .attr('viewBox', [0, 0, width, height]);
+  }
+
+  useEffect(() => {
+    setSvgSize();
   }, []);
 
   function drawQueryGraph() {
@@ -67,7 +74,7 @@ export default function QueryGraph({ query_graph }) {
       // .force('forceX', d3.forceX(width / 2).strength(0.02))
       .force('forceY', d3.forceY(height / 2).strength(0.2))
       .force('collide', d3.forceCollide().radius(nodeRadius * 2))
-      .force('link', d3.forceLink(edges).id((d) => d.id).distance(175).strength(1))
+      .force('link', d3.forceLink(edges).id((d) => d.id).distance(edgeLength).strength(1))
       .on('tick', () => {
         node
           .attr('transform', (d) => {
@@ -163,9 +170,32 @@ export default function QueryGraph({ query_graph }) {
     }
   }, [query_graph]);
 
+  useEffect(() => {
+    let timer;
+    function handleResize() {
+      const svg = d3.select(svgRef.current);
+      // clear the graph
+      svg.selectAll('*').remove();
+      setDrawing(true);
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        setSvgSize();
+        drawQueryGraph();
+        setDrawing(false);
+      }, 1000);
+    }
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [query_graph]);
+
   return (
     <Paper id="queryGraphContainer" elevation={3}>
       <h5 className="cardLabel">Question Graph</h5>
+      {drawing && (
+        <Loading positionStatic message="Redrawing question graph..." />
+      )}
       <svg ref={svgRef} />
     </Paper>
   );
