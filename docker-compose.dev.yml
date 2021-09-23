@@ -10,8 +10,8 @@ services:
   frontend:
     build:
       dockerfile: Dockerfile.dev
-    environment:
-      BRAND: qgraph
+      args:
+        BRAND: qgraph
     volumes:
       - ./frontend:/app
       # Mount this in an anonymous volume so that the locally available node_modules
