@@ -25,4 +25,7 @@ services:
   query-dispatcher:
     build: query-dispatcher/
     environment:
-      PROXY: ${PROXY:-http://proxy}
+      ROBOKACHE: http://robokache:8080
+      STRIDER: ${STRIDER:-https://strider.renci.org/1.2}
+      ARAGORN: ${ARAGORN:-https://aragorn.renci.org/1.2}
+      ROBOKOP: ${ROBOKOP:-http://robokop.renci.org:7092}
