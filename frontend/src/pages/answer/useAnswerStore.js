@@ -122,7 +122,7 @@ export default function useAnswerStore() {
    * Compute table header list when message changes
    */
   const tableHeaders = useMemo(() => {
-    if (message.query_graph) {
+    if (message.query_graph && message.knowledge_graph && message.results) {
       return resultsUtils.makeTableHeaders(message, colorMap);
     }
     return [];
