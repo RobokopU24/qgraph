@@ -3,14 +3,14 @@ import _ from 'lodash';
 import strings from '~/utils/strings';
 import getNodeCategoryColorMap from '~/utils/colors';
 
-const baseClass = 'biolink:BiologicalEntity';
+const baseClass = 'biolink:NamedThing';
 
 export default function useBiolinkModel() {
   const [biolinkModel, setBiolinkModel] = useState(null);
   const [concepts, setConcepts] = useState([]);
   const [hierarchies, setHierarchies] = useState({});
   const [predicates, setPredicates] = useState([]);
-  const colorMap = useCallback(getNodeCategoryColorMap(concepts), [concepts]);
+  const colorMap = useCallback(getNodeCategoryColorMap(hierarchies), [hierarchies]);
 
   /**
    * Get a list of all predicates in the biolink model

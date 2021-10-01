@@ -117,7 +117,7 @@ export default function QueryGraph({ query_graph }) {
           .call(dragUtils.dragNode(simulation))
           .call((n) => n.append('circle')
             .attr('r', nodeRadius)
-            .attr('fill', (d) => colorMap((d.categories && d.categories[0]) || 'unknown'))
+            .attr('fill', (d) => colorMap((d.categories) || 'unknown'))
             .call((nCircle) => nCircle.append('title')
               .text((d) => d.name)))
           .call((n) => n.append('text')

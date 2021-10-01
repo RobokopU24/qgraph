@@ -113,7 +113,7 @@ function makeTableHeaders(message, colorMap) {
   const sortedNodes = sortNodes(query_graph, startingNode);
   const headerColumns = sortedNodes.map((id) => {
     const qgNode = query_graph.nodes[id];
-    const backgroundColor = colorMap(qgNode.categories && Array.isArray(qgNode.categories) && qgNode.categories[0]);
+    const backgroundColor = colorMap(qgNode.categories);
     const nodeIdLabel = queryGraphUtils.getTableHeaderLabel(qgNode);
     const headerText = qgNode.name || nodeIdLabel || stringUtils.displayCategory(qgNode.categories) || 'Something';
     const width = getColumnWidth(results, id, knowledge_graph.nodes, headerText);

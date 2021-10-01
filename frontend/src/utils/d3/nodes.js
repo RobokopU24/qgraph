@@ -43,7 +43,7 @@ function enter(node, args) {
     .call((nodeCircle) => nodeCircle.append('circle')
       .attr('class', (d) => `nodeCircle node-${d.id}`)
       .attr('r', nodeRadius)
-      .attr('fill', (d) => colorMap((d.categories && d.categories[0]) || 'unknown'))
+      .attr('fill', (d) => colorMap((d.categories) || 'unknown'))
       .style('cursor', 'pointer')
       .call((n) => n.append('title')
         .text((d) => {
