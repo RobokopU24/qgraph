@@ -18,7 +18,7 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
-describe('Full Workflow', () => {
+describe('Query Builder', () => {
   beforeEach(() => {
     // We have to override some svg functions: https://stackoverflow.com/a/66248540/8250415
     SVGElement.prototype.getComputedTextLength = () => 40;

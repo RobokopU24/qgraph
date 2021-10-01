@@ -1,5 +1,9 @@
 {
   "concepts": {},
-  "hierarchies": {},
-  "predicates": []
+  "hierarchies": {
+    "biolink:Disease": [],
+    "biolink:Gene": []
+  },
+  "predicates": [],
+  "colorMap": null
 }

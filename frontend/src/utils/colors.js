@@ -39,7 +39,7 @@ export default function getNodeCategoryColorMap(hierarchies) {
   return (categories) => {
     // traverse up hierarchy until we find a category we have a color for
     const category = categories.find((c) => (
-      hierarchies[c].find((h) => h in conceptColorMap)
+      hierarchies[c] && hierarchies[c].find((h) => h in conceptColorMap)
     ));
     if (category !== undefined) {
       return conceptColorMap[category];

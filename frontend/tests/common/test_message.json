@@ -8,6 +8,7 @@
         },
         "n1": {
           "ids": ["MONDO:0005737"],
+          "categories": ["biolink:Disease"],
           "is_set": false
         }
       },
