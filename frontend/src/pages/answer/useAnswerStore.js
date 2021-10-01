@@ -40,6 +40,8 @@ export default function useAnswerStore() {
     setMessage(msg);
     if (msg.knowledge_graph && msg.results) {
       setKgNodes(kgUtils.makeDisplayNodes(msg, hierarchies));
+      updateDisplayState({ type: 'toggle', payload: { component: 'kg', show: true } });
+      updateDisplayState({ type: 'toggle', payload: { component: 'results', show: true } });
     } else {
       // if knowledge_graph and results are undefined, then disable those components
       updateDisplayState({ type: 'disable', payload: { component: 'kg' } });
@@ -63,7 +65,30 @@ export default function useAnswerStore() {
     if (rowId === selectedRowId) {
       resetAnswerExplorer();
     } else {
-      const edges = [];
+      const nodes = {};
+      const nodesJSON = {};
+      Object.entries(row.node_bindings).forEach(([qg_id, value]) => {
+        // add all results nodes to json display
+        value.forEach((kgObject) => {
+          const kgNode = message.knowledge_graph.nodes[kgObject.id];
+          nodesJSON[kgObject.id] = kgNode;
+          let { categories } = kgNode;
+          if (categories && !Array.isArray(categories)) {
+            categories = [categories];
+          }
+          categories = kgUtils.getRankedCategories(hierarchies, categories);
+          const graphNode = {
+            id: kgObject.id,
+            name: kgNode.name || kgObject.id || categories[0],
+            categories,
+            qg_id,
+            is_set: false,
+            score: 0,
+          };
+          nodes[kgObject.id] = graphNode;
+        });
+      });
+      const edges = {};
       const edgePublications = {};
       const edgesJSON = {};
       Object.values(row.edge_bindings).forEach((value) => {
@@ -76,7 +101,13 @@ export default function useAnswerStore() {
             target: kgEdge.object,
             predicate: kgEdge.predicate,
           };
-          edges.push(graphEdge);
+          edges[kgObject.id] = graphEdge;
+          if (kgEdge.subject in nodes) {
+            nodes[kgEdge.subject].score += 1;
+          }
+          if (kgEdge.object in nodes) {
+            nodes[kgEdge.object].score += 1;
+          }
 
           // EDAM:data_0971 is the publications type
           const publicationsAttribute = kgEdge.attributes && Array.isArray(kgEdge.attributes) && kgEdge.attributes.find((att) => att.attribute_type_id === 'biolink:publications' || att.type === 'EDAM:data_0971');
@@ -86,28 +117,8 @@ export default function useAnswerStore() {
           }
           const subjectNode = message.knowledge_graph.nodes[kgEdge.subject];
           const objectNode = message.knowledge_graph.nodes[kgEdge.object];
-          const edgeKey = `${subjectNode.name || kgEdge.subject} ${stringUtils.displayPredicate(graphEdge.predicate)} ${objectNode.name || kgEdge.object}`;
+          const edgeKey = `${subjectNode.name || kgEdge.subject} ${stringUtils.displayPredicate(kgEdge.predicate)} ${objectNode.name || kgEdge.object}`;
           edgePublications[edgeKey] = publications;
-        });
-      });
-      const nodes = [];
-      const nodesJSON = {};
-      Object.entries(row.node_bindings).forEach(([qg_id, value]) => {
-        value.forEach((kgObject) => {
-          const kgNode = message.knowledge_graph.nodes[kgObject.id];
-          nodesJSON[kgObject.id] = kgNode;
-          let { categories } = kgNode;
-          if (categories && !Array.isArray(categories)) {
-            categories = [categories];
-          }
-          categories = kgUtils.getRankedCategories(hierarchies, categories);
-          const graphNode = {
-            id: kgObject.id,
-            name: kgNode.name || kgObject.id || categories[0],
-            category: categories[0],
-            qg_id,
-          };
-          nodes.push(graphNode);
         });
       });
       setSelectedResult({ nodes, edges });

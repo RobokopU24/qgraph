@@ -4,12 +4,15 @@ import React, {
 } from 'react';
 import * as d3 from 'd3';
 import Paper from '@material-ui/core/Paper';
+import Box from '@material-ui/core/Box';
+import Slider from '@material-ui/core/Slider';
 
 import BiolinkContext from '~/context/biolink';
 import kgUtils from '~/utils/knowledgeGraph';
 import dragUtils from '~/utils/d3/drag';
 import graphUtils from '~/utils/d3/graph';
 import Loading from '~/components/loading/Loading';
+import useDebounce from '~/stores/useDebounce';
 
 import './kgBubble.css';
 
@@ -27,6 +30,8 @@ export default function KgBubble({
   const svgRef = useRef();
   const { colorMap } = useContext(BiolinkContext);
   const [drawing, setDrawing] = useState(false);
+  const [numTrimmedNodes, setNumTrimmedNodes] = useState(Math.min(nodes.length, 25));
+  const debouncedTrimmedNodes = useDebounce(numTrimmedNodes, 500);
 
   /**
    * Initialize the svg size
@@ -53,7 +58,8 @@ export default function KgBubble({
     // clear the graph
     svg.selectAll('*').remove();
     const getNodeRadius = kgUtils.getNodeRadius(width, height, numQgNodes, numResults);
-    const converted_nodes = nodes.map((d) => ({ ...d, x: Math.random() * width, y: Math.random() * height }));
+    const trimmedNodes = nodes.slice(0, debouncedTrimmedNodes);
+    const converted_nodes = trimmedNodes.map((d) => ({ ...d, x: Math.random() * width, y: Math.random() * height }));
     const simulation = d3.forceSimulation(converted_nodes)
       .force('x', d3.forceX(width / 2).strength(0.02)) // pull all nodes horizontally towards middle of box
       .force('y', d3.forceY(height / 2).strength(0.2)) // pull all nodes vertically towards middle of box
@@ -81,7 +87,7 @@ export default function KgBubble({
           .call(dragUtils.dragNode(simulation))
           .call((n) => n.append('circle')
             .attr('r', (d) => getNodeRadius(d.count))
-            .attr('fill', (d) => colorMap((d.categories && d.categories[0]) || 'unknown'))
+            .attr('fill', (d) => colorMap((d.categories) || 'unknown'))
             .call((nCircle) => nCircle.append('title')
               .text((d) => d.name)))
           .call((n) => n.append('text')
@@ -106,7 +112,7 @@ export default function KgBubble({
     if (nodes.length) {
       drawBubbleGraph();
     }
-  }, [nodes]);
+  }, [nodes, debouncedTrimmedNodes]);
 
   useEffect(() => {
     let timer;
@@ -133,6 +139,15 @@ export default function KgBubble({
       {nodes.length > 0 && (
         <Paper id="kgBubbleContainer" elevation={3}>
           <h5 className="cardLabel">Knowledge Graph Bubble</h5>
+          <Box width={300} id="nodeNumSlider">
+            <Slider
+              value={numTrimmedNodes}
+              valueLabelDisplay="auto"
+              min={2}
+              max={nodes.length}
+              onChange={(e, v) => setNumTrimmedNodes(v)}
+            />
+          </Box>
           {drawing && (
             <Loading positionStatic message="Redrawing knowledge graph..." />
           )}

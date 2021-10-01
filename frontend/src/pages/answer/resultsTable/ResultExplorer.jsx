@@ -1,15 +1,18 @@
 /* eslint-disable indent, no-use-before-define, func-names, no-return-assign */
 import React, {
-  useEffect, useContext, useRef,
+  useEffect, useContext, useRef, useState,
 } from 'react';
 import * as d3 from 'd3';
 import Paper from '@material-ui/core/Paper';
+import Box from '@material-ui/core/Box';
+import Slider from '@material-ui/core/Slider';
 
 import BiolinkContext from '~/context/biolink';
 import dragUtils from '~/utils/d3/drag';
 import graphUtils from '~/utils/d3/graph';
 import edgeUtils from '~/utils/d3/edges';
 import stringUtils from '~/utils/strings';
+import useDebounce from '~/stores/useDebounce';
 import ResultMetaData from './ResultMetaData';
 
 const nodeRadius = 40;
@@ -27,6 +30,8 @@ export default function ResultExplorer({ answerStore }) {
   const edge = useRef({});
   const simulation = useRef();
   const { colorMap } = useContext(BiolinkContext);
+  const [numTrimmedNodes, setNumTrimmedNodes] = useState(5);
+  const debouncedTrimmedNodes = useDebounce(numTrimmedNodes, 500);
 
   /**
    * Initialize svg object
@@ -92,6 +97,7 @@ export default function ResultExplorer({ answerStore }) {
           } = graphUtils.getCurvedEdgePos(d.source.x, d.source.y, d.target.x, d.target.y, d.numEdges, d.index, nodeRadius);
           return `M${x1},${y1}Q${qx},${qy} ${x2},${y2}`;
         });
+
     edge.current
       .select('.edgeTransparent')
         .attr('d', (d) => {
@@ -134,13 +140,24 @@ export default function ResultExplorer({ answerStore }) {
       .force('forceY', d3.forceY(height.current / 2).strength(0.2));
 
     // keep positions of kept nodes
-    const oldNodes = new Map(node.current.data().map((d) => [d.qg_id, { x: d.x, y: d.y }]));
-    const nodes = answerStore.selectedResult.nodes.map((d) => (
-      Object.assign(oldNodes.get(d.qg_id) || { x: Math.random() * width.current, y: Math.random() * height.current }, d)
+    const oldNodes = new Map(node.current.data().map((d) => [d.id, { x: d.x, y: d.y }]));
+    const sortedNodes = Object.values(answerStore.selectedResult.nodes).sort((a, b) => b.score - a.score);
+    const trimmedNodes = sortedNodes.slice(0, debouncedTrimmedNodes);
+    const nodes = trimmedNodes.map((d) => (
+      Object.assign(oldNodes.get(d.id) || { x: Math.random() * width.current, y: Math.random() * height.current }, d)
     ));
+    const trimmedNodeIds = trimmedNodes.map((n) => n.id);
+    const trimmedEdges = Object.keys(answerStore.selectedResult.edges)
+      .filter((key) => {
+        const e = answerStore.selectedResult.edges[key];
+        return trimmedNodeIds.includes(e.source) && trimmedNodeIds.includes(e.target);
+      })
+      .map((key) => ({
+        ...answerStore.selectedResult.edges[key],
+      }));
     // this is weird, but stops the simulation from throwing a
     // `d3 cannot create property 'vx' on string` error when trying to move edges
-    const edges = answerStore.selectedResult.edges.map((d) => ({ ...d }));
+    const edges = trimmedEdges.map((d) => ({ ...d }));
     simulation.current.nodes(nodes);
     simulation.current.force('link').links(edges);
 
@@ -152,7 +169,7 @@ export default function ResultExplorer({ answerStore }) {
             .call(dragUtils.dragNode(simulation.current))
             .call((n) => n.append('circle')
               .attr('r', nodeRadius)
-              .attr('fill', (d) => colorMap((d.category) || 'unknown'))
+              .attr('fill', (d) => colorMap((d.categories) || 'unknown'))
               .call((nCircle) => nCircle.append('title')
                 .text((d) => d.name)))
             .call((n) => n.append('text')
@@ -203,7 +220,12 @@ export default function ResultExplorer({ answerStore }) {
                   .text((d) => stringUtils.displayPredicate(d.predicate)))
               .call((eLabel) => eLabel.append('title')
                 .text((d) => (stringUtils.displayPredicate(d.predicate))))),
-        (update) => update,
+        (update) => update
+          .call((e) => e.select('title')
+            .text((d) => stringUtils.displayPredicate(d.predicate)))
+          .call((e) => e.select('text')
+            .select('textPath')
+              .text((d) => stringUtils.displayPredicate(d.predicate))),
         (exit) => exit
           .remove(),
       );
@@ -232,10 +254,12 @@ export default function ResultExplorer({ answerStore }) {
         .duration(duration)
         .style('width', `${fullWidth}%`)
         .style('margin-left', '10px')
-        .on('end', drawAnswerGraph);
+        .on('end', drawAnswerGraph)
+        .style('overflow-y', 'unset');
     } else {
       // hide graph
       container
+        .style('overflow-y', 'auto')
         .transition()
         .ease(d3.easeCircle)
         .duration(1000)
@@ -247,7 +271,11 @@ export default function ResultExplorer({ answerStore }) {
 
   useEffect(() => {
     resize();
-  }, [answerStore.selectedResult, answerStore.selectedRowId]);
+  }, [
+    answerStore.selectedResult,
+    answerStore.selectedRowId,
+    debouncedTrimmedNodes,
+  ]);
 
   return (
     <Paper
@@ -255,6 +283,15 @@ export default function ResultExplorer({ answerStore }) {
       elevation={3}
     >
       <h5 className="cardLabel">Answer Explorer</h5>
+      <Box width={200} id="nodeNumSlider">
+        <Slider
+          value={numTrimmedNodes}
+          valueLabelDisplay="auto"
+          min={2}
+          max={answerStore.selectedResult.nodes ? Object.keys(answerStore.selectedResult.nodes).length : 2}
+          onChange={(e, v) => setNumTrimmedNodes(v)}
+        />
+      </Box>
       <svg ref={svgRef} />
       {answerStore.metaData && (
         <ResultMetaData

@@ -64,7 +64,9 @@ function makeDisplayNodes(message, hierarchies) {
       });
     });
   });
-  return Object.values(displayNodes);
+  const kgNodes = Object.values(displayNodes);
+  kgNodes.sort((a, b) => (b.count - a.count));
+  return kgNodes;
 }
 
 /**
