@@ -24,7 +24,7 @@ export default function ClipboardButton({
   function copyToClipboard() {
     // Using textarea to keep newlines in JSON
     const textarea = document.createElement('textarea');
-    textarea.innerHTML = clipboardText;
+    textarea.innerHTML = clipboardText();
     document.body.appendChild(textarea);
     textarea.select();
     // focus is needed in case copying is done from modal
