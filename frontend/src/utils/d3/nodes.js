@@ -120,7 +120,7 @@ function update(node, args) {
   const { colorMap } = args;
   return node
     .call((n) => n.select('.nodeCircle')
-      .attr('fill', (d) => colorMap((d.categories && d.categories[0]) || 'unknown')))
+      .attr('fill', (d) => colorMap((d.categories) || 'unknown')))
       .style('filter', (d) => (d.is_set ? 'url(#setShadow)' : ''))
       .call((nodeCircle) => nodeCircle.select('title')
         .text((d) => {
