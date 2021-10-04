@@ -17,6 +17,7 @@ import useDebounce from '~/stores/useDebounce';
 import './kgBubble.css';
 
 const nodePadding = 2;
+const defaultTrimNum = 25;
 
 /**
  * Knowledge Graph Bubble Graph
@@ -30,7 +31,7 @@ export default function KgBubble({
   const svgRef = useRef();
   const { colorMap } = useContext(BiolinkContext);
   const [drawing, setDrawing] = useState(false);
-  const [numTrimmedNodes, setNumTrimmedNodes] = useState(Math.min(nodes.length, 25));
+  const [numTrimmedNodes, setNumTrimmedNodes] = useState(Math.min(nodes.length, defaultTrimNum));
   const debouncedTrimmedNodes = useDebounce(numTrimmedNodes, 500);
 
   /**
@@ -139,15 +140,17 @@ export default function KgBubble({
       {nodes.length > 0 && (
         <Paper id="kgBubbleContainer" elevation={3}>
           <h5 className="cardLabel">Knowledge Graph Bubble</h5>
-          <Box width={300} id="nodeNumSlider">
-            <Slider
-              value={numTrimmedNodes}
-              valueLabelDisplay="auto"
-              min={2}
-              max={nodes.length}
-              onChange={(e, v) => setNumTrimmedNodes(v)}
-            />
-          </Box>
+          {nodes.length > defaultTrimNum && (
+            <Box width={300} id="nodeNumSlider">
+              <Slider
+                value={numTrimmedNodes}
+                valueLabelDisplay="auto"
+                min={2}
+                max={nodes.length}
+                onChange={(e, v) => setNumTrimmedNodes(v)}
+              />
+            </Box>
+          )}
           {drawing && (
             <Loading positionStatic message="Redrawing knowledge graph..." />
           )}

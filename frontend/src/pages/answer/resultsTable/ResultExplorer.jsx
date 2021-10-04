@@ -16,6 +16,7 @@ import useDebounce from '~/stores/useDebounce';
 import ResultMetaData from './ResultMetaData';
 
 const nodeRadius = 40;
+const defaultTrimNum = 5;
 
 /**
  * Selected result graph
@@ -30,7 +31,7 @@ export default function ResultExplorer({ answerStore }) {
   const edge = useRef({});
   const simulation = useRef();
   const { colorMap } = useContext(BiolinkContext);
-  const [numTrimmedNodes, setNumTrimmedNodes] = useState(5);
+  const [numTrimmedNodes, setNumTrimmedNodes] = useState(defaultTrimNum);
   const debouncedTrimmedNodes = useDebounce(numTrimmedNodes, 500);
 
   /**
@@ -284,15 +285,20 @@ export default function ResultExplorer({ answerStore }) {
       elevation={3}
     >
       <h5 className="cardLabel">Answer Explorer</h5>
-      <Box width={200} id="nodeNumSlider">
-        <Slider
-          value={numTrimmedNodes}
-          valueLabelDisplay="auto"
-          min={2}
-          max={answerStore.selectedResult.nodes ? Object.keys(answerStore.selectedResult.nodes).length : 2}
-          onChange={(e, v) => setNumTrimmedNodes(v)}
-        />
-      </Box>
+      {
+        answerStore.resultJSON.result &&
+        answerStore.resultJSON.result.node_bindings.length > defaultTrimNum && (
+          <Box width={200} id="nodeNumSlider">
+            <Slider
+              value={numTrimmedNodes}
+              valueLabelDisplay="auto"
+              min={2}
+              max={answerStore.selectedResult.nodes ? Object.keys(answerStore.selectedResult.nodes).length : 2}
+              onChange={(e, v) => setNumTrimmedNodes(v)}
+            />
+          </Box>
+        )
+      }
       <svg ref={svgRef} />
       {answerStore.metaData && (
         <ResultMetaData
