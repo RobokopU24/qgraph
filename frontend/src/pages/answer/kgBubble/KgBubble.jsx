@@ -87,7 +87,7 @@ export default function KgBubble({
           .call(dragUtils.dragNode(simulation))
           .call((n) => n.append('circle')
             .attr('r', (d) => getNodeRadius(d.count))
-            .attr('fill', (d) => colorMap((d.categories) || 'unknown'))
+            .attr('fill', (d) => colorMap(d.categories))
             .call((nCircle) => nCircle.append('title')
               .text((d) => d.name)))
           .call((n) => n.append('text')
@@ -112,7 +112,7 @@ export default function KgBubble({
     if (nodes.length) {
       drawBubbleGraph();
     }
-  }, [nodes, debouncedTrimmedNodes]);
+  }, [nodes, debouncedTrimmedNodes, colorMap]);
 
   useEffect(() => {
     let timer;

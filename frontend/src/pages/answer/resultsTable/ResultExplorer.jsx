@@ -169,7 +169,7 @@ export default function ResultExplorer({ answerStore }) {
             .call(dragUtils.dragNode(simulation.current))
             .call((n) => n.append('circle')
               .attr('r', nodeRadius)
-              .attr('fill', (d) => colorMap((d.categories) || 'unknown'))
+              .attr('fill', (d) => colorMap(d.categories))
               .call((nCircle) => nCircle.append('title')
                 .text((d) => d.name)))
             .call((n) => n.append('text')
@@ -275,6 +275,7 @@ export default function ResultExplorer({ answerStore }) {
     answerStore.selectedResult,
     answerStore.selectedRowId,
     debouncedTrimmedNodes,
+    colorMap,
   ]);
 
   return (

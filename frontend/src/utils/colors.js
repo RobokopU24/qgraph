@@ -12,6 +12,7 @@ const conceptColorMap = {
   'biolink:CellularComponent': '#ead6e0', // Gray-Pink
   'biolink:ChemicalSubstance': '#8787ff', // Blue
   'biolink:ChemicalExposure': '#126180', // Blue Sapphire
+  'biolink:ChemicalEntity': '#8787ff', // Blue
   'biolink:Disease': '#fbb4ae', // Red
   'biolink:DiseaseOrPhenotypicFeature': '#fbb4ae', // Red, same as disease
   'biolink:Drug': '#8787ff', // Purply blue, same as chemical_substance
@@ -32,15 +33,32 @@ const conceptColorMap = {
   'biolink:PopulationOfIndividualOrganisms': '#dde26a', // Bored Accent Green
   'biolink:Protein': '#ccebc5', // Green like gene
   'biolink:SequenceVariant': '#00c4e6', // Light teal
-  'biolink:SmallMolecule': '#ccebc5', // Green
+  // 'biolink:SmallMolecule': '#7b68ee', // Medium Slate Blue
 };
 
 export default function getNodeCategoryColorMap(hierarchies) {
   return (categories) => {
+    if (!categories || !Object.keys(hierarchies).length) {
+      return undefinedColor;
+    }
+    if (!Array.isArray(categories)) {
+      categories = [categories]; // eslint-disable-line
+    }
     // traverse up hierarchy until we find a category we have a color for
-    const category = categories.find((c) => (
-      hierarchies[c] && hierarchies[c].find((h) => h in conceptColorMap)
-    ));
+    let category;
+    categories.forEach((c) => {
+      if (!category) {
+        const hierarchy = hierarchies[c];
+        if (hierarchy) {
+          const index = hierarchy.indexOf(c);
+          const parentCategories = hierarchy.slice(index);
+          const bestKnownCategory = parentCategories.find((h) => h in conceptColorMap);
+          if (bestKnownCategory !== undefined) {
+            category = bestKnownCategory;
+          }
+        }
+      }
+    });
     if (category !== undefined) {
       return conceptColorMap[category];
     }

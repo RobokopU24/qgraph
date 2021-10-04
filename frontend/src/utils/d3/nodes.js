@@ -43,7 +43,7 @@ function enter(node, args) {
     .call((nodeCircle) => nodeCircle.append('circle')
       .attr('class', (d) => `nodeCircle node-${d.id}`)
       .attr('r', nodeRadius)
-      .attr('fill', (d) => colorMap((d.categories) || 'unknown'))
+      .attr('fill', (d) => colorMap(d.categories))
       .style('cursor', 'pointer')
       .call((n) => n.append('title')
         .text((d) => {
@@ -120,7 +120,7 @@ function update(node, args) {
   const { colorMap } = args;
   return node
     .call((n) => n.select('.nodeCircle')
-      .attr('fill', (d) => colorMap((d.categories) || 'unknown')))
+      .attr('fill', (d) => colorMap(d.categories)))
       .style('filter', (d) => (d.is_set ? 'url(#setShadow)' : ''))
       .call((nodeCircle) => nodeCircle.select('title')
         .text((d) => {
