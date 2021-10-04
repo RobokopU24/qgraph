@@ -3,6 +3,7 @@ const axios = require('axios');
 
 const robokache = require('./robokache');
 const { handleAxiosError } = require('./utils');
+const aras = require('./services');
 
 router.route('/answer')
   .post(async (req, res) => {
@@ -13,7 +14,7 @@ router.route('/answer')
         return res.send(response);
       }
       const message = response;
-      const ara_url = `${process.env.PROXY}/${new URL(ara).pathname}`;
+      const ara_url = aras[ara];
       const config = {
         method: 'POST',
         url: ara_url,
@@ -24,7 +25,7 @@ router.route('/answer')
 
       let answer;
       try {
-        // Go ask Messenger for an answer
+        // Go ask ARA for an answer
         response = await axios(config);
 
         // Validate json
@@ -33,7 +34,7 @@ router.route('/answer')
         } catch (error) {
           answer = {
             status: 'error',
-            message: 'Recieved unparseable JSON response from Messenger',
+            message: `Recieved unparseable JSON response from ${ara}`,
           };
         }
       } catch (err) {

@@ -43,8 +43,9 @@ export default function QueryBuilder() {
    */
   async function onQuickSubmit() {
     pageStatus.setLoading('Fetching answer, this may take a while');
+    const ara_url = ARAs[ara];
     const prunedQueryGraph = queryGraphUtils.prune(queryBuilder.query_graph);
-    const response = await API.ara.getAnswer(ARAs[ara], { message: { query_graph: prunedQueryGraph } });
+    const response = await API.ara.getAnswer(ara_url, { message: { query_graph: prunedQueryGraph } });
 
     if (response.status === 'error') {
       const failedToAnswer = 'Please try asking this question later.';
@@ -72,7 +73,7 @@ export default function QueryBuilder() {
    * @returns {object} response
    */
   async function fetchAnswer(questionId, accessToken) {
-    let response = await API.queryDispatcher.getAnswer(ARAs[ara], questionId, accessToken);
+    let response = await API.queryDispatcher.getAnswer(ara, questionId, accessToken);
     if (response.status === 'error') {
       return response;
     }
