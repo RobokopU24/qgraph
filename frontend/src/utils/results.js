@@ -175,7 +175,7 @@ function getPublications(kgObj) {
       }
       attribute.value.forEach((publicationId) => {
         if (publicationId.startsWith('PMID:')) {
-          publications.push(pubmedUrl + attribute.value.split(':')[1]);
+          publications.push(pubmedUrl + publicationId.split(':')[1]);
         }
       });
     }
