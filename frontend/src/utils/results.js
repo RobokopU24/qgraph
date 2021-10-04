@@ -149,17 +149,17 @@ function makeTableHeaders(message, colorMap) {
 const pubmedUrl = 'https://www.ncbi.nlm.nih.gov/pubmed/';
 
 /**
- * Get publication attributes from knowledge graph edges
- * @param {object} kgEdge - knowledge graph edge object
+ * Get publication attributes from knowledge graph nodes and edges
+ * @param {object} kgObj - knowledge graph node or edge object
  * @returns a list of publication urls
  */
-function getPublications(kgEdge) {
+function getPublications(kgObj) {
   const publications = [];
   // Try and find any publications in edge attributes
   const publicationsAttributes = (
-    kgEdge.attributes && Array.isArray(kgEdge.attributes) &&
+    kgObj.attributes && Array.isArray(kgObj.attributes) &&
     // TRAPI for publications attributes is not standardized
-    kgEdge.attributes.filter((att) => (
+    kgObj.attributes.filter((att) => (
       att.attribute_type_id === 'biolink:publications' ||
       att.attribute_type_id === 'biolink:Publication' ||
       att.attribute_type_id === 'publications' ||

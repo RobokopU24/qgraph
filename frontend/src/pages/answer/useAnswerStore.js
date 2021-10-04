@@ -65,6 +65,7 @@ export default function useAnswerStore() {
     if (rowId === selectedRowId) {
       resetAnswerExplorer();
     } else {
+      const publications = {};
       const nodes = {};
       const nodesJSON = {};
       Object.entries(row.node_bindings).forEach(([qg_id, value]) => {
@@ -89,7 +90,6 @@ export default function useAnswerStore() {
         });
       });
       const edges = {};
-      const edgePublications = {};
       const edgesJSON = {};
       Object.values(row.edge_bindings).forEach((value) => {
         value.forEach((kgObject) => {
@@ -113,13 +113,12 @@ export default function useAnswerStore() {
           const objectNode = message.knowledge_graph.nodes[kgEdge.object];
           const edgeKey = `${subjectNode.name || kgEdge.subject} ${stringUtils.displayPredicate(kgEdge.predicate)} ${objectNode.name || kgEdge.object}`;
 
-          const publications = resultsUtils.getPublications(kgEdge);
-          edgePublications[edgeKey] = publications;
+          publications[edgeKey] = resultsUtils.getPublications(kgEdge);
         });
       });
       setSelectedResult({ nodes, edges });
       setSelectedRowId(rowId);
-      setMetaData(edgePublications);
+      setMetaData(publications);
       // store full result JSON
       setResultJSON({ knowledge_graph: { nodes: nodesJSON, edges: edgesJSON }, result: row });
     }
