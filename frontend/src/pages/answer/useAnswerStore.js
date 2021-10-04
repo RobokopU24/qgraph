@@ -109,15 +109,11 @@ export default function useAnswerStore() {
             nodes[kgEdge.object].score += 1;
           }
 
-          // EDAM:data_0971 is the publications type
-          const publicationsAttribute = kgEdge.attributes && Array.isArray(kgEdge.attributes) && kgEdge.attributes.find((att) => att.attribute_type_id === 'biolink:publications' || att.type === 'EDAM:data_0971');
-          let publications = [];
-          if (publicationsAttribute) {
-            publications = (Array.isArray(publicationsAttribute.value) && publicationsAttribute.value) || [];
-          }
           const subjectNode = message.knowledge_graph.nodes[kgEdge.subject];
           const objectNode = message.knowledge_graph.nodes[kgEdge.object];
           const edgeKey = `${subjectNode.name || kgEdge.subject} ${stringUtils.displayPredicate(kgEdge.predicate)} ${objectNode.name || kgEdge.object}`;
+
+          const publications = resultsUtils.getPublications(kgEdge);
           edgePublications[edgeKey] = publications;
         });
       });
@@ -137,7 +133,7 @@ export default function useAnswerStore() {
       return resultsUtils.makeTableHeaders(message, colorMap);
     }
     return [];
-  }, [message]);
+  }, [message, colorMap]);
 
   return {
     initialize,

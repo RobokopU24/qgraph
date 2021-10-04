@@ -67,12 +67,12 @@ export default function ResultMetaData({ metaData, result }) {
                             button
                             component="a"
                             key={shortid.generate()}
-                            href={`https://www.ncbi.nlm.nih.gov/pubmed/${publication.split(':')[1]}/`}
+                            href={publication}
                             target="_blank"
                             rel="noreferrer"
                           >
                             <ListItemText
-                              primary={`https://www.ncbi.nlm.nih.gov/pubmed/${publication.split(':')[1]}/`}
+                              primary={publication}
                               inset
                             />
                           </ListItem>

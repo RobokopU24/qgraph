@@ -146,6 +146,44 @@ function makeTableHeaders(message, colorMap) {
   return headerColumns;
 }
 
+const pubmedUrl = 'https://www.ncbi.nlm.nih.gov/pubmed/';
+
+/**
+ * Get publication attributes from knowledge graph edges
+ * @param {object} kgEdge - knowledge graph edge object
+ * @returns a list of publication urls
+ */
+function getPublications(kgEdge) {
+  const publications = [];
+  // Try and find any publications in edge attributes
+  const publicationsAttributes = (
+    kgEdge.attributes && Array.isArray(kgEdge.attributes) &&
+    // TRAPI for publications attributes is not standardized
+    kgEdge.attributes.filter((att) => (
+      att.attribute_type_id === 'biolink:publications' ||
+      att.attribute_type_id === 'biolink:Publication' ||
+      att.attribute_type_id === 'publications' ||
+      att.type === 'EDAM:data_0971'
+    ))
+  );
+  publicationsAttributes.forEach((attribute) => {
+    if (attribute.value_url) {
+      publications.push(attribute.value_url);
+    } else if (attribute.value) {
+      if (!Array.isArray(attribute.value)) {
+        attribute.value = [attribute.value];
+      }
+      attribute.value.forEach((publicationId) => {
+        if (publicationId.startsWith('PMID:')) {
+          publications.push(pubmedUrl + attribute.value.split(':')[1]);
+        }
+      });
+    }
+  });
+  return publications;
+}
+
 export default {
   makeTableHeaders,
+  getPublications,
 };
