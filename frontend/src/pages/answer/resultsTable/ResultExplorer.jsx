@@ -90,7 +90,7 @@ export default function ResultExplorer({ answerStore }) {
       });
 
     edge.current
-      .select('.edge')
+      .select('.result_edge')
         .attr('d', (d) => {
           const {
             x1, y1, qx, qy, x2, y2,
@@ -99,7 +99,7 @@ export default function ResultExplorer({ answerStore }) {
         });
 
     edge.current
-      .select('.edgeTransparent')
+      .select('.result_edge_transparent')
         .attr('d', (d) => {
           const {
             x1, y1, qx, qy, x2, y2,
@@ -165,7 +165,7 @@ export default function ResultExplorer({ answerStore }) {
       .join(
         (enter) => enter
           .append('g')
-            .attr('class', 'node')
+            .attr('class', 'result_node')
             .call(dragUtils.dragNode(simulation.current))
             .call((n) => n.append('circle')
               .attr('r', nodeRadius)
@@ -173,7 +173,7 @@ export default function ResultExplorer({ answerStore }) {
               .call((nCircle) => nCircle.append('title')
                 .text((d) => d.name)))
             .call((n) => n.append('text')
-              .attr('class', 'nodeLabel')
+              .attr('class', 'result_node_label')
               .style('pointer-events', 'none')
               .attr('text-anchor', 'middle')
               .style('font-weight', 600)
@@ -200,14 +200,14 @@ export default function ResultExplorer({ answerStore }) {
               .attr('stroke', '#999')
               .attr('fill', 'none')
               .attr('stroke-width', (d) => d.strokeWidth)
-              .attr('class', 'edge')
+              .attr('class', 'result_edge')
               .attr('marker-end', (d) => (graphUtils.shouldShowArrow(d) ? 'url(#arrow)' : '')))
             .call((e) => e.append('path')
               .attr('stroke', 'transparent')
               .attr('fill', 'none')
               .attr('stroke-width', 10)
-              .attr('class', 'edgeTransparent')
-              .attr('id', (d) => `edge${d.id}`)
+              .attr('class', 'result_edge_transparent')
+              .attr('id', (d) => `result_explorer_edge${d.id}`)
               .call(() => e.append('text')
                 .attr('class', 'edgeText')
                 .attr('pointer-events', 'none')
@@ -215,7 +215,7 @@ export default function ResultExplorer({ answerStore }) {
                 .attr('dy', (d) => -d.strokeWidth)
                 .append('textPath')
                   .attr('pointer-events', 'none')
-                  .attr('xlink:href', (d) => `#edge${d.id}`)
+                  .attr('xlink:href', (d) => `#result_explorer_edge${d.id}`)
                   .attr('startOffset', '50%')
                   .text((d) => stringUtils.displayPredicate(d.predicate)))
               .call((eLabel) => eLabel.append('title')
