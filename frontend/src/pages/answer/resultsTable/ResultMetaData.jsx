@@ -38,7 +38,7 @@ export default function ResultMetaData({ metaData, result }) {
     updateExpanded({ type: 'clear' });
   }, [metaData]);
 
-  const hasSupportPublications = useMemo(() => !!Object.values(metaData).find((edge) => edge.length), [metaData]);
+  const hasSupportPublications = useMemo(() => !!Object.values(metaData).find((pubs) => pubs.length), [metaData]);
 
   return (
     <Paper
@@ -49,30 +49,30 @@ export default function ResultMetaData({ metaData, result }) {
         <h4>Supporting Publications</h4>
         {hasSupportPublications ? (
           <List>
-            {Object.entries(metaData).map(([edgeDescription, publications]) => (
+            {Object.entries(metaData).map(([key, publications]) => (
               <React.Fragment key={shortid.generate()}>
                 {publications.length > 0 && (
                   <>
                     <ListItem
                       button
-                      onClick={() => updateExpanded({ type: 'toggle', key: edgeDescription })}
+                      onClick={() => updateExpanded({ type: 'toggle', key })}
                     >
-                      <ListItemText primary={edgeDescription} />
-                      {expanded[edgeDescription] ? <ExpandLess /> : <ExpandMore />}
+                      <ListItemText primary={key} />
+                      {expanded[key] ? <ExpandLess /> : <ExpandMore />}
                     </ListItem>
-                    <Collapse in={expanded[edgeDescription]} timeout="auto" unmountOnExit>
+                    <Collapse in={expanded[key]} timeout="auto" unmountOnExit>
                       <List component="div">
                         {publications.map((publication) => (
                           <ListItem
                             button
                             component="a"
                             key={shortid.generate()}
-                            href={`https://www.ncbi.nlm.nih.gov/pubmed/${publication.split(':')[1]}/`}
+                            href={publication}
                             target="_blank"
                             rel="noreferrer"
                           >
                             <ListItemText
-                              primary={`https://www.ncbi.nlm.nih.gov/pubmed/${publication.split(':')[1]}/`}
+                              primary={publication}
                               inset
                             />
                           </ListItem>

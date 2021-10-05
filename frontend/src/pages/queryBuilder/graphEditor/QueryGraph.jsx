@@ -10,7 +10,6 @@ import highlighter from '~/utils/d3/highlighter';
 
 import BiolinkContext from '~/context/biolink';
 import QueryBuilderContext from '~/context/queryBuilder';
-import getNodeCategoryColorMap from '~/utils/colors';
 import queryGraphUtils from '~/utils/queryGraph';
 
 const nodeRadius = 48;
@@ -27,9 +26,8 @@ export default function QueryGraph({
   height, width,
   clickState, updateClickState,
 }) {
-  const { concepts } = useContext(BiolinkContext);
+  const { colorMap } = useContext(BiolinkContext);
   const queryBuilder = useContext(QueryBuilderContext);
-  const nodeCategoryColorMap = useMemo(() => getNodeCategoryColorMap(concepts), [concepts]);
   const { query_graph } = queryBuilder;
   const { nodes, edges } = useMemo(() => queryGraphUtils.getNodeAndEdgeListsForDisplay(query_graph), [queryBuilder.state]);
   const node = useRef({});
@@ -44,7 +42,7 @@ export default function QueryGraph({
    */
   const nodeArgs = {
     nodeRadius,
-    colorMap: nodeCategoryColorMap,
+    colorMap,
   };
 
   /**

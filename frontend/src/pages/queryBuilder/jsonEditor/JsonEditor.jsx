@@ -87,6 +87,16 @@ export default function JsonEditor({ show, close }) {
     queryBuilder.dispatch({ type: 'saveGraph', payload: localMessage });
   }
 
+  function copyQueryGraph() {
+    const prunedQueryGraph = queryGraphUtils.prune(localMessage.message.query_graph);
+    return JSON.stringify({
+      message: {
+        ...localMessage.message,
+        query_graph: prunedQueryGraph,
+      },
+    }, null, 2);
+  }
+
   return (
     <Dialog
       open={show}
@@ -134,7 +144,7 @@ export default function JsonEditor({ show, close }) {
             <ClipboardButton
               startIcon={<FileCopyIcon />}
               displayText="Copy"
-              clipboardText={JSON.stringify(localMessage, null, 2)}
+              clipboardText={copyQueryGraph}
               notificationText="Copied JSON to clipboard!"
               disabled={!pageStatus.displayPage}
             />

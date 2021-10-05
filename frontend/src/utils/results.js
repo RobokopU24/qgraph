@@ -113,7 +113,7 @@ function makeTableHeaders(message, colorMap) {
   const sortedNodes = sortNodes(query_graph, startingNode);
   const headerColumns = sortedNodes.map((id) => {
     const qgNode = query_graph.nodes[id];
-    const backgroundColor = colorMap(qgNode.categories && Array.isArray(qgNode.categories) && qgNode.categories[0]);
+    const backgroundColor = colorMap(qgNode.categories);
     const nodeIdLabel = queryGraphUtils.getTableHeaderLabel(qgNode);
     const headerText = qgNode.name || nodeIdLabel || stringUtils.displayCategory(qgNode.categories) || 'Something';
     const width = getColumnWidth(results, id, knowledge_graph.nodes, headerText);
@@ -146,6 +146,44 @@ function makeTableHeaders(message, colorMap) {
   return headerColumns;
 }
 
+const pubmedUrl = 'https://www.ncbi.nlm.nih.gov/pubmed/';
+
+/**
+ * Get publication attributes from knowledge graph nodes and edges
+ * @param {object} kgObj - knowledge graph node or edge object
+ * @returns a list of publication urls
+ */
+function getPublications(kgObj) {
+  const publications = [];
+  // Try and find any publications in edge attributes
+  const publicationsAttributes = (
+    kgObj.attributes && Array.isArray(kgObj.attributes) &&
+    // TRAPI for publications attributes is not standardized
+    kgObj.attributes.filter((att) => (
+      att.attribute_type_id === 'biolink:publications' ||
+      att.attribute_type_id === 'biolink:Publication' ||
+      att.attribute_type_id === 'publications' ||
+      att.type === 'EDAM:data_0971'
+    ))
+  );
+  publicationsAttributes.forEach((attribute) => {
+    if (attribute.value_url) {
+      publications.push(attribute.value_url);
+    } else if (attribute.value) {
+      if (!Array.isArray(attribute.value)) {
+        attribute.value = [attribute.value];
+      }
+      attribute.value.forEach((publicationId) => {
+        if (publicationId.startsWith('PMID:')) {
+          publications.push(pubmedUrl + publicationId.split(':')[1]);
+        }
+      });
+    }
+  });
+  return publications;
+}
+
 export default {
   makeTableHeaders,
+  getPublications,
 };

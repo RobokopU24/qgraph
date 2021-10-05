@@ -32,7 +32,7 @@ describe('Full question workflow', () => {
   });
   afterEach(() => {
     jest.clearAllMocks();
-  })
+  });
   it('successfully asks a question', async () => {
     const spyPost = jest.spyOn(axios, 'post');
     render(<App />);

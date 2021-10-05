@@ -40,6 +40,8 @@ export default function useAnswerStore() {
     setMessage(msg);
     if (msg.knowledge_graph && msg.results) {
       setKgNodes(kgUtils.makeDisplayNodes(msg, hierarchies));
+      updateDisplayState({ type: 'toggle', payload: { component: 'kg', show: true } });
+      updateDisplayState({ type: 'toggle', payload: { component: 'results', show: true } });
     } else {
       // if knowledge_graph and results are undefined, then disable those components
       updateDisplayState({ type: 'disable', payload: { component: 'kg' } });
@@ -63,36 +65,14 @@ export default function useAnswerStore() {
     if (rowId === selectedRowId) {
       resetAnswerExplorer();
     } else {
-      const edges = [];
-      const edgePublications = {};
-      const edgesJSON = {};
-      Object.values(row.edge_bindings).forEach((value) => {
-        value.forEach((kgObject) => {
-          const kgEdge = message.knowledge_graph.edges[kgObject.id];
-          edgesJSON[kgObject.id] = kgEdge;
-          const graphEdge = {
-            id: kgObject.id,
-            source: kgEdge.subject,
-            target: kgEdge.object,
-            predicate: kgEdge.predicate,
-          };
-          edges.push(graphEdge);
-
-          // EDAM:data_0971 is the publications type
-          const publicationsAttribute = kgEdge.attributes && Array.isArray(kgEdge.attributes) && kgEdge.attributes.find((att) => att.attribute_type_id === 'biolink:publications' || att.type === 'EDAM:data_0971');
-          let publications = [];
-          if (publicationsAttribute) {
-            publications = (Array.isArray(publicationsAttribute.value) && publicationsAttribute.value) || [];
-          }
-          const subjectNode = message.knowledge_graph.nodes[kgEdge.subject];
-          const objectNode = message.knowledge_graph.nodes[kgEdge.object];
-          const edgeKey = `${subjectNode.name || kgEdge.subject} ${stringUtils.displayPredicate(graphEdge.predicate)} ${objectNode.name || kgEdge.object}`;
-          edgePublications[edgeKey] = publications;
-        });
-      });
-      const nodes = [];
+      const publications = {};
+      const nodes = {};
       const nodesJSON = {};
       Object.entries(row.node_bindings).forEach(([qg_id, value]) => {
+        // any lone node in a node binding will get an infinite score
+        // and automatically not be pruned
+        const kgIdLength = value.length;
+        // add all results nodes to json display
         value.forEach((kgObject) => {
           const kgNode = message.knowledge_graph.nodes[kgObject.id];
           nodesJSON[kgObject.id] = kgNode;
@@ -104,15 +84,44 @@ export default function useAnswerStore() {
           const graphNode = {
             id: kgObject.id,
             name: kgNode.name || kgObject.id || categories[0],
-            category: categories[0],
+            categories,
             qg_id,
+            is_set: false,
+            score: kgIdLength > 1 ? 0 : Infinity,
           };
-          nodes.push(graphNode);
+          nodes[kgObject.id] = graphNode;
+        });
+      });
+      const edges = {};
+      const edgesJSON = {};
+      Object.values(row.edge_bindings).forEach((value) => {
+        value.forEach((kgObject) => {
+          const kgEdge = message.knowledge_graph.edges[kgObject.id];
+          edgesJSON[kgObject.id] = kgEdge;
+          const graphEdge = {
+            id: kgObject.id,
+            source: kgEdge.subject,
+            target: kgEdge.object,
+            predicate: kgEdge.predicate,
+          };
+          edges[kgObject.id] = graphEdge;
+          if (kgEdge.subject in nodes) {
+            nodes[kgEdge.subject].score += 1;
+          }
+          if (kgEdge.object in nodes) {
+            nodes[kgEdge.object].score += 1;
+          }
+
+          const subjectNode = message.knowledge_graph.nodes[kgEdge.subject];
+          const objectNode = message.knowledge_graph.nodes[kgEdge.object];
+          const edgeKey = `${subjectNode.name || kgEdge.subject} ${stringUtils.displayPredicate(kgEdge.predicate)} ${objectNode.name || kgEdge.object}`;
+
+          publications[edgeKey] = resultsUtils.getPublications(kgEdge);
         });
       });
       setSelectedResult({ nodes, edges });
       setSelectedRowId(rowId);
-      setMetaData(edgePublications);
+      setMetaData(publications);
       // store full result JSON
       setResultJSON({ knowledge_graph: { nodes: nodesJSON, edges: edgesJSON }, result: row });
     }
@@ -122,11 +131,21 @@ export default function useAnswerStore() {
    * Compute table header list when message changes
    */
   const tableHeaders = useMemo(() => {
-    if (message.query_graph) {
+    if (message.query_graph && message.knowledge_graph && message.results) {
       return resultsUtils.makeTableHeaders(message, colorMap);
     }
     return [];
-  }, [message]);
+  }, [message, colorMap]);
+
+  /**
+   * Show prune slider when there are sets with more than 3 nodes in them
+   */
+  const showNodePruneSlider = useMemo(() => (
+    Object.keys(resultJSON).length &&
+    Object.values(resultJSON.result.node_bindings).some((kgIdList) => kgIdList.length > 3)
+  ), [resultJSON]);
+
+  const numQgNodes = useMemo(() => tableHeaders.length, [tableHeaders]);
 
   return {
     initialize,
@@ -140,6 +159,8 @@ export default function useAnswerStore() {
     selectedRowId,
     resultJSON,
     selectRow,
+    showNodePruneSlider,
+    numQgNodes,
 
     metaData,
   };

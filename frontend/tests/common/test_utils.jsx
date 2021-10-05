@@ -25,6 +25,8 @@ jest.mock('@auth0/auth0-react', () => ({
   }),
 }));
 
+biolink.colorMap = jest.fn();
+
 function ProviderWrapper({ children }) {
   return (
     <MemoryRouter>
