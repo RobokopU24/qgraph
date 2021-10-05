@@ -16,7 +16,6 @@ import useDebounce from '~/stores/useDebounce';
 import ResultMetaData from './ResultMetaData';
 
 const nodeRadius = 40;
-const defaultTrimNum = 5;
 
 /**
  * Selected result graph
@@ -31,7 +30,7 @@ export default function ResultExplorer({ answerStore }) {
   const edge = useRef({});
   const simulation = useRef();
   const { colorMap } = useContext(BiolinkContext);
-  const [numTrimmedNodes, setNumTrimmedNodes] = useState(defaultTrimNum);
+  const [numTrimmedNodes, setNumTrimmedNodes] = useState(answerStore.numQgNodes);
   const debouncedTrimmedNodes = useDebounce(numTrimmedNodes, 500);
 
   /**
@@ -143,7 +142,7 @@ export default function ResultExplorer({ answerStore }) {
     // keep positions of kept nodes
     const oldNodes = new Map(node.current.data().map((d) => [d.id, { x: d.x, y: d.y }]));
     const sortedNodes = Object.values(answerStore.selectedResult.nodes).sort((a, b) => b.score - a.score);
-    const trimmedNodes = sortedNodes.slice(0, debouncedTrimmedNodes);
+    const trimmedNodes = sortedNodes.slice(0, answerStore.showNodePruneSlider ? debouncedTrimmedNodes : undefined);
     const nodes = trimmedNodes.map((d) => (
       Object.assign(oldNodes.get(d.id) || { x: Math.random() * width.current, y: Math.random() * height.current }, d)
     ));
@@ -285,20 +284,21 @@ export default function ResultExplorer({ answerStore }) {
       elevation={3}
     >
       <h5 className="cardLabel">Answer Explorer</h5>
-      {
-        answerStore.resultJSON.result &&
-        answerStore.resultJSON.result.node_bindings.length > defaultTrimNum && (
-          <Box width={200} id="nodeNumSlider">
-            <Slider
-              value={numTrimmedNodes}
-              valueLabelDisplay="auto"
-              min={2}
-              max={answerStore.selectedResult.nodes ? Object.keys(answerStore.selectedResult.nodes).length : 2}
-              onChange={(e, v) => setNumTrimmedNodes(v)}
-            />
-          </Box>
-        )
-      }
+      {answerStore.showNodePruneSlider && (
+        <Box width={200} id="nodeNumSlider">
+          <Slider
+            value={numTrimmedNodes}
+            valueLabelDisplay="auto"
+            min={answerStore.numQgNodes}
+            max={answerStore.selectedResult.nodes ? (
+              Object.keys(answerStore.selectedResult.nodes).length
+            ) : (
+              answerStore.numQgNodes
+            )}
+            onChange={(e, v) => setNumTrimmedNodes(v)}
+          />
+        </Box>
+      )}
       <svg ref={svgRef} />
       {answerStore.metaData && (
         <ResultMetaData

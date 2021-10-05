@@ -69,6 +69,9 @@ export default function useAnswerStore() {
       const nodes = {};
       const nodesJSON = {};
       Object.entries(row.node_bindings).forEach(([qg_id, value]) => {
+        // any lone node in a node binding will get an infinite score
+        // and automatically not be pruned
+        const kgIdLength = value.length;
         // add all results nodes to json display
         value.forEach((kgObject) => {
           const kgNode = message.knowledge_graph.nodes[kgObject.id];
@@ -84,7 +87,7 @@ export default function useAnswerStore() {
             categories,
             qg_id,
             is_set: false,
-            score: 0,
+            score: kgIdLength > 1 ? 0 : Infinity,
           };
           nodes[kgObject.id] = graphNode;
         });
@@ -134,6 +137,16 @@ export default function useAnswerStore() {
     return [];
   }, [message, colorMap]);
 
+  /**
+   * Show prune slider when there are sets with more than 3 nodes in them
+   */
+  const showNodePruneSlider = useMemo(() => (
+    Object.keys(resultJSON).length &&
+    Object.values(resultJSON.result.node_bindings).some((kgIdList) => kgIdList.length > 3)
+  ), [resultJSON]);
+
+  const numQgNodes = useMemo(() => tableHeaders.length, [tableHeaders]);
+
   return {
     initialize,
     reset,
@@ -146,6 +159,8 @@ export default function useAnswerStore() {
     selectedRowId,
     resultJSON,
     selectRow,
+    showNodePruneSlider,
+    numQgNodes,
 
     metaData,
   };
