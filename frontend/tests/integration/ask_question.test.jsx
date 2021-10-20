@@ -36,6 +36,7 @@ describe('Full question workflow', () => {
   it('successfully asks a question', async () => {
     const spyPost = jest.spyOn(axios, 'post');
     render(<App />);
+    userEvent.click(screen.getByText('Question Builder'));
 
     // submit question
     userEvent.click(screen.getByText('Quick Submit'));

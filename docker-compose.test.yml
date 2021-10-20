@@ -5,5 +5,5 @@ services:
     build:
       dockerfile: Dockerfile.test
       args:
-        BRAND: qgraph
+        BRAND: robokop
     command: npm run test:cov
