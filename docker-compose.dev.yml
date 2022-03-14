@@ -4,9 +4,6 @@ services:
   proxy:
     ports:
       - "7080:7080"
-    volumes:
-      # use dev server block in nginx
-      - ./proxy/dev_server.conf:/etc/nginx/templates/server.conf.template
   frontend:
     build:
       dockerfile: Dockerfile.dev
