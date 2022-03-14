@@ -1,5 +1,5 @@
 import React, {
-  useState, useContext,
+  useState,
 } from 'react';
 import { Link } from 'react-router-dom';
 import AppBar from '@material-ui/core/AppBar';
@@ -12,8 +12,6 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import { useAuth0 } from '@auth0/auth0-react';
 
-import BrandContext from '~/context/brand';
-
 import './header.css';
 
 export default function Header() {
@@ -22,22 +20,17 @@ export default function Header() {
   const {
     logout, isAuthenticated, loginWithPopup,
   } = useAuth0();
-  const brandConfig = useContext(BrandContext);
 
   return (
     <AppBar position="relative" className="header">
       <Toolbar id="headerToolbar">
-        <Link to="/" id="robokopBrand">{brandConfig.title}</Link>
+        <Link to="/" id="robokopBrand">ROBOKOP</Link>
         <Link to="/questions">Question Library</Link>
         <Link to="/answer">Answer Viewer</Link>
         <div className="grow" />
-        {brandConfig.brand === 'robokop' && (
-          <>
-            <Link to="/about">About</Link>
-            <Link to="/help">Help</Link>
-            <Link to="/guide">Guide</Link>
-          </>
-        )}
+        <Link to="/about">About</Link>
+        <Link to="/help">Help</Link>
+        <Link to="/guide">Guide</Link>
         <Divider orientation="vertical" variant="middle" flexItem />
         <IconButton
           onClick={(e) => (

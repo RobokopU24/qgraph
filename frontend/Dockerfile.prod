@@ -7,10 +7,6 @@ LABEL org.opencontainers.image.source https://github.com/NCATS-Gamma/qgraph
 # Create a folder to add the code to
 WORKDIR /app
 
-# Read brand from args and set in environment
-ARG BRAND
-ENV BRAND $BRAND
-
 # Copy in package.json and package-lock.json
 COPY package*.json ./
 # Install dependencies

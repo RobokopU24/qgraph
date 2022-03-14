@@ -11,5 +11,3 @@ services:
   frontend:
     build:
       dockerfile: Dockerfile.prod
-      args:
-        BRAND: robokop

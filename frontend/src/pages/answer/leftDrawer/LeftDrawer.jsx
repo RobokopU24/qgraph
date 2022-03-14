@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import Drawer from '@material-ui/core/Drawer';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -15,8 +15,6 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import PublishIcon from '@material-ui/icons/Publish';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
-
-import BrandContext from '~/context/brand';
 
 import ConfirmDialog from '~/components/ConfirmDialog';
 
@@ -37,7 +35,6 @@ export default function LeftDrawer({
   saveAnswer, deleteAnswer, owned,
 }) {
   const { isAuthenticated } = useAuth0();
-  const brandConfig = useContext(BrandContext);
   const urlHasAnswerId = useRouteMatch('/answer/:answer_id');
   const [confirmOpen, setConfirmOpen] = useState(false);
 
@@ -51,7 +48,7 @@ export default function LeftDrawer({
   async function download() {
     const blob = new Blob([JSON.stringify({ message }, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
-    a.download = `${brandConfig.title}_message.json`;
+    a.download = 'ROBOKOP_message.json';
     a.href = window.URL.createObjectURL(blob);
     document.body.appendChild(a);
     a.click();

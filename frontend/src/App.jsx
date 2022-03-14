@@ -23,11 +23,8 @@ import API from '~/API';
 
 import AlertContext from '~/context/alert';
 import BiolinkContext from '~/context/biolink';
-import BrandContext from '~/context/brand';
 
 import useBiolinkModel from '~/stores/useBiolinkModel';
-
-import robokop_config from './robokop_config.json';
 
 export default function App() {
   const [alert, setAlert] = useState({});
@@ -60,53 +57,51 @@ export default function App() {
           redirectUri={window.location.origin}
           audience="https://qgraph.org/api"
         >
-          <BrandContext.Provider value={robokop_config}>
-            <AlertContext.Provider value={simpleSetAlert}>
-              <BiolinkContext.Provider value={biolink}>
-                <ThemeProvider theme={theme}>
-                  <StylesProvider injectFirst>
-                    <AlertWrapper
-                      alert={alert}
-                      onClose={() => simpleSetAlert(alert.severity, '')}
-                    />
-                    <Header />
-                    <div id="contentContainer">
-                      <Switch>
-                        <Route path="/about">
-                          <About />
-                        </Route>
-                        <Route path="/help">
-                          <Help />
-                        </Route>
-                        <Route path="/guide">
-                          <Guide />
-                        </Route>
-                        <Route path="/questions">
-                          <QuestionList />
-                        </Route>
-                        <Route path="/termsofservice">
-                          <TermsofService />
-                        </Route>
-                        <Route path="/logout">
-                          <Logout />
-                        </Route>
-                        <Route path="/answer/:answer_id?">
-                          <Answer />
-                        </Route>
-                        <Route path="/question">
-                          <QueryBuilder />
-                        </Route>
-                        <Route path="/">
-                          <Landing />
-                        </Route>
-                      </Switch>
-                    </div>
-                    <Footer />
-                  </StylesProvider>
-                </ThemeProvider>
-              </BiolinkContext.Provider>
-            </AlertContext.Provider>
-          </BrandContext.Provider>
+          <AlertContext.Provider value={simpleSetAlert}>
+            <BiolinkContext.Provider value={biolink}>
+              <ThemeProvider theme={theme}>
+                <StylesProvider injectFirst>
+                  <AlertWrapper
+                    alert={alert}
+                    onClose={() => simpleSetAlert(alert.severity, '')}
+                  />
+                  <Header />
+                  <div id="contentContainer">
+                    <Switch>
+                      <Route path="/about">
+                        <About />
+                      </Route>
+                      <Route path="/help">
+                        <Help />
+                      </Route>
+                      <Route path="/guide">
+                        <Guide />
+                      </Route>
+                      <Route path="/questions">
+                        <QuestionList />
+                      </Route>
+                      <Route path="/termsofservice">
+                        <TermsofService />
+                      </Route>
+                      <Route path="/logout">
+                        <Logout />
+                      </Route>
+                      <Route path="/answer/:answer_id?">
+                        <Answer />
+                      </Route>
+                      <Route path="/question">
+                        <QueryBuilder />
+                      </Route>
+                      <Route path="/">
+                        <Landing />
+                      </Route>
+                    </Switch>
+                  </div>
+                  <Footer />
+                </StylesProvider>
+              </ThemeProvider>
+            </BiolinkContext.Provider>
+          </AlertContext.Provider>
         </Auth0Provider>
       </BrowserRouter>
     </div>

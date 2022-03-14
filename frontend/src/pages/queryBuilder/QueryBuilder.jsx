@@ -11,7 +11,6 @@ import { useAuth0 } from '@auth0/auth0-react';
 import API from '~/API';
 import ARAs from '~/API/services';
 import QueryBuilderContext from '~/context/queryBuilder';
-import BrandContext from '~/context/brand';
 import AlertContext from '~/context/alert';
 import queryGraphUtils from '~/utils/queryGraph';
 import { defaultQuestion } from '~/utils/cache';
@@ -33,7 +32,6 @@ export default function QueryBuilder() {
   const pageStatus = usePageStatus(false);
   const [showJson, toggleJson] = useState(false);
   const [ara, setAra] = useState(Object.keys(ARAs)[0]);
-  const brandConfig = useContext(BrandContext);
   const displayAlert = useContext(AlertContext);
   const history = useHistory();
   const { isAuthenticated, getAccessTokenSilently } = useAuth0();
@@ -146,8 +144,7 @@ export default function QueryBuilder() {
       const alertText = 'Your answer is ready!';
       const { answerId } = response;
       // User has navigated away, display a button to go to the answer
-      const questionPagePath = brandConfig.brand === 'robokop' ? '/question' : '/';
-      if (history.location.pathname !== questionPagePath) {
+      if (history.location.pathname !== '/question') {
         displayAlert(
           response.status,
           <>
