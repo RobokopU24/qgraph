@@ -4,6 +4,4 @@ services:
   frontend:
     build:
       dockerfile: Dockerfile.test
-      args:
-        BRAND: robokop
     command: npm run test:cov

@@ -4,14 +4,9 @@ services:
   proxy:
     ports:
       - "7080:7080"
-    volumes:
-      # use dev server block in nginx
-      - ./proxy/dev_server.conf:/etc/nginx/templates/server.conf.template
   frontend:
     build:
       dockerfile: Dockerfile.dev
-      args:
-        BRAND: robokop
     volumes:
       - ./frontend:/app
       # Mount this in an anonymous volume so that the locally available node_modules

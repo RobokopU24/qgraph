@@ -1,12 +1,8 @@
 # Build in the node.js image
-FROM node:latest as build-stage
+FROM node:16.14 as build-stage
 
 # Create a folder to add the code to
 WORKDIR /app
-
-# Read brand from args and set in environment
-ARG BRAND
-ENV BRAND $BRAND
 
 # Copy in package.json and package-lock.json
 COPY package*.json ./

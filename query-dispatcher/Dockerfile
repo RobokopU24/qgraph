@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:16.14
 
 # Add image info
 LABEL org.opencontainers.image.source https://github.com/NCATS-Gamma/qgraph
@@ -6,11 +6,18 @@ LABEL org.opencontainers.image.source https://github.com/NCATS-Gamma/qgraph
 # Create a folder to add the code to
 WORKDIR /app
 
+# make sure all is writeable for the nru USER later on
+RUN chmod -R 777 .
+
 # Copy in package.json and package-lock.json
 COPY package*.json ./
 
 # Install dependencies
 RUN npm install
+
+# create a new user and use it.
+RUN useradd -M -u 1001 nru
+USER nru
 
 # Copy the code into the container
 COPY . .

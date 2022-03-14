@@ -1,11 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import {
   Grid, Jumbotron, ButtonToolbar, Button, ListGroup,
   ListGroupItem, Glyphicon, Col, Row,
 } from 'react-bootstrap';
-
-import BrandContext from '~/context/brand';
 
 import './simplecss.css';
 
@@ -48,33 +46,27 @@ function OptionButton({
  * Home page
  */
 export default function Landing() {
-  const brandConfig = useContext(BrandContext);
-
   return (
     <Grid>
       <Jumbotron>
-        <h1>{brandConfig.title}</h1>
-        {brandConfig.brand === 'robokop' && (
-          <>
-            <p>
-              <b>R</b>easoning <b>O</b>ver <b>B</b>iomedical <b> O</b>bjects
-              linked in <b>K</b>nowledge <b>O</b>riented <b>P</b>athways
-            </p>
-            <p>
-              Robokop is a biomedical reasoning system that interacts with many biomedical knowledge
-              sources to answer questions. Robokop is one of several prototype systems under active development
-              with <a href="https://ncats.nih.gov/">NIH NCATS</a>.
-            </p>
-            <p>
-              <Link
-                style={{ fontSize: 'small' }}
-                to="/guide"
-              >
-                Learn More
-              </Link>
-            </p>
-          </>
-        )}
+        <h1>ROBOKOP</h1>
+        <p>
+          <b>R</b>easoning <b>O</b>ver <b>B</b>iomedical <b> O</b>bjects
+          linked in <b>K</b>nowledge <b>O</b>riented <b>P</b>athways
+        </p>
+        <p>
+          Robokop is a biomedical reasoning system that interacts with many biomedical knowledge
+          sources to answer questions. Robokop is one of several prototype systems under active development
+          with <a href="https://ncats.nih.gov/">NIH NCATS</a>.
+        </p>
+        <p>
+          <Link
+            style={{ fontSize: 'small' }}
+            to="/guide"
+          >
+            Learn More
+          </Link>
+        </p>
         <ButtonToolbar style={{ paddingTop: '10px' }}>
           <Link to="/questions">
             <Button bsSize="large">
@@ -84,7 +76,7 @@ export default function Landing() {
         </ButtonToolbar>
       </Jumbotron>
       <Jumbotron id="landingOptions">
-        <h2>{brandConfig.title} Apps</h2>
+        <h2>ROBOKOP Apps</h2>
         <ListGroup>
           <Row>
             <OptionButton
@@ -96,7 +88,7 @@ export default function Landing() {
             <OptionButton
               glyph="import"
               header="Answer Explorer"
-              text={`Easily upload JSON files of answersets to view them in ${brandConfig.title}'s graphical interface.`}
+              text="Easily upload JSON files of answersets to view them in ROBOKOP's graphical interface."
               href="/answer"
             />
           </Row>

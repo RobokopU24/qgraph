@@ -1,9 +1,9 @@
 {
-  "name": "robokop",
-  "productName": "ROBOKOP",
+  "name": "query-dispatcher",
+  "productName": "QGRAPH",
   "version": "0.0.1",
-  "description": "ROBOKOP - A user interface for biomedical knowledge graph construction and reasoning.",
-  "author": "ROBOKOP Team",
+  "description": "Query dispatcher for the qgraph UI.",
+  "author": "CoVar",
   "license": "MIT",
   "devDependencies": {},
   "dependencies": {
@@ -20,6 +20,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/ncats-gamma/robokop.git"
+    "url": "git://github.com/ncats-gamma/qgraph.git"
   }
 }

@@ -4,12 +4,6 @@ services:
   proxy:
     ports:
       - "7080:7080"
-    volumes:
-      - /local/certs:/etc/nginx/ssl/certs
-      # use robokop server block in nginx
-      - ./proxy/robokop_server.conf:/etc/nginx/templates/server.conf.template
   frontend:
     build:
       dockerfile: Dockerfile.prod
-      args:
-        BRAND: robokop
