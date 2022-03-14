@@ -1,5 +1,5 @@
 # Build in the node.js image
-FROM node:latest as build-stage
+FROM node:16.14 as build-stage
 
 # Add image info
 LABEL org.opencontainers.image.source https://github.com/NCATS-Gamma/qgraph
@@ -19,7 +19,7 @@ COPY . .
 RUN npm run build
 
 # Copy files from build stage into nginx image for production
-FROM nginx as production-stage
+FROM nginx:1.21.0 as production-stage
 WORKDIR /app
 COPY --from=build-stage /app/pack /app
 COPY nginx.conf /etc/nginx/nginx.conf

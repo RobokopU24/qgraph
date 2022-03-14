@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:16.14
 
 # Add image info
 LABEL org.opencontainers.image.source https://github.com/NCATS-Gamma/qgraph
