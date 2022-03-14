@@ -11,7 +11,7 @@ services:
     build:
       dockerfile: Dockerfile.dev
       args:
-        BRAND: qgraph
+        BRAND: robokop
     volumes:
       - ./frontend:/app
       # Mount this in an anonymous volume so that the locally available node_modules

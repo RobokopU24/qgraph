@@ -28,11 +28,9 @@ import BrandContext from '~/context/brand';
 import useBiolinkModel from '~/stores/useBiolinkModel';
 
 import robokop_config from './robokop_config.json';
-import qgraph_config from './qgraph_config.json';
 
 export default function App() {
   const [alert, setAlert] = useState({});
-  const [brandConfig, setBrandConfig] = useState({});
   const biolink = useBiolinkModel();
 
   function simpleSetAlert(severity, msg) {
@@ -51,13 +49,6 @@ export default function App() {
   }
   useEffect(() => {
     fetchBiolink();
-    const brand = process.env.BRAND;
-    if (brand === 'robokop') {
-      setBrandConfig(robokop_config);
-      document.title = 'ROBOKOP';
-    } else {
-      setBrandConfig(qgraph_config);
-    }
   }, []);
 
   return (
@@ -69,7 +60,7 @@ export default function App() {
           redirectUri={window.location.origin}
           audience="https://qgraph.org/api"
         >
-          <BrandContext.Provider value={brandConfig}>
+          <BrandContext.Provider value={robokop_config}>
             <AlertContext.Provider value={simpleSetAlert}>
               <BiolinkContext.Provider value={biolink}>
                 <ThemeProvider theme={theme}>
@@ -102,14 +93,12 @@ export default function App() {
                         <Route path="/answer/:answer_id?">
                           <Answer />
                         </Route>
-                        <Route path={brandConfig.brand === 'robokop' ? '/question' : '/'}>
+                        <Route path="/question">
                           <QueryBuilder />
                         </Route>
-                        {brandConfig.brand === 'robokop' && (
-                          <Route path="/">
-                            <Landing />
-                          </Route>
-                        )}
+                        <Route path="/">
+                          <Landing />
+                        </Route>
                       </Switch>
                     </div>
                     <Footer />
