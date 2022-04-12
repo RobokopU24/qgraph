@@ -1,10 +1,8 @@
 name: 'Push to Github Container Registry'
 
 on:
-    pull_request:
-        types: closed
-        branches:
-            - main
+    release:
+        types: [published]
 
 jobs:
     push_frontend:
@@ -16,17 +14,21 @@ jobs:
             - name: Lowercase repo name
               run: |
                 echo REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
+            - name: Get the version
+              id: get_version
+              run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
             - name: Push Frontend
               uses: docker/build-push-action@v1
               with:
                   path: ./frontend
                   dockerfile: frontend/Dockerfile.prod
                   username: ${{ github.actor }}
-                  password: ${{ secrets.CR_PAT }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
                   registry: ghcr.io
                   repository: ${{ env.REPOSITORY }}/frontend
-                  tags: latest
-    push_querydispatcher:
+                  tags: latest,${{ steps.get_version.outputs.VERSION }}
+
+    push_query_dispatcher:
         name: Push query dispatcher image to GitHub Container Registry.
         runs-on: ubuntu-latest
         steps:
@@ -41,10 +43,11 @@ jobs:
                   path: ./query-dispatcher
                   dockerfile: query-dispatcher/Dockerfile
                   username: ${{ github.actor }}
-                  password: ${{ secrets.CR_PAT }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
                   registry: ghcr.io
                   repository: ${{ env.REPOSITORY }}/query-dispatcher
-                  tags: latest
+                  tags: latest,${{ steps.get_version.outputs.VERSION }}
+
     push_proxy:
         name: Push proxy image to GitHub Container Registry.
         runs-on: ubuntu-latest
@@ -59,7 +62,7 @@ jobs:
               with:
                   path: ./proxy
                   username: ${{ github.actor }}
-                  password: ${{ secrets.CR_PAT }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
                   registry: ghcr.io
                   repository: ${{ env.REPOSITORY }}/proxy
-                  tags: latest
+                  tags: latest,${{ steps.get_version.outputs.VERSION }}
