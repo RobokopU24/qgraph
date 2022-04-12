@@ -28,7 +28,9 @@ jobs:
             - name: Push Frontend
               uses: docker/build-push-action@v2
               with:
-                  context: frontend/Dockerfile.prod
+                  push: true
+                  context: frontend
+                  file: Dockerfile.prod
                   tags: latest,${{ steps.get_version.outputs.VERSION }}
 
     push_query_dispatcher:
@@ -54,6 +56,7 @@ jobs:
             - name: Push Query Dispatcher
               uses: docker/build-push-action@v2
               with:
+                  push: true
                   context: query-dispatcher
                   tags: latest,${{ steps.get_version.outputs.VERSION }}
 
@@ -80,5 +83,6 @@ jobs:
             - name: Push Proxy
               uses: docker/build-push-action@v2
               with:
-                  path: proxy
+                  push: true
+                  context: proxy
                   tags: latest,${{ steps.get_version.outputs.VERSION }}
