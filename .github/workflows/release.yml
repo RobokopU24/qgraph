@@ -22,9 +22,10 @@ jobs:
                   password: ${{ secrets.GITHUB_TOKEN }}
                   path: ./frontend
                   dockerfile: ./frontend/Dockerfile.prod
+                  repository: ncats-gamma/qgraph/frontend
                   tags: |
-                    ghcr.io/qgraph/frontend:latest
-                    ghcr.io/qgraph/frontend:${{ steps.get_version.outputs.VERSION }}
+                    latest
+                    ${{ steps.get_version.outputs.VERSION }}
 
     push_query_dispatcher:
         name: Push query dispatcher image to GitHub Container Registry.
@@ -43,9 +44,10 @@ jobs:
                   password: ${{ secrets.GITHUB_TOKEN }}
                   path: ./query-dispatcher
                   dockerfile: ./query-dispatcher/Dockerfile
+                  repository: ncats-gamma/qgraph/query-dispatcher
                   tags: |
-                    ghcr.io/qgraph/query-dispatcher:latest
-                    ghcr.io/qgraph/query-dispatcher:${{ steps.get_version.outputs.VERSION }}
+                    latest
+                    ${{ steps.get_version.outputs.VERSION }}
 
     push_proxy:
         name: Push proxy image to GitHub Container Registry.
@@ -64,6 +66,7 @@ jobs:
                   password: ${{ secrets.GITHUB_TOKEN }}
                   path: ./proxy
                   dockerfile: ./proxy/Dockerfile
+                  repository: ncats-gamma/qgraph/proxy
                   tags: |
-                    ghcr.io/qgraph/proxy:latest
-                    ghcr.io/qgraph/proxy:${{ steps.get_version.outputs.VERSION }}
+                    latest
+                    ${{ steps.get_version.outputs.VERSION }}
