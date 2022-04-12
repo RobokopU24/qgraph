@@ -59,7 +59,7 @@ jobs:
                   push: true
                   context: .
                   file: ./query-dispatcher/Dockerfile
-                  tags: latest,${{ steps.get_version.outputs.VERSION }}
+                  tags: ${{ env.REGISTRY }}/${{ REPOSITORY }}/query-dispatcher:latest,${{ env.REGISTRY }}/${{ REPOSITORY }}/query-dispatcher:${{ steps.get_version.outputs.VERSION }}
 
     push_proxy:
         name: Push proxy image to GitHub Container Registry.
