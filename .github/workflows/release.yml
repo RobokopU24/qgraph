@@ -23,9 +23,7 @@ jobs:
                   path: ./frontend
                   dockerfile: ./frontend/Dockerfile.prod
                   repository: ncats-gamma/qgraph/frontend
-                  tags: |
-                    latest
-                    ${{ steps.get_version.outputs.VERSION }}
+                  tags: latest,${{ steps.get_version.outputs.VERSION }}
 
     push_query_dispatcher:
         name: Push query dispatcher image to GitHub Container Registry.
@@ -45,9 +43,7 @@ jobs:
                   path: ./query-dispatcher
                   dockerfile: ./query-dispatcher/Dockerfile
                   repository: ncats-gamma/qgraph/query-dispatcher
-                  tags: |
-                    latest
-                    ${{ steps.get_version.outputs.VERSION }}
+                  tags: latest,${{ steps.get_version.outputs.VERSION }}
 
     push_proxy:
         name: Push proxy image to GitHub Container Registry.
@@ -67,6 +63,4 @@ jobs:
                   path: ./proxy
                   dockerfile: ./proxy/Dockerfile
                   repository: ncats-gamma/qgraph/proxy
-                  tags: |
-                    latest
-                    ${{ steps.get_version.outputs.VERSION }}
+                  tags: latest,${{ steps.get_version.outputs.VERSION }}
