@@ -14,20 +14,14 @@ jobs:
             - name: Get the version
               id: get_version
               run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
-            - name: Set up Docker Buildx
-              uses: docker/setup-buildx-action@v1
-            - name: Login to DockerHub
-              uses: docker/login-action@v1
-              with:
-                registry: ghcr.io
-                username: ${{ github.actor }}
-                password: ${{ secrets.GITHUB_TOKEN }}
             - name: Push Frontend
-              uses: docker/build-push-action@v2
+              uses: docker/build-push-action@v1
               with:
-                  push: true
-                  context: .
-                  file: ./frontend/Dockerfile.prod
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+                  path: ./frontend
+                  dockerfile: ./frontend/Dockerfile.prod
                   tags: |
                     ghcr.io/qgraph/frontend:latest
                     ghcr.io/qgraph/frontend:${{ steps.get_version.outputs.VERSION }}
@@ -41,20 +35,14 @@ jobs:
             - name: Get the version
               id: get_version
               run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
-            - name: Set up Docker Buildx
-              uses: docker/setup-buildx-action@v1
-            - name: Login to DockerHub
-              uses: docker/login-action@v1
-              with:
-                registry: ghcr.io
-                username: ${{ github.actor }}
-                password: ${{ secrets.GITHUB_TOKEN }}
             - name: Push Query Dispatcher
-              uses: docker/build-push-action@v2
+              uses: docker/build-push-action@v1
               with:
-                  push: true
-                  context: .
-                  file: ./query-dispatcher/Dockerfile
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+                  path: ./query-dispatcher
+                  dockerfile: ./query-dispatcher/Dockerfile
                   tags: |
                     ghcr.io/qgraph/query-dispatcher:latest
                     ghcr.io/qgraph/query-dispatcher:${{ steps.get_version.outputs.VERSION }}
@@ -68,20 +56,14 @@ jobs:
             - name: Get the version
               id: get_version
               run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
-            - name: Set up Docker Buildx
-              uses: docker/setup-buildx-action@v1
-            - name: Login to DockerHub
-              uses: docker/login-action@v1
-              with:
-                registry: ghcr.io
-                username: ${{ github.actor }}
-                password: ${{ secrets.GITHUB_TOKEN }}
             - name: Push Proxy
-              uses: docker/build-push-action@v2
+              uses: docker/build-push-action@v1
               with:
-                  push: true
-                  context: .
-                  file: ./proxy/Dockerfile
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+                  path: ./proxy
+                  dockerfile: ./proxy/Dockerfile
                   tags: |
                     ghcr.io/qgraph/proxy:latest
                     ghcr.io/qgraph/proxy:${{ steps.get_version.outputs.VERSION }}
