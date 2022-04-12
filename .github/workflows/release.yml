@@ -11,9 +11,6 @@ jobs:
         steps:
             - name: Check out the repo
               uses: actions/checkout@v2
-            - name: Lowercase repo name
-              run: |
-                echo REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
             - name: Get the version
               id: get_version
               run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
@@ -31,7 +28,9 @@ jobs:
                   push: true
                   context: .
                   file: ./frontend/Dockerfile.prod
-                  tags: latest,${{ steps.get_version.outputs.VERSION }}
+                  tags: |
+                    ghcr.io/qgraph/frontend:latest
+                    ghcr.io/qgraph/frontend:${{ steps.get_version.outputs.VERSION }}
 
     push_query_dispatcher:
         name: Push query dispatcher image to GitHub Container Registry.
@@ -39,9 +38,6 @@ jobs:
         steps:
             - name: Check out the repo
               uses: actions/checkout@v2
-            - name: Lowercase repo name
-              run: |
-                echo REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
             - name: Get the version
               id: get_version
               run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
@@ -59,7 +55,9 @@ jobs:
                   push: true
                   context: .
                   file: ./query-dispatcher/Dockerfile
-                  tags: qgraph/query-dispatcher:latest,qgraph/query-dispatcher:${{ steps.get_version.outputs.VERSION }}
+                  tags: |
+                    ghcr.io/qgraph/query-dispatcher:latest
+                    ghcr.io/qgraph/query-dispatcher:${{ steps.get_version.outputs.VERSION }}
 
     push_proxy:
         name: Push proxy image to GitHub Container Registry.
@@ -67,9 +65,6 @@ jobs:
         steps:
             - name: Check out the repo
               uses: actions/checkout@v2
-            - name: Lowercase repo name
-              run: |
-                echo REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
             - name: Get the version
               id: get_version
               run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
@@ -87,4 +82,6 @@ jobs:
                   push: true
                   context: .
                   file: ./proxy/Dockerfile
-                  tags: latest,${{ steps.get_version.outputs.VERSION }}
+                  tags: |
+                    ghcr.io/qgraph/proxy:latest
+                    ghcr.io/qgraph/proxy:${{ steps.get_version.outputs.VERSION }}
