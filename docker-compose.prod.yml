@@ -1,9 +1,9 @@
 version: '3.5'
 
 services:
-  proxy:
-    ports:
-      - "7080:7080"
+  # proxy:
+  #   ports:
+  #     - "7080:7080"
   frontend:
     build:
       dockerfile: Dockerfile.prod

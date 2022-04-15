@@ -11,7 +11,7 @@ module.exports = merge(common, {
     historyApiFallback: true,
     disableHostCheck: true,
     host: '0.0.0.0',
-    port: 7081,
+    port: process.env.QGRAPH_PORT,
     hot: hotReload,
     inline: hotReload,
   },

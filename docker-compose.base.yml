@@ -1,11 +1,12 @@
 version: '3.5'
 
 services:
-  proxy:
-    build: proxy/
+  qgraph:
+    build: frontend/
+    ports:
+      - "7080:7080"
     environment:
-      DNS_SERVER: 127.0.0.11
-      FRONTEND: http://frontend:7081
+      PORT: 7081
       QUERY_DISPATCHER: http://query-dispatcher:7082
       ROBOKACHE: http://robokache:8080
       # https://docs.docker.com/compose/environment-variables/#substitute-environment-variables-in-compose-files
@@ -13,19 +14,12 @@ services:
       STRIDER: ${STRIDER:-https://strider.renci.org/1.2}
       ARAGORN: ${ARAGORN:-https://aragorn.renci.org/1.2}
       ROBOKOP: ${ROBOKOP:-https://robokop-ara.apps.renci.org}
-      NODE_NORMALIZER: ${NODE_NORMALIZER:-https://nodenormalization-sri.renci.org/}
-      NAME_RESOLVER: ${NAME_RESOLVER:-https://name-resolution-sri.renci.org/}
+      NODE_NORMALIZER: ${NODE_NORMALIZER:-https://nodenormalization-sri.renci.org}
+      NAME_RESOLVER: ${NAME_RESOLVER:-https://name-resolution-sri.renci.org}
       BIOLINK: ${BIOLINK:-https://raw.githubusercontent.com/biolink/biolink-model/2.2.5/biolink-model.yaml}
-  frontend:
-    build: frontend/
   robokache:
+    ports:
+      - "8080:8080"
     image: ghcr.io/ncats-gamma/robokache:v4.1.5
     volumes:
       - ./robokache-data:/app/data
-  query-dispatcher:
-    build: query-dispatcher/
-    environment:
-      ROBOKACHE: http://robokache:8080
-      STRIDER: ${STRIDER:-https://strider.renci.org/1.2}
-      ARAGORN: ${ARAGORN:-https://aragorn.renci.org/1.2}
-      ROBOKOP: ${ROBOKOP:-https://robokop-ara.apps.renci.org}
