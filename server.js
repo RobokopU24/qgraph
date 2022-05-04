@@ -6,10 +6,10 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const path = require('path');
 
-const routes = require('./api_routes/routes');
-
 // load env variables
 dotenv.config();
+
+const routes = require('./api_routes/routes');
 
 const app = express();
 
@@ -21,7 +21,7 @@ axios.defaults.maxBodyLength = Infinity;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({ limit: '4000mb' }));
-app.use(morgan('common'));
+app.use(morgan('dev'));
 
 // Add routes
 app.use('/api', routes);
@@ -31,10 +31,10 @@ app.use(express.static(path.join(__dirname, 'pack')));
 
 // Send every request to the React app
 // Define any API routes before this runs
-app.get("*", (req, res) => {
+app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'pack', 'index.html'));
 });
 
-app.listen(PORT, function() {
+app.listen(PORT, () => {
   console.log(`🌎 ==> qgraph running on port ${PORT}!`);
 });

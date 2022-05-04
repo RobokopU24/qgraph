@@ -94,7 +94,7 @@
     "start": "webpack --mode=development --config webpack.dev.js && nodemon server.js",
     "dev": "concurrently \"webpack --watch --config webpack.dev.js\" \"nodemon server.js\"",
     "hot-reload": "HOT_RELOAD=true webpack-dev-server --watch --config webpack.dev.js",
-    "build": "webpack --mode=production --config webpack.prod.js",
+    "prod": "webpack --mode=production --config webpack.prod.js && node server.js",
     "lint": "eslint src/",
     "lint-summary": "eslint -f summary src/",
     "test": "jest",

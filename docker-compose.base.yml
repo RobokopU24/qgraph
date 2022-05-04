@@ -2,15 +2,14 @@ version: '3.5'
 
 services:
   qgraph:
-    build: frontend/
+    build: .
     ports:
       - "7080:7080"
     environment:
-      PORT: 7081
-      QUERY_DISPATCHER: http://query-dispatcher:7082
-      ROBOKACHE: http://robokache:8080
+      PORT: ${PORT:-7080}
       # https://docs.docker.com/compose/environment-variables/#substitute-environment-variables-in-compose-files
       # default external service urls with option to override with .env file
+      ROBOKACHE: ${ROBOKACHE:-http://robokache:8080}
       STRIDER: ${STRIDER:-https://strider.renci.org/1.2}
       ARAGORN: ${ARAGORN:-https://aragorn.renci.org/1.2}
       ROBOKOP: ${ROBOKOP:-https://robokop-ara.apps.renci.org}

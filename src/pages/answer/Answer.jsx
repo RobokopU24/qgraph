@@ -277,7 +277,7 @@ export default function Answer() {
     let alertText = 'Your answer has been deleted!';
     // check if question has other answers
     if (questionId) {
-      response = await API.cache.getAnswersByQuestion(questionId, accessToken);
+      response = await API.cache.getAnswers(questionId, accessToken);
       if (response.status === 'error') {
         alertType = 'error';
         alertText += ` However, failed to get sibling answers: ${response.message}`;

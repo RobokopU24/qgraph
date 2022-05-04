@@ -1,6 +1,5 @@
 import axios from 'axios';
 import utils from './utils';
-import { node_norm } from './services';
 
 const baseRoutes = {
   /**
@@ -12,7 +11,7 @@ const baseRoutes = {
       cancelToken: cancel,
     };
     try {
-      const response = await axios.post(`${node_norm}/get_normalized_nodes`, curies, config);
+      const response = await axios.post('/api/node_norm', curies, config);
       return response.data;
     } catch (error) {
       if (axios.isCancel(error)) {

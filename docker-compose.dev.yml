@@ -1,20 +1,6 @@
 version: '3.5'
 
 services:
-  # proxy:
-  #   ports:
-  #     - "7080:7080"
-  frontend:
+  qgraph:
     build:
       dockerfile: Dockerfile.dev
-    volumes:
-      - ./frontend:/app
-      # Mount this in an anonymous volume so that the locally available node_modules
-      # doesn't conflict with the one in the container
-      - /app/node_modules
-    command: $FRONTEND_COMMAND
-  query-dispatcher:
-    volumes:
-      - ./query-dispatcher:/app
-      - /app/node_modules
-    command: npm run dev

@@ -1,6 +1,5 @@
 import axios from 'axios';
 import utils from './utils';
-import { query_dispatcher } from './services';
 
 const baseRoutes = {
   /**
@@ -11,7 +10,7 @@ const baseRoutes = {
    */
   async getAnswer(ara, questionId, token) {
     const config = {
-      url: `${query_dispatcher}/answer`,
+      url: '/api/dispatcher',
       method: 'POST',
       params: {
         questionId,

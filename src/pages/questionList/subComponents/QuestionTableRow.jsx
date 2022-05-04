@@ -68,7 +68,7 @@ export default function QuestionTableRow({ question, onQuestionUpdated }) {
       history.push(`/answer/${question.id}`);
     } else {
       // Get all answers for selected parent question
-      const response = await API.cache.getAnswersByQuestion(question.id, accessToken);
+      const response = await API.cache.getAnswers(question.id, accessToken);
       if (response.status === 'error') {
         displayAlert('error', `Failed to load answers: ${response.message}`);
         return;
@@ -93,7 +93,7 @@ export default function QuestionTableRow({ question, onQuestionUpdated }) {
         displayAlert('error', `Failed to authenticate user: ${err}`);
       }
     }
-    let response = await API.cache.getAnswersByQuestion(question.id, accessToken);
+    let response = await API.cache.getAnswers(question.id, accessToken);
     if (response.status === 'error') {
       displayAlert('error', `Failed to load answers: ${response.message}`);
       return;
