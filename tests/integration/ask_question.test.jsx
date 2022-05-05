@@ -43,7 +43,7 @@ describe('Full question workflow', () => {
     await waitFor(() => expect(spyPost).toHaveBeenCalledTimes(1));
 
     // answer page loaded, check that things showed up
-    await waitFor(() => screen.findByRole('button', { name: 'Bubble Chart' }));
+    await screen.findByRole('button', { name: 'Bubble Chart' });
     expect(await screen.queryByRole('cell', { name: 'Ebola Hemorrhagic Fever' })).toBeTruthy();
     expect(await screen.queryByRole('cell', { name: 'NPC1' })).toBeTruthy();
   });

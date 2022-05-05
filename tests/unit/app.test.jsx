@@ -23,7 +23,7 @@ describe('<App />', () => {
   it('loads the Robokop homepage', async () => {
     const spy = jest.spyOn(axios, 'get');
     server.use(
-      rest.get('/api/external/biolink', (req, res, ctx) => res(
+      rest.get('/api/biolink', (req, res, ctx) => res(
         ctx.status(404),
       )),
     );

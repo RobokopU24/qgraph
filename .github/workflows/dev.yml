@@ -16,11 +16,11 @@ jobs:
         continue-on-error: true
 
       - name: Build
-        run: (cd frontend/ && docker build -t frontend -f Dockerfile.dev .)
+        run: docker build -t qgraph -f Dockerfile.dev .
         
 
       - name: Run ESLint and get output
-        run: docker run --name frontend frontend npm run --silent lint
+        run: docker run --name qgraph qgraph npm run --silent lint
 
   test:
     name: Frontend Tests
@@ -35,7 +35,7 @@ jobs:
         continue-on-error: true
 
       - name: Build
-        run: (cd frontend/ && docker build -t frontend -f Dockerfile.test .)
+        run: docker build -t qgraph -f Dockerfile.test .
 
       - name: Run tests
-        run: docker run --name frontend frontend npm run --silent test:pr
+        run: docker run --name qgraph qgraph npm run --silent test:pr
