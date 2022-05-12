@@ -1,0 +1,3 @@
+{
+  "ignore": ["robokache-data", ".github", ".vscode", "coverage", "test_config", "tests", "webpack.*", "pack"]
+}

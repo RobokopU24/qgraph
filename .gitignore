@@ -1,5 +1,7 @@
+node_modules
+pack
+coverage
+robokache-data
 .DS_Store
-.vscode/
-robokache-data/
-node_modules/
 .env
+.vscode

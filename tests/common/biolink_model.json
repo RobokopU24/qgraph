@@ -1,0 +1,51 @@
+{
+  "slots": {
+    "node property": {
+      "description": "A grouping for any property that holds between a node and a value",
+      "domain": "named thing"
+    },
+    "id": {
+      "identifier": true,
+      "description": "A unique identifier for an entity. Must be either a CURIE shorthand for a URI or a complete URI",
+      "in_subset": ["translator_minimal"],
+      "required": true,
+      "exact_mappings": [
+        "alliancegenome:primaryId",
+        "gff3:ID",
+        "gpi:DB_Object_ID"
+      ]
+    },
+    "type": {
+      "slot_uri": "rdf:type",
+      "exact_mappings": [
+        "alliancegenome:soTermId",
+        "gff3:type",
+        "gpi:DB_Object_Type"
+      ]
+    },
+    "category": {
+      "is_a": "type",
+      "domain": "entity",
+      "range": "category type",
+      "designates_type": true,
+      "description": "Name of the high level ontology class in which this entity is categorized. Corresponds to the label for the biolink entity type class.\n * In a neo4j database this MAY correspond to the neo4j label tag.\n * In an RDF database it should be a biolink model class URI.\nThis field is multi-valued. It should include values for ancestors of the biolink class; for example, a protein such as Shh would have category values `biolink:Protein`, `biolink:GeneProduct`, `biolink:MolecularEntity`, ...\nIn an RDF database, nodes will typically have an rdf:type triples. This can be to the most specific biolink class, or potentially to a class more specific than something in biolink. For example, a sequence feature `f` may have a rdf:type assertion to a SO class such as TF_binding_site, which is more specific than anything in biolink. Here we would have categories {biolink:GenomicEntity, biolink:MolecularEntity, biolink:NamedThing}",
+      "is_class_field": true,
+      "multivalued": true,
+      "in_subset": ["translator_minimal"]
+    },
+    "name": {
+      "aliases": ["label", "display name", "title"],
+      "description": "A human-readable name for an attribute or entity.",
+      "range": "label type",
+      "in_subset": ["translator_minimal", "samples"],
+      "slot_uri": "rdfs:label",
+      "exact_mappings": ["gff3:Name", "gpi:DB_Object_Name"],
+      "narrow_mappings": ["dct:title", "WIKIDATA_PROPERTY:P1476"]
+    },
+    "source": {
+      "description": "a lightweight analog to the association class 'has provider' slot, which is the string name, or the authoritative (i.e. database) namespace, designating the origin of the entity to which the slot belongs.",
+      "range": "label type",
+      "in_subset": ["translator_minimal"]
+    }
+  }
+}

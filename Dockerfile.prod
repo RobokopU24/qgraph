@@ -1,0 +1,26 @@
+# Build in the node.js image
+FROM node:16.14
+
+# Add image info
+LABEL org.opencontainers.image.source https://github.com/NCATS-Gamma/qgraph
+
+# Create a folder to add the code to
+WORKDIR /app
+
+# Copy in package.json and package-lock.json
+COPY package*.json ./
+# Install dependencies
+RUN npm install
+
+# make sure all is writeable for the nru USER later on
+RUN chmod -R 777 .
+
+# create a new user and use it.
+RUN useradd -M -u 1001 nru
+USER nru
+
+# Copy the code into the container
+COPY . .
+
+# Build the code and save a production ready copy
+CMD npm run prod
