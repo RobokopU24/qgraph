@@ -5,8 +5,8 @@ on:
         types: [published]
 
 jobs:
-    push_frontend:
-        name: Push frontend image to GitHub Container Registry.
+    publish_qgraph:
+        name: Push qgraph to GitHub Container Registry.
         runs-on: ubuntu-latest
         steps:
             - name: Check out the repo
@@ -14,53 +14,13 @@ jobs:
             - name: Get the version
               id: get_version
               run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
-            - name: Push Frontend
+            - name: Push qgraph
               uses: docker/build-push-action@v1
               with:
                   registry: ghcr.io
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
-                  path: ./frontend
-                  dockerfile: ./frontend/Dockerfile.prod
-                  repository: ncats-gamma/qgraph/frontend
-                  tags: latest,${{ steps.get_version.outputs.VERSION }}
-
-    push_query_dispatcher:
-        name: Push query dispatcher image to GitHub Container Registry.
-        runs-on: ubuntu-latest
-        steps:
-            - name: Check out the repo
-              uses: actions/checkout@v2
-            - name: Get the version
-              id: get_version
-              run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
-            - name: Push Query Dispatcher
-              uses: docker/build-push-action@v1
-              with:
-                  registry: ghcr.io
-                  username: ${{ github.actor }}
-                  password: ${{ secrets.GITHUB_TOKEN }}
-                  path: ./query-dispatcher
-                  dockerfile: ./query-dispatcher/Dockerfile
-                  repository: ncats-gamma/qgraph/query-dispatcher
-                  tags: latest,${{ steps.get_version.outputs.VERSION }}
-
-    push_proxy:
-        name: Push proxy image to GitHub Container Registry.
-        runs-on: ubuntu-latest
-        steps:
-            - name: Check out the repo
-              uses: actions/checkout@v2
-            - name: Get the version
-              id: get_version
-              run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
-            - name: Push Proxy
-              uses: docker/build-push-action@v1
-              with:
-                  registry: ghcr.io
-                  username: ${{ github.actor }}
-                  password: ${{ secrets.GITHUB_TOKEN }}
-                  path: ./proxy
-                  dockerfile: ./proxy/Dockerfile
-                  repository: ncats-gamma/qgraph/proxy
+                  path: .
+                  dockerfile: ./Dockerfile.prod
+                  repository: ncats-gamma/qgraph
                   tags: latest,${{ steps.get_version.outputs.VERSION }}
