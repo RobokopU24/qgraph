@@ -2,7 +2,6 @@ import API from '~/API';
 
 export default async function fetchCuries(entity, displayAlert, cancel) {
   // Get list of curies that match this search term
-  console.log('lookup ${entity}');
   const response = await API.nameResolver.entityLookup(entity, 1000, cancel);
   if (response.status === 'error') {
     displayAlert('error',
@@ -11,10 +10,8 @@ export default async function fetchCuries(entity, displayAlert, cancel) {
   }
   const curieResponse = Object.keys(response);
   if (!curieResponse.length) {
-    console.log('empty response');
     return [];
   }
-  console.log(curieResponse);
 
   // Pass curies to nodeNormalizer to get category information and
   // a better curie identifier
@@ -33,7 +30,6 @@ export default async function fetchCuries(entity, displayAlert, cancel) {
     categories: c.type,
     ids: [c.id.identifier],
   }));
-  console.log(newOptions);
 
   return newOptions;
 }
