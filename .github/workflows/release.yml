@@ -22,5 +22,5 @@ jobs:
                   password: ${{ secrets.GITHUB_TOKEN }}
                   path: .
                   dockerfile: ./Dockerfile.prod
-                  repository: ncats-gamma/qgraph
+                  repository: robokopu24/qgraph
                   tags: latest,${{ steps.get_version.outputs.VERSION }}
