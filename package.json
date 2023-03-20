@@ -1,7 +1,7 @@
 {
   "name": "qgraph",
   "productName": "qgraph_ui",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "qgraph - A user interface for biomedical knowledge graph construction and reasoning.",
   "author": "CoVar",
   "license": "MIT",
