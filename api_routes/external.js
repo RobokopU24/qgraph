@@ -29,6 +29,7 @@ router.route('/name_resolver')
         limit: req.query.limit,
       },
     };
+    console.log(`${services.name_resolver}/lookup`);
     try {
       const response = await axios.post(`${services.name_resolver}/lookup`, {}, config);
       return res.send(response.data);

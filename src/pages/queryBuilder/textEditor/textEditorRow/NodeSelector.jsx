@@ -190,6 +190,7 @@ export default function NodeSelector({
       loading={loading}
       className={`textEditorSelector${isReference ? ' referenceNode' : ''} highlight-${id}`}
       getOptionLabel={getOptionLabel}
+      filterOptions={(x) => x}
       autoComplete
       autoHighlight
       clearOnBlur

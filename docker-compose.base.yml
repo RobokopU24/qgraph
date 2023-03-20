@@ -10,12 +10,12 @@ services:
       # https://docs.docker.com/compose/environment-variables/#substitute-environment-variables-in-compose-files
       # default external service urls with option to override with .env file
       ROBOKACHE: ${ROBOKACHE:-http://robokache:8080}
-      STRIDER: ${STRIDER:-https://strider.renci.org/1.2}
-      ARAGORN: ${ARAGORN:-https://aragorn.renci.org/1.2}
-      ROBOKOP: ${ROBOKOP:-https://robokop-ara.apps.renci.org}
+      STRIDER: ${STRIDER:-https://strider.renci.org/1.3}
+      ARAGORN: ${ARAGORN:-https://aragorn.renci.org/aragorn}
+      ROBOKOP: ${ROBOKOP:-https://aragorn.renci.org/robokop}
       NODE_NORMALIZER: ${NODE_NORMALIZER:-https://nodenormalization-sri.renci.org}
       NAME_RESOLVER: ${NAME_RESOLVER:-https://name-resolution-sri.renci.org}
-      BIOLINK: ${BIOLINK:-https://raw.githubusercontent.com/biolink/biolink-model/2.2.5/biolink-model.yaml}
+      BIOLINK: ${BIOLINK:-https://raw.githubusercontent.com/biolink/biolink-model/v3.2.0/biolink-model.yaml}
   robokache:
     ports:
       - "8080:8080"
