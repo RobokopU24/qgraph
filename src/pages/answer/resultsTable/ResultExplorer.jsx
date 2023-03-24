@@ -197,18 +197,13 @@ export default function ResultExplorer({ answerStore }) {
         (enter) => enter
           .append('g')
             .call((e) => e.append('path')
-              .attr('stroke', '#999')
-              .attr('fill', 'none')
-              .attr('stroke-width', (d) => d.strokeWidth)
-              .attr('class', 'result_edge')
-              .attr('marker-end', (d) => (graphUtils.shouldShowArrow(d) ? 'url(#arrow)' : '')))
-            .call((e) => e.append('path')
               .attr('stroke', 'transparent')
               .attr('fill', 'none')
               .attr('stroke-width', 10)
               .attr('class', 'result_edge_transparent')
               .attr('id', (d) => `result_explorer_edge${d.id}`)
               .call(() => e.append('text')
+                .attr('stroke', 'none')
                 .attr('class', 'edgeText')
                 .attr('pointer-events', 'none')
                 .style('text-anchor', 'middle')
@@ -219,7 +214,31 @@ export default function ResultExplorer({ answerStore }) {
                   .attr('startOffset', '50%')
                   .text((d) => stringUtils.displayPredicate(d.predicate)))
               .call((eLabel) => eLabel.append('title')
-                .text((d) => (stringUtils.displayPredicate(d.predicate))))),
+                .text((d) => (stringUtils.displayPredicate(d.predicate)))))
+            .call((e) => e.append('path')
+              .attr('stroke', 'inherit')
+              .attr('fill', 'none')
+              .attr('stroke-width', (d) => d.strokeWidth)
+              .attr('class', 'result_edge')
+              .attr('marker-end', (d) => (graphUtils.shouldShowArrow(d) ? 'url(#arrow)' : '')))
+            .attr('fill', 'black')
+            .attr('stroke', '#999')
+            .style('transition', 'stroke 100ms ease-in-out, fill 100ms ease-in-out')
+            .style('cursor', 'pointer')
+            .on('mouseover', function () {
+              d3.select(this)
+                .attr('fill', '#008cff')
+                .attr('stroke', '#008cff');
+            })
+            .on('mouseout', function () {
+              d3.select(this)
+                .attr('fill', 'black')
+                .attr('stroke', '#999');
+            })
+            .on('click', function () {
+              console.log(d3.select(this).datum());
+              console.log(answerStore);
+            }),
         (update) => update
           .call((e) => e.select('title')
             .text((d) => stringUtils.displayPredicate(d.predicate)))
