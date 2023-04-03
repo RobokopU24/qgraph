@@ -13,6 +13,65 @@ const StyledTableBody = styled(TableBody)(() => ({
   },
 }));
 
+const ValueCell = ({ value }) => (
+  <TableCell>
+    <ul style={{ padding: 0, margin: 0, listStyleType: 'none' }}>
+      {Array.isArray(value) ? (
+        value.map((valueItem, valueItemIndex) => (
+          <li key={valueItemIndex}>{valueItem}</li>
+        ))
+      ) : (
+        <li>{value}</li>
+      )}
+    </ul>
+  </TableCell>
+);
+
+const PublicationLinkCell = ({ value }) => {
+  const getLinkFromValue = (pmidValue) => {
+    const pmid = pmidValue.split(':');
+    if (pmid.length < 2) return null;
+    return `https://pubmed.ncbi.nlm.nih.gov/${pmid[1]}/`;
+  };
+
+  return (
+    <TableCell>
+      <ul style={{ padding: 0, margin: 0, listStyleType: 'none' }}>
+        {Array.isArray(value) ? (
+          value.map((valueItem, valueItemIndex) => {
+            const link = getLinkFromValue(valueItem);
+            return (
+              <li key={valueItemIndex}>
+                {link === null ? (
+                  valueItem
+                ) : (
+                  <a href={link} target="_blank" rel="noreferrer">
+                    {valueItem}
+                  </a>
+                )}
+              </li>
+            );
+          })
+        ) : (
+          <li>
+            {getLinkFromValue(value) === null ? (
+              value
+            ) : (
+              <a
+                href={getLinkFromValue(value)}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {value}
+              </a>
+            )}
+          </li>
+        )}
+      </ul>
+    </TableCell>
+  );
+};
+
 const AttributesTable = ({ attributes }) => (
   <Box style={{ maxHeight: 500, overflow: 'auto' }}>
     <Table size="small" aria-label="edge attributes table">
@@ -30,17 +89,11 @@ const AttributesTable = ({ attributes }) => (
         {attributes.map((attribute, index) => (
           <TableRow key={index}>
             <TableCell style={{ verticalAlign: 'top' }}>{attribute.attribute_type_id}</TableCell>
-            <TableCell>
-              <ul style={{ padding: 0, margin: 0, listStyleType: 'none' }}>
-                {Array.isArray(attribute.value) ? (
-                  attribute.value.map((valueItem, valueItemIndex) => (
-                    <li key={valueItemIndex}>{valueItem}</li>
-                  ))
-                ) : (
-                  <li>{attribute.value}</li>
-                )}
-              </ul>
-            </TableCell>
+            {
+              attribute.attribute_type_id === 'biolink:publications'
+                ? <PublicationLinkCell value={attribute.value} />
+                : <ValueCell value={attribute.value} />
+            }
           </TableRow>
         ))}
       </StyledTableBody>
