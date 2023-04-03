@@ -7,6 +7,7 @@ import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
 import Slider from '@material-ui/core/Slider';
 
+import { Popover, styled } from '@material-ui/core';
 import BiolinkContext from '~/context/biolink';
 import dragUtils from '~/utils/d3/drag';
 import graphUtils from '~/utils/d3/graph';
@@ -14,8 +15,28 @@ import edgeUtils from '~/utils/d3/edges';
 import stringUtils from '~/utils/strings';
 import useDebounce from '~/stores/useDebounce';
 import ResultMetaData from './ResultMetaData';
+import AttributesTable from './AttributesTable';
 
 const nodeRadius = 40;
+
+const PopoverPaper = styled(Paper)(({ theme }) => ({
+  filter: 'drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.3))',
+
+  position: 'relative',
+  '&::before': {
+    content: '""',
+    display: 'block',
+    position: 'absolute',
+    bottom: '-15px',
+    left: '0',
+    right: '0',
+    margin: '0 auto',
+    clipPath: "path('M 0 0 L 20 0 L 10 15 Z')",
+    width: '20px',
+    height: '15px',
+    backgroundColor: theme.palette.background.paper,
+  },
+}));
 
 /**
  * Selected result graph
@@ -32,6 +53,10 @@ export default function ResultExplorer({ answerStore }) {
   const { colorMap } = useContext(BiolinkContext);
   const [numTrimmedNodes, setNumTrimmedNodes] = useState(answerStore.numQgNodes);
   const debouncedTrimmedNodes = useDebounce(numTrimmedNodes, 500);
+  const [mouseX, setMouseX] = useState(0);
+  const [mouseY, setMouseY] = useState(0);
+  const [attributesPopoverOpen, setAttributesPopoverOpen] = useState(false);
+  const [currentEdgeAttributes, setCurrentEdgeAttributes] = useState({});
 
   /**
    * Initialize svg object
@@ -73,7 +98,7 @@ export default function ResultExplorer({ answerStore }) {
   }, []);
 
   /**
-   * Move nodes and edges one "tick" during simulation
+   * Move nodes and edges one 'tick' during simulation
    */
   function ticked() {
     node.current
@@ -154,6 +179,7 @@ export default function ResultExplorer({ answerStore }) {
       })
       .map((key) => ({
         ...answerStore.selectedResult.edges[key],
+        attributes: answerStore.resultJSON.knowledge_graph.edges[key].attributes,
       }));
     // this is weird, but stops the simulation from throwing a
     // `d3 cannot create property 'vx' on string` error when trying to move edges
@@ -197,18 +223,13 @@ export default function ResultExplorer({ answerStore }) {
         (enter) => enter
           .append('g')
             .call((e) => e.append('path')
-              .attr('stroke', '#999')
-              .attr('fill', 'none')
-              .attr('stroke-width', (d) => d.strokeWidth)
-              .attr('class', 'result_edge')
-              .attr('marker-end', (d) => (graphUtils.shouldShowArrow(d) ? 'url(#arrow)' : '')))
-            .call((e) => e.append('path')
               .attr('stroke', 'transparent')
               .attr('fill', 'none')
               .attr('stroke-width', 10)
               .attr('class', 'result_edge_transparent')
               .attr('id', (d) => `result_explorer_edge${d.id}`)
               .call(() => e.append('text')
+                .attr('stroke', 'none')
                 .attr('class', 'edgeText')
                 .attr('pointer-events', 'none')
                 .style('text-anchor', 'middle')
@@ -219,7 +240,30 @@ export default function ResultExplorer({ answerStore }) {
                   .attr('startOffset', '50%')
                   .text((d) => stringUtils.displayPredicate(d.predicate)))
               .call((eLabel) => eLabel.append('title')
-                .text((d) => (stringUtils.displayPredicate(d.predicate))))),
+                .text((d) => (stringUtils.displayPredicate(d.predicate)))))
+            .call((e) => e.append('path')
+              .attr('stroke', 'inherit')
+              .attr('fill', 'none')
+              .attr('stroke-width', (d) => d.strokeWidth)
+              .attr('class', 'result_edge')
+              .attr('marker-end', (d) => (graphUtils.shouldShowArrow(d) ? 'url(#arrow)' : '')))
+            .attr('fill', 'black')
+            .attr('stroke', '#999')
+            .style('transition', 'stroke 100ms ease-in-out, fill 100ms ease-in-out')
+            .style('cursor', 'pointer')
+            .on('mouseover', function () {
+              d3.select(this)
+                .attr('fill', '#008cff')
+                .attr('stroke', '#008cff');
+            })
+            .on('mouseout', function () {
+              d3.select(this)
+                .attr('fill', 'black')
+                .attr('stroke', '#999');
+            })
+            .on('click', function (e) {
+              handleClickEdge(e, d3.select(this).datum().attributes);
+            }),
         (update) => update
           .call((e) => e.select('title')
             .text((d) => stringUtils.displayPredicate(d.predicate)))
@@ -269,6 +313,14 @@ export default function ResultExplorer({ answerStore }) {
     }
   }
 
+  const handleClickEdge = (event, attributes) => {
+    setMouseX(event.clientX);
+    setMouseY(event.clientY);
+
+    setCurrentEdgeAttributes(attributes);
+    setAttributesPopoverOpen(true);
+  };
+
   useEffect(() => {
     resize();
   }, [
@@ -306,6 +358,26 @@ export default function ResultExplorer({ answerStore }) {
           result={answerStore.resultJSON}
         />
       )}
+
+      <Popover
+        anchorReference="anchorPosition"
+        anchorPosition={{ top: mouseY, left: mouseX }}
+        open={attributesPopoverOpen}
+        onClose={() => setAttributesPopoverOpen(false)}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        PaperProps={{ style: { boxShadow: 'none', overflow: 'visible', marginBlock: '-28px' } }}
+      >
+        <PopoverPaper>
+          <AttributesTable attributes={currentEdgeAttributes} />
+        </PopoverPaper>
+      </Popover>
     </Paper>
   );
 }
