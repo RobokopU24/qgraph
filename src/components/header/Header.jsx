@@ -2,6 +2,7 @@ import React, {
   useState,
 } from 'react';
 import { Link } from 'react-router-dom';
+import { Link as MuiLink } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
@@ -24,9 +25,7 @@ export default function Header() {
   return (
     <AppBar position="relative" className="header">
       <Toolbar id="headerToolbar">
-        <Link to="/" id="robokopBrand">ROBOKOP</Link>
-        <Link to="/questions">Question Library</Link>
-        <Link to="/answer">Answer Viewer</Link>
+        <MuiLink href="https://robokop.renci.org" id="robokopBrand">ROBOKOP</MuiLink>
         <div className="grow" />
         <Link to="/about">About</Link>
         <Link to="/help">Help</Link>
