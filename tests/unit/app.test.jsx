@@ -31,6 +31,6 @@ describe('<App />', () => {
     await waitFor(() => expect(spy).toHaveBeenCalledTimes(1));
     await waitFor(() => screen.findByText(/Failed to contact server to download biolink model/i));
     expect(screen.findByText('ROBOKOP')).toBeTruthy();
-    expect(screen.getByText(/robokop apps/i)).toBeInTheDocument();
+    expect(screen.getByText(/quick submit/i)).toBeInTheDocument();
   });
 });
