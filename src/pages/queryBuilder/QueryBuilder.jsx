@@ -1,10 +1,8 @@
 import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
+import { withStyles } from '@material-ui/core';
+import { blue } from '@material-ui/core/colors';
 import { set as idbSet } from 'idb-keyval';
 import { useAuth0 } from '@auth0/auth0-react';
 
@@ -22,6 +20,16 @@ import JsonEditor from './jsonEditor/JsonEditor';
 
 import './queryBuilder.css';
 
+const SubmitButton = withStyles((theme) => ({
+  root: {
+    color: theme.palette.getContrastText(blue[600]),
+    backgroundColor: blue[600],
+    '&:hover': {
+      backgroundColor: blue[700],
+    },
+  },
+}))(Button);
+
 /**
  * Query Builder parent component
  *
@@ -31,7 +39,7 @@ export default function QueryBuilder() {
   const queryBuilder = useQueryBuilder();
   const pageStatus = usePageStatus(false);
   const [showJson, toggleJson] = useState(false);
-  const [ara, setAra] = useState(ARAs[0]);
+  const [ara] = useState(ARAs[0]);
   const displayAlert = useContext(AlertContext);
   const history = useHistory();
   const { isAuthenticated, getAccessTokenSilently } = useAuth0();
@@ -177,47 +185,37 @@ export default function QueryBuilder() {
               <TextEditor
                 rows={queryBuilder.textEditorRows}
               />
-              <GraphEditor />
+              <div>
+                <GraphEditor />
+                <div id="queryBuilderButtons">
+                  <Button
+                    onClick={() => toggleJson(true)}
+                    variant="outlined"
+                  >
+                    Edit JSON
+                  </Button>
+                  <SubmitButton
+                    onClick={onQuickSubmit}
+                    variant="contained"
+                  >
+                    Quick Submit
+                  </SubmitButton>
+                  {isAuthenticated && (
+                    <Button
+                      onClick={onSubmit}
+                      variant="contained"
+                      color="primary"
+                    >
+                      Submit
+                    </Button>
+                  )}
+                </div>
+              </div>
               <JsonEditor
                 show={showJson}
                 close={() => toggleJson(false)}
               />
             </QueryBuilderContext.Provider>
-          </div>
-          <div id="queryBuilderButtons">
-            <FormControl>
-              <InputLabel id="ara-select">ARA</InputLabel>
-              <Select
-                labelId="ara-select"
-                value={ara}
-                onChange={(e) => setAra(e.target.value)}
-                style={{ width: 115 }}
-              >
-                {ARAs.map((a) => (
-                  <MenuItem value={a} key={a}>{a}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <Button
-              onClick={() => toggleJson(true)}
-              variant="contained"
-            >
-              Edit JSON
-            </Button>
-            <Button
-              onClick={onQuickSubmit}
-              variant="contained"
-            >
-              Quick Submit
-            </Button>
-            {isAuthenticated && (
-              <Button
-                onClick={onSubmit}
-                variant="contained"
-              >
-                Submit
-              </Button>
-            )}
           </div>
         </div>
       )}
