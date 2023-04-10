@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import {
+  BrowserRouter, Switch, Route, Redirect,
+} from 'react-router-dom';
 import { ThemeProvider, StylesProvider } from '@material-ui/core/styles';
 import { Auth0Provider } from '@auth0/auth0-react';
 
-import Landing from '~/pages/Landing';
 import Logout from '~/pages/Logout';
 import About from '~/pages/About';
 import Help from '~/pages/Help';
@@ -93,7 +94,7 @@ export default function App() {
                         <QueryBuilder />
                       </Route>
                       <Route path="/">
-                        <Landing />
+                        <Redirect to="/question" />
                       </Route>
                     </Switch>
                   </div>
