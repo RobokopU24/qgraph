@@ -28,8 +28,8 @@ export default function Header() {
         <MuiLink href="https://robokop.renci.org" id="robokopBrand">ROBOKOP</MuiLink>
         <div className="grow" />
         <Link to="/about">About</Link>
-        <Link to="/help">Help</Link>
         <Link to="/guide">Guide</Link>
+        <a href="https://robokop.renci.org/#contact" target="_blank" rel="noreferrer">Help</a>
         <Divider orientation="vertical" variant="middle" flexItem />
         <IconButton
           onClick={(e) => (

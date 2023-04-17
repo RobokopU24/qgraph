@@ -7,7 +7,6 @@ import { Auth0Provider } from '@auth0/auth0-react';
 
 import Logout from '~/pages/Logout';
 import About from '~/pages/About';
-import Help from '~/pages/Help';
 import Guide from '~/pages/Guide';
 import TermsofService from '~/pages/TermsofService';
 import QueryBuilder from '~/pages/queryBuilder/QueryBuilder';
@@ -71,9 +70,6 @@ export default function App() {
                     <Switch>
                       <Route path="/about">
                         <About />
-                      </Route>
-                      <Route path="/help">
-                        <Help />
                       </Route>
                       <Route path="/guide">
                         <Guide />
