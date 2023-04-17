@@ -19,9 +19,11 @@ import TextEditor from './textEditor/TextEditor';
 import JsonEditor from './jsonEditor/JsonEditor';
 
 import './queryBuilder.css';
+import SampleQueryLoader from './SampleQueryLoader';
 
 const SubmitButton = withStyles((theme) => ({
   root: {
+    marginLeft: 'auto',
     color: theme.palette.getContrastText(blue[600]),
     backgroundColor: blue[600],
     '&:hover': {
@@ -188,6 +190,7 @@ export default function QueryBuilder() {
               <div>
                 <GraphEditor />
                 <div id="queryBuilderButtons">
+                  <SampleQueryLoader />
                   <Button
                     onClick={() => toggleJson(true)}
                     variant="outlined"
