@@ -198,7 +198,7 @@ export default function QueryBuilder() {
                     onClick={onQuickSubmit}
                     variant="contained"
                   >
-                    Quick Submit
+                    Submit
                   </SubmitButton>
                   {isAuthenticated && (
                     <Button
