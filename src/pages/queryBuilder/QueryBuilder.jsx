@@ -209,7 +209,7 @@ export default function QueryBuilder() {
                       variant="contained"
                       color="primary"
                     >
-                      Submit
+                      Submit Query
                     </Button>
                   )}
                 </div>

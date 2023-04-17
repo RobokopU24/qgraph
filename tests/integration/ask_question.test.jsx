@@ -38,7 +38,7 @@ describe('Full question workflow', () => {
     render(<App />);
 
     // submit question
-    userEvent.click(screen.getByText('Quick Submit'));
+    userEvent.click(screen.getByText('Submit'));
     await waitFor(() => expect(spyPost).toHaveBeenCalledTimes(1));
 
     // answer page loaded, check that things showed up
