@@ -25,7 +25,7 @@ describe('Query Builder', () => {
   });
   it('asks a question', async () => {
     render(<QueryBuilder />);
-    fireEvent.click(screen.getByText('Quick Submit'));
+    fireEvent.click(screen.getByText('Submit'));
     await waitFor(() => expect(mockHistoryPush).toHaveBeenCalledWith('/answer'));
   });
 });

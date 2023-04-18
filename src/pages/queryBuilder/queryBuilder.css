@@ -44,12 +44,9 @@
 
 #queryBuilderButtons {
     width: 100%;
+    padding: 0 20px;
     display: flex;
-    justify-content: center;
-}
-
-#queryBuilderButtons > * {
-    margin: 0px 25px;
+    gap: 16px;
 }
 
 @media (max-width: 1450px) {
