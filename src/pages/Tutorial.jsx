@@ -4,6 +4,7 @@ import {
   Grid, Row, Col,
 } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import Figure from '../components/figure/Figure';
 
 import fig1 from '../../public/images/tutorial/1.png';
 import fig2 from '../../public/images/tutorial/2.png';
@@ -45,46 +46,40 @@ export default function Tutorial() {
           <p>
             Note that users can refer to this <a href="http://tree-viz-biolink.herokuapp.com/" target="_blank" rel="noopener noreferrer">Biolink Model tree visualization</a> for help with node and predicate categories.
           </p>
-          <figure>
-            <img src={fig1} alt="One-hop query for all diseases associated with 2,3,7,8-tetrachlorodibenzo-P-dioxin in ROBOKOP." />
-            <figcaption>One-hop query for all diseases associated with 2,3,7,8-tetrachlorodibenzo-P-dioxin in ROBOKOP.</figcaption>
-          </figure>
+          <Figure image={fig1} imageAlt="One-hop query for all diseases associated with 2,3,7,8-tetrachlorodibenzo-P-dioxin in ROBOKOP.">
+            One-hop query for all diseases associated with 2,3,7,8-tetrachlorodibenzo-P-dioxin in ROBOKOP.
+          </Figure>
           <p>
             After clicking on <code>QUICK SUBMIT</code>, ROBOKOP will return an answer set, or a set of knowledge subgraphs.
           </p>
-          <figure>
-            <img src={fig2} alt="Bubble graph for one-hop query results." />
-            <img src={fig3} alt="One-hop query results for all diseases associated with 2,3,7,8-tetrachlorodibenzo-P-dioxin in ROBOKOP." />
-            <figcaption>One-hop query results for all diseases associated with 2,3,7,8-tetrachlorodibenzo-P-dioxin in ROBOKOP.</figcaption>
-          </figure>
+          <Figure image={fig2} figureStyle={{ marginBottom: 0 }} alt="Bubble graph for one-hop query results." />
+          <Figure image={fig3} figureStyle={{ marginTop: 0 }} alt="One-hop query results for all diseases associated with 2,3,7,8-tetrachlorodibenzo-P-dioxin in ROBOKOP.">
+            One-hop query results for all diseases associated with 2,3,7,8-tetrachlorodibenzo-P-dioxin in ROBOKOP.
+          </Figure>
           <p>
             Users can then explore answers or knowledge subgraphs. In this example, the top-ranked answer is for neoplasm, with a score of 0.814. Clicking the answer path will display the answer knowledge subgraph in the Answer Explorer.
           </p>
-          <figure>
-            <img src={fig4} alt="Exploring one-hop query results for all diseases associated with 2,3,7,8-tetrachlorodibenzo-P-dioxin in ROBOKOP." />
-            <figcaption>Exploring one-hop query results for all diseases associated with 2,3,7,8-tetrachlorodibenzo-P-dioxin in ROBOKOP.</figcaption>
-          </figure>
+          <Figure image={fig4} imageAlt="Exploring one-hop query results for all diseases associated with 2,3,7,8-tetrachlorodibenzo-P-dioxin in ROBOKOP.">
+            Exploring one-hop query results for all diseases associated with 2,3,7,8-tetrachlorodibenzo-P-dioxin in ROBOKOP.
+          </Figure>
           <p>
             Clicking on the <code>positively correlated with</code> edge shows the provenance underlying the assertion, which  takes the form: <em>biolink:primary_knowledge_source</em> : <em>infores:ctd</em>; <em>biolink:aggregator_knowledge_source</em> : <em>infores:automat-robokop</em>. In this example, CTD is the primary knowledge source from which the edge is derived, and Automat ROBOKOP KG is the aggregator knowledge source that contributed the CTD edge.
           </p>
           <p>
             Clicking on <code>Result JSON</code> exposes the answer knowledge subgraph in JSON format.
           </p>
-          <figure>
-            <img src={fig5} alt="Provenance for ‘positively correlated with’ edge shows that CTD is the primary knowledge source and that it was contributed by the aggregator knowledge source, Automat ROBOKOP KG. The answer knowledge subgraph is also displayed in JSON format." />
-            <figcaption>Provenance for <code>positively correlated with</code> edge shows that CTD is the primary knowledge source and that it was contributed by the aggregator knowledge source, Automat ROBOKOP KG. The answer knowledge subgraph is also displayed in JSON format.</figcaption>
-          </figure>
-          <figure>
-            <img src={fig6} alt="Example PubMed abstract contributed by the curated primary knowledge source, CTD." />
-            <figcaption>Example PubMed abstract contributed by the curated primary knowledge source, CTD.</figcaption>
-          </figure>
+          <Figure image={fig5} imageAlt="Provenance for ‘positively correlated with’ edge shows that CTD is the primary knowledge source and that it was contributed by the aggregator knowledge source, Automat ROBOKOP KG. The answer knowledge subgraph is also displayed in JSON format.">
+            Provenance for <code>positively correlated with</code> edge shows that CTD is the primary knowledge source and that it was contributed by the aggregator knowledge source, Automat ROBOKOP KG. The answer knowledge subgraph is also displayed in JSON format.
+          </Figure>
+          <Figure image={fig6} imageAlt="Example PubMed abstract contributed by the curated primary knowledge source, CTD.">
+            Example PubMed abstract contributed by the curated primary knowledge source, CTD.
+          </Figure>
           <p>
             Clicking on the <code>occurs together in literature with</code> edge shows that there are 1722 co-occurrences of <code>2,3,7,8-tetrachlorodibenzo-P-dioxin</code> and <code>neoplasm</code> in PubMed abstracts, as determined by OmniCorp.
           </p>
-          <figure>
-            <img src={fig7} alt="Provenance for ‘occurs together in literature with’ edge shows that there are 1722 co-occurrences of ‘2,3,7,8-tetrachlorodibenzo-P-dioxin’ and ‘neoplasm’ in PubMed abstracts, as determined by OmniCorp." />
-            <figcaption>Provenance for <code>occurs together in literature with</code> edge shows that there are 1722 co-occurrences of <code>2,3,7,8-tetrachlorodibenzo-P-dioxin</code> and <code>neoplasm</code> in PubMed abstracts, as determined by OmniCorp.</figcaption>
-          </figure>
+          <Figure image={fig7} imageAlt="Provenance for ‘occurs together in literature with’ edge shows that there are 1722 co-occurrences of ‘2,3,7,8-tetrachlorodibenzo-P-dioxin’ and ‘neoplasm’ in PubMed abstracts, as determined by OmniCorp.">
+            Provenance for <code>occurs together in literature with</code> edge shows that there are 1722 co-occurrences of <code>2,3,7,8-tetrachlorodibenzo-P-dioxin</code> and <code>neoplasm</code> in PubMed abstracts, as determined by OmniCorp.
+          </Figure>
           <hr />
           <h3>
             ROBOKOP Multi-hop and Non-linear Queries

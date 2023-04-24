@@ -106,7 +106,7 @@ figure {
     margin: 3rem 0;
 }
 
-figure > img {
+figure img {
     margin: 1rem 0;
     width: 100%;
     border: 2px solid black;
