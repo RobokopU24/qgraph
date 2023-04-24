@@ -28,7 +28,7 @@ export default function Guide() {
   return (
     <Grid>
       <Row>
-        <Col md={8}>
+        <Col md={8} style={{ marginBottom: '50px' }}>
           <h2>
             ROBOKOP Quick Start Guide
           </h2>
@@ -126,7 +126,6 @@ export default function Guide() {
           <p>
             Morton K, Wang P, Bizon C, Cox S, Balhoff J, Kebede Y, Fecho K, Tropsha A. ROBOKOP: an abstraction layer and user interface for knowledge graphs to support question answering. Bioinformatics 2019;pii:btz604. doi: 10.1093/bioinformatics/btz604. <a href="https://pubmed.ncbi.nlm.nih.gov/31410449/" target="_blank" rel="noreferrer">https://pubmed.ncbi.nlm.nih.gov/31410449/</a>.
           </p>
-          <hr />
         </Col>
       </Row>
     </Grid>

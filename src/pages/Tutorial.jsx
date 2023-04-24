@@ -19,7 +19,7 @@ import fig7 from '../../public/images/tutorial/7.png';
  */
 export default function Tutorial() {
   return (
-    <Grid>
+    <Grid style={{ marginBottom: '50px' }}>
       <Row>
         <Col md={8}>
           <h2>
