@@ -101,3 +101,18 @@ body :focus {
     text-align: center;
     width: 100%;
 }
+
+figure {
+    margin: 3rem 0;
+}
+
+figure > img {
+    margin: 1rem 0;
+    width: 100%;
+    border: 2px solid black;
+}
+
+figure > figcaption {
+    font-style: italic;
+    text-align: center;
+}
