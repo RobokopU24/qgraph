@@ -9,7 +9,7 @@ export default function About() {
     <Grid style={{ marginBottom: '50px' }}>
       <Row>
         <Col md={8}>
-          <h2>About Robokop</h2>
+          <h2>About ROBOKOP</h2>
           <hr />
           <h3>Overview</h3>
           <p>Knowledge graphs (KGs) are becoming more and more popular as an approach for storing data, integrating data, and implementing high-level reasoning algorithms to derive insights from the integrated and harmonized knowledge sources. KGs typically are stored as graph databases, and queries on those databases can be used to answer user questions. ROBOKOP has been developed specifically to support biomedical questions such as <em>“what diseases are associated with dioxins?”</em>. As such, nodes represent biomedical entities, and edges represent predicates that define the relationship between nodes. Statements or assertions in a graph are structured as subject-predicate-object relationships or triples, for example, <em>“dioxins (subject) - associated_with (predicate) - cancer (object)”</em> or <em>“dioxins are associated with cancer”</em>.</p>
