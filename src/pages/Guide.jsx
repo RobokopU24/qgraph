@@ -32,6 +32,7 @@ export default function Guide() {
           <h2>
             ROBOKOP Quick Start Guide
           </h2>
+          <hr />
           <p>
             ROBOKOP is a  knowledge graph (KG)–based biomedical application for deriving answers to user questions such as: <em>“What diseases are associated with dioxin?”</em> <em>“What genes are regulated by 2,4-dichlorophenoxyacetic acid?”</em> <em>“What chemical entities might alleviate Huntington’s Disease?”</em> <em>“What diseases share a genetic association with Ebola?”</em> <em>“What genes are involved in histone H3 deacetylation?”</em> <em>“What genes and chemical entities are related to GLUT1 deficiency, and to each other?”</em> <em>“What biological mechanisms might explain the relationship between airborne pollutant exposure and asthma exacerbations?”</em>
           </p>

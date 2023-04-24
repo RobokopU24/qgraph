@@ -25,6 +25,7 @@ export default function Tutorial() {
           <h2>
             ROBOKOP Tutorial
           </h2>
+          <hr />
           <h3>
             ROBOKOP One-hop Queries
           </h3>
