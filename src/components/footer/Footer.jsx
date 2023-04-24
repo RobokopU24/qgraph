@@ -9,7 +9,7 @@ export default function Footer() {
     <div className="footer">
       <Grid>
         <Row>
-          <Col md={12}>
+          <Col md={16}>
             <p>
               ROBOKOP is a joint creation of <a href="http://www.renci.org" target="_blank" rel="noreferrer">RENCI</a>{' '}
               and <a href="http://www.covar.com" target="_blank" rel="noreferrer">CoVar LLC</a>. Early development was{' '}
