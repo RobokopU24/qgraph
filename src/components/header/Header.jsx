@@ -28,6 +28,7 @@ export default function Header() {
       <Toolbar id="headerToolbar">
         <MuiLink href="https://robokop.renci.org" style={{ cursor: 'pointer', margin: 0 }}><Logo height="48px" width="100%" style={{ paddingTop: '6px' }} /></MuiLink>
         <div className="grow" />
+        <Link to="/question">Question Builder</Link>
         <Link to="/about">About</Link>
         <Link to="/guide">Guide</Link>
         <a href="https://robokop.renci.org/#contact" target="_blank" rel="noreferrer">Help</a>
