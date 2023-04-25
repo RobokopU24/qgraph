@@ -31,6 +31,7 @@ export default function Header() {
         <Link to="/question">Question Builder</Link>
         <Link to="/about">About</Link>
         <Link to="/guide">Guide</Link>
+        <Link to="/tutorial">Tutorial</Link>
         <a href="https://robokop.renci.org/#contact" target="_blank" rel="noreferrer">Help</a>
         <Divider orientation="vertical" variant="middle" flexItem />
         <IconButton
