@@ -30,7 +30,11 @@ export default function ClipboardButton({
     // focus is needed in case copying is done from modal
     // also needs to come after select for unknown reason
     textarea.focus();
-    document.execCommand('copy');
+    if (typeof navigator.clipboard !== 'undefined' && typeof navigator.clipboard.writeText === 'function') {
+      navigator.clipboard.writeText(textarea.innerHTML);
+    } else {
+      document.execCommand('copy');
+    }
     textarea.remove();
     updateSnackbarNotification(notificationText);
   }

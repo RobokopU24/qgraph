@@ -1,8 +1,25 @@
+import {
+  Button, Card, Typography, withStyles,
+} from '@material-ui/core';
+import { blue } from '@material-ui/core/colors';
+import { ArrowForward } from '@material-ui/icons';
 import React from 'react';
 
 import {
   Grid, Row, Col,
 } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+
+const TutorialButton = withStyles((theme) => ({
+  root: {
+    color: theme.palette.getContrastText(blue[600]),
+    backgroundColor: blue[600],
+    '&:hover': {
+      backgroundColor: blue[700],
+      color: theme.palette.getContrastText(blue[600]),
+    },
+  },
+}))(Button);
 
 /**
  * Robokop Guide Page
@@ -11,13 +28,25 @@ export default function Guide() {
   return (
     <Grid>
       <Row>
-        <Col md={8}>
+        <Col md={8} style={{ marginBottom: '50px' }}>
           <h2>
-            Robokop Quick Start Guide
+            ROBOKOP Quick Start Guide
           </h2>
+          <hr />
           <p>
             ROBOKOP is a  knowledge graph (KG)–based biomedical application for deriving answers to user questions such as: <em>“What diseases are associated with dioxin?”</em> <em>“What genes are regulated by 2,4-dichlorophenoxyacetic acid?”</em> <em>“What chemical entities might alleviate Huntington’s Disease?”</em> <em>“What diseases share a genetic association with Ebola?”</em> <em>“What genes are involved in histone H3 deacetylation?”</em> <em>“What genes and chemical entities are related to GLUT1 deficiency, and to each other?”</em> <em>“What biological mechanisms might explain the relationship between airborne pollutant exposure and asthma exacerbations?”</em>
           </p>
+          <Card
+            elevation={4}
+            style={{
+              margin: '3rem 0px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '1rem',
+            }}
+          >
+            <Typography variant="h6" component="p">
+              Looking for a step-by-step introduction to ROBOKOP?
+            </Typography>
+            <TutorialButton size="large" endIcon={<ArrowForward />} component={Link} to="/tutorial">View the tutorial</TutorialButton>
+          </Card>
           <hr />
           <h3>
             Ask a Question
@@ -90,7 +119,7 @@ export default function Guide() {
           <hr />
           <h3>Find Additional User Documentation</h3>
           <p>
-            Users who are seeking additional information can refer to the publications below. Users may also submit a <a href="https://robokop.renci.org/#contact">HELP request</a>.
+            Users who are seeking additional information can review <Link to="/tutorial">the ROBOKOP tutorial</Link> or refer to the publications below. Users may also submit a <a href="https://robokop.renci.org/#contact">HELP request</a>.
           </p>
           <p>
             Bizon C, Cox S, Balhoff J, Kebede Y, Wang P, Morton K, Fecho K, Tropsha A. ROBOKOP KG and KGB: integrated knowledge graphs from federated sources. J Chem Inf Model 2019 Dec 23;59(12):4968–4973. doi: 10.1021/acs.jcim.9b00683. <a href="https://pubmed.ncbi.nlm.nih.gov/31769676/" target="_blank" rel="noreferrer">https://pubmed.ncbi.nlm.nih.gov/31769676/</a>.
@@ -98,7 +127,6 @@ export default function Guide() {
           <p>
             Morton K, Wang P, Bizon C, Cox S, Balhoff J, Kebede Y, Fecho K, Tropsha A. ROBOKOP: an abstraction layer and user interface for knowledge graphs to support question answering. Bioinformatics 2019;pii:btz604. doi: 10.1093/bioinformatics/btz604. <a href="https://pubmed.ncbi.nlm.nih.gov/31410449/" target="_blank" rel="noreferrer">https://pubmed.ncbi.nlm.nih.gov/31410449/</a>.
           </p>
-          <hr />
         </Col>
       </Row>
     </Grid>

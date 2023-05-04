@@ -14,6 +14,7 @@ import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined'
 import { useAuth0 } from '@auth0/auth0-react';
 
 import './header.css';
+import Logo from '../Logo';
 
 export default function Header() {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -25,10 +26,12 @@ export default function Header() {
   return (
     <AppBar position="relative" className="header">
       <Toolbar id="headerToolbar">
-        <MuiLink href="https://robokop.renci.org" id="robokopBrand">ROBOKOP</MuiLink>
+        <MuiLink href="https://robokop.renci.org" style={{ cursor: 'pointer', margin: 0 }}><Logo height="48px" width="100%" style={{ paddingTop: '6px' }} /></MuiLink>
         <div className="grow" />
+        <Link to="/question">Question Builder</Link>
         <Link to="/about">About</Link>
         <Link to="/guide">Guide</Link>
+        <Link to="/tutorial">Tutorial</Link>
         <a href="https://robokop.renci.org/#contact" target="_blank" rel="noreferrer">Help</a>
         <Divider orientation="vertical" variant="middle" flexItem />
         <IconButton

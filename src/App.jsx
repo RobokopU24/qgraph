@@ -8,6 +8,7 @@ import { Auth0Provider } from '@auth0/auth0-react';
 import Logout from '~/pages/Logout';
 import About from '~/pages/About';
 import Guide from '~/pages/Guide';
+import Tutorial from '~/pages/Tutorial';
 import TermsofService from '~/pages/TermsofService';
 import QueryBuilder from '~/pages/queryBuilder/QueryBuilder';
 import Answer from '~/pages/answer/Answer';
@@ -88,6 +89,9 @@ export default function App() {
                       </Route>
                       <Route path="/question">
                         <QueryBuilder />
+                      </Route>
+                      <Route path="/tutorial">
+                        <Tutorial />
                       </Route>
                       <Route path="/">
                         <Redirect to="/question" />

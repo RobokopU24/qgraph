@@ -19,16 +19,18 @@
   background-color: #f5f7fa !important;
   box-shadow: 0px 0px 5px 0px #b3b3b3 !important;
   z-index: 1300;
-}
-#robokopBrand {
-  font-weight: 500;
-  font-size: 20px !important;
+  height: 84px;
+  letter-spacing: 1px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 #headerToolbar a {
   text-decoration: none;
   color: #5e5e5e;
   margin: 0 20px;
-  font-size: 15px;
+  font-size: 1.25em;
+  text-transform: uppercase;
 }
 #headerToolbar a:hover {
   color: #1c1c1c;
