@@ -10,6 +10,7 @@ export default function useBiolinkModel() {
   const [concepts, setConcepts] = useState([]);
   const [hierarchies, setHierarchies] = useState({});
   const [predicates, setPredicates] = useState([]);
+  const [ancestorsMap, setAncestorsMap] = useState([]);
   const colorMap = useCallback(getNodeCategoryColorMap(hierarchies), [hierarchies]);
 
   /**
@@ -23,6 +24,28 @@ export default function useBiolinkModel() {
       range: strings.nodeFromBiolink(predicate.range),
     }));
     return newPredicates;
+  }
+
+  /**
+   * Given a biolink class name, return an array of all mixin
+   * classes (and their ancestors)
+   *
+   * @param {string} className - a biolink class
+   * @param {object} classes - object of all biolink classes
+   * @returns {string[]}
+   */
+  function collectMixins(className, classes) {
+    const collected = [];
+    if (classes[className] && classes[className].mixins && Array.isArray(classes[className].mixins)) {
+      for (let i = 0; i < classes[className].mixins.length; i += 1) {
+        const mixin = classes[className].mixins[i];
+        collected.push(mixin);
+        if (classes[mixin].is_a) {
+          collectMixins(classes[mixin].is_a, classes);
+        }
+      }
+    }
+    return collected;
   }
 
   /**
@@ -47,7 +70,7 @@ export default function useBiolinkModel() {
     ) {
       // reassign current type to parent type
       currentClass = classes[currentClass].is_a;
-      ancestors.push(currentClass);
+      ancestors.push(currentClass, ...collectMixins(currentClass, classes));
     }
     return ancestors;
   }
@@ -63,6 +86,17 @@ export default function useBiolinkModel() {
     Object.keys(classes).forEach((key) => {
       if (classes[key].is_a === parentClass) {
         descendants.push(key);
+
+        if (classes[key].mixins && Array.isArray(classes[key].mixins)) {
+          for (let i = 0; i < classes[key].mixins.length; i += 1) {
+            const mixin = classes[key].mixins[i];
+            descendants.push(mixin);
+            if (classes[mixin].is_a) {
+              collectMixins(classes[mixin].is_a, classes);
+            }
+          }
+        }
+
         // Repeat until we hit the bottom of the classes
         descendants = descendants.concat(getDescendants(key, classes));
       }
@@ -73,7 +107,7 @@ export default function useBiolinkModel() {
   /**
    * Get a list of hierarchies for all biolink classes
    * @param {object} biolinkClasses - object of all biolink classes
-   * @returns {object} Object with classes as keys and descendant lists as values
+   * @returns {object} Object with classes as keys and hierarchy lists as values
    */
   function getAllHierarchies(biolinkClasses) {
     const newHierarchies = Object.keys(biolinkClasses).reduce((obj, item) => {
@@ -81,10 +115,27 @@ export default function useBiolinkModel() {
       ancestors = ancestors.map((h) => strings.nodeFromBiolink(h));
       let descendants = getDescendants(item, biolinkClasses);
       descendants = descendants.map((h) => strings.nodeFromBiolink(h));
-      obj[strings.nodeFromBiolink(item)] = [...descendants, strings.nodeFromBiolink(item), ...ancestors];
+      const thisClassAndMixins = [item, ...collectMixins(item, biolinkClasses)].map((h) => strings.nodeFromBiolink(h));
+      obj[strings.nodeFromBiolink(item)] = [...descendants, ...thisClassAndMixins, ...ancestors];
       return obj;
     }, {});
     return newHierarchies;
+  }
+
+  /**
+   * Get a list of ancestors for all biolink classes
+   * @param {object} biolinkClasses - object of all biolink classes
+   * @returns {object} Object with classes as keys and ancestor lists as values
+   */
+  function getAllAncestors(biolinkClasses) {
+    const newAncestors = Object.keys(biolinkClasses).reduce((obj, item) => {
+      let ancestors = getAncestors(item, biolinkClasses);
+      ancestors = ancestors.map((h) => strings.nodeFromBiolink(h));
+      const thisClassAndMixins = [item, ...collectMixins(item, biolinkClasses)].map((h) => strings.nodeFromBiolink(h));
+      obj[strings.nodeFromBiolink(item)] = [...thisClassAndMixins, ...ancestors];
+      return obj;
+    }, {});
+    return newAncestors;
   }
 
   /**
@@ -104,9 +155,11 @@ export default function useBiolinkModel() {
       const allHierarchies = getAllHierarchies(biolinkClasses);
       const allConcepts = getValidConcepts(allHierarchies);
       const allPredicates = getEdgePredicates();
+      const allAncestors = getAllAncestors(biolinkClasses);
       setHierarchies(allHierarchies);
       setConcepts(allConcepts);
       setPredicates(allPredicates);
+      setAncestorsMap(allAncestors);
     }
   }, [biolinkModel]);
 
@@ -115,6 +168,7 @@ export default function useBiolinkModel() {
     concepts,
     hierarchies,
     predicates,
+    ancestorsMap,
     colorMap,
   };
 }
