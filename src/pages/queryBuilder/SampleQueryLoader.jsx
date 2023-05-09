@@ -43,19 +43,25 @@ const samples = [
     },
   },
   {
-    name: 'Diseases that share a genetic association with Ebola',
+    name: 'Chemicals that interact with a gene related to Castleman disease',
     query: {
       message: {
         query_graph: {
           nodes: {
             n0: {
               categories: [
+                'biolink:ChemicalEntity',
+              ],
+              name: 'Chemical Entity',
+            },
+            n1: {
+              categories: [
                 'biolink:Gene',
               ],
               name: 'Gene',
             },
-            n1: {
-              name: 'Ebola hemorrhagic fever',
+            n2: {
+              name: 'Castleman disease',
               categories: [
                 'biolink:DiseaseOrPhenotypicFeature',
                 'biolink:BiologicalEntity',
@@ -65,14 +71,8 @@ const samples = [
                 'biolink:Disease',
               ],
               ids: [
-                'MONDO:0005737',
+                'MONDO:0015564',
               ],
-            },
-            n2: {
-              categories: [
-                'biolink:Disease',
-              ],
-              name: 'Disease',
             },
           },
           edges: {
@@ -80,11 +80,11 @@ const samples = [
               subject: 'n0',
               object: 'n1',
               predicates: [
-                'biolink:related_to',
+                'biolink:interacts_with',
               ],
             },
             e1: {
-              subject: 'n0',
+              subject: 'n1',
               object: 'n2',
               predicates: [
                 'biolink:related_to',
