@@ -58,7 +58,7 @@ export default function Tutorial() {
             One-hop query results for all diseases associated with 2,3,7,8-tetrachlorodibenzo-P-dioxin in ROBOKOP.
           </Figure>
           <p>
-            Users can then explore answers or knowledge subgraphs. In this example, the top-ranked answer is for neoplasm, with a score of 0.814. Clicking the answer path will display the answer knowledge subgraph in the Answer Explorer.
+            Users can then explore answers or knowledge subgraphs. Note that the size of each &lsquo;bubble&rsquo; in the Knowledge Graph Bubble reflects how relatively common that entity is represented among the full answer set. In this example, the top-ranked answer is for neoplasm, with a score of 0.814. Clicking the answer path will display the answer knowledge subgraph in the Answer Explorer.
           </p>
           <Figure image={fig4} imageAlt="Exploring one-hop query results for all diseases associated with 2,3,7,8-tetrachlorodibenzo-P-dioxin in ROBOKOP.">
             Exploring one-hop query results for all diseases associated with 2,3,7,8-tetrachlorodibenzo-P-dioxin in ROBOKOP.
