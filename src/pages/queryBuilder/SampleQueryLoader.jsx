@@ -8,7 +8,7 @@ import QueryBuilderContext from '~/context/queryBuilder';
 
 const samples = [
   {
-    name: 'Chemicals that ameliorate Huntington Disease',
+    name: 'Chemicals that might ameliorate Huntington\'s Disease',
     query: {
       message: {
         query_graph: {
@@ -96,7 +96,7 @@ const samples = [
     },
   },
   {
-    name: 'Genes involved in Histone H3 Deaceytlation',
+    name: 'Genes involved in histone H3 deacetylation',
     query: {
       message: {
         query_graph: {
