@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  BrowserRouter, Switch, Route, Redirect,
+  BrowserRouter, Switch, Route,
 } from 'react-router-dom';
 import { ThemeProvider, StylesProvider } from '@material-ui/core/styles';
 import { Auth0Provider } from '@auth0/auth0-react';
@@ -87,14 +87,11 @@ export default function App() {
                       <Route path="/answer/:answer_id?">
                         <Answer />
                       </Route>
-                      <Route path="/question">
-                        <QueryBuilder />
-                      </Route>
                       <Route path="/tutorial">
                         <Tutorial />
                       </Route>
                       <Route path="/">
-                        <Redirect to="/question" />
+                        <QueryBuilder />
                       </Route>
                     </Switch>
                   </div>

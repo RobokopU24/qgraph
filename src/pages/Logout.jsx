@@ -20,7 +20,7 @@ export default function Logout() {
         You&apos;ve successfully logged out
       </h1>
       <Link
-        to="/question"
+        to="/"
       >
         <Button
           variant="contained"

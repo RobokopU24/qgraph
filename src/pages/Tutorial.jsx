@@ -89,7 +89,7 @@ export default function Tutorial() {
             In addition to one-hop queries, ROBOKOP supports multi-hop and non-linear queries. Theoretically, ROBOKOP supports any query graph that a user creates. However, the more complex the query, the longer the running time and the higher the chance that ROBOKOP will not return an answer set, especially if very specific nodes/predicates are included in a complex query. In general, users will find it easier to begin with simple high-level queries and then iteratively refine them until the desired level of knowledge can be obtained within the constraints of the overall knowledge available in ROBOKOP.
           </p>
           <p>
-            For examples of other queries, please see the templated preloaded queries on the <Link to="/question">ROBOKOP question-builder page</Link>.
+            For examples of other queries, please see the templated preloaded queries on the <Link to="/">ROBOKOP question-builder page</Link>.
           </p>
         </Col>
       </Row>
