@@ -1,5 +1,6 @@
 import axios from 'axios';
 import utils from './utils';
+import { api } from './baseUrlProxy';
 
 const baseRoutes = {
   /**
@@ -17,7 +18,7 @@ const baseRoutes = {
       cancelToken: cancel,
     };
     try {
-      const response = await axios.post('/api/name_resolver', {}, config);
+      const response = await api.post('/api/name_resolver', {}, config);
       return response.data;
     } catch (error) {
       if (axios.isCancel(error)) {

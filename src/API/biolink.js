@@ -1,6 +1,5 @@
-import axios from 'axios';
-
 import utils from './utils';
+import { api } from './baseUrlProxy';
 
 const routes = {
   /**
@@ -9,7 +8,7 @@ const routes = {
   async getModelSpecification() {
     let response;
     try {
-      response = await axios.get('/api/biolink');
+      response = await api.get('/api/biolink');
     } catch (error) {
       return utils.handleAxiosError(error);
     }

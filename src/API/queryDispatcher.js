@@ -1,5 +1,5 @@
-import axios from 'axios';
 import utils from './utils';
+import { api } from './baseUrlProxy';
 
 const baseRoutes = {
   /**
@@ -20,7 +20,7 @@ const baseRoutes = {
     };
     config.headers.Authorization = token;
     try {
-      const response = await axios(config);
+      const response = await api(config);
       return response.data;
     } catch (error) {
       return utils.handleAxiosError(error);
