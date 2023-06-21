@@ -39,6 +39,7 @@ const config = {
   },
   output: {
     path: path.resolve(__dirname, 'pack'),
+    publicPath: '/',
     filename: 'bundle.js',
     // https://github.com/webpack/webpack/issues/1114
     // libraryTarget: 'commonjs2'
