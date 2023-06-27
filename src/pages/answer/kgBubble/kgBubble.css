@@ -1,8 +1,16 @@
 #kgBubbleContainer {
-    width: 100%;
+    flex: 1;
     height: 30rem;
     margin: 10px;
     position: relative;
+}
+#legendContainer {
+    height: 30rem;
+    margin: 10px;
+}
+.legendHeader {
+    padding: 5px 0px 0px 10px;
+    margin: 10px 0px 0px 0px;
 }
 #nodeNumSlider {
     position: absolute;
