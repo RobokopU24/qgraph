@@ -50,7 +50,7 @@ export default function KgFull({ message }) {
       if (d.categories && Array.isArray(d.categories)) {
         d.categories = kgUtils.getRankedCategories(hierarchies, d.categories);
       }
-      const color = colorMap(d.categories);
+      const color = colorMap(d.categories)[1];
       context.strokeStyle = color;
       context.fillStyle = color;
       context.fill();

@@ -195,7 +195,7 @@ export default function ResultExplorer({ answerStore }) {
             .call(dragUtils.dragNode(simulation.current))
             .call((n) => n.append('circle')
               .attr('r', nodeRadius)
-              .attr('fill', (d) => colorMap(d.categories))
+              .attr('fill', (d) => colorMap(d.categories)[1])
               .call((nCircle) => nCircle.append('title')
                 .text((d) => d.name)))
             .call((n) => n.append('text')
