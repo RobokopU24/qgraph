@@ -39,7 +39,7 @@ const conceptColorMap = {
 export default function getNodeCategoryColorMap(hierarchies) {
   return (categories) => {
     if (!categories || !Object.keys(hierarchies).length) {
-      return undefinedColor;
+      return [null, undefinedColor];
     }
     if (!Array.isArray(categories)) {
       categories = [categories]; // eslint-disable-line
@@ -60,10 +60,10 @@ export default function getNodeCategoryColorMap(hierarchies) {
       }
     });
     if (category !== undefined) {
-      return conceptColorMap[category];
+      return [category, conceptColorMap[category]];
     }
 
     // only if we have no predefined color in the hierarchy
-    return undefinedColor;
+    return [null, undefinedColor];
   };
 }

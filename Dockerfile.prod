@@ -22,7 +22,7 @@ USER nru
 # Copy the code into the container
 COPY . .
 
-ENV BASE_URL /question-builder/
+ENV BASE_URL /question-builder
 
 # Build the code and save a production ready copy
 CMD npm run prod

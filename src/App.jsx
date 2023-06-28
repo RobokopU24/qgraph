@@ -51,7 +51,7 @@ export default function App() {
 
   return (
     <div id="pageContainer">
-      <BrowserRouter basename="/question-builder">
+      <BrowserRouter basename={process.env.BASE_URL}>
         <Auth0Provider
           domain="qgraph.us.auth0.com"
           clientId="sgJrK1gGAbzrXwUp0WG7jAV0ivCIF6jr"

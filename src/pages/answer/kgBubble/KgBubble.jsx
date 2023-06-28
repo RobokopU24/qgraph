@@ -1,12 +1,15 @@
 /* eslint-disable indent, no-use-before-define, func-names, no-return-assign */
 import React, {
-  useState, useEffect, useRef, useContext,
+  useState, useEffect, useRef, useContext, useMemo,
 } from 'react';
 import * as d3 from 'd3';
 import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
 import Slider from '@material-ui/core/Slider';
 
+import { List, ListItem, ListItemIcon } from '@material-ui/core';
+import { Brightness1 as Circle } from '@material-ui/icons';
+import stringUtils from '~/utils/strings';
 import BiolinkContext from '~/context/biolink';
 import kgUtils from '~/utils/knowledgeGraph';
 import dragUtils from '~/utils/d3/drag';
@@ -34,6 +37,26 @@ export default function KgBubble({
   const [numTrimmedNodes, setNumTrimmedNodes] = useState(Math.min(nodes.length, defaultTrimNum));
   const debouncedTrimmedNodes = useDebounce(numTrimmedNodes, 500);
 
+  const trimmedNodes = useMemo(() => nodes.slice(0, debouncedTrimmedNodes), [debouncedTrimmedNodes, nodes]);
+
+  // computes an array of [category, color], without duplicates, sorted by
+  // the number of occurences of the category in the `nodes` list
+  const categoryColorList = useMemo(() => {
+    const map = new Map();
+    trimmedNodes.forEach((node) => {
+      const [category, color] = colorMap(node.categories);
+      if (!map.has(category)) {
+        map.set(category, { color, occurrences: 1 });
+      } else {
+        map.get(category).occurrences += 1;
+      }
+    });
+
+    return Array.from(map)
+      .sort((a, b) => a.occurrences - b.occurrences)
+      .map(([category, { color }]) => [category, color]);
+  }, [trimmedNodes, colorMap]);
+
   /**
    * Initialize the svg size
    */
@@ -59,7 +82,6 @@ export default function KgBubble({
     // clear the graph
     svg.selectAll('*').remove();
     const getNodeRadius = kgUtils.getNodeRadius(width, height, numQgNodes, numResults);
-    const trimmedNodes = nodes.slice(0, debouncedTrimmedNodes);
     const converted_nodes = trimmedNodes.map((d) => ({ ...d, x: Math.random() * width, y: Math.random() * height }));
     const simulation = d3.forceSimulation(converted_nodes)
       .force('x', d3.forceX(width / 2).strength(0.02)) // pull all nodes horizontally towards middle of box
@@ -88,7 +110,7 @@ export default function KgBubble({
           .call(dragUtils.dragNode(simulation))
           .call((n) => n.append('circle')
             .attr('r', (d) => getNodeRadius(d.count))
-            .attr('fill', (d) => colorMap(d.categories))
+            .attr('fill', (d) => colorMap(d.categories)[1])
             .call((nCircle) => nCircle.append('title')
               .text((d) => d.name)))
           .call((n) => n.append('text')
@@ -138,24 +160,47 @@ export default function KgBubble({
   return (
     <>
       {nodes.length > 0 && (
-        <Paper id="kgBubbleContainer" elevation={3}>
-          <h5 className="cardLabel">Knowledge Graph Bubble</h5>
-          {nodes.length > defaultTrimNum && (
-            <Box width={300} id="nodeNumSlider">
-              <Slider
-                value={numTrimmedNodes}
-                valueLabelDisplay="auto"
-                min={2}
-                max={nodes.length}
-                onChange={(e, v) => setNumTrimmedNodes(v)}
-              />
-            </Box>
-          )}
-          {drawing && (
-            <Loading positionStatic message="Redrawing knowledge graph..." />
-          )}
-          <svg ref={svgRef} />
-        </Paper>
+        <div style={{
+          display: 'flex',
+          width: '100%',
+          gap: '10px',
+          margin: '10px',
+        }}
+        >
+          <Paper id="kgBubbleContainer" elevation={3}>
+            <h5 className="cardLabel">Knowledge Graph Bubble</h5>
+            {nodes.length > defaultTrimNum && (
+              <Box width={300} id="nodeNumSlider">
+                <Slider
+                  value={numTrimmedNodes}
+                  valueLabelDisplay="auto"
+                  min={2}
+                  max={nodes.length}
+                  onChange={(e, v) => setNumTrimmedNodes(v)}
+                />
+              </Box>
+            )}
+            {drawing && (
+              <Loading positionStatic message="Redrawing knowledge graph..." />
+            )}
+            <svg ref={svgRef} />
+          </Paper>
+          <Paper id="legendContainer" elevation={3}>
+            <h5 className="legendHeader">Legend</h5>
+            <List style={{ paddingTop: '0.5rem' }}>
+              {
+                categoryColorList.map(([category, color], i) => (
+                  <ListItem key={i}>
+                    <ListItemIcon style={{ minWidth: '32px' }}>
+                      <Circle style={{ color }} />
+                    </ListItemIcon>
+                    {stringUtils.displayCategory(category)}
+                  </ListItem>
+                ))
+              }
+            </List>
+          </Paper>
+        </div>
       )}
     </>
   );
