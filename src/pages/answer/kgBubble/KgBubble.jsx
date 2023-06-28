@@ -160,7 +160,13 @@ export default function KgBubble({
   return (
     <>
       {nodes.length > 0 && (
-        <div style={{ display: 'flex' }}>
+        <div style={{
+          display: 'flex',
+          width: '100%',
+          gap: '10px',
+          margin: '10px',
+        }}
+        >
           <Paper id="kgBubbleContainer" elevation={3}>
             <h5 className="cardLabel">Knowledge Graph Bubble</h5>
             {nodes.length > defaultTrimNum && (

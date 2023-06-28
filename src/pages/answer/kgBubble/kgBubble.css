@@ -1,12 +1,12 @@
 #kgBubbleContainer {
-    flex: 1;
+    flex: 1 0 0;  
     height: 30rem;
-    margin: 10px;
     position: relative;
+    overflow: hidden;
 }
 #legendContainer {
     height: 30rem;
-    margin: 10px;
+    overflow-x: auto;
 }
 .legendHeader {
     padding: 5px 0px 0px 10px;
