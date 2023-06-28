@@ -1,7 +1,7 @@
 import React from 'react';
-import axios from 'axios';
 import { rest } from 'msw';
 import '@testing-library/jest-dom';
+import { api } from '~/API/baseUrlProxy';
 import {
   render, screen, waitFor,
 } from '&/test_utils';
@@ -21,7 +21,7 @@ describe('<App />', () => {
     jest.clearAllMocks();
   });
   it('loads the Robokop homepage', async () => {
-    const spy = jest.spyOn(axios, 'get');
+    const spy = jest.spyOn(api, 'get');
     server.use(
       rest.get('/api/biolink', (req, res, ctx) => res(
         ctx.status(404),

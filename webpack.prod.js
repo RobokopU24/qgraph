@@ -5,6 +5,6 @@ module.exports = merge(common, {
   devtool: 'source-map',
   mode: 'production',
   output: {
-    publicPath: '/question-builder/',
+    publicPath: process.env.BASE_URL || '/',
   },
 });
