@@ -12,7 +12,7 @@ describe('Results Table', () => {
     expect(sortedNodes).toStrictEqual(['3', '1', '2', '4']);
   });
   it('makes table headers correctly', () => {
-    const tableHeaders = resultsUtils.makeTableHeaders(test_message.message, () => {});
+    const tableHeaders = resultsUtils.makeTableHeaders(test_message.message, () => ['', '']);
     expect(tableHeaders.length).toBe(2);
     const [header1, header2] = tableHeaders;
     expect(header1.id).toBe('n1');
