@@ -7,7 +7,6 @@ import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
 import Slider from '@material-ui/core/Slider';
 
-import { Popover, styled } from '@material-ui/core';
 import BiolinkContext from '~/context/biolink';
 import dragUtils from '~/utils/d3/drag';
 import graphUtils from '~/utils/d3/graph';
@@ -16,27 +15,10 @@ import stringUtils from '~/utils/strings';
 import useDebounce from '~/stores/useDebounce';
 import ResultMetaData from './ResultMetaData';
 import AttributesTable from './AttributesTable';
+import Popover from '~/components/Popover';
+import NodeAttributesTable from '../kgBubble/NodeAttributesTable';
 
 const nodeRadius = 40;
-
-const PopoverPaper = styled(Paper)(({ theme }) => ({
-  filter: 'drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.3))',
-
-  position: 'relative',
-  '&::before': {
-    content: '""',
-    display: 'block',
-    position: 'absolute',
-    bottom: '-15px',
-    left: '0',
-    right: '0',
-    margin: '0 auto',
-    clipPath: "path('M 0 0 L 20 0 L 10 15 Z')",
-    width: '20px',
-    height: '15px',
-    backgroundColor: theme.palette.background.paper,
-  },
-}));
 
 /**
  * Selected result graph
@@ -53,10 +35,11 @@ export default function ResultExplorer({ answerStore }) {
   const { colorMap } = useContext(BiolinkContext);
   const [numTrimmedNodes, setNumTrimmedNodes] = useState(answerStore.numQgNodes);
   const debouncedTrimmedNodes = useDebounce(numTrimmedNodes, 500);
-  const [mouseX, setMouseX] = useState(0);
-  const [mouseY, setMouseY] = useState(0);
-  const [attributesPopoverOpen, setAttributesPopoverOpen] = useState(false);
-  const [currentEdgeAttributes, setCurrentEdgeAttributes] = useState({});
+  const [popoverPosition, setPopoverPosition] = useState({ x: 0, y: 0 });
+  // const [attributesPopoverOpen, setAttributesPopoverOpen] = useState(false);
+  // const [currentEdgeAttributes, setCurrentEdgeAttributes] = useState({});
+  const [popoverOpen, setPopoverOpen] = useState(false);
+  const [popoverData, setPopoverData] = useState({});
 
   /**
    * Initialize svg object
@@ -197,7 +180,24 @@ export default function ResultExplorer({ answerStore }) {
               .attr('r', nodeRadius)
               .attr('fill', (d) => colorMap(d.categories)[1])
               .call((nCircle) => nCircle.append('title')
-                .text((d) => d.name)))
+                .text((d) => d.name))
+              .style('transition', 'stroke-width 200ms ease-in-out, stroke 200ms ease-in-out, filter 200ms ease-in-out')
+              .style('cursor', 'pointer')
+              .on('mouseover', function () {
+                d3.select(this)
+                  .attr('stroke', '#239cff')
+                  .style('filter', 'brightness(1.1)')
+                  .attr('stroke-width', 3);
+                })
+                .on('mouseout', function () {
+                  d3.select(this)
+                  .attr('stroke', 'none')
+                  .style('filter', 'initial')
+                  .attr('stroke-width', 0);
+              })
+              .on('click', function () {
+                handleClickNode(d3.select(this).datum());
+              }))
             .call((n) => n.append('text')
               .attr('class', 'result_node_label')
               .style('pointer-events', 'none')
@@ -253,8 +253,8 @@ export default function ResultExplorer({ answerStore }) {
             .style('cursor', 'pointer')
             .on('mouseover', function () {
               d3.select(this)
-                .attr('fill', '#008cff')
-                .attr('stroke', '#008cff');
+                .attr('fill', '#239cff')
+                .attr('stroke', '#239cff');
             })
             .on('mouseout', function () {
               d3.select(this)
@@ -314,11 +314,24 @@ export default function ResultExplorer({ answerStore }) {
   }
 
   const handleClickEdge = (event, attributes) => {
-    setMouseX(event.clientX);
-    setMouseY(event.clientY);
+    setPopoverPosition({ x: event.clientX, y: event.clientY });
 
-    setCurrentEdgeAttributes(attributes);
-    setAttributesPopoverOpen(true);
+    setPopoverData(attributes);
+    setPopoverOpen('edge');
+  };
+
+  const handleClickNode = (data) => {
+    const { top, left } = svgRef.current.getBoundingClientRect();
+    setPopoverPosition({
+      x: left + data.x,
+      y: top + data.y,
+    });
+    setPopoverData({
+      name: data.name,
+      id: data.id,
+      categories: data.categories,
+    });
+    setPopoverOpen('node');
   };
 
   useEffect(() => {
@@ -360,23 +373,21 @@ export default function ResultExplorer({ answerStore }) {
       )}
 
       <Popover
-        anchorReference="anchorPosition"
-        anchorPosition={{ top: mouseY, left: mouseX }}
-        open={attributesPopoverOpen}
-        onClose={() => setAttributesPopoverOpen(false)}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        PaperProps={{ style: { boxShadow: 'none', overflow: 'visible', marginBlock: '-28px' } }}
+        open={popoverOpen === 'edge'}
+        onClose={() => setPopoverOpen(null)}
+        anchorPosition={{ top: popoverPosition.y, left: popoverPosition.x }}
+        above
       >
-        <PopoverPaper>
-          <AttributesTable attributes={currentEdgeAttributes} />
-        </PopoverPaper>
+        <AttributesTable attributes={popoverData} />
+      </Popover>
+
+      <Popover
+        open={popoverOpen === 'node'}
+        onClose={() => setPopoverOpen(null)}
+        anchorPosition={{ top: popoverPosition.y, left: popoverPosition.x }}
+        above
+      >
+        <NodeAttributesTable nodeData={popoverData} />
       </Popover>
     </Paper>
   );

@@ -18,6 +18,8 @@ import Loading from '~/components/loading/Loading';
 import useDebounce from '~/stores/useDebounce';
 
 import './kgBubble.css';
+import Popover from '~/components/Popover';
+import NodeAttributesTable from './NodeAttributesTable';
 
 const nodePadding = 2;
 const defaultTrimNum = 25;
@@ -36,6 +38,9 @@ export default function KgBubble({
   const [drawing, setDrawing] = useState(false);
   const [numTrimmedNodes, setNumTrimmedNodes] = useState(Math.min(nodes.length, defaultTrimNum));
   const debouncedTrimmedNodes = useDebounce(numTrimmedNodes, 500);
+  const [popoverPosition, setPopoverPosition] = useState({ x: 0, y: 0 });
+  const [popoverOpen, setPopoverOpen] = useState(false);
+  const [popoverData, setPopoverData] = useState({});
 
   const trimmedNodes = useMemo(() => nodes.slice(0, debouncedTrimmedNodes), [debouncedTrimmedNodes, nodes]);
 
@@ -56,6 +61,22 @@ export default function KgBubble({
       .sort((a, b) => a.occurrences - b.occurrences)
       .map(([category, { color }]) => [category, color]);
   }, [trimmedNodes, colorMap]);
+
+  const handleClickNode = (data) => {
+    const { top, left } = svgRef.current.getBoundingClientRect();
+    setPopoverPosition({
+      x: left + data.x,
+      y: top + data.y,
+    });
+
+    setPopoverData({
+      name: data.name,
+      id: data.id,
+      categories: data.categories,
+      count: data.count,
+    });
+    setPopoverOpen(true);
+  };
 
   /**
    * Initialize the svg size
@@ -112,7 +133,24 @@ export default function KgBubble({
             .attr('r', (d) => getNodeRadius(d.count))
             .attr('fill', (d) => colorMap(d.categories)[1])
             .call((nCircle) => nCircle.append('title')
-              .text((d) => d.name)))
+              .text((d) => d.name))
+            .style('transition', 'stroke-width 200ms ease-in-out, stroke 200ms ease-in-out, filter 200ms ease-in-out')
+            .style('cursor', 'pointer')
+            .on('mouseover', function () {
+              d3.select(this)
+                .attr('stroke', '#239cff')
+                .style('filter', 'brightness(1.1)')
+                .attr('stroke-width', 3);
+              })
+              .on('mouseout', function () {
+                d3.select(this)
+                .attr('stroke', 'none')
+                .style('filter', 'initial')
+                .attr('stroke-width', 0);
+            })
+            .on('click', function () {
+              handleClickNode(d3.select(this).datum());
+            }))
           .call((n) => n.append('text')
             .attr('class', 'nodeLabel')
             .style('pointer-events', 'none')
@@ -202,6 +240,14 @@ export default function KgBubble({
           </Paper>
         </div>
       )}
+
+      <Popover
+        open={popoverOpen}
+        onClose={() => setPopoverOpen(false)}
+        anchorPosition={{ top: popoverPosition.y, left: popoverPosition.x }}
+      >
+        <NodeAttributesTable nodeData={popoverData} />
+      </Popover>
     </>
   );
 }
