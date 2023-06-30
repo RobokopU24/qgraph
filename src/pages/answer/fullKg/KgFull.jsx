@@ -91,6 +91,7 @@ export default function KgFull({ message }) {
           break;
         }
         default:
+          // eslint-disable-next-line no-console
           console.log('unhandled worker message');
       }
     };
