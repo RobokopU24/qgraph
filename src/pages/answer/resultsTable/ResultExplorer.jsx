@@ -7,7 +7,6 @@ import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
 import Slider from '@material-ui/core/Slider';
 
-import { Popover, styled } from '@material-ui/core';
 import BiolinkContext from '~/context/biolink';
 import dragUtils from '~/utils/d3/drag';
 import graphUtils from '~/utils/d3/graph';
@@ -16,27 +15,9 @@ import stringUtils from '~/utils/strings';
 import useDebounce from '~/stores/useDebounce';
 import ResultMetaData from './ResultMetaData';
 import AttributesTable from './AttributesTable';
+import Popover from '~/components/Popover';
 
 const nodeRadius = 40;
-
-const PopoverPaper = styled(Paper)(({ theme }) => ({
-  filter: 'drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.3))',
-
-  position: 'relative',
-  '&::before': {
-    content: '""',
-    display: 'block',
-    position: 'absolute',
-    bottom: '-15px',
-    left: '0',
-    right: '0',
-    margin: '0 auto',
-    clipPath: "path('M 0 0 L 20 0 L 10 15 Z')",
-    width: '20px',
-    height: '15px',
-    backgroundColor: theme.palette.background.paper,
-  },
-}));
 
 /**
  * Selected result graph
@@ -360,23 +341,12 @@ export default function ResultExplorer({ answerStore }) {
       )}
 
       <Popover
-        anchorReference="anchorPosition"
-        anchorPosition={{ top: mouseY, left: mouseX }}
         open={attributesPopoverOpen}
         onClose={() => setAttributesPopoverOpen(false)}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        PaperProps={{ style: { boxShadow: 'none', overflow: 'visible', marginBlock: '-28px' } }}
+        anchorPosition={{ top: mouseY, left: mouseX }}
+        above
       >
-        <PopoverPaper>
-          <AttributesTable attributes={currentEdgeAttributes} />
-        </PopoverPaper>
+        <AttributesTable attributes={currentEdgeAttributes} />
       </Popover>
     </Paper>
   );
