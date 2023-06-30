@@ -57,6 +57,12 @@ export default function KgBubble({
       .map(([category, { color }]) => [category, color]);
   }, [trimmedNodes, colorMap]);
 
+  const handleClickNode = (e, data) => {
+    const { clientX, clientY } = e;
+    console.log(`(${clientX}, ${clientY})`);
+    console.log('data', data);
+  };
+
   /**
    * Initialize the svg size
    */
@@ -112,7 +118,24 @@ export default function KgBubble({
             .attr('r', (d) => getNodeRadius(d.count))
             .attr('fill', (d) => colorMap(d.categories)[1])
             .call((nCircle) => nCircle.append('title')
-              .text((d) => d.name)))
+              .text((d) => d.name))
+            .style('transition', 'stroke-width 200ms ease-in-out, stroke 200ms ease-in-out, filter 200ms ease-in-out')
+            .style('cursor', 'pointer')
+            .on('mouseover', function () {
+              d3.select(this)
+                .attr('stroke', '#239cff')
+                .style('filter', 'brightness(1.1)')
+                .attr('stroke-width', 3);
+              })
+              .on('mouseout', function () {
+                d3.select(this)
+                .attr('stroke', 'none')
+                .style('filter', 'initial')
+                .attr('stroke-width', 0);
+            })
+            .on('click', function (e) {
+              handleClickNode(e, d3.select(this).datum());
+            }))
           .call((n) => n.append('text')
             .attr('class', 'nodeLabel')
             .style('pointer-events', 'none')
