@@ -5,7 +5,14 @@ import {
   TableBody,
   TableCell,
   TableRow,
+  styled,
 } from '@material-ui/core';
+
+const StyledTableBody = styled(TableBody)(() => ({
+  '& .MuiTableRow-root:last-of-type .MuiTableCell-root': {
+    borderBottom: 'none',
+  },
+}));
 
 const ValueCell = ({ value }) => (
   <TableCell>
@@ -29,7 +36,7 @@ const NodeAttributesTable = ({ nodeData }) => {
   return (
     <Box style={{ maxHeight: 500, overflow: 'auto' }}>
       <Table size="small" aria-label="node attributes table">
-        <TableBody>
+        <StyledTableBody>
           {Boolean(name) && (
             <TableRow style={{ verticalAlign: 'top' }}>
               <TableCell>
@@ -65,7 +72,7 @@ const NodeAttributesTable = ({ nodeData }) => {
               <ValueCell value={count} />
             </TableRow>
           )}
-        </TableBody>
+        </StyledTableBody>
       </Table>
     </Box>
   );
