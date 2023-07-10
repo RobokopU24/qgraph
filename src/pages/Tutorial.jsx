@@ -51,7 +51,7 @@ export default function Tutorial() {
             One-hop query for all diseases associated with 2,3,7,8-tetrachlorodibenzo-P-dioxin in ROBOKOP.
           </Figure>
           <p>
-            After clicking on <code>QUICK SUBMIT</code>, ROBOKOP will return an answer set, or a set of knowledge subgraphs.
+            After clicking on <code>SUBMIT</code>, ROBOKOP will return an answer set, or a set of knowledge subgraphs.
           </p>
           <Figure image={fig2} figureStyle={{ marginBottom: 0 }} alt="Bubble graph for one-hop query results." />
           <Figure image={fig3} figureStyle={{ marginTop: 0 }} alt="One-hop query results for all diseases associated with 2,3,7,8-tetrachlorodibenzo-P-dioxin in ROBOKOP.">
