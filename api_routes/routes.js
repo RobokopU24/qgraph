@@ -37,12 +37,11 @@ router.route('/quick_answer')
         });
       }
     } catch (err) {
-      //res.send(handleAxiosError(err));
-        res.send({
-          status: 'error',
-          message: `Error from ${ara_url}`,
-        });
-      }
+      res.send({
+        status: 'error',
+        message: `Error from ${ara_url}`,
+      });
+    }
   });
 
 router.route('/answer')
