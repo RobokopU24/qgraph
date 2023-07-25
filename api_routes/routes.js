@@ -1,3 +1,6 @@
+const fs = require('fs');
+const path = require('path');
+
 const router = require('express').Router();
 const axios = require('axios');
 
@@ -6,12 +9,23 @@ const { handleAxiosError } = require('./utils');
 const services = require('./services');
 const external_apis = require('./external');
 
+const samples = JSON.parse(fs.readFileSync(path.join(__dirname, './sample-query-cache.json')));
+
 router.use('/', external_apis);
 
 router.use('/robokache', robokache.router);
 
 router.route('/quick_answer')
   .post(async (req, res) => {
+    // if this is a sample query, load the response from the cache JSON:
+    for (let i = 0; i < samples.length; i += 1) {
+      const { query, response } = samples[i];
+      if (JSON.stringify(req.body) === JSON.stringify(query)) {
+        res.send(response);
+        return;
+      }
+    }
+
     const { ara } = req.query;
     const ara_url = services[ara];
     const config = {
@@ -37,12 +51,11 @@ router.route('/quick_answer')
         });
       }
     } catch (err) {
-      //res.send(handleAxiosError(err));
-        res.send({
-          status: 'error',
-          message: `Error from ${ara_url}`,
-        });
-      }
+      res.send({
+        status: 'error',
+        message: `Error from ${ara_url}`,
+      });
+    }
   });
 
 router.route('/answer')
