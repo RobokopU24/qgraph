@@ -30,6 +30,28 @@ export default function useAnswerStore() {
   }
 
   /**
+   * Takes a TRAPI message and average the analysis scores for each
+   * result, and places that average in a new key called `score` on
+   * each result object.
+   * @param {object} msg - TRAPI message
+   */
+  function averageAnalysesScores(msg) {
+    const resultsWithScore = msg.results.map((result) => {
+      // get average score of all analyses
+      const score = result.analyses.reduce((sum, analysis) => sum + analysis.score, 0) / result.analyses.length;
+      return {
+        ...result,
+        score,
+      };
+    });
+
+    return {
+      ...msg,
+      results: resultsWithScore,
+    };
+  }
+
+  /**
    * Initialize the answer store with a message
    *
    * Stores the message, makes the nodes for a bubble chart,
@@ -37,7 +59,7 @@ export default function useAnswerStore() {
    * @param {object} msg - TRAPI message
    */
   function initialize(msg, updateDisplayState) {
-    setMessage(msg);
+    setMessage(averageAnalysesScores(msg));
     if (msg.knowledge_graph && msg.results) {
       setKgNodes(kgUtils.makeDisplayNodes(msg, hierarchies));
       updateDisplayState({ type: 'toggle', payload: { component: 'kg', show: true } });
