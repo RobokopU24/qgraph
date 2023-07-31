@@ -163,6 +163,7 @@ export default function ResultExplorer({ answerStore }) {
       .map((key) => ({
         ...answerStore.selectedResult.edges[key],
         attributes: answerStore.resultJSON.knowledge_graph.edges[key].attributes,
+        sources: answerStore.resultJSON.knowledge_graph.edges[key].sources,
       }));
     // this is weird, but stops the simulation from throwing a
     // `d3 cannot create property 'vx' on string` error when trying to move edges
@@ -262,7 +263,7 @@ export default function ResultExplorer({ answerStore }) {
                 .attr('stroke', '#999');
             })
             .on('click', function (e) {
-              handleClickEdge(e, d3.select(this).datum().attributes);
+              handleClickEdge(e, d3.select(this).datum());
             }),
         (update) => update
           .call((e) => e.select('title')
@@ -313,10 +314,10 @@ export default function ResultExplorer({ answerStore }) {
     }
   }
 
-  const handleClickEdge = (event, attributes) => {
+  const handleClickEdge = (event, data) => {
     setPopoverPosition({ x: event.clientX, y: event.clientY });
 
-    setPopoverData(attributes);
+    setPopoverData(data);
     setPopoverOpen('edge');
   };
 
@@ -378,7 +379,7 @@ export default function ResultExplorer({ answerStore }) {
         anchorPosition={{ top: popoverPosition.y, left: popoverPosition.x }}
         above
       >
-        <AttributesTable attributes={popoverData} />
+        <AttributesTable attributes={popoverData.attributes} sources={popoverData.sources} />
       </Popover>
 
       <Popover

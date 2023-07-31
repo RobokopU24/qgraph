@@ -72,7 +72,7 @@ const PublicationLinkCell = ({ value }) => {
   );
 };
 
-const AttributesTable = ({ attributes }) => (
+const AttributesTable = ({ attributes, sources }) => (
   <Box style={{ maxHeight: 500, overflow: 'auto' }}>
     <Table size="small" aria-label="edge attributes table">
       <TableHead style={{ position: 'sticky', top: 0 }}>
@@ -96,6 +96,16 @@ const AttributesTable = ({ attributes }) => (
             }
           </TableRow>
         ))}
+        <TableRow>
+          <TableCell>
+            Sources
+          </TableCell>
+          <TableCell>
+            <pre>
+              {JSON.stringify(sources, null, 2)}
+            </pre>
+          </TableCell>
+        </TableRow>
       </StyledTableBody>
     </Table>
   </Box>
