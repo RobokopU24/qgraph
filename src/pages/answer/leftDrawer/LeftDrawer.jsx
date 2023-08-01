@@ -8,6 +8,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
+import { Assistant } from '@material-ui/icons';
+import { Badge, makeStyles } from '@material-ui/core';
 
 import { useAuth0 } from '@auth0/auth0-react';
 
@@ -19,6 +21,15 @@ import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import ConfirmDialog from '~/components/ConfirmDialog';
 
 import './leftDrawer.css';
+
+const badgeStyles = makeStyles({
+  colorPrimary: {
+    backgroundColor: '#2dd04a',
+  },
+  colorError: {
+    backgroundColor: '#ff4a4a',
+  },
+});
 
 /**
  * Main Drawer component on answer page
@@ -158,6 +169,25 @@ export default function LeftDrawer({
             </IconButton>
           </ListItemIcon>
           <ListItemText primary="Delete Answer" />
+        </ListItem>
+        <ListItem
+          component="label"
+          onClick={() => console.log('clicked GPT')}
+          button
+        >
+          <ListItemIcon>
+            <IconButton
+              component="span"
+              style={{ fontSize: '18px' }}
+              title="GPT"
+              disableRipple
+            >
+              <Badge variant="dot" color="primary" aria-label="GPT activated" classes={badgeStyles()}>
+                <Assistant />
+              </Badge>
+            </IconButton>
+          </ListItemIcon>
+          <ListItemText primary="GPT" />
         </ListItem>
       </List>
       <ConfirmDialog
