@@ -12,9 +12,11 @@ export default function GPTForm({
 }) {
   const { setEnabled } = useContext(GPTContext);
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const onSubmit = (e) => {
     e.preventDefault();
+    setError('');
     console.log(password);
     setEnabled((prev) => !prev);
   };
@@ -34,9 +36,13 @@ export default function GPTForm({
             label="Password"
             id="gpt-password"
             type="password"
+            variant="outlined"
+            style={{ marginTop: '3rem', marginBottom: '3rem' }}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             fullWidth
+            error={error !== ''}
+            helperText={error !== '' ? error : undefined}
           />
 
           <Alert
@@ -58,7 +64,7 @@ export default function GPTForm({
           <Button onClick={handleClose} color="default">
             Cancel
           </Button>
-          <Button type="submit" color="primary" variant="outlined">
+          <Button type="submit" color="primary" variant="outlined" disabled={password === ''}>
             Enable
           </Button>
         </DialogActions>
