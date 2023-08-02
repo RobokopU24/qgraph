@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-router.route('/')
+router.route('/auth')
   .post(async (req, res) => {
     const { pw } = req.body;
 

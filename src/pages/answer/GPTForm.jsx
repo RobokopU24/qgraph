@@ -26,20 +26,30 @@ export default function GPTForm({
 
     setLoading(true);
 
-    const res = await fetch('/api/auth', {
+    const res = await fetch('/api/gpt/auth', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ pw: password }),
-    }).then((resJSON) => resJSON.json());
+    });
 
-    if (res.status === 'error') {
-      setError(res.message);
-    } else if (res.status === 'success') {
-      setToken(res.token);
+    if (res.status !== 200) {
+      setError(res.statusText);
+      setLoading(false);
+      return;
     }
 
+    const apiResponse = await res.json();
+
+    if (apiResponse.status === 'error') {
+      setError(apiResponse.message);
+    } else if (apiResponse.status === 'success') {
+      setToken(apiResponse.token);
+      handleClose();
+    }
+
+    setPassword('');
     setLoading(false);
   };
 

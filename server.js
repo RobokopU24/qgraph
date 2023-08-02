@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 // standard express logger
 const morgan = require('morgan');
 const path = require('path');
+const rateLimit = require('express-rate-limit');
 
 // load env variables
 dotenv.config();
@@ -19,8 +20,25 @@ const PORT = process.env.PORT || 7080;
 axios.defaults.maxContentLength = Infinity;
 axios.defaults.maxBodyLength = Infinity;
 
+// GPT auth: 300 reqs/hr
+const gptAuthLimiter = rateLimit({
+  windowMs: 1 * 60 * 60 * 1000, // 1 hour
+  max: 300, // 300 request per window
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+// GPT: 60 req/min
+const gptLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 60, // 60 request per window
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({ limit: '4000mb' }));
+app.use('/api/gpt', gptLimiter);
+app.use('/api/gpt/auth', gptAuthLimiter);
 app.use(morgan('dev'));
 
 // Add routes
@@ -36,5 +54,6 @@ app.get('*', (req, res) => {
 });
 
 app.listen(PORT, () => {
+  // eslint-disable-next-line no-console
   console.log(`🌎 ==> qgraph running on port ${PORT}!`);
 });

@@ -51,7 +51,7 @@ export default function LeftDrawer({
   const { isAuthenticated } = useAuth0();
   const urlHasAnswerId = useRouteMatch('/answer/:answer_id');
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const [isGPTFormOpen, setIsGPTFormOpen] = useState(true);
+  const [isGPTFormOpen, setIsGPTFormOpen] = useState(false);
 
   function toggleDisplay(component, show) {
     updateDisplayState({ type: 'toggle', payload: { component, show } });
