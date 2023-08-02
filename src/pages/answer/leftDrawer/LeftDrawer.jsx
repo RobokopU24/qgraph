@@ -22,6 +22,7 @@ import ConfirmDialog from '~/components/ConfirmDialog';
 
 import './leftDrawer.css';
 import GPTContext from '../../../context/gpt';
+import GPTForm from '../GPTForm';
 
 const badgeStyles = makeStyles({
   colorPrimary: {
@@ -46,10 +47,11 @@ export default function LeftDrawer({
   onUpload, displayState, updateDisplayState, message,
   saveAnswer, deleteAnswer, owned,
 }) {
-  const { enabled, setEnabled } = useContext(GPTContext);
+  const { enabled } = useContext(GPTContext);
   const { isAuthenticated } = useAuth0();
   const urlHasAnswerId = useRouteMatch('/answer/:answer_id');
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [isGPTFormOpen, setIsGPTFormOpen] = useState(true);
 
   function toggleDisplay(component, show) {
     updateDisplayState({ type: 'toggle', payload: { component, show } });
@@ -174,7 +176,7 @@ export default function LeftDrawer({
         </ListItem>
         <ListItem
           component="label"
-          onClick={() => setEnabled((prev) => !prev)}
+          onClick={() => setIsGPTFormOpen(true)}
           button
         >
           <ListItemIcon>
@@ -203,6 +205,7 @@ export default function LeftDrawer({
         title="Confirm Answer Deletion"
         confirmText="Delete Answer"
       />
+      <GPTForm open={isGPTFormOpen} handleClose={() => setIsGPTFormOpen(false)} />
     </Drawer>
   );
 }
