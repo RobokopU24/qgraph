@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import Drawer from '@material-ui/core/Drawer';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -21,6 +21,7 @@ import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import ConfirmDialog from '~/components/ConfirmDialog';
 
 import './leftDrawer.css';
+import GPTContext from '../../../context/gpt';
 
 const badgeStyles = makeStyles({
   colorPrimary: {
@@ -45,6 +46,7 @@ export default function LeftDrawer({
   onUpload, displayState, updateDisplayState, message,
   saveAnswer, deleteAnswer, owned,
 }) {
+  const { enabled, setEnabled } = useContext(GPTContext);
   const { isAuthenticated } = useAuth0();
   const urlHasAnswerId = useRouteMatch('/answer/:answer_id');
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -172,7 +174,7 @@ export default function LeftDrawer({
         </ListItem>
         <ListItem
           component="label"
-          onClick={() => console.log('clicked GPT')}
+          onClick={() => setEnabled((prev) => !prev)}
           button
         >
           <ListItemIcon>
@@ -182,7 +184,7 @@ export default function LeftDrawer({
               title="GPT"
               disableRipple
             >
-              <Badge variant="dot" color="primary" aria-label="GPT activated" classes={badgeStyles()}>
+              <Badge variant="dot" color={enabled ? 'primary' : 'error'} aria-label="GPT activated" classes={badgeStyles()}>
                 <Assistant />
               </Badge>
             </IconButton>

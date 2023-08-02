@@ -24,12 +24,15 @@ import API from '~/API';
 
 import AlertContext from '~/context/alert';
 import BiolinkContext from '~/context/biolink';
+import GPTContext from '~/context/gpt';
 
 import useBiolinkModel from '~/stores/useBiolinkModel';
+import useGPT from '~/stores/useGPT';
 
 export default function App() {
   const [alert, setAlert] = useState({});
   const biolink = useBiolinkModel();
+  const gpt = useGPT();
 
   function simpleSetAlert(severity, msg) {
     setAlert({ severity, msg });
@@ -60,44 +63,46 @@ export default function App() {
         >
           <AlertContext.Provider value={simpleSetAlert}>
             <BiolinkContext.Provider value={biolink}>
-              <ThemeProvider theme={theme}>
-                <StylesProvider injectFirst>
-                  <AlertWrapper
-                    alert={alert}
-                    onClose={() => simpleSetAlert(alert.severity, '')}
-                  />
-                  <Header />
-                  <div id="contentContainer">
-                    <Switch>
-                      <Route path="/about">
-                        <About />
-                      </Route>
-                      <Route path="/guide">
-                        <Guide />
-                      </Route>
-                      <Route path="/questions">
-                        <QuestionList />
-                      </Route>
-                      <Route path="/termsofservice">
-                        <TermsofService />
-                      </Route>
-                      <Route path="/logout">
-                        <Logout />
-                      </Route>
-                      <Route path="/answer/:answer_id?">
-                        <Answer />
-                      </Route>
-                      <Route path="/tutorial">
-                        <Tutorial />
-                      </Route>
-                      <Route path="/">
-                        <QueryBuilder />
-                      </Route>
-                    </Switch>
-                  </div>
-                  <Footer />
-                </StylesProvider>
-              </ThemeProvider>
+              <GPTContext.Provider value={gpt}>
+                <ThemeProvider theme={theme}>
+                  <StylesProvider injectFirst>
+                    <AlertWrapper
+                      alert={alert}
+                      onClose={() => simpleSetAlert(alert.severity, '')}
+                    />
+                    <Header />
+                    <div id="contentContainer">
+                      <Switch>
+                        <Route path="/about">
+                          <About />
+                        </Route>
+                        <Route path="/guide">
+                          <Guide />
+                        </Route>
+                        <Route path="/questions">
+                          <QuestionList />
+                        </Route>
+                        <Route path="/termsofservice">
+                          <TermsofService />
+                        </Route>
+                        <Route path="/logout">
+                          <Logout />
+                        </Route>
+                        <Route path="/answer/:answer_id?">
+                          <Answer />
+                        </Route>
+                        <Route path="/tutorial">
+                          <Tutorial />
+                        </Route>
+                        <Route path="/">
+                          <QueryBuilder />
+                        </Route>
+                      </Switch>
+                    </div>
+                    <Footer />
+                  </StylesProvider>
+                </ThemeProvider>
+              </GPTContext.Provider>
             </BiolinkContext.Provider>
           </AlertContext.Provider>
         </Auth0Provider>
