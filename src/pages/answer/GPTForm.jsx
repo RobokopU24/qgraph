@@ -10,15 +10,37 @@ export default function GPTForm({
   open,
   handleClose,
 }) {
-  const { setEnabled } = useContext(GPTContext);
+  const { setToken } = useContext(GPTContext);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    console.log(password);
-    setEnabled((prev) => !prev);
+
+    if (password === '') {
+      setError('Please enter your password.');
+      return;
+    }
+
+    setLoading(true);
+
+    const res = await fetch('/api/auth', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ pw: password }),
+    }).then((resJSON) => resJSON.json());
+
+    if (res.status === 'error') {
+      setError(res.message);
+    } else if (res.status === 'success') {
+      setToken(res.token);
+    }
+
+    setLoading(false);
   };
 
   return (
@@ -64,8 +86,13 @@ export default function GPTForm({
           <Button onClick={handleClose} color="default">
             Cancel
           </Button>
-          <Button type="submit" color="primary" variant="outlined" disabled={password === ''}>
-            Enable
+          <Button
+            type="submit"
+            color="primary"
+            variant="outlined"
+            disabled={password === '' || loading}
+          >
+            { loading ? '...' : 'Enable' }
           </Button>
         </DialogActions>
       </form>

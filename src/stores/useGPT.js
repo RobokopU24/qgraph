@@ -1,10 +1,13 @@
 import { useState } from 'react';
 
 export default function useGPT() {
-  const [enabled, setEnabled] = useState(false);
+  const [token, setToken] = useState('');
+
+  const enabled = token !== '';
 
   return {
     enabled,
-    setEnabled,
+    token,
+    setToken,
   };
 }
