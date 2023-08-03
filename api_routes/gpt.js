@@ -12,6 +12,8 @@ router.route('/auth')
       return;
     }
 
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
     res.send({
       status: 'success',
       token: 'secretToken',

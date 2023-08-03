@@ -1,4 +1,6 @@
-import React, { useContext, useState } from 'react';
+import React, {
+  useContext, useRef, useState,
+} from 'react';
 
 import {
   Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Link, TextField,
@@ -12,6 +14,13 @@ const EnableForm = ({ open, handleClose }) => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const controllerRef = useRef(new AbortController());
+
+  const handleCloseWithAbort = () => {
+    if (controllerRef.current) { controllerRef.current.abort(); }
+    handleClose();
+  };
+
   const onSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -23,13 +32,20 @@ const EnableForm = ({ open, handleClose }) => {
 
     setLoading(true);
 
-    const res = await fetch('/api/gpt/auth', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ pw: password }),
-    });
+    let res;
+    try {
+      res = await fetch('/api/gpt/auth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ pw: password }),
+        signal: controllerRef.current ? controllerRef.current.signal : undefined,
+      });
+    } catch (err) {
+      setError('An error has occurred, please try again later');
+      return;
+    }
 
     if (res.status !== 200) {
       setError(res.statusText);
@@ -45,12 +61,12 @@ const EnableForm = ({ open, handleClose }) => {
       setPassword('');
       setLoading(false);
       setToken(apiResponse.token);
-      handleClose();
+      handleCloseWithAbort();
     }
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} aria-labelledby="gpt-dialog-title">
+    <Dialog open={open} onClose={handleCloseWithAbort} aria-labelledby="gpt-dialog-title">
       <form onSubmit={onSubmit}>
         <DialogTitle id="gpt-dialog-title">Enable GPT Mode</DialogTitle>
         <DialogContent>
@@ -89,7 +105,7 @@ const EnableForm = ({ open, handleClose }) => {
 
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="default">
+          <Button onClick={handleCloseWithAbort} color="default">
             Cancel
           </Button>
           <Button
