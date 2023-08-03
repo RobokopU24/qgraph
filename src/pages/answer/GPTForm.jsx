@@ -6,10 +6,7 @@ import {
 import { Alert } from '@material-ui/lab';
 import GPTContext from '../../context/gpt';
 
-export default function GPTForm({
-  open,
-  handleClose,
-}) {
+const EnableForm = ({ open, handleClose }) => {
   const { setToken } = useContext(GPTContext);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -45,12 +42,11 @@ export default function GPTForm({
     if (apiResponse.status === 'error') {
       setError(apiResponse.message);
     } else if (apiResponse.status === 'success') {
+      setPassword('');
+      setLoading(false);
       setToken(apiResponse.token);
       handleClose();
     }
-
-    setPassword('');
-    setLoading(false);
   };
 
   return (
@@ -108,4 +104,40 @@ export default function GPTForm({
       </form>
     </Dialog>
   );
+};
+
+const DisableForm = ({ open, handleClose }) => {
+  const { setToken } = useContext(GPTContext);
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    setToken('');
+    handleClose();
+  };
+
+  return (
+    <Dialog open={open} onClose={handleClose} aria-labelledby="gpt-dialog-title">
+      <form onSubmit={onSubmit}>
+        <DialogTitle id="gpt-dialog-title">Disable GPT Mode</DialogTitle>
+        <DialogActions>
+          <Button onClick={handleClose} color="default">
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            color="secondary"
+            variant="outlined"
+          >
+            Disable
+          </Button>
+        </DialogActions>
+      </form>
+    </Dialog>
+  );
+};
+
+export default function GPTForm(props) {
+  const { enabled } = useContext(GPTContext);
+
+  return enabled ? <DisableForm {...props} /> : <EnableForm {...props} />;
 }
