@@ -101,9 +101,25 @@ const AttributesTable = ({ attributes, sources }) => (
             Sources
           </TableCell>
           <TableCell>
-            <pre>
-              {JSON.stringify(sources, null, 2)}
-            </pre>
+            {Array.isArray(sources) && sources.map((source, i) => (
+              <section key={i}>
+                <p style={{ marginBottom: '0px', fontStyle: 'italic' }}>{source.resource_id}</p>
+                <p style={{ filter: 'opacity(0.75)', fontSize: '0.8em' }}>{source.resource_role}</p>
+                {Boolean(source.upstream_resource_ids) && Array.isArray(source.upstream_resource_ids) && (
+                  <>
+                    <p style={{ marginBottom: '0px' }}>Upstream resource ids:</p>
+                    <ul>
+                      {source.upstream_resource_ids.map((urid, j) => (
+                        <li key={j}>
+                          {urid}
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+                {i === sources.length - 1 ? null : <hr />}
+              </section>
+            ))}
           </TableCell>
         </TableRow>
       </StyledTableBody>
