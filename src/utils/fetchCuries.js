@@ -8,6 +8,10 @@ export default async function fetchCuries(entity, displayAlert, cancel) {
       'Failed to contact name resolver to search curies. Please try again later.');
     return [];
   }
+
+  if (!Array.isArray(response)) {
+    return [];
+  }
   const curieResponse = response.map((node) => node.curie);
   if (!curieResponse.length) {
     return [];
