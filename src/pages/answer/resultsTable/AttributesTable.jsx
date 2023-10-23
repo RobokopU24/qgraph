@@ -72,7 +72,7 @@ const PublicationLinkCell = ({ value }) => {
   );
 };
 
-const AttributesTable = ({ attributes }) => (
+const AttributesTable = ({ attributes, sources }) => (
   <Box style={{ maxHeight: 500, overflow: 'auto' }}>
     <Table size="small" aria-label="edge attributes table">
       <TableHead style={{ position: 'sticky', top: 0 }}>
@@ -96,6 +96,32 @@ const AttributesTable = ({ attributes }) => (
             }
           </TableRow>
         ))}
+        <TableRow>
+          <TableCell>
+            Sources
+          </TableCell>
+          <TableCell>
+            {Array.isArray(sources) && sources.map((source, i) => (
+              <section key={i}>
+                <p style={{ marginBottom: '0px', fontStyle: 'italic' }}>{source.resource_id}</p>
+                <p style={{ filter: 'opacity(0.75)', fontSize: '0.8em' }}>{source.resource_role}</p>
+                {Boolean(source.upstream_resource_ids) && Array.isArray(source.upstream_resource_ids) && (
+                  <>
+                    <p style={{ marginBottom: '0px' }}>Upstream resource ids:</p>
+                    <ul>
+                      {source.upstream_resource_ids.map((urid, j) => (
+                        <li key={j}>
+                          {urid}
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+                {i === sources.length - 1 ? null : <hr />}
+              </section>
+            ))}
+          </TableCell>
+        </TableRow>
       </StyledTableBody>
     </Table>
   </Box>

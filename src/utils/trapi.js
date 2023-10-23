@@ -78,10 +78,10 @@ function validateResults(results) {
       errors.push('Results node_bindings is not a valid JSON object');
     }
 
-    if (!('edge_bindings' in results[i])) {
-      errors.push('No edge_bindings in result object');
-    } else if (results[i].edge_bindings.constructor !== Object) {
-      errors.push('Results edge_bindings is not a valid JSON object');
+    if (!('analyses' in results[i])) {
+      errors.push('No analyses in result object');
+    } else if (!Array.isArray(results[i].analyses)) {
+      errors.push('Results analyses is not an array');
     }
     if (errors.length) {
       break;
