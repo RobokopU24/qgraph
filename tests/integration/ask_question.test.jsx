@@ -1,9 +1,9 @@
 import React from 'react';
-import axios from 'axios';
 import userEvent from '@testing-library/user-event';
 import {
   render, waitFor, screen,
 } from '&/test_utils';
+import { api } from '~/API/baseUrlProxy';
 
 import App from '~/App';
 
@@ -34,7 +34,7 @@ describe('Full question workflow', () => {
     jest.clearAllMocks();
   });
   it('successfully asks a question', async () => {
-    const spyPost = jest.spyOn(axios, 'post');
+    const spyPost = jest.spyOn(api, 'post');
     render(<App />);
 
     // submit question

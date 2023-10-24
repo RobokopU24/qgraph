@@ -153,7 +153,7 @@ export default function QueryBuilder() {
       const alertText = 'Your answer is ready!';
       const { answerId } = response;
       // User has navigated away, display a button to go to the answer
-      if (history.location.pathname !== '/question') {
+      if (history.location.pathname !== '/') {
         displayAlert(
           response.status,
           <>

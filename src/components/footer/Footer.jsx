@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { Link } from 'react-router-dom';
 import './footer.css';
 
 export default function Footer() {
@@ -12,7 +12,7 @@ export default function Footer() {
         development is supported by <a href="https://niehs.nih.gov" target="_blank" rel="noreferrer">NIEHS</a> and{' '}
         the <a href="https://www.nih.gov/" target="_blank" rel="noreferrer">NIH</a>{' '}
         <a href="https://datascience.nih.gov/about/odss" target="_blank" rel="noreferrer">ODSS</a>.{' '}
-        <a href="/termsofservice">Terms of Service</a>.
+        <Link to="/termsofservice">Terms of Service</Link>.
       </p>
     </div>
   );

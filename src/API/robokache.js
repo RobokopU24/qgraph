@@ -1,6 +1,5 @@
-import axios from 'axios';
-
 import utils from './utils';
+import { api } from './baseUrlProxy';
 
 // Base request method for all endpoints
 async function baseRequest(path, method, body, token) {
@@ -19,7 +18,7 @@ async function baseRequest(path, method, body, token) {
   }
 
   try {
-    const response = await axios(config);
+    const response = await api(config);
     return response.data;
   } catch (error) {
     return utils.handleAxiosError(error);
@@ -53,7 +52,7 @@ const routes = {
       config.headers.Authorization = `Bearer ${token}`;
     }
     try {
-      const response = await axios(config);
+      const response = await api(config);
       return response.data;
     } catch (error) {
       return utils.handleAxiosError(error);
@@ -71,7 +70,7 @@ const routes = {
       config.headers.Authorization = `Bearer ${token}`;
     }
     try {
-      const response = await axios(config);
+      const response = await api(config);
       return response.data;
     } catch (error) {
       return utils.handleAxiosError(error);
@@ -88,7 +87,7 @@ const routes = {
     };
     config.headers.Authorization = `Bearer ${token}`;
     try {
-      const response = await axios(config);
+      const response = await api(config);
       return response.data;
     } catch (error) {
       return utils.handleAxiosError(error);
@@ -104,7 +103,7 @@ const routes = {
     };
     config.headers.Authorization = `Bearer ${token}`;
     try {
-      const response = await axios(config);
+      const response = await api(config);
       return response.data;
     } catch (error) {
       return utils.handleAxiosError(error);

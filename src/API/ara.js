@@ -1,5 +1,5 @@
-import axios from 'axios';
 import utils from './utils';
+import { api } from './baseUrlProxy';
 
 const baseRoutes = {
   /**
@@ -8,7 +8,7 @@ const baseRoutes = {
    */
   async getQuickAnswer(ara, message) {
     try {
-      const response = await axios.post(`/api/quick_answer/?ara=${ara}`, message);
+      const response = await api.post(`/api/quick_answer/?ara=${ara}`, message);
       return response.data;
     } catch (error) {
       return utils.handleAxiosError(error);
@@ -30,7 +30,7 @@ const baseRoutes = {
       config.headers.Authorization = `Bearer ${token}`;
     }
     try {
-      const response = await axios(config);
+      const response = await api(config);
       return response.data;
     } catch (e) {
       return utils.handleAxiosError(e);

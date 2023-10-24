@@ -30,6 +30,28 @@ export default function useAnswerStore() {
   }
 
   /**
+   * Takes a TRAPI message and average the analysis scores for each
+   * result, and places that average in a new key called `score` on
+   * each result object.
+   * @param {object} msg - TRAPI message
+   */
+  function averageAnalysesScores(msg) {
+    const resultsWithScore = msg.results.map((result) => {
+      // get average score of all analyses
+      const score = result.analyses.reduce((sum, analysis) => sum + analysis.score, 0) / result.analyses.length;
+      return {
+        ...result,
+        score,
+      };
+    });
+
+    return {
+      ...msg,
+      results: resultsWithScore,
+    };
+  }
+
+  /**
    * Initialize the answer store with a message
    *
    * Stores the message, makes the nodes for a bubble chart,
@@ -37,7 +59,7 @@ export default function useAnswerStore() {
    * @param {object} msg - TRAPI message
    */
   function initialize(msg, updateDisplayState) {
-    setMessage(msg);
+    setMessage(averageAnalysesScores(msg));
     if (msg.knowledge_graph && msg.results) {
       setKgNodes(kgUtils.makeDisplayNodes(msg, hierarchies));
       updateDisplayState({ type: 'toggle', payload: { component: 'kg', show: true } });
@@ -94,35 +116,37 @@ export default function useAnswerStore() {
           }
         });
       });
+
       const edges = {};
       const edgesJSON = {};
-      Object.values(row.edge_bindings).forEach((value) => {
-        value.forEach((kgObject) => {
-          const kgEdge = message.knowledge_graph.edges[kgObject.id];
-          edgesJSON[kgObject.id] = kgEdge || 'Unknown';
-          if (kgEdge) {
-            const graphEdge = {
-              id: kgObject.id,
-              source: kgEdge.subject,
-              target: kgEdge.object,
-              predicate: kgEdge.predicate,
-            };
-            edges[kgObject.id] = graphEdge;
-            if (kgEdge.subject in nodes) {
-              nodes[kgEdge.subject].score += 1;
+      row.analyses.forEach((analysis) => {
+        Object.values(analysis.edge_bindings).forEach((edgeBindings) => {
+          edgeBindings.forEach((binding) => {
+            const kgEdge = message.knowledge_graph.edges[binding.id];
+            edgesJSON[binding.id] = kgEdge || 'Unknown';
+            if (kgEdge) {
+              const graphEdge = {
+                id: binding.id,
+                source: kgEdge.subject,
+                target: kgEdge.object,
+                predicate: kgEdge.predicate,
+              };
+              edges[binding.id] = graphEdge;
+              if (kgEdge.subject in nodes) {
+                nodes[kgEdge.subject].score += 1;
+              }
+              if (kgEdge.object in nodes) {
+                nodes[kgEdge.object].score += 1;
+              }
+              const subjectNode = message.knowledge_graph.nodes[kgEdge.subject];
+              const objectNode = message.knowledge_graph.nodes[kgEdge.object];
+              const edgeKey = `${subjectNode.name || kgEdge.subject} ${stringUtils.displayPredicate(kgEdge.predicate)} ${objectNode.name || kgEdge.object}`;
+              publications[edgeKey] = resultsUtils.getPublications(kgEdge);
             }
-            if (kgEdge.object in nodes) {
-              nodes[kgEdge.object].score += 1;
-            }
-
-            const subjectNode = message.knowledge_graph.nodes[kgEdge.subject];
-            const objectNode = message.knowledge_graph.nodes[kgEdge.object];
-            const edgeKey = `${subjectNode.name || kgEdge.subject} ${stringUtils.displayPredicate(kgEdge.predicate)} ${objectNode.name || kgEdge.object}`;
-
-            publications[edgeKey] = resultsUtils.getPublications(kgEdge);
-          }
+          });
         });
       });
+
       setSelectedResult({ nodes, edges });
       setSelectedRowId(rowId);
       setMetaData(publications);
