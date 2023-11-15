@@ -4,7 +4,7 @@ import './footer.css';
 
 export default function Footer() {
   return (
-    <div className="footer">
+    <footer>
       <p>
         ROBOKOP is a joint creation of <a href="http://www.renci.org" target="_blank" rel="noreferrer">RENCI</a>{' '}
         and <a href="http://www.covar.com" target="_blank" rel="noreferrer">CoVar LLC</a>. Early development was{' '}
@@ -14,6 +14,6 @@ export default function Footer() {
         <a href="https://datascience.nih.gov/about/odss" target="_blank" rel="noreferrer">ODSS</a>.{' '}
         <Link to="/termsofservice">Terms of Service</Link>.
       </p>
-    </div>
+    </footer>
   );
 }
