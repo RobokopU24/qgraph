@@ -350,7 +350,7 @@ export default function ResultExplorer({ answerStore }) {
       elevation={3}
     >
       <h5 className="cardLabel">Answer Explorer</h5>
-      { Boolean(answerStore.showNodePruneSlider)  && (
+      { Boolean(answerStore.showNodePruneSlider) && (
         <Box width={200} id="nodeNumSlider">
           <Slider
             value={numTrimmedNodes}
