@@ -8,12 +8,15 @@ const robokache = require('./robokache');
 const { handleAxiosError } = require('./utils');
 const services = require('./services');
 const external_apis = require('./external');
+const gpt_auth = require('./gpt');
 
 const samples = JSON.parse(fs.readFileSync(path.join(__dirname, './sample-query-cache.json')));
 
 router.use('/', external_apis);
 
 router.use('/robokache', robokache.router);
+
+router.use('/gpt', gpt_auth);
 
 router.route('/quick_answer')
   .post(async (req, res) => {
