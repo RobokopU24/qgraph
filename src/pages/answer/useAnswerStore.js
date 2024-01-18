@@ -145,15 +145,9 @@ export default function useAnswerStore() {
               const edgeKey = `${subjectNode.name || kgEdge.subject} ${stringUtils.displayPredicate(kgEdge.predicate)} ${objectNode.name || kgEdge.object}`;
               publications[edgeKey] = resultsUtils.getPublications(kgEdge);
               console.log(publications[edgeKey]);
-              // "edge": {
-              //   "subject": "PUBCHEM.COMPOUND:6018",
-              //   "object": "MONDO:0007739",
-              //   "predicate": "biolink:treats",
-              //   "publications": ["PMC:4557792", "PMID:29920125", "PMID:30136594", "PMID:19050408", "PMID:28742396", "PMID:19381278", "PMID:22621818", "PMID:2901681"],
-              //   "sentences": "Valbenazine is a modified metabolite of the vesicular monoamine transporter 2 (VMAT-2) inhibitor tetrabenazine, which is approved for the treatment of the hyperkinetic movement disorder, Huntington's disease.|NA|This deuterated form of the drug tetrabenazine is indicated for the treatment of chorea associated with Huntington's disease as well as tardive dyskinesia.|NA|For example, in 2008 the FDA approved the synthetic VMAT2 inhibitor tetrabenazine (TBZ) for treatment of chorea associated with Huntington?s disease.|NA"
-              // }
+              // TODO: The following block should only happen if ChatGPT mode is on.
               if (publications[edgeKey].length > 0) {
-                // Create the edge json object, and send to the gpt.
+                // Create the edge json object
                 const thisEdgeJson = {
                   nodes: nodesJSON,
                   edge: {
@@ -166,7 +160,8 @@ export default function useAnswerStore() {
                 };
                 console.log('Found one ore more publication!');
                 console.log(JSON.stringify(thisEdgeJson, null, 2));
-                // Add a metadata object to the edgeJSON as GPT Summary
+                // TODO: Send edge graph to kg-summarizer
+                // TODO: Add a metadata object to the original edgeJSON as GPT Summary
               }
             }
           });
