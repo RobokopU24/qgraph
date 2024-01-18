@@ -174,7 +174,7 @@ function getPublications(kgObj) {
         attribute.value = [attribute.value];
       }
       attribute.value.forEach((publicationId) => {
-        if (publicationId.startsWith('PMID:')) {
+        if (publicationId.startsWith('PMID:') || publicationId.startsWith('PMC:')) {
           publications.push(pubmedUrl + publicationId.split(':')[1]);
         }
       });
@@ -183,7 +183,30 @@ function getPublications(kgObj) {
   return publications;
 }
 
+/**
+ * Get publication attributes from knowledge graph nodes and edges
+ * @param {object} kgObj - knowledge graph node or edge object
+ * @returns a list of publication urls
+ */
+function getSentences(kgObj) {
+  const sentence = [];
+  // Try and find any publications in edge attributes
+  const sentenceAttribute = (
+    kgObj.attributes && Array.isArray(kgObj.attributes) &&
+    // TRAPI for publications attributes is not standardized
+    kgObj.attributes.filter((att) => (
+      att.attribute_type_id === 'biolink:Attribute' &&
+      att.original_attribute_name === 'sentences'
+    ))
+  );
+  sentenceAttribute.forEach((attribute) => {
+    sentence.push(attribute.value);
+  });
+  return sentence;
+}
+
 export default {
   makeTableHeaders,
   getPublications,
+  getSentences,
 };
