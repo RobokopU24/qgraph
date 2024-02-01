@@ -316,7 +316,6 @@ export default function ResultExplorer({ answerStore }) {
 
   const handleClickEdge = (event, data) => {
     setPopoverPosition({ x: event.clientX, y: event.clientY });
-
     setPopoverData(data);
     setPopoverOpen('edge');
   };
@@ -379,7 +378,7 @@ export default function ResultExplorer({ answerStore }) {
         anchorPosition={{ top: popoverPosition.y, left: popoverPosition.x }}
         above
       >
-        <AttributesTable attributes={popoverData.attributes} sources={popoverData.sources} />
+        <AttributesTable nodes={answerStore.selectedResult.nodes} edge={popoverData} attributes={popoverData.attributes} sources={popoverData.sources} />
       </Popover>
 
       <Popover

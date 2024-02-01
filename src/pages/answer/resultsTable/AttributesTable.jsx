@@ -1,11 +1,30 @@
 import {
   Box,
   styled,
-  Table, TableBody, TableCell, TableHead, TableRow,
+  Table, TableBody, TableCell, TableHead, TableRow, withStyles,
 } from '@material-ui/core';
 import React from 'react';
+import Button from '@material-ui/core/Button';
+import { blue } from '@material-ui/core/colors';
 
 const headerStyles = { fontWeight: 'bold', backgroundColor: '#eee' };
+
+const GPTSummaryButton = withStyles((theme) => ({
+  root: {
+    marginLeft: 'auto',
+    color: theme.palette.getContrastText(blue[600]),
+    backgroundColor: blue[600],
+    '&:hover': {
+      backgroundColor: blue[700],
+    },
+  },
+}))(Button);
+
+async function onGPTSummary(nodes, edge) {
+  console.log('CLICKED FROM GPU SUMMARY FUNC');
+  console.log(JSON.stringify(edge, null, 2));
+  console.log(JSON.stringify(nodes, null, 2));
+}
 
 const StyledTableBody = styled(TableBody)(() => ({
   '& .MuiTableRow-root:last-of-type .MuiTableCell-root': {
@@ -27,7 +46,7 @@ const ValueCell = ({ value }) => (
   </TableCell>
 );
 
-const PublicationLinkCell = ({ value }) => {
+const PublicationLinkCell = ({ value, nodes, edge }) => {
   const getLinkFromValue = (pmidValue) => {
     const pmid = pmidValue.split(':');
     if (pmid.length < 2) return null;
@@ -68,11 +87,17 @@ const PublicationLinkCell = ({ value }) => {
           </li>
         )}
       </ul>
+      <GPTSummaryButton
+        onClick={() => onGPTSummary(nodes, edge)}
+        variant="outlined"
+      >
+        Get AI Summary
+      </GPTSummaryButton>
     </TableCell>
   );
 };
 
-const AttributesTable = ({ attributes, sources }) => (
+const AttributesTable = ({ nodes, edge, attributes, sources }) => (
   <Box style={{ maxHeight: 500, overflow: 'auto' }}>
     <Table size="small" aria-label="edge attributes table">
       <TableHead style={{ position: 'sticky', top: 0 }}>
@@ -91,7 +116,7 @@ const AttributesTable = ({ attributes, sources }) => (
             <TableCell style={{ verticalAlign: 'top' }}>{attribute.attribute_type_id}</TableCell>
             {
               attribute.attribute_type_id === 'biolink:publications'
-                ? <PublicationLinkCell value={attribute.value} />
+                ? <PublicationLinkCell value={attribute.value} edge={edge} nodes={nodes} />
                 : <ValueCell value={attribute.value} />
             }
           </TableRow>
