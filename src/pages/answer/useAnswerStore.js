@@ -161,7 +161,42 @@ export default function useAnswerStore() {
                 console.log('Found one ore more publication!');
                 console.log(JSON.stringify(thisEdgeJson, null, 2));
                 // TODO: Send edge graph to kg-summarizer
+                const kgsummarizerurl = 'https://kg-summarizer.apps.renci.org/summarize/edge';
+                const toSendData = {
+                  edge: thisEdgeJson,
+                  parameters: {
+                    llm: {
+                      gpt_model: 'gpt-3.5-turbo',
+                      temperature: 0,
+                      system_prompt: '',
+                    },
+                  },
+                };
+                console.log(JSON.stringify(toSendData, null, 2));
+                const options = {
+                  method: 'POST',
+                  headers: {
+                    'Content-type': 'application/json',
+                  },
+                  body: JSON.stringify(toSendData),
+                };
                 // TODO: Add a metadata object to the original edgeJSON as GPT Summary
+                fetch(kgsummarizerurl, options)
+                  .then(response => {
+                    if (!response.ok) {
+                      throw new Error('Network response was not ok');
+                    }
+                    return response.json(); // Parse the JSON in the response ? Or is it a text?
+                  })
+                  .then(data => {
+                    console.log('KG SUMMARIZER Success:', data);
+                    kgEdge.GPTSummary = data;
+                    // Do something with the response data
+                  })
+                  .catch(error => {
+                    console.error('KG SUMMARIZER Error:', error);
+                    // Handle errors
+                  });
               }
             }
           });
