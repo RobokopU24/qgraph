@@ -6,6 +6,7 @@ import {
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import { blue } from '@material-ui/core/colors';
+import resultsUtils from '~/utils/results';
 
 const headerStyles = { fontWeight: 'bold', backgroundColor: '#eee' };
 
@@ -20,10 +21,58 @@ const GPTSummaryButton = withStyles((theme) => ({
   },
 }))(Button);
 
-async function onGPTSummary(nodes, edge) {
+async function onGPTSummary(aiJSON) {
+  const publicationsArr = resultsUtils.getPublications(aiJSON.edge);
+  const sentenceRes = resultsUtils.getSentences(aiJSON.edge);
+  console.log('FROM GPT SUMMARY FUNC, publications: ', publicationsArr);
+  console.log('FROM GPT SUMMARY FUNC, sentence: ', sentenceRes);
+  const toSendData = {
+    edge: {
+      nodes: aiJSON.nodes,
+      edge: {
+        subject: aiJSON.edge.subject,
+        object: aiJSON.edge.object,
+        predicate: aiJSON.edge.predicate,
+        publications: publicationsArr,
+        sentences: sentenceRes,
+      },
+    },
+    parameters: {
+      llm: {
+        gpt_model: 'gpt-3.5-turbo',
+        temperature: 0,
+        system_prompt: '',
+      },
+    },
+  };
   console.log('CLICKED FROM GPU SUMMARY FUNC');
-  console.log(JSON.stringify(edge, null, 2));
-  console.log(JSON.stringify(nodes, null, 2));
+  // console.log(JSON.stringify(edge, null, 2));
+  // console.log(JSON.stringify(nodes, null, 2));
+  console.log(JSON.stringify(toSendData, null, 2));
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json',
+    },
+    body: JSON.stringify(toSendData),
+  };
+  const kgsummarizerurl = 'https://kg-summarizer.apps.renci.org/summarize/edge';
+  fetch(kgsummarizerurl, options)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json(); // Parse the JSON in the response ? Or is it a text?
+    })
+    .then(data => {
+      console.log('KG SUMMARIZER Success:', data);
+      // = data;
+      // Do something with the response data
+    })
+    .catch(error => {
+      console.error('KG SUMMARIZER Error:', error);
+      // Handle errors
+    });
 }
 
 const StyledTableBody = styled(TableBody)(() => ({
@@ -46,7 +95,7 @@ const ValueCell = ({ value }) => (
   </TableCell>
 );
 
-const PublicationLinkCell = ({ value, nodes, edge }) => {
+const PublicationLinkCell = ({ value, aiJSON }) => {
   const getLinkFromValue = (pmidValue) => {
     const pmid = pmidValue.split(':');
     if (pmid.length < 2) return null;
@@ -88,7 +137,7 @@ const PublicationLinkCell = ({ value, nodes, edge }) => {
         )}
       </ul>
       <GPTSummaryButton
-        onClick={() => onGPTSummary(nodes, edge)}
+        onClick={() => onGPTSummary(aiJSON)}
         variant="outlined"
       >
         Get AI Summary
@@ -97,7 +146,7 @@ const PublicationLinkCell = ({ value, nodes, edge }) => {
   );
 };
 
-const AttributesTable = ({ nodes, edge, attributes, sources }) => (
+const AttributesTable = ({ aiJSON, attributes, sources }) => (
   <Box style={{ maxHeight: 500, overflow: 'auto' }}>
     <Table size="small" aria-label="edge attributes table">
       <TableHead style={{ position: 'sticky', top: 0 }}>
@@ -116,7 +165,7 @@ const AttributesTable = ({ nodes, edge, attributes, sources }) => (
             <TableCell style={{ verticalAlign: 'top' }}>{attribute.attribute_type_id}</TableCell>
             {
               attribute.attribute_type_id === 'biolink:publications'
-                ? <PublicationLinkCell value={attribute.value} edge={edge} nodes={nodes} />
+                ? <PublicationLinkCell value={attribute.value} aiJSON={aiJSON} />
                 : <ValueCell value={attribute.value} />
             }
           </TableRow>

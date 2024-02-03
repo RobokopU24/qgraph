@@ -40,6 +40,7 @@ export default function ResultExplorer({ answerStore }) {
   // const [currentEdgeAttributes, setCurrentEdgeAttributes] = useState({});
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [popoverData, setPopoverData] = useState({});
+  const [aiJSON, setAIJSON] = useState({});
 
   /**
    * Initialize svg object
@@ -318,6 +319,10 @@ export default function ResultExplorer({ answerStore }) {
     setPopoverPosition({ x: event.clientX, y: event.clientY });
     setPopoverData(data);
     setPopoverOpen('edge');
+    console.log('*** REQUESTED edge ID: ', data.id);
+    const tmp = { nodes: answerStore.resultJSON.knowledge_graph.nodes, edge: answerStore.resultJSON.knowledge_graph.edges[data.id] };
+    console.log(JSON.stringify(tmp, null, 2));
+    setAIJSON(tmp);
   };
 
   const handleClickNode = (data) => {
@@ -378,7 +383,7 @@ export default function ResultExplorer({ answerStore }) {
         anchorPosition={{ top: popoverPosition.y, left: popoverPosition.x }}
         above
       >
-        <AttributesTable nodes={answerStore.selectedResult.nodes} edge={popoverData} attributes={popoverData.attributes} sources={popoverData.sources} />
+        <AttributesTable aiJSON={aiJSON} attributes={popoverData.attributes} sources={popoverData.sources} />
       </Popover>
 
       <Popover

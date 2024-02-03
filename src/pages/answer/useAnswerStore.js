@@ -123,8 +123,8 @@ export default function useAnswerStore() {
         Object.values(analysis.edge_bindings).forEach((edgeBindings) => {
           edgeBindings.forEach((binding) => {
             const kgEdge = message.knowledge_graph.edges[binding.id];
-            console.log('--- TRYING TO WRITE STUFF FOR EDGE ID: ' + binding.id);
-            console.log(JSON.stringify(kgEdge, null, 2));
+            //DEL console.log('--- TRYING TO WRITE STUFF FOR EDGE ID: ', binding.id);
+            //DEL console.log(JSON.stringify(kgEdge, null, 2));
             edgesJSON[binding.id] = kgEdge || 'Unknown';
             if (kgEdge) {
               const graphEdge = {
@@ -144,7 +144,7 @@ export default function useAnswerStore() {
               const objectNode = message.knowledge_graph.nodes[kgEdge.object];
               const edgeKey = `${subjectNode.name || kgEdge.subject} ${stringUtils.displayPredicate(kgEdge.predicate)} ${objectNode.name || kgEdge.object}`;
               publications[edgeKey] = resultsUtils.getPublications(kgEdge);
-              console.log(publications[edgeKey]);
+              //DEL console.log(publications[edgeKey]);
               // TODO: The following block should only happen if ChatGPT mode is on.
               if (publications[edgeKey].length > 0) {
                 // Create the edge json object
@@ -158,9 +158,9 @@ export default function useAnswerStore() {
                     sentences: resultsUtils.getSentences(kgEdge),
                   },
                 };
-                console.log('Found one ore more publication!');
-                console.log(JSON.stringify(thisEdgeJson, null, 2));
-                // TODO: Send edge graph to kg-summarizer
+                // DEL console.log('Found one ore more publication!');
+                // DEL console.log(JSON.stringify(thisEdgeJson, null, 2));
+                // Send edge graph to kg-summarizer
                 const kgsummarizerurl = 'https://kg-summarizer.apps.renci.org/summarize/edge';
                 const toSendData = {
                   edge: thisEdgeJson,
@@ -172,6 +172,7 @@ export default function useAnswerStore() {
                     },
                   },
                 };
+                console.log('***** RIGHT BEFORE ITERATIVE KGSUMMARIZER');
                 console.log(JSON.stringify(toSendData, null, 2));
                 const options = {
                   method: 'POST',

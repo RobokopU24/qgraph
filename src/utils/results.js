@@ -184,7 +184,7 @@ function getPublications(kgObj) {
 }
 
 /**
- * Get publication attributes from knowledge graph nodes and edges
+ * Get sentence attributes from knowledge graph nodes and edges
  * @param {object} kgObj - knowledge graph node or edge object
  * @returns a list of publication urls
  */
