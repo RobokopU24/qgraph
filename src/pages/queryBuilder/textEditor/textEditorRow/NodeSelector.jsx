@@ -5,6 +5,8 @@ import axios from 'axios';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Tooltip from '@material-ui/core/Tooltip';
+import { withStyles } from '@material-ui/core';
 
 import AlertContext from '~/context/alert';
 import BiolinkContext from '~/context/biolink';
@@ -204,6 +206,7 @@ export default function NodeSelector({
       onOpen={() => toggleOpen(true)}
       onClose={() => toggleOpen(false)}
       onInputChange={(e, v) => updateInputText(v)}
+      renderOption={(props) => <Option {...props} />}
       renderInput={(params) => (
         <TextField
           {...params}
@@ -235,5 +238,35 @@ export default function NodeSelector({
       )}
       size="medium"
     />
+  );
+}
+
+const CustomTooltip = withStyles((theme) => ({
+  tooltip: {
+    fontSize: theme.typography.pxToRem(14),
+  },
+}))(Tooltip);
+
+function Option({ name, ids, categories }) {
+  return (
+    <CustomTooltip
+      interactive
+      arrow
+      title={(
+        <div className="node-option-tooltip-wrapper">
+          {Array.isArray(ids) && ids.length > 0 && (
+            <span>{ids[0]}</span>
+          )}
+          {Array.isArray(categories) && categories.length > 0 && (
+            <span>{categories[0]}</span>
+          )}
+        </div>
+      )}
+      placement="left"
+    >
+      <div>
+        { name }
+      </div>
+    </CustomTooltip>
   );
 }
