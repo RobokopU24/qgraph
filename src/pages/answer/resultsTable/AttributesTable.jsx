@@ -46,9 +46,6 @@ const PublicationLinkCell = ({ value, aiJSON }) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [popoverPosition, setPopoverPosition] = useState({ x: 0, y: 0 });
 
-  // const [anchorEl, setAnchorEl] = useState(null);
-  // const spanRef = useRef();
-
   const GPTSummaryButton = withStyles((theme) => ({
     root: {
       marginLeft: 'auto',
@@ -64,8 +61,6 @@ const PublicationLinkCell = ({ value, aiJSON }) => {
     const publicationsArr = resultsUtils.getPublications(inJSON.edge);
     const sentenceRes = resultsUtils.getSentences(inJSON.edge);
     // setAnchorEl(spanRef.current);
-    console.log('FROM GPT SUMMARY FUNC, publications: ', publicationsArr);
-    console.log('FROM GPT SUMMARY FUNC, sentence: ', sentenceRes);
     const toSendData = {
       edge: {
         nodes: inJSON.nodes,
@@ -85,8 +80,6 @@ const PublicationLinkCell = ({ value, aiJSON }) => {
         },
       },
     };
-    console.log('CLICKED FROM GPU SUMMARY FUNC');
-    console.log(JSON.stringify(toSendData, null, 2));
     const options = {
       method: 'POST',
       headers: {
@@ -96,33 +89,23 @@ const PublicationLinkCell = ({ value, aiJSON }) => {
     };
     const kgsummarizerurl = 'https://kg-summarizer.apps.renci.org/summarize/edge';
     await fetch(kgsummarizerurl, options)
-      .then(response => {
+      .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
         return response.json(); // Parse the JSON in the response ? Or is it a text?
       })
-      .then(data => {
-        console.log('KG SUMMARIZER Success:', data);
+      .then((data) => {
         setAISummaryData(data);
         setPopoverOpen('aiSummary');
         setPopoverPosition({ x: event.clientX, y: event.clientY });
-        console.log(event.target);
       })
-      .catch(error => {
-        setAISummaryData('Error getting response from KG-Summarizer');
+      .catch((error) => {
+        setAISummaryData('Error getting response from KG-Summarizer:: ', error);
         setPopoverOpen('aiSummary');
         setPopoverPosition({ x: event.clientX, y: event.clientY });
-        console.error('KG SUMMARIZER Error:', error);
       });
   }
-
-  // function handlePopoverClose() {
-  //   setAnchorEl(null);
-  //   setPopoverOpen(null);
-  // }
-  // const open = Boolean(anchorEl);
-  // const id = open ? "simple-popover" : undefined;
 
   return (
     <TableCell>
@@ -166,7 +149,6 @@ const PublicationLinkCell = ({ value, aiJSON }) => {
               onGPTSummary(event, aiJSON);
             }}
             variant="outlined"
-            // aria-describedby={id}
           >
             Get AI Summary
           </GPTSummaryButton>
@@ -177,7 +159,11 @@ const PublicationLinkCell = ({ value, aiJSON }) => {
         anchorPosition={{ top: popoverPosition.y, left: popoverPosition.x }}
         above
       >
-        <div> {aiSummaryData} </div>
+        <p style={{
+          margin: '20px', padding: '10px', fontStyle: 'italic', backgroundColor: '#f0f0f0',
+        }}
+        > {aiSummaryData}
+        </p>
       </Popover>
     </TableCell>
   );

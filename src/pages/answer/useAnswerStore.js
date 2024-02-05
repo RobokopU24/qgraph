@@ -123,8 +123,6 @@ export default function useAnswerStore() {
         Object.values(analysis.edge_bindings).forEach((edgeBindings) => {
           edgeBindings.forEach((binding) => {
             const kgEdge = message.knowledge_graph.edges[binding.id];
-            //DEL console.log('--- TRYING TO WRITE STUFF FOR EDGE ID: ', binding.id);
-            //DEL console.log(JSON.stringify(kgEdge, null, 2));
             edgesJSON[binding.id] = kgEdge || 'Unknown';
             if (kgEdge) {
               const graphEdge = {
@@ -144,61 +142,6 @@ export default function useAnswerStore() {
               const objectNode = message.knowledge_graph.nodes[kgEdge.object];
               const edgeKey = `${subjectNode.name || kgEdge.subject} ${stringUtils.displayPredicate(kgEdge.predicate)} ${objectNode.name || kgEdge.object}`;
               publications[edgeKey] = resultsUtils.getPublications(kgEdge);
-              //DEL console.log(publications[edgeKey]);
-              // TODO: The following block should only happen if ChatGPT mode is on.
-              if (publications[edgeKey].length > 0) {
-                // Create the edge json object
-                const thisEdgeJson = {
-                  nodes: nodesJSON,
-                  edge: {
-                    subject: kgEdge.subject,
-                    object: kgEdge.object,
-                    predicate: kgEdge.predicate,
-                    publications: publications[edgeKey],
-                    sentences: resultsUtils.getSentences(kgEdge),
-                  },
-                };
-                // DEL console.log('Found one ore more publication!');
-                // DEL console.log(JSON.stringify(thisEdgeJson, null, 2));
-                // Send edge graph to kg-summarizer
-                const kgsummarizerurl = 'https://kg-summarizer.apps.renci.org/summarize/edge';
-                const toSendData = {
-                  edge: thisEdgeJson,
-                  parameters: {
-                    llm: {
-                      gpt_model: 'gpt-3.5-turbo',
-                      temperature: 0,
-                      system_prompt: '',
-                    },
-                  },
-                };
-                console.log('***** RIGHT BEFORE ITERATIVE KGSUMMARIZER');
-                console.log(JSON.stringify(toSendData, null, 2));
-                const options = {
-                  method: 'POST',
-                  headers: {
-                    'Content-type': 'application/json',
-                  },
-                  body: JSON.stringify(toSendData),
-                };
-                // TODO: Add a metadata object to the original edgeJSON as GPT Summary
-                fetch(kgsummarizerurl, options)
-                  .then(response => {
-                    if (!response.ok) {
-                      throw new Error('Network response was not ok');
-                    }
-                    return response.json(); // Parse the JSON in the response ? Or is it a text?
-                  })
-                  .then(data => {
-                    console.log('KG SUMMARIZER Success:', data);
-                    kgEdge.GPTSummary = data;
-                    // Do something with the response data
-                  })
-                  .catch(error => {
-                    console.error('KG SUMMARIZER Error:', error);
-                    // Handle errors
-                  });
-              }
             }
           });
         });
@@ -206,11 +149,6 @@ export default function useAnswerStore() {
       setSelectedResult({ nodes, edges });
       setSelectedRowId(rowId);
       setMetaData(publications);
-      // TODO: If there are more than one publications, call chatgpt endpoint here?
-      console.log('*** NODES :::');
-      console.log(JSON.stringify(nodes, null, 2));
-      console.log('*** EDGES :::');
-      console.log(JSON.stringify(edgesJSON, null, 2));
       // store full result JSON
       setResultJSON({ knowledge_graph: { nodes: nodesJSON, edges: edgesJSON }, result: row });
     }
