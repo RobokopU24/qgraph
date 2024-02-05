@@ -42,6 +42,8 @@ const PublicationLinkCell = ({ value, aiJSON }) => {
 
   const [aiSummaryData, setAISummaryData] = useState('');
   const [popoverOpen, setPopoverOpen] = useState(false);
+  const [popoverPosition, setPopoverPosition] = useState({ x: 0, y: 0 });
+
   // const [anchorEl, setAnchorEl] = useState(null);
   // const spanRef = useRef();
 
@@ -56,7 +58,7 @@ const PublicationLinkCell = ({ value, aiJSON }) => {
     },
   }))(Button);
 
-  async function onGPTSummary(inJSON) {
+  async function onGPTSummary(event, inJSON) {
     const publicationsArr = resultsUtils.getPublications(inJSON.edge);
     const sentenceRes = resultsUtils.getSentences(inJSON.edge);
     // setAnchorEl(spanRef.current);
@@ -102,10 +104,13 @@ const PublicationLinkCell = ({ value, aiJSON }) => {
         console.log('KG SUMMARIZER Success:', data);
         setAISummaryData(data);
         setPopoverOpen('aiSummary');
+        setPopoverPosition({ x: event.clientX, y: event.clientY });
+        console.log(event.target);
       })
       .catch(error => {
         setAISummaryData('Error getting response from KG-Summarizer');
         setPopoverOpen('aiSummary');
+        setPopoverPosition({ x: event.clientX, y: event.clientY });
         console.error('KG SUMMARIZER Error:', error);
       });
   }
@@ -152,7 +157,10 @@ const PublicationLinkCell = ({ value, aiJSON }) => {
         )}
       </ul>
       <GPTSummaryButton
-        onClick={() => onGPTSummary(aiJSON)}
+        onClick={(event) => {
+          event.persist();
+          onGPTSummary(event, aiJSON);
+        }}
         variant="outlined"
         // aria-describedby={id}
       >
@@ -175,7 +183,7 @@ const PublicationLinkCell = ({ value, aiJSON }) => {
       <Popover
         open={popoverOpen === 'aiSummary'}
         onClose={() => setPopoverOpen(null)}
-        anchorPosition={{ top: 100, left: 100 }}
+        anchorPosition={{ top: popoverPosition.y, left: popoverPosition.x }}
         above
       >
         <div> {aiSummaryData} </div>
