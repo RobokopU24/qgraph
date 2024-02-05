@@ -7,6 +7,7 @@ import {
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import GPTContext from '../../context/gpt';
+import { api } from '../../API/baseUrlProxy';
 
 const EnableForm = ({ open, handleClose }) => {
   const { setToken } = useContext(GPTContext);
@@ -34,12 +35,12 @@ const EnableForm = ({ open, handleClose }) => {
 
     let res;
     try {
-      res = await fetch('/api/gpt/auth', {
-        method: 'POST',
+      res = await api.post('/api/gpt/auth', {
+        pw: password,
+      }, {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ pw: password }),
         signal: controllerRef.current ? controllerRef.current.signal : undefined,
       });
     } catch (err) {
@@ -53,7 +54,7 @@ const EnableForm = ({ open, handleClose }) => {
       return;
     }
 
-    const apiResponse = await res.json();
+    const apiResponse = await res.data;
 
     if (apiResponse.status === 'error') {
       setError(apiResponse.message);
