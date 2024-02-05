@@ -4,12 +4,13 @@ import {
   Table, TableBody, TableCell, TableHead, TableRow, withStyles,
 } from '@material-ui/core';
 import React, {
-  useState, useRef,
+  useState, useContext,
 } from 'react';
 import Button from '@material-ui/core/Button';
 import { blue } from '@material-ui/core/colors';
 import resultsUtils from '~/utils/results';
 import Popover from '~/components/Popover';
+import GPTContext from '~/context/gpt';
 
 const headerStyles = { fontWeight: 'bold', backgroundColor: '#eee' };
 
@@ -40,6 +41,7 @@ const PublicationLinkCell = ({ value, aiJSON }) => {
     return `https://pubmed.ncbi.nlm.nih.gov/${pmid[1]}/`;
   };
 
+  const { enabled } = useContext(GPTContext);
   const [aiSummaryData, setAISummaryData] = useState('');
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [popoverPosition, setPopoverPosition] = useState({ x: 0, y: 0 });
@@ -156,30 +158,19 @@ const PublicationLinkCell = ({ value, aiJSON }) => {
           </li>
         )}
       </ul>
-      <GPTSummaryButton
-        onClick={(event) => {
-          event.persist();
-          onGPTSummary(event, aiJSON);
-        }}
-        variant="outlined"
-        // aria-describedby={id}
-      >
-        Get AI Summary
-      </GPTSummaryButton>
-      {/* <Popover
-        id={id}
-        open={popoverOpen === 'aiSummary'}
-        onClose={handlePopoverClose}
-        anchorEl={anchorEl}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-      > */}
+      {enabled &&
+        (
+          <GPTSummaryButton
+            onClick={(event) => {
+              event.persist();
+              onGPTSummary(event, aiJSON);
+            }}
+            variant="outlined"
+            // aria-describedby={id}
+          >
+            Get AI Summary
+          </GPTSummaryButton>
+        )}
       <Popover
         open={popoverOpen === 'aiSummary'}
         onClose={() => setPopoverOpen(null)}
