@@ -319,10 +319,8 @@ export default function ResultExplorer({ answerStore }) {
     setPopoverPosition({ x: event.clientX, y: event.clientY });
     setPopoverData(data);
     setPopoverOpen('edge');
-    console.log('*** REQUESTED edge ID: ', data.id);
-    const tmp = { nodes: answerStore.resultJSON.knowledge_graph.nodes, edge: answerStore.resultJSON.knowledge_graph.edges[data.id] };
-    console.log(JSON.stringify(tmp, null, 2));
-    setAIJSON(tmp);
+    const edgeAIJSON = { nodes: answerStore.resultJSON.knowledge_graph.nodes, edge: answerStore.resultJSON.knowledge_graph.edges[data.id] };
+    setAIJSON(edgeAIJSON);
   };
 
   const handleClickNode = (data) => {
