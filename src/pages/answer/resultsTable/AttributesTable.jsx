@@ -3,77 +3,15 @@ import {
   styled,
   Table, TableBody, TableCell, TableHead, TableRow, withStyles,
 } from '@material-ui/core';
-import React from 'react';
+import React, {
+  useState, useRef,
+} from 'react';
 import Button from '@material-ui/core/Button';
 import { blue } from '@material-ui/core/colors';
 import resultsUtils from '~/utils/results';
+import Popover from '~/components/Popover';
 
 const headerStyles = { fontWeight: 'bold', backgroundColor: '#eee' };
-
-const GPTSummaryButton = withStyles((theme) => ({
-  root: {
-    marginLeft: 'auto',
-    color: theme.palette.getContrastText(blue[600]),
-    backgroundColor: blue[600],
-    '&:hover': {
-      backgroundColor: blue[700],
-    },
-  },
-}))(Button);
-
-async function onGPTSummary(aiJSON) {
-  const publicationsArr = resultsUtils.getPublications(aiJSON.edge);
-  const sentenceRes = resultsUtils.getSentences(aiJSON.edge);
-  console.log('FROM GPT SUMMARY FUNC, publications: ', publicationsArr);
-  console.log('FROM GPT SUMMARY FUNC, sentence: ', sentenceRes);
-  const toSendData = {
-    edge: {
-      nodes: aiJSON.nodes,
-      edge: {
-        subject: aiJSON.edge.subject,
-        object: aiJSON.edge.object,
-        predicate: aiJSON.edge.predicate,
-        publications: publicationsArr,
-        sentences: sentenceRes,
-      },
-    },
-    parameters: {
-      llm: {
-        gpt_model: 'gpt-3.5-turbo',
-        temperature: 0,
-        system_prompt: '',
-      },
-    },
-  };
-  console.log('CLICKED FROM GPU SUMMARY FUNC');
-  // console.log(JSON.stringify(edge, null, 2));
-  // console.log(JSON.stringify(nodes, null, 2));
-  console.log(JSON.stringify(toSendData, null, 2));
-  const options = {
-    method: 'POST',
-    headers: {
-      'Content-type': 'application/json',
-    },
-    body: JSON.stringify(toSendData),
-  };
-  const kgsummarizerurl = 'https://kg-summarizer.apps.renci.org/summarize/edge';
-  fetch(kgsummarizerurl, options)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json(); // Parse the JSON in the response ? Or is it a text?
-    })
-    .then(data => {
-      console.log('KG SUMMARIZER Success:', data);
-      // = data;
-      // Do something with the response data
-    })
-    .catch(error => {
-      console.error('KG SUMMARIZER Error:', error);
-      // Handle errors
-    });
-}
 
 const StyledTableBody = styled(TableBody)(() => ({
   '& .MuiTableRow-root:last-of-type .MuiTableCell-root': {
@@ -101,6 +39,83 @@ const PublicationLinkCell = ({ value, aiJSON }) => {
     if (pmid.length < 2) return null;
     return `https://pubmed.ncbi.nlm.nih.gov/${pmid[1]}/`;
   };
+
+  const [aiSummaryData, setAISummaryData] = useState('');
+  const [popoverOpen, setPopoverOpen] = useState(false);
+  // const [anchorEl, setAnchorEl] = useState(null);
+  // const spanRef = useRef();
+
+  const GPTSummaryButton = withStyles((theme) => ({
+    root: {
+      marginLeft: 'auto',
+      color: theme.palette.getContrastText(blue[600]),
+      backgroundColor: blue[600],
+      '&:hover': {
+        backgroundColor: blue[700],
+      },
+    },
+  }))(Button);
+
+  async function onGPTSummary(inJSON) {
+    const publicationsArr = resultsUtils.getPublications(inJSON.edge);
+    const sentenceRes = resultsUtils.getSentences(inJSON.edge);
+    // setAnchorEl(spanRef.current);
+    console.log('FROM GPT SUMMARY FUNC, publications: ', publicationsArr);
+    console.log('FROM GPT SUMMARY FUNC, sentence: ', sentenceRes);
+    const toSendData = {
+      edge: {
+        nodes: inJSON.nodes,
+        edge: {
+          subject: inJSON.edge.subject,
+          object: inJSON.edge.object,
+          predicate: inJSON.edge.predicate,
+          publications: publicationsArr,
+          sentences: sentenceRes,
+        },
+      },
+      parameters: {
+        llm: {
+          gpt_model: 'gpt-3.5-turbo',
+          temperature: 0,
+          system_prompt: '',
+        },
+      },
+    };
+    console.log('CLICKED FROM GPU SUMMARY FUNC');
+    console.log(JSON.stringify(toSendData, null, 2));
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(toSendData),
+    };
+    const kgsummarizerurl = 'https://kg-summarizer.apps.renci.org/summarize/edge';
+    await fetch(kgsummarizerurl, options)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json(); // Parse the JSON in the response ? Or is it a text?
+      })
+      .then(data => {
+        console.log('KG SUMMARIZER Success:', data);
+        setAISummaryData(data);
+        setPopoverOpen('aiSummary');
+      })
+      .catch(error => {
+        setAISummaryData('Error getting response from KG-Summarizer');
+        setPopoverOpen('aiSummary');
+        console.error('KG SUMMARIZER Error:', error);
+      });
+  }
+
+  // function handlePopoverClose() {
+  //   setAnchorEl(null);
+  //   setPopoverOpen(null);
+  // }
+  // const open = Boolean(anchorEl);
+  // const id = open ? "simple-popover" : undefined;
 
   return (
     <TableCell>
@@ -139,9 +154,32 @@ const PublicationLinkCell = ({ value, aiJSON }) => {
       <GPTSummaryButton
         onClick={() => onGPTSummary(aiJSON)}
         variant="outlined"
+        // aria-describedby={id}
       >
         Get AI Summary
       </GPTSummaryButton>
+      {/* <Popover
+        id={id}
+        open={popoverOpen === 'aiSummary'}
+        onClose={handlePopoverClose}
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+      > */}
+      <Popover
+        open={popoverOpen === 'aiSummary'}
+        onClose={() => setPopoverOpen(null)}
+        anchorPosition={{ top: 100, left: 100 }}
+        above
+      >
+        <div> {aiSummaryData} </div>
+      </Popover>
     </TableCell>
   );
 };
