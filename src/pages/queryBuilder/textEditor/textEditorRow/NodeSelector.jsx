@@ -5,6 +5,11 @@ import axios from 'axios';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import IconButton from '@material-ui/core/IconButton';
+import FileCopy from '@material-ui/icons/FileCopy';
+import Check from '@material-ui/icons/Check';
+import Tooltip from '@material-ui/core/Tooltip';
+import { withStyles } from '@material-ui/core';
 
 import AlertContext from '~/context/alert';
 import BiolinkContext from '~/context/biolink';
@@ -204,6 +209,7 @@ export default function NodeSelector({
       onOpen={() => toggleOpen(true)}
       onClose={() => toggleOpen(false)}
       onInputChange={(e, v) => updateInputText(v)}
+      renderOption={(props) => <Option {...props} />}
       renderInput={(params) => (
         <TextField
           {...params}
@@ -235,5 +241,62 @@ export default function NodeSelector({
       )}
       size="medium"
     />
+  );
+}
+
+const CustomTooltip = withStyles((theme) => ({
+  tooltip: {
+    fontSize: theme.typography.pxToRem(14),
+  },
+}))(Tooltip);
+
+function Option({ name, ids, categories }) {
+  return (
+    <CustomTooltip
+      interactive
+      arrow
+      title={(
+        <div className="node-option-tooltip-wrapper">
+          {Array.isArray(ids) && ids.length > 0 && (
+            <div>
+              <span>{ids[0]}</span>
+              <CopyButton textToCopy={ids[0]} />
+            </div>
+          )}
+          {Array.isArray(categories) && categories.length > 0 && (
+            <span>{categories[0]}</span>
+          )}
+        </div>
+      )}
+      placement="left"
+    >
+      <div>
+        { name }
+      </div>
+    </CustomTooltip>
+  );
+}
+
+function CopyButton({ textToCopy }) {
+  const [hasCopied, setHasCopied] = useState(false);
+
+  const handleCopy = (e) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(textToCopy);
+    setHasCopied(true);
+  };
+
+  if (
+    navigator.clipboard === 'undefined' ||
+    typeof navigator.clipboard.writeText !== 'function' ||
+    typeof textToCopy !== 'string'
+  ) {
+    return null;
+  }
+
+  return (
+    <IconButton color="inherit" size="small" onClick={handleCopy}>
+      { hasCopied ? <Check /> : <FileCopy /> }
+    </IconButton>
   );
 }
