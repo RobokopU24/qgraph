@@ -120,7 +120,7 @@ export default function useAnswerStore() {
       const edges = {};
       const edgesJSON = {};
       row.analyses.forEach((analysis) => {
-        const edge_bindings = Object.values(analysis.edge_bindings)[0] || [];
+        const edge_bindings = Object.values(analysis.edge_bindings).flat();
         const support_graph_edge_bindings = analysis.support_graphs.reduce((acc, support_graph_id) => (
           [...acc, ...message.auxiliary_graphs[support_graph_id].edges.map((e) => ({ id: e }))]
         ), []);
