@@ -9,7 +9,6 @@ import React, {
 import Button from '@material-ui/core/Button';
 import { blue } from '@material-ui/core/colors';
 import resultsUtils from '~/utils/results';
-import Popover from '~/components/Popover';
 import GPTContext from '~/context/gpt';
 
 const headerStyles = { fontWeight: 'bold', backgroundColor: '#eee' };
@@ -43,8 +42,6 @@ const PublicationLinkCell = ({ value, aiJSON }) => {
 
   const { enabled } = useContext(GPTContext);
   const [aiSummaryData, setAISummaryData] = useState('');
-  const [popoverOpen, setPopoverOpen] = useState(false);
-  const [popoverPosition, setPopoverPosition] = useState({ x: 0, y: 0 });
 
   const GPTSummaryButton = withStyles((theme) => ({
     root: {
@@ -61,6 +58,7 @@ const PublicationLinkCell = ({ value, aiJSON }) => {
     const publicationsArr = resultsUtils.getPublications(inJSON.edge);
     const sentenceRes = resultsUtils.getSentences(inJSON.edge);
     // setAnchorEl(spanRef.current);
+    console.log(publicationsArr);
     const toSendData = {
       edge: {
         nodes: inJSON.nodes,
@@ -80,6 +78,7 @@ const PublicationLinkCell = ({ value, aiJSON }) => {
         },
       },
     };
+    console.log(JSON.stringify(toSendData, null, 2));
     const options = {
       method: 'POST',
       headers: {
@@ -96,14 +95,12 @@ const PublicationLinkCell = ({ value, aiJSON }) => {
         return response.json(); // Parse the JSON in the response ? Or is it a text?
       })
       .then((data) => {
+        console.log(data);
         setAISummaryData(data);
-        setPopoverOpen('aiSummary');
-        setPopoverPosition({ x: event.clientX, y: event.clientY });
+        inJSON.edge.aisummary = data;
       })
       .catch((error) => {
         setAISummaryData('Error getting response from KG-Summarizer:: ', error);
-        setPopoverOpen('aiSummary');
-        setPopoverPosition({ x: event.clientX, y: event.clientY });
       });
   }
 
@@ -153,18 +150,14 @@ const PublicationLinkCell = ({ value, aiJSON }) => {
             Get AI Summary
           </GPTSummaryButton>
         )}
-      <Popover
-        open={popoverOpen === 'aiSummary'}
-        onClose={() => setPopoverOpen(null)}
-        anchorPosition={{ top: popoverPosition.y, left: popoverPosition.x }}
-        above
-      >
-        <p style={{
-          margin: '20px', padding: '10px', fontStyle: 'italic', backgroundColor: '#f0f0f0',
-        }}
-        > {aiSummaryData}
-        </p>
-      </Popover>
+      {enabled && (aiSummaryData.length > 0) &&
+        (
+          <p style={{
+            margin: '20px', padding: '20px', fontStyle: 'italic', backgroundColor: '#f0f0f0',
+          }}
+          > {aiSummaryData}
+          </p>
+        )}
     </TableCell>
   );
 };
