@@ -103,14 +103,13 @@ export default function NodeSelector({
     if (includeCuries) {
       if (searchTerm.includes(':')) { // user is typing a specific curie
         newOptions.push({ name: searchTerm, ids: [searchTerm] });
-      } else {
-        if (cancel) {
-          cancel.cancel();
-        }
-        cancel = CancelToken.source();
-        const curies = await fetchCuries(searchTerm, displayAlert, cancel.token);
-        newOptions.push(...curies);
       }
+      if (cancel) {
+        cancel.cancel();
+      }
+      cancel = CancelToken.source();
+      const curies = await fetchCuries(searchTerm, displayAlert, cancel.token);
+      newOptions.push(...curies);
     }
     toggleLoading(false);
     setOptions(newOptions);
