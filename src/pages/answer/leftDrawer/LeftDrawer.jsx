@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import Drawer from '@material-ui/core/Drawer';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -8,6 +8,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
+import { Assistant } from '@material-ui/icons';
+import { Badge, makeStyles } from '@material-ui/core';
 
 import { useAuth0 } from '@auth0/auth0-react';
 
@@ -19,6 +21,17 @@ import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import ConfirmDialog from '~/components/ConfirmDialog';
 
 import './leftDrawer.css';
+import GPTContext from '../../../context/gpt';
+import GPTForm from '../GPTForm';
+
+const badgeStyles = makeStyles({
+  colorPrimary: {
+    backgroundColor: '#2dd04a',
+  },
+  colorError: {
+    backgroundColor: '#ff4a4a',
+  },
+});
 
 /**
  * Main Drawer component on answer page
@@ -34,9 +47,11 @@ export default function LeftDrawer({
   onUpload, displayState, updateDisplayState, message,
   saveAnswer, deleteAnswer, owned,
 }) {
+  const { enabled } = useContext(GPTContext);
   const { isAuthenticated } = useAuth0();
   const urlHasAnswerId = useRouteMatch('/answer/:answer_id');
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [isGPTFormOpen, setIsGPTFormOpen] = useState(false);
 
   function toggleDisplay(component, show) {
     updateDisplayState({ type: 'toggle', payload: { component, show } });
@@ -159,6 +174,25 @@ export default function LeftDrawer({
           </ListItemIcon>
           <ListItemText primary="Delete Answer" />
         </ListItem>
+        <ListItem
+          component="label"
+          onClick={() => setIsGPTFormOpen(true)}
+          button
+        >
+          <ListItemIcon>
+            <IconButton
+              component="span"
+              style={{ fontSize: '18px' }}
+              title="GPT"
+              disableRipple
+            >
+              <Badge variant="dot" color={enabled ? 'primary' : 'error'} aria-label="GPT activated" classes={badgeStyles()}>
+                <Assistant />
+              </Badge>
+            </IconButton>
+          </ListItemIcon>
+          <ListItemText primary="GPT" />
+        </ListItem>
       </List>
       <ConfirmDialog
         open={confirmOpen}
@@ -171,6 +205,7 @@ export default function LeftDrawer({
         title="Confirm Answer Deletion"
         confirmText="Delete Answer"
       />
+      <GPTForm open={isGPTFormOpen} handleClose={() => setIsGPTFormOpen(false)} />
     </Drawer>
   );
 }
