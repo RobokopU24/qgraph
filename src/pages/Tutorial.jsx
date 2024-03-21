@@ -36,7 +36,7 @@ export default function Tutorial() {
             <em>2 3 7 8-tetrachlorodibenzo-p-dioxin -&gt; associated with -&gt; disease</em>
           </p>
           <p>
-            In the ROBOKOP user interface (UI), a user either enters <code>2,3,7,8-tetrachlorodibenzo-P-dioxin</code> or the equivalent CURIE (UMLS:C003965) in the first node (n0). If the autocomplete dropdown menu cannot identify an exact text match, then a user can try simplifying the entry by, for example, not specifying a specific isomer and entering <code>tetrachlorodibenzo-p-dioxin</code>.
+            In the ROBOKOP user interface (UI), a user either enters <code>2,3,7,8-tetrachlorodibenzo-P-dioxin</code> or the equivalent CURIE (PUBCHEM.COMPOUND:15625) in the first node (n0). If the autocomplete dropdown menu cannot identify an exact text match, then a user can try simplifying the entry by, for example, not specifying a specific isomer and entering <code>tetrachlorodibenzo-p-dioxin</code>.
           </p>
           <p>
             Note that users can lookup CURIEs by name using the <a href="https://name-resolution-sri.renci.org/docs#/" target="_blank" rel="noreferrer">Translator Name Resolver service</a>, which is a service that was created by the <a href="https://ncats.nih.gov/translator/about" target="_blank" rel="noopener noreferrer">Biomedical Data Translator Consortium</a>, funded by the National Center for Advancing Translational Sciences.
