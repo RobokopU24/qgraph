@@ -121,9 +121,13 @@ export default function useAnswerStore() {
       const edgesJSON = {};
       row.analyses.forEach((analysis) => {
         const edge_bindings = Object.values(analysis.edge_bindings).flat();
-        const support_graph_edge_bindings = analysis.support_graphs.reduce((acc, support_graph_id) => (
-          [...acc, ...message.auxiliary_graphs[support_graph_id].edges.map((e) => ({ id: e }))]
-        ), []);
+
+        const support_graph_edge_bindings = [];
+        if (Array.isArray(analysis.support_graphs)) {
+          analysis.support_graphs.forEach((supportGraphId) => {
+            support_graph_edge_bindings.push(...message.auxiliary_graphs[supportGraphId].edges.map((e) => ({ id: e })));
+          });
+        }
 
         [...edge_bindings, ...support_graph_edge_bindings].forEach((binding) => {
           const kgEdge = message.knowledge_graph.edges[binding.id];
