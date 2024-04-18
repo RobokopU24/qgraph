@@ -34,20 +34,6 @@ export default function Header() {
         <Link to="/tutorial">Tutorial</Link>
         {/* This will go to the actual root of the host (robokop.renci.org/#contact), not an internal route in this application */}
         <a href="/#contact">Help</a>
-        <Divider orientation="vertical" variant="middle" flexItem />
-        <IconButton
-          onClick={(e) => (
-            isAuthenticated ? setAnchorEl(e.currentTarget) : loginWithPopup()
-          )}
-          fontSize="large"
-          aria-label="signinButton"
-        >
-          {isAuthenticated ? (
-            <AccountCircle id="signedInIcon" fontSize="large" />
-          ) : (
-            <AccountCircleOutlinedIcon id="signedOutIcon" fontSize="large" />
-          )}
-        </IconButton>
         <Popover
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
