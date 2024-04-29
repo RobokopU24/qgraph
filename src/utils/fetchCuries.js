@@ -13,9 +13,12 @@ export default async function fetchCuries(entity, displayAlert, cancel) {
     return [];
   }
 
-  return response.map(({ curie, label, types }) => ({
+  return response.map(({
+    curie, label, types, taxa,
+  }) => ({
     name: label,
     categories: types,
     ids: [curie],
+    taxa,
   }));
 }

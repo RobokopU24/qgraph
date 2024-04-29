@@ -19,9 +19,26 @@ import useDebounce from '~/stores/useDebounce';
 import fetchCuries from '~/utils/fetchCuries';
 import highlighter from '~/utils/d3/highlighter';
 
+import taxaCurieLookup from './taxon-curie-lookup.json';
+
 function isValidNode(properties) {
   return (properties.categories && properties.categories.length) ||
     (properties.ids && properties.ids.length);
+}
+
+/**
+ * Given an array of taxa (returns null if empty), get the name based on a lookup table,
+ * or just return the curie string if it isn't found in the table
+ * @param {string[]} taxaIdArray
+ */
+function lookupTaxaName(taxaIdArray) {
+  if (!Array.isArray(taxaIdArray) || taxaIdArray.length < 1) return null;
+
+  const firstTaxaCurie = taxaIdArray[0];
+  const firstTaxaName = taxaCurieLookup[firstTaxaCurie];
+
+  if (!firstTaxaName) return firstTaxaCurie;
+  return firstTaxaName;
 }
 
 const { CancelToken } = axios;
@@ -249,7 +266,11 @@ const CustomTooltip = withStyles((theme) => ({
   },
 }))(Tooltip);
 
-function Option({ name, ids, categories }) {
+function Option({
+  name, ids, categories, taxa,
+}) {
+  const taxaName = lookupTaxaName(taxa);
+
   return (
     <CustomTooltip
       interactive
@@ -270,7 +291,7 @@ function Option({ name, ids, categories }) {
       placement="left"
     >
       <div>
-        { name }
+        { name } {taxaName ? `(${taxaName})` : null}
       </div>
     </CustomTooltip>
   );
