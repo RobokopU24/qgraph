@@ -142,7 +142,7 @@ function toCurrentTRAPI(qGraph) {
 function prune(q_graph) {
   const clonedQueryGraph = _.cloneDeep(q_graph);
   Object.keys(clonedQueryGraph.nodes).forEach((n) => {
-    pruneEmptyArray(clonedQueryGraph.nodes[n], 'categories');
+    delete clonedQueryGraph.nodes[n].taxa;
     pruneEmptyArray(clonedQueryGraph.nodes[n], 'ids');
   });
   Object.keys(clonedQueryGraph.edges).forEach((e) => {
