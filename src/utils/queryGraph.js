@@ -143,6 +143,7 @@ function prune(q_graph) {
   const clonedQueryGraph = _.cloneDeep(q_graph);
   Object.keys(clonedQueryGraph.nodes).forEach((n) => {
     delete clonedQueryGraph.nodes[n].taxa;
+    pruneEmptyArray(clonedQueryGraph.nodes[n], 'categories');
     pruneEmptyArray(clonedQueryGraph.nodes[n], 'ids');
   });
   Object.keys(clonedQueryGraph.edges).forEach((e) => {
