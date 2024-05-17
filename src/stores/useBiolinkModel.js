@@ -13,16 +13,29 @@ export default function useBiolinkModel() {
   const [ancestorsMap, setAncestorsMap] = useState([]);
   const colorMap = useCallback(getNodeCategoryColorMap(hierarchies), [hierarchies]);
 
+  function checkIfDescendantOfRelatedTo([name, slot]) {
+    let currentName = name;
+    let current = slot;
+    while (current.is_a) {
+      currentName = current.is_a;
+      current = biolinkModel.slots[current.is_a];
+    }
+    return currentName === 'related to';
+  }
+
   /**
    * Get a list of all predicates in the biolink model
    * @returns {object[]} list of predicate objects
    */
   function getEdgePredicates() {
-    const newPredicates = Object.entries(biolinkModel.slots).map(([identifier, predicate]) => ({
-      predicate: strings.edgeFromBiolink(identifier),
-      domain: strings.nodeFromBiolink(predicate.domain),
-      range: strings.nodeFromBiolink(predicate.range),
-    }));
+    const newPredicates =
+      Object.entries(biolinkModel.slots)
+        .filter(checkIfDescendantOfRelatedTo)
+        .map(([identifier, predicate]) => ({
+          predicate: strings.edgeFromBiolink(identifier),
+          domain: strings.nodeFromBiolink(predicate.domain),
+          range: strings.nodeFromBiolink(predicate.range),
+        }));
     return newPredicates;
   }
 

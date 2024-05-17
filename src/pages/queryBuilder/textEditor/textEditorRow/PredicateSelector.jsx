@@ -46,10 +46,7 @@ export default function PredicateSelector({ id }) {
       return null;
     }
 
-    return biolink.predicates.filter(
-      (p) => subjectNodeCategoryHierarchy.includes(p.domain) &&
-             objectNodeCategoryHierarchy.includes(p.range),
-    ).map((p) => p.predicate);
+    return biolink.predicates.map(({ predicate }) => predicate);
   }
 
   const filteredPredicateList = useMemo(
