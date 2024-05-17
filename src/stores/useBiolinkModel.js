@@ -28,15 +28,15 @@ export default function useBiolinkModel() {
    * @returns {object[]} list of predicate objects
    */
   function getEdgePredicates() {
-    const newPredicates =
-      Object.entries(biolinkModel.slots)
-        .filter(checkIfDescendantOfRelatedTo)
-        .map(([identifier, predicate]) => ({
-          predicate: strings.edgeFromBiolink(identifier),
-          domain: strings.nodeFromBiolink(predicate.domain),
-          range: strings.nodeFromBiolink(predicate.range),
-        }));
-    return newPredicates;
+    const newPredicates = Object.entries(biolinkModel.slots).filter(checkIfDescendantOfRelatedTo);
+    // hard code in treats, it's techincally not a descendant of `related to`
+    // TODO: we'll want the more correct parsing using mixins at some point
+    newPredicates.push(['treats', biolinkModel.slots.treats]);
+    return newPredicates.map(([identifier, predicate]) => ({
+      predicate: strings.edgeFromBiolink(identifier),
+      domain: strings.nodeFromBiolink(predicate.domain),
+      range: strings.nodeFromBiolink(predicate.range),
+    }));
   }
 
   /**
