@@ -29,9 +29,10 @@ export default function useBiolinkModel() {
    */
   function getEdgePredicates() {
     const newPredicates = Object.entries(biolinkModel.slots).filter(checkIfDescendantOfRelatedTo);
-    // hard code in treats, it's techincally not a descendant of `related to`
+    // hard code in treats + parent, they're techincally not descendants of `related to`
     // TODO: we'll want the more correct parsing using mixins at some point
     newPredicates.push(['treats', biolinkModel.slots.treats]);
+    newPredicates.push(['treats or applied or studied to treat', biolinkModel.slots['treats or applied or studied to treat']]);
     return newPredicates.map(([identifier, predicate]) => ({
       predicate: strings.edgeFromBiolink(identifier),
       domain: strings.nodeFromBiolink(predicate.domain),
