@@ -296,7 +296,7 @@ export default function useBiolinkModel() {
         }
       }
 
-      const m = {
+      setModel({
         classes: {
           treeRootNodes: rootItems,
           lookup,
@@ -308,9 +308,7 @@ export default function useBiolinkModel() {
         associations: lookup.get("association"),
         qualifiers: slotLookup.get("qualifier"),
         enums: biolinkModel.enums,
-      };
-      console.log(m);
-      setModel(m);
+      });
     }
   }, [biolinkModel]);
 

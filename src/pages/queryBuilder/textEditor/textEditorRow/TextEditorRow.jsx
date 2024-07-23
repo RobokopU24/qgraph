@@ -3,17 +3,171 @@ import IconButton from '@material-ui/core/IconButton';
 import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined';
 import IndeterminateCheckBoxOutlinedIcon from '@material-ui/icons/IndeterminateCheckBoxOutlined';
 
+import BiolinkContext from '~/context/biolink';
 import QueryBuilderContext from '~/context/queryBuilder';
 import NodeSelector from './NodeSelector';
 import PredicateSelector from './PredicateSelector';
+import QualifiersSelector from './QualifiersSelector';
 
 import './textEditorRow.css';
 
+function getValidAssociations(s, p, o, model) {
+  const validAssociations = [];
+
+  const subject = model.classes.lookup.get(s);
+  const predicate = model.slots.lookup.get(p);
+  const object = model.classes.lookup.get(o);
+
+  const isInRange = (
+    n,
+    range
+  ) => {
+    const traverse = (nodes, search) => {
+      for (const n of nodes) {
+        if (n === search) return true;
+        if (n.parent) {
+          if (traverse([n.parent], search)) return true;
+        }
+        if (n.mixinParents) {
+          if (traverse(n.mixinParents, search)) return true;
+        }
+      }
+      return false;
+    };
+    return traverse([n], range);
+  };
+
+  /**
+   * Get the inherited subject/predicate/object ranges for an association
+   */
+  const getInheritedSPORanges = (
+    association
+  ) => {
+    const namedThing = model.classes.lookup.get("named thing");
+    const relatedTo = model.slots.lookup.get("related to");
+
+    const traverse = (
+      nodes,
+      part
+    ) => {
+      for (const node of nodes) {
+        if (node.slotUsage?.[part]) return node.slotUsage[part];
+        if (node.parent) {
+          const discoveredType = traverse([node.parent], part);
+          if (discoveredType !== null) return discoveredType;
+        }
+        if (node.mixinParents) {
+          const discoveredType = traverse(node.mixinParents, part);
+          if (discoveredType !== null) return discoveredType;
+        }
+      }
+
+      return null;
+    };
+
+    const subject = traverse([association], "subject") ?? namedThing;
+    const predicate = traverse([association], "predicate") ?? relatedTo;
+    const object = traverse([association], "object") ?? namedThing;
+
+    return { subject, predicate, object };
+  };
+
+  // DFS over associations
+  const traverse = (nodes, level = 0) => {
+    for (const association of nodes) {
+      if (association.slotUsage && !association.abstract) {
+        const inherited = getInheritedSPORanges(association);
+
+        const validSubject = isInRange(subject, inherited.subject);
+        const validObject = isInRange(object, inherited.object);
+        const validPredicate = isInRange(predicate, inherited.predicate);
+
+        const qualifiers = Object.entries(association.slotUsage)
+          .map(([qualifierName, properties]) => {
+            if (properties === null) return null;
+            const qualifier = model.slots.lookup.get(qualifierName);
+            if (!qualifier || !isInRange(qualifier, model.qualifiers))
+              return null;
+
+            let range = undefined;
+            if (properties.range) {
+              const potentialEnum =
+                model.enums[properties.range];
+              const potentialClassNode =
+                model.classes.lookup.get(properties.range);
+
+              if (potentialEnum) range = potentialEnum;
+              if (potentialClassNode) range = potentialClassNode;
+            }
+
+            let subpropertyOf = undefined;
+            if (
+              properties.subproperty_of &&
+              model.slots.lookup.has(properties.subproperty_of)
+            ) {
+              subpropertyOf = model.slots.lookup.get(
+                properties.subproperty_of
+              );
+            }
+
+            return {
+              qualifier,
+              range,
+              subpropertyOf,
+            };
+          })
+          .filter((q) => q !== null);
+
+        if (validSubject && validObject && validPredicate) {
+          validAssociations.push({
+            association,
+            inheritedRanges: inherited,
+            level,
+            qualifiers,
+          });
+        }
+      }
+      traverse(association.children, level + 1);
+    }
+  };
+  traverse([model.associations]);
+
+  validAssociations.sort((a, b) => b.level - a.level);
+
+  return validAssociations;
+}
+
 export default function TextEditorRow({ row, index }) {
   const queryBuilder = useContext(QueryBuilderContext);
+  const { model } = useContext(BiolinkContext);
+  if (!model) return "Loading...";
   const { query_graph } = queryBuilder;
   const edge = query_graph.edges[row.edgeId];
   const { edgeId, subjectIsReference, objectIsReference } = row;
+
+  const subject = (query_graph.nodes[edge.subject].categories?.[0] ?? 'biolink:NamedThing')
+    .replace('biolink:', '')
+    .match(/[A-Z][a-z]+/g)
+    .join(' ')
+    .toLowerCase();
+  const predicate = (edge.predicates?.[0] ?? 'biolink:related_to')
+    .replace('biolink:', '')
+    .replace(/_/g, ' ');
+  const object = (query_graph.nodes[edge.object].categories?.[0] ?? 'biolink:NamedThing')
+    .replace('biolink:', '')
+    .match(/[A-Z][a-z]+/g)
+    .join(' ')
+    .toLowerCase();
+
+  const validAssociations = getValidAssociations(subject, predicate, object, model);
+
+  // console.log(
+  //   `\
+  //     S: ${subjectCategory}\n\
+  //     P: ${predicate}\n\
+  //     O: ${objectCategory}\
+  //   `
+  // )
 
   function deleteEdge() {
     queryBuilder.dispatch({ type: 'deleteEdge', payload: { id: edgeId } });
@@ -33,67 +187,74 @@ export default function TextEditorRow({ row, index }) {
 
   return (
     <div
-      className="textEditorRow"
+      className='editor-row-wrapper'
     >
-      <IconButton
-        onClick={deleteEdge}
-        className="textEditorIconButton"
-        disabled={queryBuilder.textEditorRows.length < 2}
-      >
-        <IndeterminateCheckBoxOutlinedIcon />
-      </IconButton>
-      <p>
-        {index === 0 && 'Find'}
-        {index === 1 && 'where'}
-        {index > 1 && 'and where'}
-      </p>
-      <NodeSelector
-        id={edge.subject}
-        properties={query_graph.nodes[edge.subject]}
-        setReference={(nodeId) => setReference('subject', nodeId)}
-        update={subjectIsReference ? (
-          () => setReference('subject', null)
-        ) : (
-          editNode
-        )}
-        isReference={subjectIsReference}
-        options={{
-          includeCuries: !subjectIsReference,
-          includeCategories: !subjectIsReference,
-          includeExistingNodes: index !== 0,
-          existingNodes: Object.keys(query_graph.nodes).filter(
-            (key) => key !== edge.object,
-          ).map((key) => ({ ...query_graph.nodes[key], key })),
-        }}
-      />
-      <PredicateSelector
+      <div className="textEditorRow">
+        <IconButton
+          onClick={deleteEdge}
+          className="textEditorIconButton"
+          disabled={queryBuilder.textEditorRows.length < 2}
+        >
+          <IndeterminateCheckBoxOutlinedIcon />
+        </IconButton>
+        <p>
+          {index === 0 && 'Find'}
+          {index === 1 && 'where'}
+          {index > 1 && 'and where'}
+        </p>
+        <NodeSelector
+          id={edge.subject}
+          properties={query_graph.nodes[edge.subject]}
+          setReference={(nodeId) => setReference('subject', nodeId)}
+          update={subjectIsReference ? (
+            () => setReference('subject', null)
+          ) : (
+            editNode
+          )}
+          isReference={subjectIsReference}
+          options={{
+            includeCuries: !subjectIsReference,
+            includeCategories: !subjectIsReference,
+            includeExistingNodes: index !== 0,
+            existingNodes: Object.keys(query_graph.nodes).filter(
+              (key) => key !== edge.object,
+            ).map((key) => ({ ...query_graph.nodes[key], key })),
+          }}
+        />
+        <PredicateSelector
+          id={edgeId}
+        />
+        <NodeSelector
+          id={edge.object}
+          properties={query_graph.nodes[edge.object]}
+          setReference={(nodeId) => setReference('object', nodeId)}
+          update={objectIsReference ? (
+            () => setReference('object', null)
+          ) : (
+            editNode
+          )}
+          isReference={objectIsReference}
+          options={{
+            includeCuries: !objectIsReference,
+            includeCategories: !objectIsReference,
+            includeExistingNodes: index !== 0,
+            existingNodes: Object.keys(query_graph.nodes).filter(
+              (key) => key !== edge.subject,
+            ).map((key) => ({ ...query_graph.nodes[key], key })),
+          }}
+        />
+        <IconButton
+          onClick={addHop}
+          className="textEditorIconButton"
+        >
+          <AddBoxOutlinedIcon />
+        </IconButton>
+      </div>
+      
+      <QualifiersSelector
         id={edgeId}
+        associations={validAssociations}
       />
-      <NodeSelector
-        id={edge.object}
-        properties={query_graph.nodes[edge.object]}
-        setReference={(nodeId) => setReference('object', nodeId)}
-        update={objectIsReference ? (
-          () => setReference('object', null)
-        ) : (
-          editNode
-        )}
-        isReference={objectIsReference}
-        options={{
-          includeCuries: !objectIsReference,
-          includeCategories: !objectIsReference,
-          includeExistingNodes: index !== 0,
-          existingNodes: Object.keys(query_graph.nodes).filter(
-            (key) => key !== edge.subject,
-          ).map((key) => ({ ...query_graph.nodes[key], key })),
-        }}
-      />
-      <IconButton
-        onClick={addHop}
-        className="textEditorIconButton"
-      >
-        <AddBoxOutlinedIcon />
-      </IconButton>
     </div>
   );
 }
