@@ -37,6 +37,26 @@ function getValidAssociations(s, p, o, model) {
     return traverse([n], range);
   };
 
+  // Returns true if `n` is an ancestor of `domain`
+  const isInDomain = (
+    n,
+    domain
+  ) => {
+    const traverse = (nodes, search) => {
+      for (const n of nodes) {
+        if (n === search) return true;
+        if (n.parent) {
+          if (traverse([n.parent], search)) return true;
+        }
+        if (n.mixinParents) {
+          if (traverse(n.mixinParents, search)) return true;
+        }
+      }
+      return false;
+    };
+    return traverse([domain], n);
+  };
+
   /**
    * Get the inherited subject/predicate/object ranges for an association
    */
@@ -78,9 +98,9 @@ function getValidAssociations(s, p, o, model) {
       if (association.slotUsage && !association.abstract) {
         const inherited = getInheritedSPORanges(association);
 
-        const validSubject = isInRange(subject, inherited.subject);
-        const validObject = isInRange(object, inherited.object);
-        const validPredicate = isInRange(predicate, inherited.predicate);
+        const validSubject = isInRange(subject, inherited.subject) || isInDomain(subject, inherited.subject);
+        const validObject = isInRange(object, inherited.object) || isInDomain(object, inherited.object);
+        const validPredicate = isInRange(predicate, inherited.predicate) || isInDomain(predicate, inherited.predicate);
 
         const qualifiers = Object.entries(association.slotUsage)
           .map(([qualifierName, properties]) => {

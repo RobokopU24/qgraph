@@ -48,14 +48,16 @@ const getQualifierOptions = ({ range, subpropertyOf }) => {
 export default function QualifiersSelector({ id, associations }) {
   const queryBuilder = useContext(QueryBuilderContext);
 
-  const associationOptions = associations.map(({ association, qualifiers }) => ({
-    name: association.name,
-    uuid: association.uuid,
-    qualifiers: qualifiers.map((q) => ({
-      name: q.qualifier.name,
-      options: getQualifierOptions(q),
-    })),
-  }));
+  const associationOptions = associations
+    .filter((a) => a.qualifiers.length > 0)
+    .map(({ association, qualifiers }) => ({
+      name: association.name,
+      uuid: association.uuid,
+      qualifiers: qualifiers.map((q) => ({
+        name: q.qualifier.name,
+        options: getQualifierOptions(q),
+      })),
+    }));
 
   const [value, setValue] = React.useState(associationOptions[0] || null);
   const [qualifiers, setQualifiers] = React.useState({});
@@ -75,6 +77,7 @@ export default function QualifiersSelector({ id, associations }) {
           onChange={(_, newValue) => {
             setValue(newValue);
           }}
+          disableClearable
           size="small"
           options={associationOptions}
           getOptionLabel={(option) => option.name}
