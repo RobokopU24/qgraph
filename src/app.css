@@ -3,11 +3,14 @@ body {
 }
 
 #pageContainer {
-    min-height: 100vh;
+    min-height: 100dvh;
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 #contentContainer {
     /* padding bottom by footer height */
+    flex: 1;
     padding: 0px 30px 29px 30px;
 }
 
