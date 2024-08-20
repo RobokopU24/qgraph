@@ -91,62 +91,60 @@ export default function Explore() {
   }, []);
 
   return (
-    <QueryBuilderContext.Provider value={queryBuilder}>
-      <Grid style={{ marginBottom: '50px', marginTop: '50px' }}>
-        <Row>
-          <Col md={12}>
-            <h1>Drug - Disease Pairs</h1>
-            <p>
-              These drug-disease pairs were generated using a machine learning model to align with the nodes
-              in the ROBOKOP knowledge graph. They highlight potential associations between various drugs and
-              a broad range of diseases, suggesting possible avenues for further research. These connections
-              can serve as a starting point for a new query by hovering over a pair and clicking &ldquo;Start a Query&rdquo;.
-            </p>
+    <Grid style={{ marginBottom: '50px', marginTop: '50px' }}>
+      <Row>
+        <Col md={12}>
+          <h1>Drug - Disease Pairs</h1>
+          <p>
+            These drug-disease pairs were generated using a machine learning model to align with the nodes
+            in the ROBOKOP knowledge graph. They highlight potential associations between various drugs and
+            a broad range of diseases, suggesting possible avenues for further research. These connections
+            can serve as a starting point for a new query by hovering over a pair and clicking &ldquo;Start a Query&rdquo;.
+          </p>
 
-            <hr />
+          <hr />
 
-            {isLoading ? 'Loading...' : (
-              <table style={{ fontSize: '1.5rem', width: '100%' }}>
-                <thead>
-                  <tr>
-                    <th style={{ textTransform: 'uppercase' }}>
-                      <h4>Disease</h4>
-                    </th>
-                    <th style={{ textTransform: 'uppercase' }}>
-                      <h4>Drug</h4>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {
-                    pairs.map((pair, i) => (
-                      <tr className={classes.hover} key={i}>
-                        <td>
-                          {pair.disease.name}
-                          <Chip>{pair.disease.id}</Chip>
-                        </td>
-                        <td>
-                          {pair.drug.name}
-                          <Chip>{pair.drug.id}</Chip>
-                        </td>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          endIcon={<ArrowRight />}
-                          onClick={() => handleStartQuery(pair)}
-                        >
-                          Start a query
-                        </Button>
-                      </tr>
-                    ))
-                  }
-                </tbody>
-              </table>
-            )}
-          </Col>
-        </Row>
-      </Grid>
-    </QueryBuilderContext.Provider>
+          {isLoading ? 'Loading...' : (
+            <table style={{ fontSize: '1.5rem', width: '100%' }}>
+              <thead>
+                <tr>
+                  <th style={{ textTransform: 'uppercase' }}>
+                    <h4>Disease</h4>
+                  </th>
+                  <th style={{ textTransform: 'uppercase' }}>
+                    <h4>Drug</h4>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  pairs.map((pair, i) => (
+                    <tr className={classes.hover} key={i}>
+                      <td>
+                        {pair.disease.name}
+                        <Chip>{pair.disease.id}</Chip>
+                      </td>
+                      <td>
+                        {pair.drug.name}
+                        <Chip>{pair.drug.id}</Chip>
+                      </td>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        endIcon={<ArrowRight />}
+                        onClick={() => handleStartQuery(pair)}
+                      >
+                        Start a query
+                      </Button>
+                    </tr>
+                  ))
+                }
+              </tbody>
+            </table>
+          )}
+        </Col>
+      </Row>
+    </Grid>
   );
 }
 
