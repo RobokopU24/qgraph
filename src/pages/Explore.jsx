@@ -95,7 +95,7 @@ export default function Explore() {
       <Row>
         <Col md={12}>
           <h1>Drug - Disease Pairs</h1>
-          <p>
+          <p style={{ fontSize: '1.6rem' }}>
             These drug-disease pairs were generated using a machine learning model to align with the nodes
             in the ROBOKOP knowledge graph. They highlight potential associations between various drugs and
             a broad range of diseases, suggesting possible avenues for further research. These connections
@@ -105,7 +105,7 @@ export default function Explore() {
           <hr />
 
           {isLoading ? 'Loading...' : (
-            <table style={{ fontSize: '1.5rem', width: '100%' }}>
+            <table style={{ fontSize: '1.6rem', width: '100%' }}>
               <thead>
                 <tr>
                   <th style={{ textTransform: 'uppercase' }}>
