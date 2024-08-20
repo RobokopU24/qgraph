@@ -10,6 +10,7 @@ const services = require('./services');
 const external_apis = require('./external');
 
 const samples = JSON.parse(fs.readFileSync(path.join(__dirname, './sample-query-cache.json')));
+const drugDiseasePairs = JSON.parse(fs.readFileSync(path.join(__dirname, './drug-disease.json')));
 
 router.use('/', external_apis);
 
@@ -56,6 +57,11 @@ router.route('/quick_answer')
         message: `Error from ${ara_url}`,
       });
     }
+  });
+
+router.route('/explore')
+  .post(async (req, res) => {
+    res.status(200).send(drugDiseasePairs);
   });
 
 router.route('/answer')

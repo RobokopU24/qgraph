@@ -1,17 +1,162 @@
+import { Button, makeStyles } from '@material-ui/core';
+import { ArrowRight } from '@material-ui/icons';
 import React from 'react';
-
 import {
   Grid, Row, Col,
 } from 'react-bootstrap';
+import { useHistory } from 'react-router-dom';
+import QueryBuilderContext from '~/context/queryBuilder';
+import useQueryBuilder from './queryBuilder/useQueryBuilder';
+
+const useStyles = makeStyles({
+  hover: {
+    '& .MuiButtonBase-root': {
+      visibility: 'hidden',
+    },
+    '&:hover .MuiButtonBase-root': {
+      visibility: 'visible',
+    },
+  },
+});
+
+const fetchPairs = async () => {
+  const res = await fetch('/api/explore', { method: 'POST' });
+  if (!res.ok) throw new Error(res.statusText);
+  return res.json();
+};
 
 export default function Explore() {
+  const [pairs, setPairs] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  // eslint-disable-next-line no-unused-vars
+  const [error, setError] = React.useState(null);
+
+  const queryBuilder = useQueryBuilder(QueryBuilderContext);
+  const history = useHistory();
+
+  const handleStartQuery = (pair) => {
+    const query = {
+      message: {
+        query_graph: {
+          nodes: {
+            n0: {
+              name: pair.disease.name,
+              ids: [pair.disease.id],
+            },
+            n1: {
+              name: pair.drug.name,
+              ids: [pair.drug.id],
+            },
+          },
+          edges: {
+            e0: {
+              subject: 'n0',
+              object: 'n1',
+              predicates: [
+                'biolink:related_to',
+              ],
+            },
+          },
+        },
+      },
+    };
+
+    queryBuilder.dispatch({ type: 'saveGraph', payload: query });
+    history.push('/');
+  };
+
+  const classes = useStyles();
+
+  React.useEffect(() => {
+    let ignore = false;
+
+    (async () => {
+      try {
+        const data = await fetchPairs();
+
+        if (ignore) return;
+
+        setPairs(data);
+        setIsLoading(false);
+      } catch (e) {
+        setError(e.message);
+        setIsLoading(false);
+      }
+    })();
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
   return (
-    <Grid style={{ marginBottom: '50px', marginTop: '50px' }}>
-      <Row>
-        <Col md={12}>
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quo illum rem quam alias. Nam, ipsum velit. Necessitatibus aspernatur excepturi magnam cumque blanditiis illo optio? Perferendis inventore corporis neque deleniti? In veniam dolore ipsum, eveniet sit blanditiis, exercitationem expedita facilis mollitia neque similique, ducimus nemo saepe sapiente vitae at repellendus modi sequi excepturi! Fuga nisi est quia. Nesciunt optio enim, facere similique pariatur assumenda alias sint laudantium velit! Eum, praesentium ducimus ipsum dignissimos beatae nostrum maiores molestiae assumenda modi repellat alias obcaecati esse ab totam sunt iure, itaque quis ratione, veritatis sapiente vel repellendus libero illo. Dolores neque, animi, libero a accusamus consequatur doloribus nam mollitia obcaecati quos aliquid ex et qui nemo modi non dolorem? Minima fuga pariatur fugit eaque amet autem voluptatibus quae voluptates repellat, dolorem sequi quidem accusamus suscipit ut necessitatibus quaerat esse dolor quisquam ullam deleniti in veritatis, quod enim odio? Illum dolorem unde, quis soluta, eligendi, atque voluptatem omnis molestias minima error eius praesentium incidunt? Assumenda commodi voluptatibus eos eius cupiditate sunt consectetur libero. Incidunt deleniti excepturi temporibus consectetur deserunt quas repellat, perspiciatis voluptatibus ad odit earum provident beatae! Officia delectus, deserunt aliquid placeat rerum in facilis perferendis optio magnam molestias nisi autem atque voluptatem quibusdam velit quod dolore vitae enim. Mollitia eum laboriosam itaque repellendus nesciunt, ducimus quidem veritatis laborum laudantium, pariatur cupiditate numquam quasi. Sequi iusto soluta sed adipisci illo similique repudiandae consequatur optio non commodi recusandae eius sapiente aliquam saepe nam iure cumque ipsum, perferendis modi quaerat cupiditate qui obcaecati vel? Modi quisquam quae sed ut eveniet consequatur quos doloremque? Quisquam fugit sapiente, dignissimos, ad fuga ipsa accusantium delectus at quod enim, quis alias doloribus odio tempora! Perferendis, dolore assumenda soluta earum eligendi quisquam necessitatibus repellendus perspiciatis tenetur accusantium laborum. Explicabo libero voluptas eaque omnis saepe dignissimos nesciunt, odit dolores fugiat magnam, officiis aspernatur? Numquam eos amet eligendi aut quia necessitatibus quasi architecto laborum in dicta earum fugiat ad nulla sint nemo placeat voluptate eius id error blanditiis, ex aperiam quibusdam nobis. In non, culpa ipsa nemo minima earum fuga. Perspiciatis minima pariatur quo, illum voluptate velit eos suscipit tempore eligendi aliquid provident facilis in, omnis fugit tenetur voluptatum adipisci asperiores ipsam nihil! Voluptatem et omnis quos modi officiis eveniet debitis commodi quia, deserunt rerum corporis, at cumque expedita dolorem voluptates assumenda! Doloribus officiis dicta impedit architecto, eaque quasi sit non quae voluptatem, possimus omnis expedita et a consectetur fugiat facere distinctio facilis aspernatur itaque beatae mollitia deserunt assumenda, vitae provident! Exercitationem similique, unde rem cumque expedita assumenda eum nostrum, voluptatibus adipisci quod recusandae debitis rerum praesentium animi, possimus eaque ab tenetur sequi necessitatibus! Ex dolor necessitatibus dolorum tenetur dicta quos natus vitae repellat cupiditate alias. Ad consequuntur nobis exercitationem laborum aperiam, voluptas culpa eos, iure velit minima harum hic magni. Nisi eveniet molestiae quis tenetur placeat. Rem, obcaecati? Corrupti atque vitae eaque tempore et animi? Sit molestiae cupiditate omnis ea earum maiores fuga, cum obcaecati inventore laborum quia tenetur saepe accusantium neque? Placeat, consectetur eum dignissimos aliquam neque quibusdam doloribus cupiditate blanditiis?
-        </Col>
-      </Row>
-    </Grid>
+    <QueryBuilderContext.Provider value={queryBuilder}>
+      <Grid style={{ marginBottom: '50px', marginTop: '50px' }}>
+        <Row>
+          <Col md={12}>
+            <h1>Drug - Disease Pairs</h1>
+            <p>
+              These drug-disease pairs were generated using a machine learning model to align with the nodes
+              in the ROBOKOP knowledge graph. They highlight potential associations between various drugs and
+              a broad range of diseases, suggesting possible avenues for further research. These connections
+              can serve as a starting point for a new query by hovering over a pair and clicking &ldquo;Start a Query&rdquo;.
+            </p>
+
+            <hr />
+
+            {isLoading ? 'Loading...' : (
+              <table style={{ fontSize: '1.5rem', width: '100%' }}>
+                <thead>
+                  <tr>
+                    <th style={{ textTransform: 'uppercase' }}>
+                      <h4>Disease</h4>
+                    </th>
+                    <th style={{ textTransform: 'uppercase' }}>
+                      <h4>Drug</h4>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {
+                    pairs.map((pair, i) => (
+                      <tr className={classes.hover} key={i}>
+                        <td>
+                          {pair.disease.name}
+                          <Chip>{pair.disease.id}</Chip>
+                        </td>
+                        <td>
+                          {pair.drug.name}
+                          <Chip>{pair.drug.id}</Chip>
+                        </td>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          endIcon={<ArrowRight />}
+                          onClick={() => handleStartQuery(pair)}
+                        >
+                          Start a query
+                        </Button>
+                      </tr>
+                    ))
+                  }
+                </tbody>
+              </table>
+            )}
+          </Col>
+        </Row>
+      </Grid>
+    </QueryBuilderContext.Provider>
+  );
+}
+
+function Chip({ children }) {
+  return (
+    <span style={{
+      fontSize: '1.1rem', backgroundColor: '#e9e9e9', borderRadius: '4px', padding: '2px 4px', marginLeft: '1ch',
+    }}
+    >
+      {children}
+    </span>
   );
 }

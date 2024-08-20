@@ -1,0 +1,5002 @@
+[
+  {
+    "drug": {
+      "id": "CHEBI:10082",
+      "name": "xylometazoline"
+    },
+    "disease": {
+      "id": "MONDO:0018616",
+      "name": "central serous chorioretinopathy"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10082",
+      "name": "xylometazoline"
+    },
+    "disease": {
+      "id": "MONDO:0021667",
+      "name": "neuralgia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10082",
+      "name": "xylometazoline"
+    },
+    "disease": {
+      "id": "UMLS:C3854347",
+      "name": "Intentional product misuse"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10082",
+      "name": "xylometazoline"
+    },
+    "disease": {
+      "id": "UMLS:C3805175",
+      "name": "Appendicolith"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10082",
+      "name": "xylometazoline"
+    },
+    "disease": {
+      "id": "MONDO:0002203",
+      "name": "constipation disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10082",
+      "name": "xylometazoline"
+    },
+    "disease": {
+      "id": "MONDO:0043726",
+      "name": "multiple organ dysfunction syndrome"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10082",
+      "name": "xylometazoline"
+    },
+    "disease": {
+      "id": "MONDO:0009688",
+      "name": "myasthenia gravis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10082",
+      "name": "xylometazoline"
+    },
+    "disease": {
+      "id": "MONDO:0005113",
+      "name": "bacterial infectious disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10082",
+      "name": "xylometazoline"
+    },
+    "disease": {
+      "id": "MONDO:0800175",
+      "name": "cardiogenic shock"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10082",
+      "name": "xylometazoline"
+    },
+    "disease": {
+      "id": "MONDO:0000190",
+      "name": "ventricular fibrillation"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10082",
+      "name": "xylometazoline"
+    },
+    "disease": {
+      "id": "MONDO:0017291",
+      "name": "reversible cerebral vasoconstriction syndrome"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10082",
+      "name": "xylometazoline"
+    },
+    "disease": {
+      "id": "MONDO:0005649",
+      "name": "appendicitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10082",
+      "name": "xylometazoline"
+    },
+    "disease": {
+      "id": "MONDO:0005298",
+      "name": "osteoporosis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10082",
+      "name": "xylometazoline"
+    },
+    "disease": {
+      "id": "MONDO:0005420",
+      "name": "hypothyroidism"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10082",
+      "name": "xylometazoline"
+    },
+    "disease": {
+      "id": "MONDO:0005083",
+      "name": "psoriasis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10082",
+      "name": "xylometazoline"
+    },
+    "disease": {
+      "id": "MONDO:0003014",
+      "name": "rhinitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10082",
+      "name": "xylometazoline"
+    },
+    "disease": {
+      "id": "MONDO:0005441",
+      "name": "otitis media"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10082",
+      "name": "xylometazoline"
+    },
+    "disease": {
+      "id": "MONDO:0005709",
+      "name": "common cold"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10082",
+      "name": "xylometazoline"
+    },
+    "disease": {
+      "id": "MONDO:0005961",
+      "name": "sinusitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10082",
+      "name": "xylometazoline"
+    },
+    "disease": {
+      "id": "MONDO:0005108",
+      "name": "viral infectious disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10082",
+      "name": "xylometazoline"
+    },
+    "disease": {
+      "id": "MONDO:0000740",
+      "name": "adenoid hypertrophy"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10082",
+      "name": "xylometazoline"
+    },
+    "disease": {
+      "id": "MONDO:0004425",
+      "name": "hyperthyroidism"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10082",
+      "name": "xylometazoline"
+    },
+    "disease": {
+      "id": "MONDO:0005044",
+      "name": "hypertensive disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10082",
+      "name": "xylometazoline"
+    },
+    "disease": {
+      "id": "MONDO:0005015",
+      "name": "diabetes mellitus"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10082",
+      "name": "xylometazoline"
+    },
+    "disease": {
+      "id": "MONDO:0005267",
+      "name": "heart disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0001358",
+      "name": "bronchial disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005146",
+      "name": "post-traumatic stress disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0006731",
+      "name": "drug-induced akathisia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "UMLS:C0001969",
+      "name": "Alcoholic Intoxication"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005383",
+      "name": "panic disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0002025",
+      "name": "psychiatric disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005618",
+      "name": "anxiety disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0004681",
+      "name": "learning disability"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0002494",
+      "name": "substance-related disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0007743",
+      "name": "attention deficit-hyperactivity disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0004456",
+      "name": "cocaine abuse"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005530",
+      "name": "opiate dependence"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0002134",
+      "name": "physiological sexual disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0001106",
+      "name": "kidney failure"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0004985",
+      "name": "bipolar disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005567",
+      "name": "substance withdrawal syndrome"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005804",
+      "name": "hyperprolactinemia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0100192",
+      "name": "liver failure"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0007774",
+      "name": "hyperreflexia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0001286",
+      "name": "exotropia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "UMLS:C0011609",
+      "name": "Drug Eruptions"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005302",
+      "name": "attention deficit hyperactivity disorder, inattentive type"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0004985",
+      "name": "bipolar disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0022578",
+      "name": "childhood bladder carcinoma"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005105",
+      "name": "melanoma"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0006732",
+      "name": "drug-induced dyskinesia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005178",
+      "name": "osteoarthritis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0002009",
+      "name": "major depressive disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0002032",
+      "name": "colon carcinoma"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0021063",
+      "name": "malignant colon neoplasm"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0002277",
+      "name": "arteriosclerosis disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0007803",
+      "name": "multiple system atrophy"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005311",
+      "name": "atherosclerosis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0011122",
+      "name": "obesity disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005146",
+      "name": "post-traumatic stress disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "UMLS:C0027055",
+      "name": "Myocardial Reperfusion Injury"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0002909",
+      "name": "hyperglycemia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0007263",
+      "name": "cardiac rhythm disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005010",
+      "name": "coronary artery disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005148",
+      "name": "type 2 diabetes mellitus"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005466",
+      "name": "hypersomnia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005383",
+      "name": "panic disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005300",
+      "name": "chronic kidney disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005015",
+      "name": "diabetes mellitus"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005395",
+      "name": "movement disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "UMLS:C0525041",
+      "name": "Neurobehavioral Manifestations"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005302",
+      "name": "attention deficit hyperactivity disorder, inattentive type"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0002342",
+      "name": "chondromalacia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005468",
+      "name": "hypotensive disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0004992",
+      "name": "cancer"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005091",
+      "name": "severe acute respiratory syndrome"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005047",
+      "name": "infertility disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0007743",
+      "name": "attention deficit-hyperactivity disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0007661",
+      "name": "Tourette syndrome"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0002909",
+      "name": "hyperglycemia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005192",
+      "name": "exocrine pancreatic carcinoma"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005362",
+      "name": "erectile dysfunction"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0000837",
+      "name": "bone resorption disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0018608",
+      "name": "pure autonomic failure"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0001384",
+      "name": "myopia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0007254",
+      "name": "breast cancer"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0000947",
+      "name": "psychosexual disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0009831",
+      "name": "malignant pancreatic neoplasm"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005043",
+      "name": "hyperplasia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0008903",
+      "name": "lung cancer"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0003709",
+      "name": "agoraphobia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005359",
+      "name": "drug-induced liver injury"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0000494",
+      "name": "renal fibrosis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005362",
+      "name": "erectile dysfunction"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005072",
+      "name": "neuroblastoma"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0001247",
+      "name": "social phobia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005469",
+      "name": "orthostatic hypotension"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0000190",
+      "name": "ventricular fibrillation"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0001942",
+      "name": "generalized anxiety disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005180",
+      "name": "Parkinson disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0000437",
+      "name": "cerebellar ataxia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005578",
+      "name": "arthritic joint disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005052",
+      "name": "irritable bowel syndrome"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0001076",
+      "name": "glucose intolerance"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0011122",
+      "name": "obesity disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0007263",
+      "name": "cardiac rhythm disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005618",
+      "name": "anxiety disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0043839",
+      "name": "ulcer disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0011918",
+      "name": "anxiety"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0024644",
+      "name": "myocardial ischemia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0021107",
+      "name": "narcolepsy"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0004985",
+      "name": "bipolar disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005068",
+      "name": "myocardial infarction"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0001292",
+      "name": "autonomic nervous system disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005267",
+      "name": "heart disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005240",
+      "name": "kidney disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0002050",
+      "name": "depressive disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005154",
+      "name": "liver disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005468",
+      "name": "hypotensive disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10093",
+      "name": "yohimbine"
+    },
+    "disease": {
+      "id": "MONDO:0005362",
+      "name": "erectile dysfunction"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0005155",
+      "name": "cirrhosis of liver"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0024288",
+      "name": "hyperbilirubinemia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "UMLS:C0001364",
+      "name": "Massive Hepatic Necrosis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0001673",
+      "name": "diarrheal disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0001711",
+      "name": "hepatic encephalopathy"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0018882",
+      "name": "vasculitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0005244",
+      "name": "peripheral neuropathy"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "UMLS:C0027540",
+      "name": "Necrosis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0015943",
+      "name": "eosinophilic granulomatosis with polyangiitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0018882",
+      "name": "vasculitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0004982",
+      "name": "pancreatitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0002251",
+      "name": "hepatitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0100192",
+      "name": "liver failure"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0002251",
+      "name": "hepatitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0005359",
+      "name": "drug-induced liver injury"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0015943",
+      "name": "eosinophilic granulomatosis with polyangiitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0002258",
+      "name": "pharyngitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "UMLS:C0235378",
+      "name": "Hepatotoxicity"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0001475",
+      "name": "neutropenia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0005244",
+      "name": "peripheral neuropathy"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0015943",
+      "name": "eosinophilic granulomatosis with polyangiitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0002406",
+      "name": "dermatitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0005749",
+      "name": "eosinophilic pneumonia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0005961",
+      "name": "sinusitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "UMLS:C0160390",
+      "name": "Injury of liver"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0005570",
+      "name": "hematologic disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0005492",
+      "name": "urticaria"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0010481",
+      "name": "angioedema"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0002251",
+      "name": "hepatitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0002049",
+      "name": "thrombocytopenia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0018882",
+      "name": "vasculitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0006794",
+      "name": "hypersensitivity vasculitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0005550",
+      "name": "infectious disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0002268",
+      "name": "dyspepsia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "UMLS:C0151736",
+      "name": "Accidental Injuries"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0006547",
+      "name": "exanthem"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "UMLS:C3263723",
+      "name": "Traumatic injury"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0004335",
+      "name": "digestive system disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "UMLS:C2242588",
+      "name": "Traumatic liver injury"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0100192",
+      "name": "liver failure"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "UMLS:C0521839",
+      "name": "Influenza-like illness"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0005271",
+      "name": "allergic disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0001673",
+      "name": "diarrheal disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0002317",
+      "name": "central nervous system origin vertigo"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0024288",
+      "name": "hyperbilirubinemia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "UMLS:C2047937",
+      "name": "Ill-defined disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0001609",
+      "name": "agranulocytosis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0015691",
+      "name": "hypereosinophilic syndrome"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "UMLS:C0009938",
+      "name": "Contusions"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0013600",
+      "name": "insomnia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "UMLS:C0267596",
+      "name": "Rectal hemorrhage"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0019337",
+      "name": "autoimmune bullous skin disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0003781",
+      "name": "bronchitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0004979",
+      "name": "asthma"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0005642",
+      "name": "atopic conjunctivitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0005002",
+      "name": "chronic obstructive pulmonary disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0003014",
+      "name": "rhinitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "UMLS:C0035126",
+      "name": "Reperfusion Injury"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0005005",
+      "name": "clear cell renal carcinoma"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0005311",
+      "name": "atherosclerosis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0000740",
+      "name": "adenoid hypertrophy"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0005492",
+      "name": "urticaria"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0000816",
+      "name": "abdominal obesity-metabolic syndrome"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0004975",
+      "name": "Alzheimer disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0011292",
+      "name": "dermatitis, atopic"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0001358",
+      "name": "bronchial disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0006857",
+      "name": "middle cerebral artery infarction"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0011786",
+      "name": "allergic rhinitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0005133",
+      "name": "endometriosis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0004979",
+      "name": "asthma"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0004970",
+      "name": "adenocarcinoma"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0005061",
+      "name": "lung adenocarcinoma"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0025513",
+      "name": "autoimmune urticaria"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0020797",
+      "name": "decompression sickness"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0009061",
+      "name": "cystic fibrosis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0008903",
+      "name": "lung cancer"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0002032",
+      "name": "colon carcinoma"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0005083",
+      "name": "psoriasis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0005277",
+      "name": "migraine disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0005344",
+      "name": "hepatitis B virus infection"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0850282",
+      "name": "chronic asthma"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0007254",
+      "name": "breast cancer"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0000831",
+      "name": "thrombotic disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0006314",
+      "name": "nasal cavity polyp"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0011786",
+      "name": "allergic rhinitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0005134",
+      "name": "experimental autoimmune encephalomyelitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0006314",
+      "name": "nasal cavity polyp"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0100192",
+      "name": "liver failure"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0001627",
+      "name": "dementia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0007256",
+      "name": "hepatocellular carcinoma"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0850230",
+      "name": "chronic urticaria"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0002267",
+      "name": "obstructive lung disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0005359",
+      "name": "drug-induced liver injury"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0002909",
+      "name": "hyperglycemia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0004980",
+      "name": "atopic eczema"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0004952",
+      "name": "Hodgkins lymphoma"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0100096",
+      "name": "COVID-19"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0006932",
+      "name": "pulmonary edema"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0009061",
+      "name": "cystic fibrosis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0005494",
+      "name": "triple-negative breast carcinoma"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0002492",
+      "name": "acute kidney failure"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0044212",
+      "name": "chronic idiopathic urticaria"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0006014",
+      "name": "vulvovaginal candidiasis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0008383",
+      "name": "rheumatoid arthritis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0004979",
+      "name": "asthma"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0003014",
+      "name": "rhinitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0024355",
+      "name": "respiratory tract infectious disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0005016",
+      "name": "diabetic kidney disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0018177",
+      "name": "glioblastoma"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0005301",
+      "name": "multiple sclerosis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0005265",
+      "name": "inflammatory bowel disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0005149",
+      "name": "pulmonary hypertension"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0008315",
+      "name": "prostate cancer"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0004992",
+      "name": "cancer"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "UMLS:C0525041",
+      "name": "Neurobehavioral Manifestations"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0005002",
+      "name": "chronic obstructive pulmonary disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0005154",
+      "name": "liver disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0011918",
+      "name": "anxiety"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0005155",
+      "name": "cirrhosis of liver"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "UMLS:C0234458",
+      "name": "Dream disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0013600",
+      "name": "insomnia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0002050",
+      "name": "depressive disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0004979",
+      "name": "asthma"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10100",
+      "name": "zafirlukast"
+    },
+    "disease": {
+      "id": "MONDO:0004979",
+      "name": "asthma"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MESH:D004195",
+      "name": "Disease Models, Animal"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005359",
+      "name": "drug-induced liver injury"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0003620",
+      "name": "peripheral nervous system disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005244",
+      "name": "peripheral neuropathy"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C0027659",
+      "name": "Neoplasms, Experimental"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C0018775",
+      "name": "Hearing Loss, Bilateral"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0001824",
+      "name": "polyneuropathy"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0001529",
+      "name": "pancytopenia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0004790",
+      "name": "fatty liver disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005015",
+      "name": "diabetes mellitus"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005156",
+      "name": "encephalomyelitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005559",
+      "name": "neurodegenerative disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0004994",
+      "name": "cardiomyopathy"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0000313",
+      "name": "hypophosphatemia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005062",
+      "name": "lymphoma"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0004982",
+      "name": "pancreatitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0001673",
+      "name": "diarrheal disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0009637",
+      "name": "inborn mitochondrial myopathy"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0020678",
+      "name": "sensorineural hearing loss disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005197",
+      "name": "thymus neoplasm"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0002321",
+      "name": "sensory peripheral neuropathy"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0002317",
+      "name": "central nervous system origin vertigo"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0002280",
+      "name": "anemia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005527",
+      "name": "toxic encephalopathy"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0021667",
+      "name": "neuralgia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0009831",
+      "name": "malignant pancreatic neoplasm"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0004994",
+      "name": "cardiomyopathy"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0004069",
+      "name": "inborn mitochondrial metabolism disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0013209",
+      "name": "metabolic dysfunction-associated steatotic liver disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0004790",
+      "name": "fatty liver disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0002562",
+      "name": "demyelinating disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005003",
+      "name": "chronic pancreatitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0003019",
+      "name": "potassium deficiency disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005062",
+      "name": "lymphoma"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005192",
+      "name": "exocrine pancreatic carcinoma"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C0038663",
+      "name": "Suicide attempt"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005044",
+      "name": "hypertensive disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0001040",
+      "name": "nasopharyngitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0001534",
+      "name": "ocular hyperemia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C0856151",
+      "name": "Fat redistribution"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0002049",
+      "name": "thrombocytopenia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0001186",
+      "name": "depersonalization disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C0948349",
+      "name": "Respiratory tract congestion"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0002610",
+      "name": "purpura"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C0855242",
+      "name": "Disturbance in sexual arousal"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0002508",
+      "name": "gingivitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0002909",
+      "name": "hyperglycemia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0004907",
+      "name": "alopecia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0002251",
+      "name": "hepatitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0001165",
+      "name": "tongue disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0021667",
+      "name": "neuralgia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0004946",
+      "name": "hypoglycemia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0006496",
+      "name": "palsy"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0016047",
+      "name": "endophthalmitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C0156308",
+      "name": "Edema of penis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C0392025",
+      "name": "Enlargement abdomen"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C1456786",
+      "name": "Paranoid state"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C0267596",
+      "name": "Rectal hemorrhage"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C0233414",
+      "name": "Disturbance of attention"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0002125",
+      "name": "status epilepticus"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005009",
+      "name": "congestive heart failure"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C0242073",
+      "name": "Pulmonary congestion"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C0235351",
+      "name": "Ulcer on tongue"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005485",
+      "name": "psychotic disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C0521839",
+      "name": "Influenza-like illness"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C0235573",
+      "name": "Hemoglobinemia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0002268",
+      "name": "dyspepsia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0006884",
+      "name": "panophthalmitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C0400839",
+      "name": "Ulcer of rectum"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0004966",
+      "name": "gastritis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005093",
+      "name": "skin disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0006771",
+      "name": "glossitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0011918",
+      "name": "anxiety"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0003014",
+      "name": "rhinitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0006040",
+      "name": "lactic acidosis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C2047937",
+      "name": "Ill-defined disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0003749",
+      "name": "esophageal disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0002770",
+      "name": "vaginal discharge"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C1306341",
+      "name": "Mental handicap"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0007263",
+      "name": "cardiac rhythm disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0000750",
+      "name": "dental abscess"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0001152",
+      "name": "amnestic disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0002021",
+      "name": "gingival disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005365",
+      "name": "hearing loss disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0006816",
+      "name": "arthropathy"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0002406",
+      "name": "dermatitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0004592",
+      "name": "impetigo"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C0152029",
+      "name": "Congestion of nasal sinus (disorder)"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005492",
+      "name": "urticaria"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0001106",
+      "name": "kidney failure"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0006547",
+      "name": "exanthem"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0004730",
+      "name": "speech disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005027",
+      "name": "epilepsy"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0021739",
+      "name": "prurigo"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0043233",
+      "name": "exfoliative dermatitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0002155",
+      "name": "cholecystitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0013600",
+      "name": "insomnia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0001409",
+      "name": "esophagitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0001566",
+      "name": "hypercalcemia disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0003159",
+      "name": "vascular hemostatic disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005271",
+      "name": "allergic disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0003019",
+      "name": "potassium deficiency disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0002492",
+      "name": "acute kidney failure"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0001673",
+      "name": "diarrheal disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C0233472",
+      "name": "Labile affect"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0004981",
+      "name": "atrial fibrillation"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C0566951",
+      "name": "Vaginal ulcer"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0000598",
+      "name": "aphasia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0003763",
+      "name": "acute stress disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005351",
+      "name": "anorexia nervosa"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0004982",
+      "name": "pancreatitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0007186",
+      "name": "gastroesophageal reflux disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0002471",
+      "name": "bursitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005292",
+      "name": "colitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C0919980",
+      "name": "VIIth nerve palsy"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0001627",
+      "name": "dementia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0001475",
+      "name": "neutropenia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C0151763",
+      "name": "Liver damage"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0006858",
+      "name": "mouth disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0021187",
+      "name": "hyperlipidemia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0008171",
+      "name": "nephrolithiasis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0002237",
+      "name": "carbuncle"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0023557",
+      "name": "infective vaginitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005665",
+      "name": "Bell's palsy"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0002280",
+      "name": "anemia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005961",
+      "name": "sinusitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0003785",
+      "name": "leukopenia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0003939",
+      "name": "muscle tissue disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0000313",
+      "name": "hypophosphatemia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0021245",
+      "name": "oral cavity neoplasm"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005550",
+      "name": "infectious disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0043839",
+      "name": "ulcer disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0006515",
+      "name": "acute pancreatitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0004994",
+      "name": "cardiomyopathy"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005015",
+      "name": "diabetes mellitus"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0002256",
+      "name": "cervix disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0850421",
+      "name": "acute hemorrhagic pancreatitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005099",
+      "name": "subarachnoid hemorrhage"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0000948",
+      "name": "xerophthalmia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0021167",
+      "name": "myositis disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C0341012",
+      "name": "Oral herpes simplex infection"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0006668",
+      "name": "bacterial conjunctivitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005393",
+      "name": "gout"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C0160390",
+      "name": "Injury of liver"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005709",
+      "name": "common cold"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C3665444",
+      "name": "Neutrophilia (disorder)"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0006598",
+      "name": "phototoxic dermatitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0002884",
+      "name": "nail disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0015691",
+      "name": "hypereosinophilic syndrome"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0019337",
+      "name": "autoimmune bullous skin disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005277",
+      "name": "migraine disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0002258",
+      "name": "pharyngitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C0497209",
+      "name": "Infective conjunctivitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0043653",
+      "name": "herpes labialis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C0595916",
+      "name": "Toxic nephropathy"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005230",
+      "name": "cellulitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0002050",
+      "name": "depressive disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0043237",
+      "name": "glossodynia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C0262576",
+      "name": "Nerve palsy"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005328",
+      "name": "eye disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005578",
+      "name": "arthritic joint disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C0233494",
+      "name": "Tension"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0002122",
+      "name": "neuritis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005754",
+      "name": "epilepsy with generalized tonic-clonic seizures"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C0020569",
+      "name": "Hypertrophy of salivary gland"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005244",
+      "name": "peripheral neuropathy"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005178",
+      "name": "osteoarthritis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0002317",
+      "name": "central nervous system origin vertigo"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0024288",
+      "name": "hyperbilirubinemia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0004872",
+      "name": "hemorrhoid"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0002026",
+      "name": "candidiasis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005231",
+      "name": "hepatitis C virus infection"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0012268",
+      "name": "AIDS"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0018076",
+      "name": "tuberculosis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005639",
+      "name": "AIDS related complex"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "UMLS:C0085090",
+      "name": "Lymphoma, AIDS-Related"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005136",
+      "name": "malaria"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005311",
+      "name": "atherosclerosis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005798",
+      "name": "HIV-associated nephropathy"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005525",
+      "name": "T-cell leukemia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005109",
+      "name": "HIV infectious disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0004643",
+      "name": "myeloid leukemia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0001824",
+      "name": "polyneuropathy"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005344",
+      "name": "hepatitis B virus infection"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0018177",
+      "name": "glioblastoma"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005109",
+      "name": "HIV infectious disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005550",
+      "name": "infectious disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0021063",
+      "name": "malignant colon neoplasm"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0004790",
+      "name": "fatty liver disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0011996",
+      "name": "chronic myelogenous leukemia, BCR-ABL1 positive"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0012268",
+      "name": "AIDS"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005108",
+      "name": "viral infectious disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0021042",
+      "name": "glioma"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005192",
+      "name": "exocrine pancreatic carcinoma"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0017769",
+      "name": "acquired immunodeficiency"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0100430",
+      "name": "fibrotic liver disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0043479",
+      "name": "adenoviridae infectious disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005184",
+      "name": "pancreatic ductal adenocarcinoma"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0007254",
+      "name": "breast cancer"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005233",
+      "name": "non-small cell lung carcinoma"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0009831",
+      "name": "malignant pancreatic neoplasm"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0021094",
+      "name": "immunodeficiency disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0002321",
+      "name": "sensory peripheral neuropathy"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005155",
+      "name": "cirrhosis of liver"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0004992",
+      "name": "cancer"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0007256",
+      "name": "hepatocellular carcinoma"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005105",
+      "name": "melanoma"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0021040",
+      "name": "pancreatic neoplasm"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0002251",
+      "name": "hepatitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10101",
+      "name": "zalcitabine"
+    },
+    "disease": {
+      "id": "MONDO:0005109",
+      "name": "HIV infectious disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0005395",
+      "name": "movement disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0011918",
+      "name": "anxiety"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0000437",
+      "name": "cerebellar ataxia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0001165",
+      "name": "tongue disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0005292",
+      "name": "colitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "UMLS:C0919980",
+      "name": "VIIth nerve palsy"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0002471",
+      "name": "bursitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0005071",
+      "name": "nervous system disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0003159",
+      "name": "vascular hemostatic disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0002909",
+      "name": "hyperglycemia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0006547",
+      "name": "exanthem"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0003799",
+      "name": "conjunctivitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0004848",
+      "name": "ulcerative stomatitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0002610",
+      "name": "purpura"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0005469",
+      "name": "orthostatic hypotension"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0004980",
+      "name": "atopic eczema"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "UMLS:C0340865",
+      "name": "Anaphylactoid Reaction"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0002657",
+      "name": "breast disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0005083",
+      "name": "psoriasis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0013600",
+      "name": "insomnia"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0005351",
+      "name": "anorexia nervosa"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "UMLS:C0403632",
+      "name": "Non-Infectious Cystitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0006771",
+      "name": "glossitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0004247",
+      "name": "peptic ulcer disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "UMLS:C0233494",
+      "name": "Tension"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "UMLS:C2047937",
+      "name": "Ill-defined disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0019337",
+      "name": "autoimmune bullous skin disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0005328",
+      "name": "eye disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0004565",
+      "name": "intestinal obstruction"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0100053",
+      "name": "anaphylaxis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0004730",
+      "name": "speech disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0002102",
+      "name": "cheilitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "UMLS:C0233414",
+      "name": "Disturbance of attention"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0015691",
+      "name": "hypereosinophilic syndrome"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0000736",
+      "name": "dyschromatosis universalis hereditaria"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0005279",
+      "name": "pulmonary embolism"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0005137",
+      "name": "nutritional disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "UMLS:C0151547",
+      "name": "Cataract specified"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0005178",
+      "name": "osteoarthritis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0005578",
+      "name": "arthritic joint disease"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0043303",
+      "name": "hyperacusis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0001152",
+      "name": "amnestic disorder"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0004843",
+      "name": "pathologic nystagmus"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "UMLS:C0340464",
+      "name": "Premature Cardiac Complex"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0023557",
+      "name": "infective vaginitis"
+    }
+  },
+  {
+    "drug": {
+      "id": "CHEBI:10102",
+      "name": "zaleplon"
+    },
+    "disease": {
+      "id": "MONDO:0008698",
+      "name": "achalasia"
+    }
+  }
+]
