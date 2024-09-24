@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 import React, { useContext } from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined';
@@ -20,16 +21,16 @@ function getValidAssociations(s, p, o, model) {
 
   const isInRange = (
     n,
-    range
+    range,
   ) => {
     const traverse = (nodes, search) => {
-      for (const n of nodes) {
-        if (n === search) return true;
-        if (n.parent) {
-          if (traverse([n.parent], search)) return true;
+      for (const node of nodes) {
+        if (node === search) return true;
+        if (node.parent) {
+          if (traverse([node.parent], search)) return true;
         }
-        if (n.mixinParents) {
-          if (traverse(n.mixinParents, search)) return true;
+        if (node.mixinParents) {
+          if (traverse(node.mixinParents, search)) return true;
         }
       }
       return false;
@@ -40,16 +41,16 @@ function getValidAssociations(s, p, o, model) {
   // Returns true if `n` is an ancestor of `domain`
   const isInDomain = (
     n,
-    domain
+    domain,
   ) => {
     const traverse = (nodes, search) => {
-      for (const n of nodes) {
-        if (n === search) return true;
-        if (n.parent) {
-          if (traverse([n.parent], search)) return true;
+      for (const node of nodes) {
+        if (node === search) return true;
+        if (node.parent) {
+          if (traverse([node.parent], search)) return true;
         }
-        if (n.mixinParents) {
-          if (traverse(n.mixinParents, search)) return true;
+        if (node.mixinParents) {
+          if (traverse(node.mixinParents, search)) return true;
         }
       }
       return false;
@@ -61,17 +62,17 @@ function getValidAssociations(s, p, o, model) {
    * Get the inherited subject/predicate/object ranges for an association
    */
   const getInheritedSPORanges = (
-    association
+    association,
   ) => {
-    const namedThing = model.classes.lookup.get("named thing");
-    const relatedTo = model.slots.lookup.get("related to");
+    const namedThing = model.classes.lookup.get('named thing');
+    const relatedTo = model.slots.lookup.get('related to');
 
     const traverse = (
       nodes,
-      part
+      part,
     ) => {
       for (const node of nodes) {
-        if (node.slotUsage?.[part]) return node.slotUsage[part];
+        if (node.slotUsage && node.slotUsage[part]) return node.slotUsage[part];
         if (node.parent) {
           const discoveredType = traverse([node.parent], part);
           if (discoveredType !== null) return discoveredType;
@@ -85,11 +86,11 @@ function getValidAssociations(s, p, o, model) {
       return null;
     };
 
-    const subject = traverse([association], "subject") ?? namedThing;
-    const predicate = traverse([association], "predicate") ?? relatedTo;
-    const object = traverse([association], "object") ?? namedThing;
+    const sub = traverse([association], 'subject') || namedThing;
+    const pred = traverse([association], 'predicate') || relatedTo;
+    const obj = traverse([association], 'object') || namedThing;
 
-    return { subject, predicate, object };
+    return { subject: sub, predicate: pred, object: obj };
   };
 
   // DFS over associations
@@ -106,10 +107,9 @@ function getValidAssociations(s, p, o, model) {
           .map(([qualifierName, properties]) => {
             if (properties === null) return null;
             const qualifier = model.slots.lookup.get(qualifierName);
-            if (!qualifier || !isInRange(qualifier, model.qualifiers))
-              return null;
+            if (!qualifier || !isInRange(qualifier, model.qualifiers)) return null;
 
-            let range = undefined;
+            let range;
             if (properties.range) {
               const potentialEnum =
                 model.enums[properties.range];
@@ -120,13 +120,13 @@ function getValidAssociations(s, p, o, model) {
               if (potentialClassNode) range = potentialClassNode;
             }
 
-            let subpropertyOf = undefined;
+            let subpropertyOf;
             if (
               properties.subproperty_of &&
               model.slots.lookup.has(properties.subproperty_of)
             ) {
               subpropertyOf = model.slots.lookup.get(
-                properties.subproperty_of
+                properties.subproperty_of,
               );
             }
 
@@ -160,20 +160,20 @@ function getValidAssociations(s, p, o, model) {
 export default function TextEditorRow({ row, index }) {
   const queryBuilder = useContext(QueryBuilderContext);
   const { model } = useContext(BiolinkContext);
-  if (!model) return "Loading...";
+  if (!model) return 'Loading...';
   const { query_graph } = queryBuilder;
   const edge = query_graph.edges[row.edgeId];
   const { edgeId, subjectIsReference, objectIsReference } = row;
 
-  const subject = (query_graph.nodes[edge.subject].categories?.[0] ?? 'biolink:NamedThing')
+  const subject = ((query_graph.nodes[edge.subject].categories && query_graph.nodes[edge.subject].categories[0]) || 'biolink:NamedThing')
     .replace('biolink:', '')
     .match(/[A-Z][a-z]+/g)
     .join(' ')
     .toLowerCase();
-  const predicate = (edge.predicates?.[0] ?? 'biolink:related_to')
+  const predicate = ((query_graph.nodes[edge.subject].categories && edge.predicates[0]) || 'biolink:related_to')
     .replace('biolink:', '')
     .replace(/_/g, ' ');
-  const object = (query_graph.nodes[edge.object].categories?.[0] ?? 'biolink:NamedThing')
+  const object = ((query_graph.nodes[edge.object].categories && query_graph.nodes[edge.object].categories[0]) || 'biolink:NamedThing')
     .replace('biolink:', '')
     .match(/[A-Z][a-z]+/g)
     .join(' ')
@@ -207,7 +207,7 @@ export default function TextEditorRow({ row, index }) {
 
   return (
     <div
-      className='editor-row-wrapper'
+      className="editor-row-wrapper"
     >
       <div className="textEditorRow">
         <IconButton
@@ -270,7 +270,7 @@ export default function TextEditorRow({ row, index }) {
           <AddBoxOutlinedIcon />
         </IconButton>
       </div>
-      
+
       <QualifiersSelector
         id={edgeId}
         associations={validAssociations}
