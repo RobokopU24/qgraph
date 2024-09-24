@@ -290,7 +290,7 @@ export default function TextEditorRow({ row, index }) {
         type="button"
         className="dropdown-toggle"
         onClick={() => { setIsOpen((p) => !p); }}
-        style={{ fontSize: '0.9em', color: '#333' }}
+        style={{ color: '#333' }}
       >
         <span style={{ fontSize: '0.8em' }}>
           {isOpen ? '▲' : '▼'}
