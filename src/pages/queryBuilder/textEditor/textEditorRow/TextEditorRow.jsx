@@ -1,9 +1,10 @@
 /* eslint-disable no-restricted-syntax */
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined';
 import IndeterminateCheckBoxOutlinedIcon from '@material-ui/icons/IndeterminateCheckBoxOutlined';
 
+import { Collapse } from '@material-ui/core';
 import BiolinkContext from '~/context/biolink';
 import QueryBuilderContext from '~/context/queryBuilder';
 import NodeSelector from './NodeSelector';
@@ -160,9 +161,14 @@ function getValidAssociations(s, p, o, model) {
 export default function TextEditorRow({ row, index }) {
   const queryBuilder = useContext(QueryBuilderContext);
   const { model } = useContext(BiolinkContext);
+  const [isOpen, setIsOpen] = useState(false);
   if (!model) return 'Loading...';
   const { query_graph } = queryBuilder;
   const edge = query_graph.edges[row.edgeId];
+  const hasQualifiers = Array.isArray(edge.qualifier_constraints) &&
+    edge.qualifier_constraints.length > 0 &&
+    Array.isArray(edge.qualifier_constraints[0].qualifier_set) &&
+    edge.qualifier_constraints[0].qualifier_set.length > 0;
   const { edgeId, subjectIsReference, objectIsReference } = row;
 
   const subject = ((query_graph.nodes[edge.subject].categories && query_graph.nodes[edge.subject].categories[0]) || 'biolink:NamedThing')
@@ -271,10 +277,34 @@ export default function TextEditorRow({ row, index }) {
         </IconButton>
       </div>
 
-      <QualifiersSelector
-        id={edgeId}
-        associations={validAssociations}
-      />
+      <Collapse in={isOpen}>
+        <div className="qualifiers-wrapper">
+          <QualifiersSelector
+            id={edgeId}
+            associations={validAssociations}
+          />
+        </div>
+      </Collapse>
+
+      <button
+        type="button"
+        className="dropdown-toggle"
+        onClick={() => { setIsOpen((p) => !p); }}
+        style={{ fontSize: '0.9em', color: '#333' }}
+      >
+        <span style={{ fontSize: '0.8em' }}>
+          {isOpen ? '▲' : '▼'}
+        </span>
+        <span
+          style={hasQualifiers ? {
+            fontWeight: 'bold',
+            fontStyle: 'italic',
+          } : undefined}
+        >
+          {' Qualifiers'}
+          {hasQualifiers && '*'}
+        </span>
+      </button>
     </div>
   );
 }

@@ -68,10 +68,18 @@ export default function QualifiersSelector({ id, associations }) {
   if (associationOptions.length === 0) return null;
   if (associationOptions.length === 1 && associationOptions[0].name === 'association') return null;
 
+  const subjectQualfiers = value.qualifiers.filter(({ name }) => name.includes('subject'));
+  const predicateQualifiers = value.qualifiers.filter(({ name }) => name.includes('predicate'));
+  const objectQualifiers = value.qualifiers.filter(({ name }) => name.includes('object'));
+  const otherQualifiers = value.qualifiers.filter((q) => (
+    !subjectQualfiers.includes(q) &&
+    !predicateQualifiers.includes(q) &&
+    !objectQualifiers.includes(q)
+  ));
+
   return (
-    <details>
-      <summary>Qualifiers</summary>
-      <div className="qualifiers-dropdown">
+    <div className="qualifiers-dropdown">
+      <div style={{ marginRight: '2rem' }}>
         <Autocomplete
           value={value}
           onChange={(_, newValue) => {
@@ -86,31 +94,56 @@ export default function QualifiersSelector({ id, associations }) {
           renderInput={(params) => <TextField {...params} label="Association" variant="outlined" />}
         />
 
-        <hr />
+        {otherQualifiers.length > 0 && <hr />}
 
-        {
-          value.qualifiers.map(({ name, options }) => (
-            <Autocomplete
-              key={name}
-              value={qualifiers[name] || null}
-              onChange={(_, newValue) => {
-                if (newValue === null) {
-                  setQualifiers((prev) => {
-                    const next = { ...prev };
-                    delete next[name];
-                    return next;
-                  });
-                } else { setQualifiers((prev) => ({ ...prev, [name]: newValue || null })); }
-              }}
-              options={options}
-              style={{ width: 300 }}
-              renderInput={(params) => <TextField {...params} label={name} variant="outlined" />}
-              size="small"
-            />
-          ))
-        }
+        <QualifiersList
+          value={otherQualifiers}
+          qualifiers={qualifiers}
+          setQualifiers={setQualifiers}
+        />
       </div>
 
-    </details>
+      <QualifiersList
+        value={subjectQualfiers}
+        qualifiers={qualifiers}
+        setQualifiers={setQualifiers}
+      />
+      <QualifiersList
+        value={predicateQualifiers}
+        qualifiers={qualifiers}
+        setQualifiers={setQualifiers}
+      />
+      <QualifiersList
+        value={objectQualifiers}
+        qualifiers={qualifiers}
+        setQualifiers={setQualifiers}
+      />
+    </div>
+  );
+}
+
+function QualifiersList({ value, qualifiers, setQualifiers }) {
+  if (value.length === 0) return null;
+  return (
+    <div className="qualifiers-list">
+      {value.map(({ name, options }) => (
+        <Autocomplete
+          key={name}
+          value={qualifiers[name] || null}
+          onChange={(_, newValue) => {
+            if (newValue === null) {
+              setQualifiers((prev) => {
+                const next = { ...prev };
+                delete next[name];
+                return next;
+              });
+            } else { setQualifiers((prev) => ({ ...prev, [name]: newValue || null })); }
+          }}
+          options={options}
+          renderInput={(params) => <TextField {...params} label={name} variant="outlined" />}
+          size="small"
+        />
+      ))}
+    </div>
   );
 }
