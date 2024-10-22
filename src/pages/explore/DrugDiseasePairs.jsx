@@ -1,4 +1,4 @@
-import { Button, makeStyles } from '@material-ui/core';
+import { Button, makeStyles, TextField } from '@material-ui/core';
 import { ArrowRight } from '@material-ui/icons';
 import React from 'react';
 import {
@@ -103,7 +103,7 @@ export default function DrugDiseasePairs() {
             can serve as a starting point for a new query by hovering over a pair and clicking &ldquo;Start a Query&rdquo;.
           </p>
 
-          <p>
+          <p style={{ fontSize: '1.6rem' }}>
             Scores with an asterisk and underline means the drug-disease pair is already known. The score is still
             predicted using the trained model.
           </p>
@@ -113,15 +113,17 @@ export default function DrugDiseasePairs() {
           {isLoading ? 'Loading...' : (
             <table style={{ fontSize: '1.6rem', width: '100%' }}>
               <thead>
-                <tr>
-                  <th style={{ textTransform: 'uppercase' }}>
-                    <h4>Disease</h4>
+                <tr style={{ borderBottom: '1px solid #eee' }}>
+                  <th style={{ paddingBottom: '1rem' }}>
+                    <h4 style={{ textTransform: 'uppercase' }}>Disease</h4>
+                    <input placeholder="Search diseases" />
                   </th>
-                  <th style={{ textTransform: 'uppercase' }}>
-                    <h4>Drug</h4>
+                  <th style={{ paddingBottom: '1rem' }}>
+                    <h4 style={{ textTransform: 'uppercase' }}>Drug</h4>
+                    <input placeholder="Search drugs" />
                   </th>
-                  <th style={{ textTransform: 'uppercase' }}>
-                    <h4>Score</h4>
+                  <th style={{ paddingBottom: '1rem' }}>
+                    <h4 style={{ textTransform: 'uppercase' }}>Score</h4>
                   </th>
                 </tr>
               </thead>
