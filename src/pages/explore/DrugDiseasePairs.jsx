@@ -7,7 +7,7 @@ import {
 import { useHistory, Link } from 'react-router-dom';
 import QueryBuilderContext from '~/context/queryBuilder';
 import useQueryBuilder from '../queryBuilder/useQueryBuilder';
-import { api } from '../../API/baseUrlProxy';
+import explorePage from '~/API/explorePage';
 
 const useStyles = makeStyles({
   hover: {
@@ -20,10 +20,7 @@ const useStyles = makeStyles({
   },
 });
 
-const fetchPairs = async () => {
-  const res = await api.post('/api/explore');
-  return res.data;
-};
+const fetchPairs = explorePage.getDrugChemicalPairs;
 
 export default function DrugDiseasePairs() {
   const [pairs, setPairs] = React.useState([]);
