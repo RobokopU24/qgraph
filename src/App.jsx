@@ -11,7 +11,7 @@ import Guide from '~/pages/Guide';
 import Tutorial from '~/pages/Tutorial';
 import TermsofService from '~/pages/TermsofService';
 import QueryBuilder from '~/pages/queryBuilder/QueryBuilder';
-import Explore from '~/pages/Explore';
+import Explore from '~/pages/explore/Explore';
 import Answer from '~/pages/answer/Answer';
 
 import QuestionList from '~/pages/questionList/QuestionList';

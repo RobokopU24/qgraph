@@ -4,9 +4,9 @@ import React from 'react';
 import {
   Grid, Row, Col,
 } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import QueryBuilderContext from '~/context/queryBuilder';
-import useQueryBuilder from './queryBuilder/useQueryBuilder';
+import useQueryBuilder from '../queryBuilder/useQueryBuilder';
 
 const useStyles = makeStyles({
   hover: {
@@ -25,7 +25,7 @@ const fetchPairs = async () => {
   return res.json();
 };
 
-export default function Explore() {
+export default function DrugDiseasePairs() {
   const [pairs, setPairs] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -94,12 +94,18 @@ export default function Explore() {
     <Grid style={{ marginBottom: '50px', marginTop: '50px' }}>
       <Row>
         <Col md={12}>
+          <small><Link to="/explore">← View all datasets</Link></small>
           <h1>Drug - Disease Pairs</h1>
           <p style={{ fontSize: '1.6rem' }}>
             These drug-disease pairs were generated using a machine learning model to align with the nodes
             in the ROBOKOP knowledge graph. They highlight potential associations between various drugs and
             a broad range of diseases, suggesting possible avenues for further research. These connections
             can serve as a starting point for a new query by hovering over a pair and clicking &ldquo;Start a Query&rdquo;.
+          </p>
+
+          <p>
+            Scores with an asterisk and underline means the drug-disease pair is already known. The score is still
+            predicted using the trained model.
           </p>
 
           <hr />
@@ -132,7 +138,15 @@ export default function Explore() {
                         <Chip>{pair.drug.id}</Chip>
                       </td>
                       <td>
-                        {pair.score.toFixed(6)}{pair.known ? <em>*</em> : null}
+                        {
+                          pair.known ? (
+                            <span style={{ textDecoration: 'underline' }}>
+                              {pair.score.toFixed(6)}*
+                            </span>
+                          ) : (
+                            pair.score.toFixed(6)
+                          )
+                        }
                       </td>
                       <Button
                         variant="contained"
