@@ -7,6 +7,7 @@ import {
 import { useHistory, Link } from 'react-router-dom';
 import QueryBuilderContext from '~/context/queryBuilder';
 import useQueryBuilder from '../queryBuilder/useQueryBuilder';
+import { api } from '../../API/baseUrlProxy';
 
 const useStyles = makeStyles({
   hover: {
@@ -20,9 +21,8 @@ const useStyles = makeStyles({
 });
 
 const fetchPairs = async () => {
-  const res = await fetch('/api/explore', { method: 'POST' });
-  if (!res.ok) throw new Error(res.statusText);
-  return res.json();
+  const res = await api.post('/api/explore');
+  return res.data;
 };
 
 export default function DrugDiseasePairs() {
