@@ -10,7 +10,7 @@ const services = require('./services');
 const external_apis = require('./external');
 
 const samples = JSON.parse(fs.readFileSync(path.join(__dirname, './sample-query-cache.json')));
-const drugDiseasePairs = JSON.parse(fs.readFileSync(path.join(__dirname, './drug-disease.json')));
+const drugDiseasePairs = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/drug-disease-mappings-subset.json'))).slice(0, 500);
 
 router.use('/', external_apis);
 
