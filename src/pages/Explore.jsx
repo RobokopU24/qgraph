@@ -114,6 +114,9 @@ export default function Explore() {
                   <th style={{ textTransform: 'uppercase' }}>
                     <h4>Drug</h4>
                   </th>
+                  <th style={{ textTransform: 'uppercase' }}>
+                    <h4>Score</h4>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -127,6 +130,9 @@ export default function Explore() {
                       <td>
                         {pair.drug.name}
                         <Chip>{pair.drug.id}</Chip>
+                      </td>
+                      <td>
+                        {pair.score.toFixed(6)}
                       </td>
                       <Button
                         variant="contained"
