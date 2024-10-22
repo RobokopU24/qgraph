@@ -132,7 +132,7 @@ export default function Explore() {
                         <Chip>{pair.drug.id}</Chip>
                       </td>
                       <td>
-                        {pair.score.toFixed(6)}
+                        {pair.score.toFixed(6)}{pair.known ? <em>*</em> : null}
                       </td>
                       <Button
                         variant="contained"
