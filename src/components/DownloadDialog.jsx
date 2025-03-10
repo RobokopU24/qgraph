@@ -44,18 +44,58 @@ const constructCsvObj = (message) => {
   const nodeLabelHeaders = Object.keys(
     message.results[0].node_bindings,
   ).flatMap((node_label) => [`${node_label} (Name)`, `${node_label} (CURIE)`]);
-  const header = [...nodeLabelHeaders, 'Score', 'Publications'];
+
+  let csvHeaderEdgeLabelsMerged = new Set();
+  message.results.forEach((result) => {
+    const curieToNodeLabel = {};
+
+    Object.entries(result.node_bindings).forEach(([nodeLabel, nb]) => {
+      const curie = nb[0].id;
+      curieToNodeLabel[curie] = nodeLabel;
+    });
+
+    Object.values(result.analyses[0].edge_bindings).flat().forEach((eb) => {
+      const { subject, object } = message.knowledge_graph.edges[eb.id];
+      const subjectLabel = curieToNodeLabel[subject];
+      const objectLabel = curieToNodeLabel[object];
+      const csvHeaderEdgeLabel = `${subjectLabel} -> ${objectLabel}`;
+      if (subjectLabel && objectLabel) { // TODO: These were occasionally returning undefined, figure out why
+        csvHeaderEdgeLabelsMerged.add(csvHeaderEdgeLabel);
+      }
+    });
+  });
+  csvHeaderEdgeLabelsMerged = Array.from(csvHeaderEdgeLabelsMerged);
+
+  const header = [...nodeLabelHeaders, ...csvHeaderEdgeLabelsMerged, 'Score', 'Publications'];
 
   const body = message.results.map((result) => {
-    const row = [];
-    Object.values(result.node_bindings).forEach((nb) => {
+    const row = new Array(header.length).fill('');
+    const curieToNodeLabel = {};
+    Object.entries(result.node_bindings).forEach(([nodeLabel, nb], i) => {
       const curie = nb[0].id;
+      curieToNodeLabel[curie] = nodeLabel;
       const node = message.knowledge_graph.nodes[curie];
-      row.push(node.name || node.categories[0]);
-      row.push(curie);
+      row[i * 2] = node.name || node.categories[0];
+      row[i * 2 + 1] = curie;
     });
-    row.push(result.score);
-    row.push(getConcatPublicationsForResult(result, message).join('\n'));
+
+    Object.values(result.analyses[0].edge_bindings).flat().forEach((eb) => {
+      const {
+        subject, object, predicate, sources,
+      } = message.knowledge_graph.edges[eb.id];
+      const subjectLabel = curieToNodeLabel[subject];
+      const objectLabel = curieToNodeLabel[object];
+      if (subjectLabel && objectLabel) {
+        const csvHeaderEdgeLabel = `${curieToNodeLabel[subject]} -> ${curieToNodeLabel[object]}`;
+        const edgeHeaderIndex = header.findIndex((h) => h === csvHeaderEdgeLabel);
+        const primarySourceObj = sources.find((s) => s.resource_role === 'primary_knowledge_source');
+        const primarySource = (primarySourceObj && primarySourceObj.resource_id) || undefined;
+        row[edgeHeaderIndex] += `${row[edgeHeaderIndex].length > 0 ? '\n' : ''}${predicate}${primarySource ? ` (${primarySource})` : ''}`;
+      }
+    });
+
+    row[row.length - 2] = result.score;
+    row[row.length - 1] = getConcatPublicationsForResult(result, message).join('\n');
 
     return row;
   });
