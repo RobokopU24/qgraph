@@ -74,7 +74,7 @@ export default function QueryGraph({ query_graph }) {
       // .force('forceX', d3.forceX(width / 2).strength(0.02))
       .force('forceY', d3.forceY(height / 2).strength(0.2))
       .force('collide', d3.forceCollide().radius(nodeRadius * 2))
-      .force('link', d3.forceLink(edges).id((d) => d.id).distance(edgeLength).strength(1))
+      .force('link', d3.forceLink(edges).id((d) => d.id).distance(edgeLength).strength(0))
       .on('tick', () => {
         node
           .attr('transform', (d) => {
@@ -120,17 +120,46 @@ export default function QueryGraph({ query_graph }) {
             .attr('fill', (d) => colorMap(d.categories)[1])
             .call((nCircle) => nCircle.append('title')
               .text((d) => d.name)))
-          .call((n) => n.append('text')
+          .call((n) => {
+            const textGroup = n.append('text')
             .attr('class', 'nodeLabel')
             .style('pointer-events', 'none')
             .attr('text-anchor', 'middle')
             .style('font-weight', 600)
             .attr('alignment-baseline', 'middle')
-            .text((d) => {
+            .style('font-size', (d) => {
+              const maxFontSize = nodeRadius * 0.4;
+              const minFontSize = 8;
+              const textLength = d.name.length;
+              return `${Math.max(minFontSize, Math.min(maxFontSize, nodeRadius / Math.sqrt(textLength)))}px`;
+            });
+            textGroup.each(function (d) {
               const { name } = d;
-              return name || 'Any';
-            })
-            .each(graphUtils.ellipsisOverflow));
+              const nodeText = name || 'Any';
+              const words = nodeText.split(' ');
+              const textElement = d3.select(this);
+              if (words.length === 1 || nodeText.length < 10) {
+                // Short text, no need to split
+                textElement.append('tspan')
+                  .attr('x', 0)
+                  .attr('dy', '0em')
+                  .text(nodeText);
+              } else {
+                // Split into two lines
+                const middle = Math.ceil(words.length / 2);
+                const firstLine = words.slice(0, middle).join(' ');
+                const secondLine = words.slice(middle).join(' ');
+                textElement.append('tspan')
+                  .attr('x', 0)
+                  .attr('dy', '-0.4em') // Move first line up
+                  .text(firstLine);
+                textElement.append('tspan')
+                  .attr('x', 0)
+                  .attr('dy', '1.2em') // Move second line down
+                  .text(secondLine);
+              }
+            });
+          });
 
     edges = edgeUtils.addEdgeCurveProperties(edges);
     edge = edge.data(edges)
