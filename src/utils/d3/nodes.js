@@ -64,7 +64,7 @@ function enter(node, args) {
         const { name } = d;
         return name || 'Something';
       })
-      .each(graphUtils.ellipsisOverflow))
+      .each(graphUtils.fitTextIntoCircle))
     // create delete button
     .call((nodeDelete) => nodeDelete.append('rect')
       .attr('rx', 5)
@@ -135,7 +135,7 @@ function update(node, args) {
         const { name } = d;
         return name || 'Something';
       })
-      .each(graphUtils.ellipsisOverflow));
+      .each(graphUtils.fitTextIntoCircle));
 }
 
 /**

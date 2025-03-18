@@ -101,6 +101,55 @@ function getBoundedValue(value, upperBound, lowerBound = 0) {
   return Math.max(lowerBound, Math.min(value, upperBound));
 }
 
+function fitTextIntoCircle() {
+  const el = d3.select(this);
+  let textLength = el.node().getComputedTextLength();
+  let text = el.text();
+  // grab the parent g tag
+  const parent = el.node().parentNode;
+  // grab the corresponding circle
+  const circle = d3.select(parent)
+    .select('circle');
+  // get circle radius
+  const nodeRadius = circle.attr('r');
+  const maxFontSize = nodeRadius * 0.4;
+  const minFontSize = 9;
+  const diameter = nodeRadius * 2;
+  const fontSize = `${Math.max(minFontSize, Math.min(maxFontSize, diameter / Math.sqrt(textLength)))}px`;
+  el.style('font-size', fontSize);
+  el.text('');
+  const words = text.split(' ');
+  if (words.length === 1 || textLength < 10) {
+    if (textLength > diameter) {
+      const targetLength = diameter * 0.9;
+      while (textLength > targetLength && text.length > 0) {
+        text = text.slice(0, -1);
+        el.text(`${text}...`);
+        textLength = el.node().getComputedTextLength();
+      }
+    } else {
+    // Short text, no need to split
+      el.append('tspan')
+        .attr('x', 0)
+        .attr('dy', '0em')
+        .text(text);
+    }
+  } else {
+    // Split into two lines
+    const middle = Math.ceil(words.length / 2);
+    const firstLine = words.slice(0, middle).join(' ');
+    const secondLine = words.slice(middle).join(' ');
+    el.append('tspan')
+      .attr('x', 0)
+      .attr('dy', '-0.4em') // Move first line up
+      .text(firstLine);
+    el.append('tspan')
+      .attr('x', 0)
+      .attr('dy', '1.2em') // Move second line down
+      .text(secondLine);
+  }
+}
+
 /**
  * Trim and add an ellipsis to the end of long node labels
  */
@@ -188,6 +237,7 @@ export default {
 
   ellipsisOverflow,
   getEdgeMidpoint,
+  fitTextIntoCircle,
 
   isInside,
   shouldShowArrow,
