@@ -14,6 +14,13 @@
     border: 1px solid lightgray;
     border-collapse: collapse;
 }
+
+.resultsFilterSelect {
+    max-width: 50%;
+    width: 100%; /* Ensures responsiveness */
+    padding: 5px;
+}
+
 /* override table hover colors */
 .MuiTableRow-root.Mui-selected {
     background-color: rgba(13, 0, 30, 0.08);

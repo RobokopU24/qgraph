@@ -121,16 +121,19 @@ function makeTableHeaders(message, colorMap) {
       Header: `${headerText} (${id})`,
       color: backgroundColor,
       id,
-      accessor: (row) => row.node_bindings[id],
-      Cell: ({ value }) => {
-        if (value.length > 1) {
+      accessor: (row) => {
+        const nodeBinding = row.node_bindings[id];
+        if (!nodeBinding || nodeBinding.length === 0) return '';
+        if (nodeBinding.length > 1) {
           // this is a set
-          return `Set of ${stringUtils.displayCategory(qgNode.categories)} [${value.length}]`;
+          return `Set of ${stringUtils.displayCategory(qgNode.categories)} [${nodeBinding.length}]`;
         }
-        return knowledge_graph.nodes[value[0].id].name || value[0].id;
+        return knowledge_graph.nodes[nodeBinding[0].id].name || nodeBinding[0].id;
       },
+      Cell: ({ value }) => value || 'Unknown',
       disableSortBy: true,
       width,
+      filter: 'equals',
     };
   });
   if (results.length && results[0].score) {
@@ -140,6 +143,7 @@ function makeTableHeaders(message, colorMap) {
       accessor: (row) => Math.round(row.score * 1000) / 1000,
       width: 30,
       sortDescFirst: true,
+      disableFilters: true,
     };
     headerColumns.push(scoreColumn);
   }
