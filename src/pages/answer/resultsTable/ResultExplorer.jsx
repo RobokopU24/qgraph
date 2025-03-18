@@ -46,7 +46,7 @@ export default function ResultExplorer({ answerStore }) {
    */
   useEffect(() => {
     svg.current = d3.select(svgRef.current);
-    const { width: fullWidth, height: fullHeight } = svg.current.node().parentNode.getBoundingClientRect();
+    const { width: fullWidth, height: fullHeight } = svg.current.node().getBoundingClientRect();
     width.current = fullWidth;
     height.current = fullHeight;
     svg.current
@@ -133,9 +133,9 @@ export default function ResultExplorer({ answerStore }) {
    * Draw the answer graph
    */
   function drawAnswerGraph() {
-    const { width: fullWidth, height: fullHeight } = svg.current.node().parentNode.getBoundingClientRect();
+    const { width: fullWidth, height: fullHeight } = svg.current.node().getBoundingClientRect();
     width.current = fullWidth;
-    height.current = fullHeight / 2;
+    height.current = fullHeight;
     // set the svg size
     svg.current
       .attr('width', width.current)
@@ -395,7 +395,7 @@ export default function ResultExplorer({ answerStore }) {
           />
         </Box>
       )}
-      <svg ref={svgRef} style={{ flex: 1 }} />
+      <svg ref={svgRef} style={{ flex: 1, width: '100%' }} />
       {answerStore.metaData && (
         <ResultMetaData
           metaData={answerStore.metaData}
