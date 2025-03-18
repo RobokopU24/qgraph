@@ -16,7 +16,7 @@ import useDebounce from '~/stores/useDebounce';
 import ResultMetaData from './ResultMetaData';
 import AttributesTable from './AttributesTable';
 import Popover from '~/components/Popover';
-import NodeAttributesTable from '../kgBubble/NodeAttributesTable';
+import NodeAttributesTable from '../NodeAttributesTable';
 
 const nodeRadius = 40;
 

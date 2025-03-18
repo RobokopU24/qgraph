@@ -16,7 +16,6 @@ import useDisplayState from './useDisplayState';
 import { defaultAnswer } from '~/utils/cache';
 
 import LeftDrawer from './leftDrawer/LeftDrawer';
-import KgBubble from './kgBubble/KgBubble';
 import KgFull from './fullKg/KgFull';
 import QueryGraph from './queryGraph/QueryGraph';
 import ResultsTable from './resultsTable/ResultsTable';
@@ -320,13 +319,6 @@ export default function Answer() {
                 {displayState.qg.show && (
                   <QueryGraph
                     query_graph={answerStore.message.query_graph}
-                  />
-                )}
-                {displayState.kg.show && (
-                  <KgBubble
-                    nodes={answerStore.kgNodes}
-                    numQgNodes={Object.keys(answerStore.message.query_graph.nodes).length}
-                    numResults={answerStore.message.results.length}
                   />
                 )}
                 {displayState.kgFull.show && (
