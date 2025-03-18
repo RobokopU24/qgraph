@@ -1,5 +1,7 @@
 import React, { useMemo } from 'react';
-import { useTable, usePagination, useSortBy } from 'react-table';
+import {
+  useTable, usePagination, useSortBy, useFilters,
+} from 'react-table';
 
 import Paper from '@material-ui/core/Paper';
 import TableContainer from '@material-ui/core/TableContainer';
@@ -23,6 +25,46 @@ import './resultsTable.css';
 export default function ResultsTable({ answerStore }) {
   const columns = useMemo(() => answerStore.tableHeaders, [answerStore.tableHeaders]);
   const data = useMemo(() => answerStore.message.results, [answerStore.message]);
+
+  // This is a custom filter UI for selecting
+  // a unique option from a list
+  function SelectColumnFilterFn({
+    column: {
+      filterValue, setFilter, preFilteredRows, id,
+    },
+  }) {
+    // Calculate the options for filtering
+    // using the preFilteredRows
+    const options = useMemo(() => {
+      const o = new Set();
+      preFilteredRows.forEach((row) => {
+        o.add(row.values[id] ? row.values[id] : null);
+      });
+      return [...o.values()];
+    }, [id, preFilteredRows]);
+
+    // Render a multi-select box
+    return (
+      <select
+        value={filterValue}
+        onChange={(e) => {
+          setFilter(e.target.value || undefined);
+        }}
+        className="resultsFilterSelect"
+      >
+        <option value="">All</option>
+        {options.map((option, i) => (
+          <option key={i} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+    );
+  }
+
+  // Let's set up our default Filter UI
+  const defaultColumn = useMemo(() => ({ Filter: SelectColumnFilterFn }), []);
+
   const {
     getTableProps, getTableBodyProps,
     headerGroups,
@@ -35,6 +77,7 @@ export default function ResultsTable({ answerStore }) {
     {
       columns,
       data,
+      defaultColumn,
       initialState: {
         pageIndex: 0,
         pageSize: 10,
@@ -46,6 +89,7 @@ export default function ResultsTable({ answerStore }) {
         ],
       },
     },
+    useFilters,
     useSortBy,
     usePagination,
   );
@@ -85,6 +129,7 @@ export default function ResultsTable({ answerStore }) {
                             {column.render('Header')}
                           </>
                         )}
+                        <div>{column.canFilter ? column.render('Filter') : null}</div>
                       </TableCell>
                     ))}
                   </TableRow>
