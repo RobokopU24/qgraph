@@ -21,7 +21,7 @@
         "type": "node",
         "id": "n4",
         "name": "disease",
-        "filterType": "biolink:Disease"
+        "filterType": "biolink:DiseaseOrPhenotypicFeature"
       },
       {
         "type": "text",
@@ -89,7 +89,7 @@
         "type": "node",
         "id": "n4",
         "name": "disease",
-        "filterType": "biolink:Disease"
+        "filterType": "biolink:DiseaseOrPhenotypicFeature"
       },
       {
         "type": "text",
@@ -157,7 +157,7 @@
         "type": "node",
         "id": "n2",
         "name": "disease",
-        "filterType": "biolink:Disease"
+        "filterType": "biolink:DiseaseOrPhenotypicFeature"
       },
       {
         "type": "text",
@@ -207,7 +207,7 @@
         "type": "node",
         "id": "n2",
         "name": "disease",
-        "filterType": "biolink:Disease"
+        "filterType": "biolink:DiseaseOrPhenotypicFeature"
       },
       {
         "type": "text",
