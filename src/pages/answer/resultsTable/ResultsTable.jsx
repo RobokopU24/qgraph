@@ -37,7 +37,7 @@ export default function ResultsTable({ answerStore }) {
       data,
       initialState: {
         pageIndex: 0,
-        pageSize: 15,
+        pageSize: 10,
         sortBy: [
           {
             id: 'score',
@@ -114,7 +114,7 @@ export default function ResultsTable({ answerStore }) {
                   </>
                 ) : (
                   <EmptyTable
-                    numRows={15}
+                    numRows={10}
                     numCells={columns.length}
                     text="No Results"
                   />

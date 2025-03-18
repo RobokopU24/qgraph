@@ -48,7 +48,7 @@ export default function ResultExplorer({ answerStore }) {
     svg.current = d3.select(svgRef.current);
     const { width: fullWidth, height: fullHeight } = svg.current.node().parentNode.getBoundingClientRect();
     width.current = fullWidth;
-    height.current = fullHeight / 2;
+    height.current = fullHeight;
     svg.current
       .attr('width', width.current)
       .attr('height', height.current)
@@ -395,7 +395,7 @@ export default function ResultExplorer({ answerStore }) {
           />
         </Box>
       )}
-      <svg ref={svgRef} />
+      <svg ref={svgRef} style={{ flex: 1 }} />
       {answerStore.metaData && (
         <ResultMetaData
           metaData={answerStore.metaData}
