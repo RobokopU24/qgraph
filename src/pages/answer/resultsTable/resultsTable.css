@@ -6,7 +6,6 @@
 #resultsTable {
     flex-grow: 1;
     min-height: 600px;
-    max-height: 750px;
     display: inline-block;
     overflow-y: auto;
 }
@@ -38,7 +37,6 @@
     overflow-y: auto;
 }
 #resultMetaData {
-    flex-grow: 1;
     overflow-y: auto;
     padding: 20px;
 }
