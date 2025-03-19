@@ -101,10 +101,39 @@ function getBoundedValue(value, upperBound, lowerBound = 0) {
   return Math.max(lowerBound, Math.min(value, upperBound));
 }
 
+function fitTextWithEllipsis(text, el, nodeRadius, fontSize, dy) {
+  // Set up the SVG and circle
+  const svg = d3.select('body')
+    .append('svg')
+    .attr('width', 300)
+    .attr('height', 300);
+  const tempText = svg.append('text')
+    .attr('font-size', fontSize)
+    .style('visibility', 'hidden')// Hide temp text
+    .text(text);
+
+  const targetLength = nodeRadius * 2 * 0.9;
+  let finalText = text;
+  let textLength = tempText.node().getComputedTextLength();
+  if (textLength > nodeRadius * 2 * 1.25) {
+    while (textLength > targetLength && finalText.length > 0) {
+      finalText = finalText.slice(0, -1);
+      tempText.text(`${finalText.slice(0, -1)}...`);
+      textLength = tempText.node().getComputedTextLength();
+    }
+    finalText = `${finalText}...`;
+  }
+  tempText.remove();
+  el.append('tspan')
+    .attr('x', 0)
+    .attr('dy', dy)
+    .text(finalText);
+}
+
 function fitTextIntoCircle() {
   const el = d3.select(this);
-  let textLength = el.node().getComputedTextLength();
-  let text = el.text();
+  const textLength = el.node().getComputedTextLength();
+  const text = el.text();
   // grab the parent g tag
   const parent = el.node().parentNode;
   // grab the corresponding circle
@@ -119,34 +148,18 @@ function fitTextIntoCircle() {
   el.style('font-size', fontSize);
   el.text('');
   const words = text.split(' ');
+  console.log('before splitting checks');
+  console.log(textLength);
   if (words.length === 1 || textLength < 10) {
-    if (textLength > diameter) {
-      const targetLength = diameter * 0.9;
-      while (textLength > targetLength && text.length > 0) {
-        text = text.slice(0, -1);
-        el.text(`${text}...`);
-        textLength = el.node().getComputedTextLength();
-      }
-    } else {
-    // Short text, no need to split
-      el.append('tspan')
-        .attr('x', 0)
-        .attr('dy', '0em')
-        .text(text);
-    }
+    console.log(text);
+    fitTextWithEllipsis(text, el, nodeRadius, fontSize, '0em');
   } else {
     // Split into two lines
     const middle = Math.ceil(words.length / 2);
     const firstLine = words.slice(0, middle).join(' ');
     const secondLine = words.slice(middle).join(' ');
-    el.append('tspan')
-      .attr('x', 0)
-      .attr('dy', '-0.4em') // Move first line up
-      .text(firstLine);
-    el.append('tspan')
-      .attr('x', 0)
-      .attr('dy', '1.2em') // Move second line down
-      .text(secondLine);
+    fitTextWithEllipsis(firstLine, el, nodeRadius, fontSize, '-0.4em');
+    fitTextWithEllipsis(secondLine, el, nodeRadius, fontSize, '1.2em');
   }
 }
 

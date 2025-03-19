@@ -120,46 +120,17 @@ export default function QueryGraph({ query_graph }) {
             .attr('fill', (d) => colorMap(d.categories)[1])
             .call((nCircle) => nCircle.append('title')
               .text((d) => d.name)))
-          .call((n) => {
-            const textGroup = n.append('text')
+          .call((n) => n.append('text')
             .attr('class', 'nodeLabel')
             .style('pointer-events', 'none')
             .attr('text-anchor', 'middle')
             .style('font-weight', 600)
             .attr('alignment-baseline', 'middle')
-            .style('font-size', (d) => {
-              const maxFontSize = nodeRadius * 0.4;
-              const minFontSize = 8;
-              const textLength = d.name.length;
-              return `${Math.max(minFontSize, Math.min(maxFontSize, nodeRadius / Math.sqrt(textLength)))}px`;
-            });
-            textGroup.each(function (d) {
+            .text((d) => {
               const { name } = d;
-              const nodeText = name || 'Any';
-              const words = nodeText.split(' ');
-              const textElement = d3.select(this);
-              if (words.length === 1 || nodeText.length < 10) {
-                // Short text, no need to split
-                textElement.append('tspan')
-                  .attr('x', 0)
-                  .attr('dy', '0em')
-                  .text(nodeText);
-              } else {
-                // Split into two lines
-                const middle = Math.ceil(words.length / 2);
-                const firstLine = words.slice(0, middle).join(' ');
-                const secondLine = words.slice(middle).join(' ');
-                textElement.append('tspan')
-                  .attr('x', 0)
-                  .attr('dy', '-0.4em') // Move first line up
-                  .text(firstLine);
-                textElement.append('tspan')
-                  .attr('x', 0)
-                  .attr('dy', '1.2em') // Move second line down
-                  .text(secondLine);
-              }
-            });
-          });
+              return name || 'Any';
+            })
+            .each(graphUtils.fitTextIntoCircle));
 
     edges = edgeUtils.addEdgeCurveProperties(edges);
     edge = edge.data(edges)
