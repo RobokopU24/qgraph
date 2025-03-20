@@ -62,11 +62,9 @@ export default function useAnswerStore() {
     setMessage(averageAnalysesScores(msg));
     if (msg.knowledge_graph && msg.results) {
       setKgNodes(kgUtils.makeDisplayNodes(msg, hierarchies));
-      updateDisplayState({ type: 'toggle', payload: { component: 'kg', show: true } });
       updateDisplayState({ type: 'toggle', payload: { component: 'results', show: true } });
     } else {
       // if knowledge_graph and results are undefined, then disable those components
-      updateDisplayState({ type: 'disable', payload: { component: 'kg' } });
       updateDisplayState({ type: 'disable', payload: { component: 'results' } });
     }
     resetAnswerExplorer();

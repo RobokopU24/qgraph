@@ -24,7 +24,6 @@ function reducer(state, action) {
 export default function useDisplayState() {
   const [state, dispatch] = useReducer(reducer, {
     qg: { show: true, label: 'Query Graph' },
-    kg: { show: true, label: 'Bubble Chart' },
     kgFull: { show: false, label: 'Knowledge Graph', disabled: true },
     results: { show: true, label: 'Results Table' },
   });

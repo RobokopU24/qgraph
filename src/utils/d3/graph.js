@@ -124,6 +124,7 @@ function fitTextWithEllipsis(text, el, nodeRadius, fontSize, dy) {
     finalText = `${finalText}...`;
   }
   tempText.remove();
+  svg.remove();
   el.append('tspan')
     .attr('x', 0)
     .attr('dy', dy)
@@ -148,10 +149,7 @@ function fitTextIntoCircle() {
   el.style('font-size', fontSize);
   el.text('');
   const words = text.split(' ');
-  console.log('before splitting checks');
-  console.log(textLength);
   if (words.length === 1 || textLength < 10) {
-    console.log(text);
     fitTextWithEllipsis(text, el, nodeRadius, fontSize, '0em');
   } else {
     // Split into two lines
