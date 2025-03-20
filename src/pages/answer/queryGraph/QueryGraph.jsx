@@ -74,7 +74,7 @@ export default function QueryGraph({ query_graph }) {
       // .force('forceX', d3.forceX(width / 2).strength(0.02))
       .force('forceY', d3.forceY(height / 2).strength(0.2))
       .force('collide', d3.forceCollide().radius(nodeRadius * 2))
-      .force('link', d3.forceLink(edges).id((d) => d.id).distance(edgeLength).strength(1))
+      .force('link', d3.forceLink(edges).id((d) => d.id).distance(edgeLength).strength(0))
       .on('tick', () => {
         node
           .attr('transform', (d) => {
@@ -130,7 +130,7 @@ export default function QueryGraph({ query_graph }) {
               const { name } = d;
               return name || 'Any';
             })
-            .each(graphUtils.ellipsisOverflow));
+            .each(graphUtils.fitTextIntoCircle));
 
     edges = edgeUtils.addEdgeCurveProperties(edges);
     edge = edge.data(edges)

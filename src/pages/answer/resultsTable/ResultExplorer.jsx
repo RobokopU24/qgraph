@@ -199,44 +199,14 @@ export default function ResultExplorer({ answerStore }) {
               .on('click', function () {
                 handleClickNode(d3.select(this).datum());
               }))
-              .call((n) => {
-                const textGroup = n.append('text')
-                  .attr('class', 'result_node_label')
-                  .style('pointer-events', 'none')
-                  .attr('text-anchor', 'middle')
-                  .style('font-weight', 600)
-                  .attr('alignment-baseline', 'middle')
-                  .style('font-size', (d) => {
-                    const maxFontSize = nodeRadius * 0.4;
-                    const minFontSize = 8;
-                    const textLength = d.name.length;
-                    return `${Math.max(minFontSize, Math.min(maxFontSize, nodeRadius / Math.sqrt(textLength)))}px`;
-                  });
-                textGroup.each(function (d) {
-                  const words = d.name.split(' ');
-                  const textElement = d3.select(this);
-                  if (words.length === 1 || d.name.length < 10) {
-                    // Short text, no need to split
-                    textElement.append('tspan')
-                      .attr('x', 0)
-                      .attr('dy', '0em')
-                      .text(d.name);
-                  } else {
-                    // Split into two lines
-                    const middle = Math.ceil(words.length / 2);
-                    const firstLine = words.slice(0, middle).join(' ');
-                    const secondLine = words.slice(middle).join(' ');
-                    textElement.append('tspan')
-                      .attr('x', 0)
-                      .attr('dy', '-0.4em') // Move first line up
-                      .text(firstLine);
-                    textElement.append('tspan')
-                      .attr('x', 0)
-                      .attr('dy', '1.2em') // Move second line down
-                      .text(secondLine);
-                  }
-                });
-              }),
+              .call((n) => n.append('text')
+                .attr('class', 'result_node_label')
+                .style('pointer-events', 'none')
+                .attr('text-anchor', 'middle')
+                .style('font-weight', 600)
+                .attr('alignment-baseline', 'middle')
+                .text((d) => d.name)
+                .each(graphUtils.fitTextIntoCircle)),
         (update) => update,
         (exit) => exit
           .transition()
