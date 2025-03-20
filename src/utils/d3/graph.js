@@ -124,6 +124,7 @@ function fitTextWithEllipsis(text, el, nodeRadius, fontSize, dy) {
     finalText = `${finalText}...`;
   }
   tempText.remove();
+  svg.remove();
   el.append('tspan')
     .attr('x', 0)
     .attr('dy', dy)
