@@ -5,6 +5,12 @@ import {
   Grid, Row, Col,
 } from 'react-bootstrap';
 import { useHistory, Link } from 'react-router-dom';
+import {
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from '@tanstack/react-table';
 import QueryBuilderContext from '~/context/queryBuilder';
 import useQueryBuilder from '../queryBuilder/useQueryBuilder';
 import explorePage from '~/API/explorePage';
@@ -23,7 +29,7 @@ const useStyles = makeStyles({
 const fetchPairs = explorePage.getDrugChemicalPairs;
 
 export default function DrugDiseasePairs() {
-  const [pairs, setPairs] = React.useState([]);
+  const [data, setData] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
 
   // eslint-disable-next-line no-unused-vars
@@ -65,16 +71,59 @@ export default function DrugDiseasePairs() {
 
   const classes = useStyles();
 
+  const columnHelper = createColumnHelper();
+  const columns = React.useMemo(() => ([
+    columnHelper.accessor('diseaseName', {
+      header: 'Disease',
+      cell: (info) => (
+        <>
+          {info.row.original.disease_name}
+          <Chip>{info.row.original.disease_id}</Chip>
+        </>
+      ),
+    }),
+    columnHelper.accessor('drugName', {
+      header: 'Drug',
+      cell: (info) => (
+        <>
+          {info.row.original.disease_name}
+          <Chip>{info.row.original.disease_id}</Chip>
+        </>
+      ),
+    }),
+    columnHelper.accessor('score', {
+      header: 'Score',
+      cell: (info) => (info.row.original.known ? (
+        <span style={{ textDecoration: 'underline' }}>
+          {info.row.original.score.toFixed(6)}*
+        </span>
+      ) : (
+        info.row.original.score.toFixed(6)
+      )),
+    }),
+    columnHelper.display({
+      id: 'startQueryButton',
+      cell: (props) => (
+        <Button
+          variant="contained"
+          color="primary"
+          endIcon={<ArrowRight />}
+          onClick={() => handleStartQuery(props.row.original)}
+        >
+          Start a query
+        </Button>
+      ),
+    }),
+  ]), []);
+
   React.useEffect(() => {
     let ignore = false;
 
     (async () => {
       try {
-        const data = await fetchPairs();
-
         if (ignore) return;
 
-        setPairs(data);
+        setData(await fetchPairs());
         setIsLoading(false);
       } catch (e) {
         setError(e.message);
@@ -86,6 +135,12 @@ export default function DrugDiseasePairs() {
       ignore = true;
     };
   }, []);
+
+  const table = useReactTable({
+    data: isLoading ? [] : data.rows,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
 
   return (
     <Grid style={{ marginBottom: '50px', marginTop: '50px' }}>
@@ -110,54 +165,31 @@ export default function DrugDiseasePairs() {
           {isLoading ? 'Loading...' : (
             <table style={{ fontSize: '1.6rem', width: '100%' }}>
               <thead>
-                <tr style={{ borderBottom: '1px solid #eee' }}>
-                  <th style={{ paddingBottom: '1rem' }}>
-                    <h4 style={{ textTransform: 'uppercase' }}>Disease</h4>
-                    <input placeholder="Search diseases" />
-                  </th>
-                  <th style={{ paddingBottom: '1rem' }}>
-                    <h4 style={{ textTransform: 'uppercase' }}>Drug</h4>
-                    <input placeholder="Search drugs" />
-                  </th>
-                  <th style={{ paddingBottom: '1rem' }}>
-                    <h4 style={{ textTransform: 'uppercase' }}>Score</h4>
-                  </th>
-                </tr>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <tr key={headerGroup.id} style={{ borderBottom: '1px solid #eee' }}>
+                    {headerGroup.headers.map((header) => (
+                      <th key={header.id} style={{ paddingBottom: '1rem' }}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                      </th>
+                    ))}
+                  </tr>
+                ))}
               </thead>
               <tbody>
-                {
-                  pairs.map((pair, i) => (
-                    <tr className={classes.hover} key={i}>
-                      <td>
-                        {pair.disease_name}
-                        <Chip>{pair.disease_id}</Chip>
+                {table.getRowModel().rows.map((row) => (
+                  <tr key={row.id} className={classes.hover}>
+                    {row.getVisibleCells().map((cell) => (
+                      <td key={cell.id}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </td>
-                      <td>
-                        {pair.drug_name}
-                        <Chip>{pair.drug_id}</Chip>
-                      </td>
-                      <td>
-                        {
-                          pair.known ? (
-                            <span style={{ textDecoration: 'underline' }}>
-                              {pair.score.toFixed(6)}*
-                            </span>
-                          ) : (
-                            pair.score.toFixed(6)
-                          )
-                        }
-                      </td>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        endIcon={<ArrowRight />}
-                        onClick={() => handleStartQuery(pair)}
-                      >
-                        Start a query
-                      </Button>
-                    </tr>
-                  ))
-                }
+                    ))}
+                  </tr>
+                ))}
               </tbody>
             </table>
           )}

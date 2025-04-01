@@ -17,7 +17,7 @@ const routes = {
     } catch (error) {
       return utils.handleAxiosError(error);
     }
-    return response.data.rows;
+    return response.data;
   },
 };
 
