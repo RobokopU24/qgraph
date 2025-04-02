@@ -32,7 +32,7 @@ const fetchPairs = explorePage.getDrugChemicalPairs;
 export default function DrugDiseasePairs() {
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
-    pageSize: 100,
+    pageSize: 20,
   });
   const [data, setData] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
@@ -205,11 +205,14 @@ export default function DrugDiseasePairs() {
                 </tbody>
               </table>
               <TablePagination
-                rowsPerPageOptions={[10, 25, 50, 100]}
+                rowsPerPageOptions={[10, 20, 50, 100]}
                 component="div"
                 count={data.num_of_results}
                 rowsPerPage={pagination.pageSize}
                 page={pagination.pageIndex}
+                labelDisplayedRows={({ from, to, count }) => `${from}-${to} of ${
+                  count !== -1 ? count.toLocaleString() : `more than ${to}`
+                }`}
                 onChangePage={(_, page) => {
                   setPagination((prev) => ({ ...prev, pageIndex: page }));
                 }}
