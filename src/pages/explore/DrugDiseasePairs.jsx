@@ -1,4 +1,4 @@
-import { Button, makeStyles } from '@material-ui/core';
+import { Button, makeStyles, TablePagination } from '@material-ui/core';
 import { ArrowRight } from '@material-ui/icons';
 import React from 'react';
 import {
@@ -14,6 +14,7 @@ import {
 import QueryBuilderContext from '~/context/queryBuilder';
 import useQueryBuilder from '../queryBuilder/useQueryBuilder';
 import explorePage from '~/API/explorePage';
+import TablePaginationActions from './TableActions';
 
 const useStyles = makeStyles({
   hover: {
@@ -29,6 +30,10 @@ const useStyles = makeStyles({
 const fetchPairs = explorePage.getDrugChemicalPairs;
 
 export default function DrugDiseasePairs() {
+  const [pagination, setPagination] = React.useState({
+    pageIndex: 0,
+    pageSize: 100,
+  });
   const [data, setData] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -117,13 +122,14 @@ export default function DrugDiseasePairs() {
   ]), []);
 
   React.useEffect(() => {
+    setIsLoading(true);
     let ignore = false;
 
     (async () => {
       try {
         if (ignore) return;
 
-        setData(await fetchPairs());
+        setData(await fetchPairs(pagination));
         setIsLoading(false);
       } catch (e) {
         setError(e.message);
@@ -134,12 +140,17 @@ export default function DrugDiseasePairs() {
     return () => {
       ignore = true;
     };
-  }, []);
+  }, [pagination]);
 
   const table = useReactTable({
     data: isLoading ? [] : data.rows,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    manualPagination: true,
+    rowCount: data.num_of_results,
+    state: {
+      pagination,
+    },
   });
 
   return (
@@ -163,35 +174,52 @@ export default function DrugDiseasePairs() {
           <hr />
 
           {isLoading ? 'Loading...' : (
-            <table style={{ fontSize: '1.6rem', width: '100%' }}>
-              <thead>
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <tr key={headerGroup.id} style={{ borderBottom: '1px solid #eee' }}>
-                    {headerGroup.headers.map((header) => (
-                      <th key={header.id} style={{ paddingBottom: '1rem' }}>
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                      </th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
-              <tbody>
-                {table.getRowModel().rows.map((row) => (
-                  <tr key={row.id} className={classes.hover}>
-                    {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id}>
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <>
+              <table style={{ fontSize: '1.6rem', width: '100%' }}>
+                <thead>
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <tr key={headerGroup.id} style={{ borderBottom: '1px solid #eee' }}>
+                      {headerGroup.headers.map((header) => (
+                        <th key={header.id} style={{ paddingBottom: '1rem' }}>
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext(),
+                            )}
+                        </th>
+                      ))}
+                    </tr>
+                  ))}
+                </thead>
+                <tbody>
+                  {table.getRowModel().rows.map((row) => (
+                    <tr key={row.id} className={classes.hover}>
+                      {row.getVisibleCells().map((cell) => (
+                        <td key={cell.id}>
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 50, 100]}
+                component="div"
+                count={data.num_of_results}
+                rowsPerPage={pagination.pageSize}
+                page={pagination.pageIndex}
+                onChangePage={(_, page) => {
+                  setPagination((prev) => ({ ...prev, pageIndex: page }));
+                }}
+                onChangeRowsPerPage={(e) => {
+                  const pageSize = e.target.value ? Number(e.target.value) : 10;
+                  setPagination((prev) => ({ ...prev, pageSize }));
+                }}
+                ActionsComponent={TablePaginationActions}
+              />
+            </>
           )}
         </Col>
       </Row>

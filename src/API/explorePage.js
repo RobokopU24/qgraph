@@ -2,15 +2,18 @@ import utils from './utils';
 import { api } from './baseUrlProxy';
 
 const routes = {
-  async getDrugChemicalPairs() {
+  async getDrugChemicalPairs({
+    pageIndex,
+    pageSize,
+  }) {
     let response;
     try {
       response = await api.post(
         '/api/explore/drug-disease',
         {
           pagination: {
-            offset: 0,
-            limit: 1000,
+            offset: pageIndex * pageSize,
+            limit: pageSize,
           },
         },
       );
