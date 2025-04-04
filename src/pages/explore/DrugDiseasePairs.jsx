@@ -129,7 +129,7 @@ export default function DrugDiseasePairs() {
       try {
         if (ignore) return;
 
-        setData(await fetchPairs(pagination));
+        setData(await fetchPairs({ pagination }));
         setIsLoading(false);
       } catch (e) {
         setError(e.message);

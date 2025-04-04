@@ -3,8 +3,10 @@ import { api } from './baseUrlProxy';
 
 const routes = {
   async getDrugChemicalPairs({
-    pageIndex,
-    pageSize,
+    pagination: {
+      pageIndex,
+      pageSize,
+    },
   }) {
     let response;
     try {
