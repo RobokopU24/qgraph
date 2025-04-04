@@ -1,3 +1,6 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import { Button, makeStyles, TablePagination } from '@material-ui/core';
 import { ArrowRight } from '@material-ui/icons';
 import React from 'react';
@@ -34,6 +37,7 @@ export default function DrugDiseasePairs() {
     pageIndex: 0,
     pageSize: 20,
   });
+  const [sorting, setSorting] = React.useState([]);
   const [data, setData] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -78,7 +82,7 @@ export default function DrugDiseasePairs() {
 
   const columnHelper = createColumnHelper();
   const columns = React.useMemo(() => ([
-    columnHelper.accessor('diseaseName', {
+    columnHelper.accessor('disease_name', {
       header: 'Disease',
       cell: (info) => (
         <>
@@ -87,12 +91,12 @@ export default function DrugDiseasePairs() {
         </>
       ),
     }),
-    columnHelper.accessor('drugName', {
+    columnHelper.accessor('drug_name', {
       header: 'Drug',
       cell: (info) => (
         <>
-          {info.row.original.disease_name}
-          <Chip>{info.row.original.disease_id}</Chip>
+          {info.row.original.drug_name}
+          <Chip>{info.row.original.drug_id}</Chip>
         </>
       ),
     }),
@@ -121,6 +125,13 @@ export default function DrugDiseasePairs() {
     }),
   ]), []);
 
+  const fetchFunctionSortingFormat = React.useMemo(() => (
+    sorting.reduce((obj, currCol) => {
+      obj[currCol.id] = currCol.desc ? 'desc' : 'asc';
+      return obj;
+    }, {})
+  ), [sorting]);
+
   React.useEffect(() => {
     setIsLoading(true);
     let ignore = false;
@@ -129,7 +140,10 @@ export default function DrugDiseasePairs() {
       try {
         if (ignore) return;
 
-        setData(await fetchPairs({ pagination }));
+        setData(await fetchPairs({
+          pagination,
+          sort: fetchFunctionSortingFormat,
+        }));
         setIsLoading(false);
       } catch (e) {
         setError(e.message);
@@ -140,17 +154,20 @@ export default function DrugDiseasePairs() {
     return () => {
       ignore = true;
     };
-  }, [pagination]);
+  }, [pagination, fetchFunctionSortingFormat]);
 
   const table = useReactTable({
     data: isLoading ? [] : data.rows,
     columns,
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
+    manualSorting: true,
     rowCount: data.num_of_results,
     state: {
       pagination,
+      sorting,
     },
+    onSortingChange: setSorting,
   });
 
   return (
@@ -181,12 +198,34 @@ export default function DrugDiseasePairs() {
                     <tr key={headerGroup.id} style={{ borderBottom: '1px solid #eee' }}>
                       {headerGroup.headers.map((header) => (
                         <th key={header.id} style={{ paddingBottom: '1rem' }}>
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
+                          {header.isPlaceholder ? null : (
+                            <div
+                              style={
+                                header.column.getCanSort()
+                                  ? { userSelect: 'none', cursor: 'pointer' }
+                                  : undefined
+                              }
+                              onClick={header.column.getToggleSortingHandler()}
+                              title={
+                                header.column.getCanSort()
+                                  ? header.column.getNextSortingOrder() === 'asc'
+                                    ? 'Sort ascending'
+                                    : header.column.getNextSortingOrder() === 'desc'
+                                      ? 'Sort descending'
+                                      : 'Clear sort'
+                                  : undefined
+                              }
+                            >
+                              {flexRender(
+                                header.column.columnDef.header,
+                                header.getContext(),
+                              )}
+                              {{
+                                asc: ' 🔼',
+                                desc: ' 🔽',
+                              }[header.column.getIsSorted()] || null}
+                            </div>
+                          )}
                         </th>
                       ))}
                     </tr>

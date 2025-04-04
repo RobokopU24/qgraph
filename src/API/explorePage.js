@@ -3,10 +3,8 @@ import { api } from './baseUrlProxy';
 
 const routes = {
   async getDrugChemicalPairs({
-    pagination: {
-      pageIndex,
-      pageSize,
-    },
+    pagination,
+    sort,
   }) {
     let response;
     try {
@@ -14,9 +12,10 @@ const routes = {
         '/api/explore/drug-disease',
         {
           pagination: {
-            offset: pageIndex * pageSize,
-            limit: pageSize,
+            offset: pagination.pageIndex * pagination.pageSize,
+            limit: pagination.pageSize,
           },
+          sort,
         },
       );
     } catch (error) {
