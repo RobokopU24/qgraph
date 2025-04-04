@@ -218,7 +218,7 @@ export default function DrugDiseasePairs() {
                 }}
                 onChangeRowsPerPage={(e) => {
                   const pageSize = e.target.value ? Number(e.target.value) : 10;
-                  setPagination((prev) => ({ ...prev, pageSize }));
+                  setPagination(({ pageIndex: 0, pageSize }));
                 }}
                 ActionsComponent={TablePaginationActions}
               />
