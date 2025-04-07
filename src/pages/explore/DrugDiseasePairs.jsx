@@ -18,6 +18,7 @@ import QueryBuilderContext from '~/context/queryBuilder';
 import useQueryBuilder from '../queryBuilder/useQueryBuilder';
 import explorePage from '~/API/explorePage';
 import TablePaginationActions from './TableActions';
+import DebouncedFilterBox from './DebouncedFilterBox';
 
 const useStyles = makeStyles({
   hover: {
@@ -38,6 +39,8 @@ export default function DrugDiseasePairs() {
     pageSize: 20,
   });
   const [sorting, setSorting] = React.useState([]);
+  const [columnFilters, setColumnFilters] = React.useState([]);
+
   const [data, setData] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -109,6 +112,7 @@ export default function DrugDiseasePairs() {
       ) : (
         info.row.original.score.toFixed(6)
       )),
+      enableColumnFilter: false,
     }),
     columnHelper.display({
       id: 'startQueryButton',
@@ -125,12 +129,13 @@ export default function DrugDiseasePairs() {
     }),
   ]), []);
 
-  const fetchFunctionSortingFormat = React.useMemo(() => (
-    sorting.reduce((obj, currCol) => {
-      obj[currCol.id] = currCol.desc ? 'desc' : 'asc';
-      return obj;
-    }, {})
+  const sortParam = React.useMemo(() => Object.fromEntries(
+    sorting.map(({ id, desc }) => [id, desc ? 'desc' : 'asc']),
   ), [sorting]);
+
+  const filterParam = React.useMemo(() => Object.fromEntries(
+    columnFilters.map(({ id, value }) => [id, value]),
+  ), [columnFilters]);
 
   React.useEffect(() => {
     setIsLoading(true);
@@ -142,7 +147,8 @@ export default function DrugDiseasePairs() {
 
         setData(await fetchPairs({
           pagination,
-          sort: fetchFunctionSortingFormat,
+          sort: sortParam,
+          filters: filterParam,
         }));
         setIsLoading(false);
       } catch (e) {
@@ -154,7 +160,11 @@ export default function DrugDiseasePairs() {
     return () => {
       ignore = true;
     };
-  }, [pagination, fetchFunctionSortingFormat]);
+  }, [
+    pagination,
+    JSON.stringify(sortParam), // TODO: better deep equal check
+    JSON.stringify(filterParam),
+  ]);
 
   const table = useReactTable({
     data: isLoading ? [] : data.rows,
@@ -163,12 +173,15 @@ export default function DrugDiseasePairs() {
     manualPagination: true,
     enableMultiSort: false,
     manualSorting: true,
+    manualFiltering: true,
     rowCount: data.num_of_results,
     state: {
       pagination,
       sorting,
+      columnFilters,
     },
     onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
   });
 
   return (
@@ -200,32 +213,42 @@ export default function DrugDiseasePairs() {
                       {headerGroup.headers.map((header) => (
                         <th key={header.id} style={{ paddingBottom: '1rem' }}>
                           {header.isPlaceholder ? null : (
-                            <div
-                              style={
-                                header.column.getCanSort()
-                                  ? { userSelect: 'none', cursor: 'pointer' }
-                                  : undefined
-                              }
-                              onClick={header.column.getToggleSortingHandler()}
-                              title={
-                                header.column.getCanSort()
-                                  ? header.column.getNextSortingOrder() === 'asc'
-                                    ? 'Sort ascending'
-                                    : header.column.getNextSortingOrder() === 'desc'
-                                      ? 'Sort descending'
-                                      : 'Clear sort'
-                                  : undefined
-                              }
-                            >
-                              {flexRender(
-                                header.column.columnDef.header,
-                                header.getContext(),
-                              )}
-                              {{
-                                asc: ' 🔼',
-                                desc: ' 🔽',
-                              }[header.column.getIsSorted()] || null}
-                            </div>
+                            <>
+                              <div
+                                style={
+                                  header.column.getCanSort()
+                                    ? { userSelect: 'none', cursor: 'pointer' }
+                                    : undefined
+                                }
+                                onClick={header.column.getToggleSortingHandler()}
+                                title={
+                                  header.column.getCanSort()
+                                    ? header.column.getNextSortingOrder() === 'asc'
+                                      ? 'Sort ascending'
+                                      : header.column.getNextSortingOrder() === 'desc'
+                                        ? 'Sort descending'
+                                        : 'Clear sort'
+                                    : undefined
+                                }
+                              >
+                                {flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext(),
+                                )}
+                                {{
+                                  asc: ' ▲',
+                                  desc: ' ▼',
+                                }[header.column.getIsSorted()] || null}
+                              </div>
+                              {header.column.getCanFilter() ? (
+                                <div>
+                                  <DebouncedFilterBox
+                                    value={header.column.getFilterValue() || ''}
+                                    onChange={(value) => header.column.setFilterValue(value)}
+                                  />
+                                </div>
+                              ) : null}
+                            </>
                           )}
                         </th>
                       ))}

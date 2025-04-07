@@ -5,6 +5,7 @@ const routes = {
   async getDrugChemicalPairs({
     pagination,
     sort,
+    filters,
   }) {
     let response;
     try {
@@ -16,6 +17,7 @@ const routes = {
             limit: pagination.pageSize,
           },
           sort,
+          filters,
         },
       );
     } catch (error) {
