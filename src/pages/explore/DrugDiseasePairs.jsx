@@ -161,6 +161,7 @@ export default function DrugDiseasePairs() {
     columns,
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
+    enableMultiSort: false,
     manualSorting: true,
     rowCount: data.num_of_results,
     state: {
