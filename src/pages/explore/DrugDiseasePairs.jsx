@@ -1,6 +1,3 @@
-/* eslint-disable no-nested-ternary */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
 import { Button, makeStyles, TablePagination } from '@material-ui/core';
 import { ArrowRight } from '@material-ui/icons';
 import React from 'react';
@@ -18,7 +15,7 @@ import QueryBuilderContext from '~/context/queryBuilder';
 import useQueryBuilder from '../queryBuilder/useQueryBuilder';
 import explorePage from '~/API/explorePage';
 import TablePaginationActions from './TableActions';
-import DebouncedFilterBox from './DebouncedFilterBox';
+import HeaderCell from './HeaderCell';
 
 const useStyles = makeStyles({
   hover: {
@@ -27,6 +24,16 @@ const useStyles = makeStyles({
     },
     '&:hover .MuiButtonBase-root': {
       visibility: 'visible',
+    },
+  },
+  table: {
+    fontSize: '1.6rem',
+    width: '100%',
+    '& td, & th': {
+      paddingLeft: 12,
+    },
+    '& td:first-of-type, & th:first-of-type': {
+      paddingLeft: 0,
     },
   },
 });
@@ -120,6 +127,7 @@ export default function DrugDiseasePairs() {
         <Button
           variant="contained"
           color="primary"
+          size="small"
           endIcon={<ArrowRight />}
           onClick={() => handleStartQuery(props.row.original)}
         >
@@ -206,49 +214,14 @@ export default function DrugDiseasePairs() {
 
           {isLoading ? 'Loading...' : (
             <>
-              <table style={{ fontSize: '1.6rem', width: '100%' }}>
+              <table className={classes.table}>
                 <thead>
                   {table.getHeaderGroups().map((headerGroup) => (
                     <tr key={headerGroup.id} style={{ borderBottom: '1px solid #eee' }}>
                       {headerGroup.headers.map((header) => (
-                        <th key={header.id} style={{ paddingBottom: '1rem' }}>
+                        <th key={header.id} style={{ paddingBottom: '1rem', verticalAlign: 'top' }}>
                           {header.isPlaceholder ? null : (
-                            <>
-                              <div
-                                style={
-                                  header.column.getCanSort()
-                                    ? { userSelect: 'none', cursor: 'pointer' }
-                                    : undefined
-                                }
-                                onClick={header.column.getToggleSortingHandler()}
-                                title={
-                                  header.column.getCanSort()
-                                    ? header.column.getNextSortingOrder() === 'asc'
-                                      ? 'Sort ascending'
-                                      : header.column.getNextSortingOrder() === 'desc'
-                                        ? 'Sort descending'
-                                        : 'Clear sort'
-                                    : undefined
-                                }
-                              >
-                                {flexRender(
-                                  header.column.columnDef.header,
-                                  header.getContext(),
-                                )}
-                                {{
-                                  asc: ' ▲',
-                                  desc: ' ▼',
-                                }[header.column.getIsSorted()] || null}
-                              </div>
-                              {header.column.getCanFilter() ? (
-                                <div>
-                                  <DebouncedFilterBox
-                                    value={header.column.getFilterValue() || ''}
-                                    onChange={(value) => header.column.setFilterValue(value)}
-                                  />
-                                </div>
-                              ) : null}
-                            </>
+                            <HeaderCell header={header} />
                           )}
                         </th>
                       ))}

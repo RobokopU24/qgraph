@@ -32,6 +32,7 @@ function DebouncedFilterBox({
         value={value}
         onChange={(e) => setValue(e.target.value)}
         variant="filled"
+        margin="dense"
         endAdornment={(
           <InputAdornment position="end">
             <IconButton aria-label="Clear filter" onClick={() => setValue('')} size="small">
