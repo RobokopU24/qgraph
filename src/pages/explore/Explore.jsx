@@ -6,6 +6,7 @@ import {
   Switch, Route, Link, useRouteMatch,
 } from 'react-router-dom';
 import DrugChemicalPairs from './DrugDiseasePairs';
+import EnrichedQueries from '../EnrichedQueries';
 
 export default function Explore() {
   const match = useRouteMatch();
@@ -14,6 +15,9 @@ export default function Explore() {
     <Switch>
       <Route path={`${match.path}/drug-chemical`}>
         <DrugChemicalPairs />
+      </Route>
+      <Route path={`${match.path}/enrichment-analysis`}>
+        <EnrichedQueries />
       </Route>
       <Route path={match.path}>
         <Index />
@@ -31,20 +35,37 @@ function Index() {
         <Col md={12}>
           <h1>Explore</h1>
           <p style={{ fontSize: '1.6rem' }}>
-            Click a link below to view a curated dataset that can be further explored in the ROBOKOP query builder or answer explorer.
+            Click a link below to view a tool or a curated dataset that can be further explored in the ROBOKOP query builder or answer explorer.
           </p>
 
           <hr />
 
-          <Link to={`${match.url}/drug-chemical`} style={{ fontSize: '1.6rem' }}>
-            Drug to Disease Pairs
-          </Link>
-          <p style={{ fontSize: '1.6rem', marginTop: '0.5rem' }}>
-            These drug-disease pairs were generated using a machine learning model to align with the nodes
-            in the ROBOKOP knowledge graph. They highlight potential associations between various drugs and
-            a broad range of diseases, suggesting possible avenues for further research. These connections
-            can serve as a starting point for a new query by hovering over a pair and clicking &ldquo;Start a Query&rdquo;.
-          </p>
+          <div>
+            <Link to={`${match.url}/enrichment-analysis`} style={{ fontSize: '1.6rem' }}>
+              Enrichment Analysis{' '}
+              <span style={{
+                fontSize: '1.1rem', backgroundColor: '#e9e9e9', borderRadius: '4px', padding: '2px 4px', marginLeft: '1ch',
+              }}
+              >
+                Tool
+              </span>
+            </Link>
+            <p style={{ fontSize: '1.6rem', marginTop: '0.5rem' }}>
+              This tool allows you to query the ROBOKOP knowledge graph using a list of nodes.
+            </p>
+          </div>
+
+          <div style={{ marginTop: '3rem' }}>
+            <Link to={`${match.url}/drug-chemical`} style={{ fontSize: '1.6rem' }}>
+              Drug to Disease Pairs
+            </Link>
+            <p style={{ fontSize: '1.6rem', marginTop: '0.5rem' }}>
+              These drug-disease pairs were generated using a machine learning model to align with the nodes
+              in the ROBOKOP knowledge graph. They highlight potential associations between various drugs and
+              a broad range of diseases, suggesting possible avenues for further research. These connections
+              can serve as a starting point for a new query by hovering over a pair and clicking &ldquo;Start a Query&rdquo;.
+            </p>
+          </div>
         </Col>
       </Row>
     </Grid>
