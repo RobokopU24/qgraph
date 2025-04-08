@@ -16,6 +16,7 @@ import useQueryBuilder from '../queryBuilder/useQueryBuilder';
 import explorePage from '~/API/explorePage';
 import TablePaginationActions from './TableActions';
 import HeaderCell from './HeaderCell';
+import Loading from '~/components/loading/Loading';
 
 const useStyles = makeStyles({
   hover: {
@@ -175,7 +176,7 @@ export default function DrugDiseasePairs() {
   ]);
 
   const table = useReactTable({
-    data: isLoading ? [] : data.rows,
+    data: data.rows || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
@@ -212,34 +213,53 @@ export default function DrugDiseasePairs() {
 
           <hr />
 
-          {isLoading ? 'Loading...' : (
-            <>
-              <table className={classes.table}>
-                <thead>
-                  {table.getHeaderGroups().map((headerGroup) => (
-                    <tr key={headerGroup.id} style={{ borderBottom: '1px solid #eee' }}>
-                      {headerGroup.headers.map((header) => (
-                        <th key={header.id} style={{ paddingBottom: '1rem', verticalAlign: 'top' }}>
-                          {header.isPlaceholder ? null : (
-                            <HeaderCell header={header} />
-                          )}
-                        </th>
-                      ))}
-                    </tr>
-                  ))}
-                </thead>
-                <tbody>
-                  {table.getRowModel().rows.map((row) => (
-                    <tr key={row.id} className={classes.hover}>
-                      {row.getVisibleCells().map((cell) => (
-                        <td key={cell.id}>
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          <div style={{ position: 'relative' }}>
+            {isLoading && (
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: '-20px',
+                  backgroundColor: 'rgba(255 255 255 / 0.3)',
+                  backdropFilter: 'blur(2px)',
+                  borderRadius: '8px',
+                  zIndex: 10000,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Loading />
+              </div>
+            )}
+
+            <table className={classes.table}>
+              <thead>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <tr key={headerGroup.id} style={{ borderBottom: '1px solid #eee' }}>
+                    {headerGroup.headers.map((header) => (
+                      <th key={header.id} style={{ paddingBottom: '1rem', verticalAlign: 'top' }}>
+                        {header.isPlaceholder ? null : (
+                          <HeaderCell header={header} />
+                        )}
+                      </th>
+                    ))}
+                  </tr>
+                ))}
+              </thead>
+              <tbody>
+                {table.getRowModel().rows.map((row) => (
+                  <tr key={row.id} className={classes.hover}>
+                    {row.getVisibleCells().map((cell) => (
+                      <td key={cell.id}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {data.num_of_results > 0 && (
               <TablePagination
                 rowsPerPageOptions={[10, 20, 50, 100]}
                 component="div"
@@ -258,8 +278,14 @@ export default function DrugDiseasePairs() {
                 }}
                 ActionsComponent={TablePaginationActions}
               />
-            </>
-          )}
+            )}
+
+            {data.num_of_results === 0 && (
+              <div style={{ textAlign: 'center', margin: '2rem 0' }}>
+                No results found, please try a different filter.
+              </div>
+            )}
+          </div>
         </Col>
       </Row>
     </Grid>
