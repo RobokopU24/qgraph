@@ -5,7 +5,7 @@ export default function Select({
   onChange,
   value,
   label,
-  notSelectedOption = 'N/A',
+  notSelectedOption,
 }) {
   return (
     <div style={{ flex: '1' }}>
@@ -34,7 +34,7 @@ export default function Select({
           onChange(v === notSelectedOption ? undefined : v);
         }}
       >
-        {[notSelectedOption, ...options].map((option) => (
+        {(notSelectedOption ? [notSelectedOption, ...options] : options).map((option) => (
           <option key={option} value={option}>
             {option}
           </option>

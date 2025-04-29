@@ -1,17 +1,24 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Col, Grid, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { Button } from '@material-ui/core';
 import Select from './Select';
 import { QueryCacheProvider } from '../../hooks/use-query';
 import NodeInputBox from './NodeInputBox';
+import BiolinkContext from '~/context/biolink';
 
 export default function EnrichedQueries() {
+  const { concepts: categories, predicates } = useContext(BiolinkContext);
+
   const [curies, setCuries] = useState([]);
   const [inputNodeType, setInputNodeType] = useState(undefined);
   const [inputNodeTaxa, setInputNodeTaxa] = useState('');
-  const [relationship, setRelationship] = useState(undefined);
-  const [outputType, setOutputType] = useState(undefined);
+  const [relationship, setRelationship] = useState('related_to');
+  const [outputType, setOutputType] = useState('NamedThing');
+
+  if (!categories.length || !predicates.length) {
+    return null;
+  }
 
   return (
     <Grid style={{ marginBottom: '50px', marginTop: '50px' }}>
@@ -41,12 +48,8 @@ export default function EnrichedQueries() {
                 >
                   <Select
                     label="Input node type (optional)"
-                    options={[
-                      'biolink:NamedThing',
-                      'biolink:Gene',
-                      'biolink:Disease',
-                      'biolink:ChemicalEntity',
-                    ]}
+                    notSelectedOption="N/A"
+                    options={categories.map((c) => c.split(':')[1]).sort()}
                     onChange={setInputNodeType}
                     value={inputNodeType}
                   />
@@ -90,24 +93,13 @@ export default function EnrichedQueries() {
                 >
                   <Select
                     label="Relationship"
-                    notSelectedOption="Please select a relationship"
-                    options={[
-                      'biolink:related_to',
-                      'biolink:causes',
-                      'biolink:associates_with',
-                    ]}
+                    options={predicates.map((p) => p.predicate.split(':')[1]).sort()}
                     onChange={setRelationship}
                     value={relationship}
                   />
                   <Select
                     label="Output type"
-                    notSelectedOption="Please select an output type"
-                    options={[
-                      'biolink:NamedThing',
-                      'biolink:Gene',
-                      'biolink:Disease',
-                      'biolink:ChemicalEntity',
-                    ]}
+                    options={categories.map((c) => c.split(':')[1]).sort()}
                     onChange={setOutputType}
                     value={outputType}
                   />
