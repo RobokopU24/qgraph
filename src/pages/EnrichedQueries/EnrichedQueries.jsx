@@ -1,9 +1,10 @@
 /* eslint-disable no-restricted-syntax */
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { Col, Grid, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { Button } from '@material-ui/core';
 import axios from 'axios';
+import csv from 'csv-stringify';
 import Select from './Select';
 import { QueryCacheProvider } from '../../hooks/use-query';
 import NodeInputBox from './NodeInputBox';
@@ -82,10 +83,6 @@ export default function EnrichedQueries() {
   const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState([]);
 
-  React.useEffect(() => {
-    console.log(results);
-  }, [results]);
-
   function stopQuery() {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
@@ -118,98 +115,153 @@ export default function EnrichedQueries() {
     <Grid style={{ marginBottom: '50px', marginTop: '50px' }}>
       <Row>
         <Col md={12}>
-          <small>
-            <Link to="/explore">← View all tools</Link>
-            <h1>Enrichment Analysis</h1>
-            <p style={{ fontSize: '1.6rem' }}>
-              This tool helps discover common connections between nodes. Given a
-              list of input nodes, a relationship, and an output type, it will
-              return a list of nodes that are best connected to the input nodes
-              via the relationship.
-            </p>
+          <Link to="/explore">← View all tools</Link>
+          <h1>Enrichment Analysis</h1>
+          <p style={{ fontSize: '1.6rem' }}>
+            This tool helps discover common connections between nodes. Given a
+            list of input nodes, a relationship, and an output type, it will
+            return a list of nodes that are best connected to the input nodes
+            via the relationship.
+          </p>
 
-            <hr />
-            <div style={{ fontSize: '1.6rem' }}>
+          <hr />
+          <div style={{ fontSize: '1.6rem' }}>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '16px',
+              }}
+            >
               <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '16px',
-                }}
+                style={{ display: 'flex', flexDirection: 'row', gap: '24px' }}
               >
-                <div
-                  style={{ display: 'flex', flexDirection: 'row', gap: '24px' }}
-                >
-                  <Select
-                    label="Input node type (optional)"
-                    notSelectedOption="N/A"
-                    options={categories.map((c) => c.split(':')[1]).sort()}
-                    onChange={setInputNodeType}
-                    value={inputNodeType}
-                  />
-                  <div style={{ flex: '1' }}>
-                    <span
-                      style={{
-                        fontSize: '14px',
-                        color: '#626262',
-                        textTransform: 'uppercase',
-                        fontWeight: 'bold',
-                        paddingLeft: '8px',
-                      }}
-                    >
-                      Input node taxa filter (optional, comma separated)
-                    </span>
-                    <input
-                      style={{
-                        width: '100%',
-                        padding: '8px',
-                        fontSize: '16px',
-                        boxSizing: 'border-box',
-                        border: '1px solid #9F9F9F',
-                        borderRadius: '4px',
-                      }}
-                      value={inputNodeTaxa}
-                      onChange={(e) => setInputNodeTaxa(e.target.value)}
-                    />
-                  </div>
-                </div>
-
-                <QueryCacheProvider>
-                  <NodeInputBox
-                    onCurieListChange={setCuries}
-                    inputNodeType={inputNodeType}
-                    inputNodeTaxa={inputNodeTaxa}
-                  />
-                </QueryCacheProvider>
-
-                <div
-                  style={{ display: 'flex', flexDirection: 'row', gap: '24px' }}
-                >
-                  <Select
-                    label="Relationship"
-                    options={predicates.map((p) => p.predicate.split(':')[1]).sort()}
-                    onChange={setRelationship}
-                    value={relationship}
-                  />
-                  <Select
-                    label="Output type"
-                    options={categories.map((c) => c.split(':')[1]).sort()}
-                    onChange={setOutputType}
-                    value={outputType}
+                <Select
+                  label="Input node type (optional)"
+                  notSelectedOption="N/A"
+                  options={categories.map((c) => c.split(':')[1]).sort()}
+                  onChange={setInputNodeType}
+                  value={inputNodeType}
+                />
+                <div style={{ flex: '1' }}>
+                  <span
+                    style={{
+                      fontSize: '14px',
+                      color: '#626262',
+                      textTransform: 'uppercase',
+                      fontWeight: 'bold',
+                      paddingLeft: '8px',
+                    }}
+                  >
+                    Input node taxa filter (optional, comma separated)
+                  </span>
+                  <input
+                    style={{
+                      width: '100%',
+                      padding: '8px',
+                      fontSize: '16px',
+                      boxSizing: 'border-box',
+                      border: '1px solid #9F9F9F',
+                      borderRadius: '4px',
+                    }}
+                    value={inputNodeTaxa}
+                    onChange={(e) => setInputNodeTaxa(e.target.value)}
                   />
                 </div>
               </div>
 
-              <Button
-                onClick={isLoading ? stopQuery : startQuery}
-                style={{ marginTop: '24px' }}
-                variant="contained"
-                color={isLoading ? 'secondary' : 'primary'}
+              <QueryCacheProvider>
+                <NodeInputBox
+                  onCurieListChange={setCuries}
+                  inputNodeType={inputNodeType}
+                  inputNodeTaxa={inputNodeTaxa}
+                />
+              </QueryCacheProvider>
+
+              <div
+                style={{ display: 'flex', flexDirection: 'row', gap: '24px' }}
               >
-                {isLoading ? 'Stop Query' : 'Submit Query'}
-              </Button>
+                <Select
+                  label="Relationship"
+                  options={predicates.map((p) => p.predicate.split(':')[1]).sort()}
+                  onChange={setRelationship}
+                  value={relationship}
+                />
+                <Select
+                  label="Output type"
+                  options={categories.map((c) => c.split(':')[1]).sort()}
+                  onChange={setOutputType}
+                  value={outputType}
+                />
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                <Button
+                  disabled={curies.length === 0}
+                  onClick={isLoading ? stopQuery : startQuery}
+                  variant="contained"
+                  color={isLoading ? 'secondary' : 'primary'}
+                >
+                  {isLoading ? 'Stop Query' : 'Submit Query'}
+                </Button>
+
+                {results.length > 0 && (
+                  <Button
+                    variant="contained"
+                    onClick={async () => {
+                      const jsonToCsvString = (json) => new Promise((res, rej) => {
+                        csv.stringify(json, (err, output) => {
+                          if (err) rej(err);
+                          else res(output);
+                        });
+                      });
+
+                      const csvObj = results.map(({ id, name, p_value }) => [id, name, p_value]);
+                      csvObj.unshift(['ID', 'Name', 'P-value']);
+                      const csvStr = await jsonToCsvString(csvObj);
+
+                      const blob = new Blob([csvStr], { type: 'text/csv' });
+                      const a = document.createElement('a');
+                      a.download = 'enrichment-analysis.csv';
+                      a.href = window.URL.createObjectURL(blob);
+                      document.body.appendChild(a);
+                      a.click();
+                      a.remove();
+                    }}
+                  >
+                    Download results as CSV
+                  </Button>
+                )}
+              </div>
+
+              {results.length > 0 && (
+                <div>
+                  <h2>Results</h2>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th style={{ borderBottom: '1px solid ##ebebeb' }}>ID</th>
+                        <th style={{ borderBottom: '1px solid ##ebebeb' }}>Name</th>
+                        <th style={{ borderBottom: '1px solid ##ebebeb' }}>P-value</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {results
+                        .sort((a, b) => b.p_value - a.p_value)
+                        .slice(0, 500)
+                        .map(({ id, name, p_value }) => (
+                          <tr key={`${id}-${name}-${p_value}`}>
+                            <td>{id}</td>
+                            <td>{name}</td>
+                            <td>{p_value.toFixed(6)}</td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
-          </small>
+          </div>
         </Col>
       </Row>
     </Grid>
