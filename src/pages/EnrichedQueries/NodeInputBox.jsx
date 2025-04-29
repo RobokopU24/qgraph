@@ -186,6 +186,7 @@ export default function NodeInputBox({ onCurieListChange, inputNodeTaxa, inputNo
               (e.ctrlKey && e.code === 'Space') ||
               (noModifiers && e.key.length === 1 && e.key.match(/\S| /))
             ) {
+              setActiveIndex(0);
               setOpen(true);
             }
           },
