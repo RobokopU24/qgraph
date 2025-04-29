@@ -20,6 +20,10 @@ export default function EnrichedQueries() {
     return null;
   }
 
+  function onSubmit() {
+    console.log('Submitted query');
+  }
+
   return (
     <Grid style={{ marginBottom: '50px', marginTop: '50px' }}>
       <Row>
@@ -106,9 +110,14 @@ export default function EnrichedQueries() {
                 </div>
               </div>
 
-              <Button style={{ marginTop: '24px' }}>Run query</Button>
-
-              <pre>{JSON.stringify(curies, null, 2)}</pre>
+              <Button
+                onClick={onSubmit}
+                style={{ marginTop: '24px' }}
+                variant="contained"
+                color="primary"
+              >
+                Submit Query
+              </Button>
             </div>
           </small>
         </Col>

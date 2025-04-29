@@ -114,7 +114,7 @@ export default function NodeInputBox({ onCurieListChange, inputNodeTaxa, inputNo
       });
     },
     debounceMs: 250,
-    queryKey: currentLineText,
+    queryKey: `${currentLineText}-${inputNodeTaxa}-${inputNodeType}`,
     keepStaleData: true,
   });
 
