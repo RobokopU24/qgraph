@@ -6,7 +6,7 @@ import {
   Switch, Route, Link, useRouteMatch,
 } from 'react-router-dom';
 import DrugChemicalPairs from './DrugDiseasePairs';
-import EnrichedQueries from '../EnrichedQueries';
+import EnrichedQueries from '../EnrichedQueries/EnrichedQueries';
 
 export default function Explore() {
   const match = useRouteMatch();
