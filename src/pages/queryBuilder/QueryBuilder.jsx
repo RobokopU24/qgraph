@@ -18,6 +18,7 @@ import GraphEditor from './graphEditor/GraphEditor';
 import TextEditor from './textEditor/TextEditor';
 import JsonEditor from './jsonEditor/JsonEditor';
 import TemplatedQueriesModal from './templatedQueries/TemplatedQueriesModal';
+import DownloadDialog from '~/components/DownloadDialog';
 
 import './queryBuilder.css';
 
@@ -41,6 +42,7 @@ export default function QueryBuilder() {
   const queryBuilder = useQueryBuilder();
   const pageStatus = usePageStatus(false);
   const [showJson, toggleJson] = useState(false);
+  const [downloadOpen, setDownloadOpen] = useState(false);
   const [ara] = useState(ARAs[0]);
   const displayAlert = useContext(AlertContext);
   const history = useHistory();
@@ -203,12 +205,17 @@ export default function QueryBuilder() {
                     open={exampleQueriesOpen}
                     setOpen={setExampleQueriesOpen}
                   />
-
                   <Button
                     onClick={() => toggleJson(true)}
                     variant="outlined"
                   >
                     Edit JSON
+                  </Button>
+                  <Button
+                    onClick={() => setDownloadOpen(true)}
+                    variant="outlined"
+                  >
+                    Download Query
                   </Button>
                   <SubmitButton
                     onClick={onQuickSubmit}
@@ -230,6 +237,11 @@ export default function QueryBuilder() {
               <JsonEditor
                 show={showJson}
                 close={() => toggleJson(false)}
+              />
+              <DownloadDialog
+                open={downloadOpen}
+                setOpen={setDownloadOpen}
+                message={queryBuilder.query_graph}
               />
             </QueryBuilderContext.Provider>
           </div>
