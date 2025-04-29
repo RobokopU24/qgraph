@@ -145,7 +145,7 @@ export default function NodeInputBox({ onCurieListChange, inputNodeTaxa, inputNo
       {/* REFERENCE */}
       <span
         style={{
-          fontSize: '16px',
+          fontSize: '14px',
           color: '#626262',
           textTransform: 'uppercase',
           fontWeight: 'bold',

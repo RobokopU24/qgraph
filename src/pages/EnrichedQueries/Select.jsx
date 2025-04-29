@@ -11,7 +11,7 @@ export default function Select({
     <div style={{ flex: '1' }}>
       <span
         style={{
-          fontSize: '16px',
+          fontSize: '14px',
           color: '#626262',
           textTransform: 'uppercase',
           fontWeight: 'bold',
@@ -31,7 +31,7 @@ export default function Select({
         value={value}
         onChange={(e) => {
           const v = e.target.value;
-          onChange(v === notSelectedOption ? undefined : value);
+          onChange(v === notSelectedOption ? undefined : v);
         }}
       >
         {[notSelectedOption, ...options].map((option) => (

@@ -53,14 +53,14 @@ export default function EnrichedQueries() {
                   <div style={{ flex: '1' }}>
                     <span
                       style={{
-                        fontSize: '16px',
+                        fontSize: '14px',
                         color: '#626262',
                         textTransform: 'uppercase',
                         fontWeight: 'bold',
                         paddingLeft: '8px',
                       }}
                     >
-                      Input node taxa filter (optional)
+                      Input node taxa filter (optional, comma separated)
                     </span>
                     <input
                       style={{
@@ -114,7 +114,7 @@ export default function EnrichedQueries() {
                 </div>
               </div>
 
-              <Button>Run query</Button>
+              <Button style={{ marginTop: '24px' }}>Run query</Button>
 
               <pre>{JSON.stringify(curies, null, 2)}</pre>
             </div>

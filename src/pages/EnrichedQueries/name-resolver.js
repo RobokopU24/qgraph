@@ -15,7 +15,7 @@ export default async function nameLookup({
       offset: 0,
       limit,
       biolink_type: biolinkTypeFilter,
-      only_taxa: (taxaFilter || []).join('|'),
+      only_taxa: (taxaFilter || []).join('|') || undefined,
     },
   });
 
