@@ -242,6 +242,7 @@ export default function QueryBuilder() {
                 open={downloadOpen}
                 setOpen={setDownloadOpen}
                 message={queryBuilder.query_graph}
+                download_type="all_queries"
               />
             </QueryBuilderContext.Provider>
           </div>
