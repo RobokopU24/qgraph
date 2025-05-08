@@ -136,8 +136,10 @@ export default function DownloadDialog({
         break;
       }
       case 'all_queries': {
-        // Get all the queries from the local storage.
-        const blob = new Blob([JSON.stringify({ queryHistory }, null, 2)], { type: 'application/json' });
+        const raw = window.localStorage.getItem('query_history');
+        const parsed = raw ? JSON.parse(raw) : {};
+        const blob = new Blob([JSON.stringify({ bookmarked_queries: parsed }, null, 2)], { type: 'application/json' });
+        // const blob = new Blob([JSON.stringify({ queryHistory }, null, 2)], { type: 'application/json' });
         const a = document.createElement('a');
         a.download = `${fileName}.${type}`;
         a.href = window.URL.createObjectURL(blob);
@@ -148,7 +150,14 @@ export default function DownloadDialog({
       }
       case 'query': {
         // Bookmark the query with the filename that's given.
-        setQueryHistory(message);
+        if (!(fileName in queryHistory)) {
+          setQueryHistory((prev) => ({
+            ...prev,
+            [fileName]: {
+              query_graph: message,
+            },
+          }));
+        }
         break;
       }
       default: {
