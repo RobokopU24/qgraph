@@ -130,7 +130,7 @@ function enter(edge) {
       .attr('fill', 'none')
       .attr('stroke-width', (d) => d.strokeWidth)
       .attr('class', 'edgePath')
-      .attr('marker-end', (d) => (graphUtils.shouldShowArrow(d) ? 'url(#arrow)' : '')))
+      .attr('marker-end', (d) => (graphUtils.shouldShowArrow(d, d.symmetric) ? 'url(#arrow)' : '')))
     // wider clickable line
     .call((e) => e.append('path')
       .attr('stroke', 'transparent')
@@ -232,7 +232,7 @@ function update(edge) {
       .text((d) => (d.predicates ? d.predicates.map((p) => strings.displayPredicate(p)).join(', ') : '')))
     .call((e) => e.select('.edgePath')
       // .attr('stroke-width', (d) => d.strokeWidth)
-      .attr('marker-end', (d) => (graphUtils.shouldShowArrow(d) ? 'url(#arrow)' : '')))
+      .attr('marker-end', (d) => (graphUtils.shouldShowArrow(d, d.symmetric) ? 'url(#arrow)' : '')))
     .call((e) => e.select('text')
       .select('textPath')
         .text((d) => (d.predicates ? d.predicates.map((p) => strings.displayPredicate(p)).join(', ') : '')));

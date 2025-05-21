@@ -61,6 +61,7 @@ export default function useBiolinkModel() {
       predicate: strings.edgeFromBiolink(identifier),
       domain: strings.nodeFromBiolink(predicate.domain),
       range: strings.nodeFromBiolink(predicate.range),
+      symmetric: predicate.symmetric || false,
     }));
   }
 

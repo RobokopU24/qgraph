@@ -215,8 +215,8 @@ function isInside(x, y, cx, cy, r) {
  * @param {obj} edge edge object
  * @returns {str} url(#arrow) or empty string
  */
-function shouldShowArrow(edge) {
-  return (edge.predicates && edge.predicates.findIndex((p) => p !== 'biolink:related_to') > -1) || (edge.predicate && edge.predicate !== 'biolink:related_to');
+function shouldShowArrow(edge, symmetric_predicates = ['biolink:related_to']) {
+  return (edge.predicates && edge.predicates.findIndex((p) => !symmetric_predicates.includes(p)) > -1) || (edge.predicate && !symmetric_predicates.includes(edge.predicate));
 }
 
 /**
