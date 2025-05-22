@@ -24,8 +24,9 @@ const edgeLength = 225;
  */
 export default function QueryGraph({ query_graph }) {
   const svgRef = useRef();
-  const { colorMap } = useContext(BiolinkContext);
+  const { colorMap, predicates } = useContext(BiolinkContext);
   const [drawing, setDrawing] = useState(false);
+  const symmetricPredicates = predicates.filter((predicate) => predicate.symmetric).map((predicate) => predicate.predicate);
 
   /**
    * Initialize the svg size
@@ -141,7 +142,7 @@ export default function QueryGraph({ query_graph }) {
             .attr('fill', 'none')
             .attr('stroke-width', (d) => d.strokeWidth)
             .attr('class', 'edge')
-            .attr('marker-end', (d) => (graphUtils.shouldShowArrow(d) ? 'url(#arrow)' : '')))
+            .attr('marker-end', (d) => (graphUtils.shouldShowArrow(d, symmetricPredicates) ? 'url(#arrow)' : '')))
           .call((e) => e.append('path')
             .attr('stroke', 'transparent')
             .attr('fill', 'none')
