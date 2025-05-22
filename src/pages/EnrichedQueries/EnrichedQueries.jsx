@@ -247,7 +247,7 @@ export default function EnrichedQueries() {
                     </thead>
                     <tbody>
                       {results
-                        .sort((a, b) => b.p_value - a.p_value)
+                        .sort((a, b) => a.p_value - b.p_value)
                         .slice(0, 500)
                         .map(({ id, name, p_value }) => (
                           <tr key={`${id}-${name}-${p_value}`}>
