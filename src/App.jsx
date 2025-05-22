@@ -13,6 +13,7 @@ import TermsofService from '~/pages/TermsofService';
 import QueryBuilder from '~/pages/queryBuilder/QueryBuilder';
 import Explore from '~/pages/explore/Explore';
 import Answer from '~/pages/answer/Answer';
+import Info from '~/pages/details/Info';
 
 import QuestionList from '~/pages/questionList/QuestionList';
 
@@ -72,6 +73,9 @@ export default function App() {
                     <Switch>
                       <Route path="/about">
                         <About />
+                      </Route>
+                      <Route path="/details/:details_id?">
+                        <Info />
                       </Route>
                       <Route path="/explore">
                         <Explore />

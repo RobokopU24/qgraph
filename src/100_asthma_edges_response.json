@@ -1,0 +1,2411 @@
+[
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:32296059", "PMID:32296060"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          1.9999999920083944e-12
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1007926211",
+      "name": "rs34722852",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:35472084"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          9.000000034120603e-8
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1009328643",
+      "name": "rs1540207",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:32296059"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          9.999999960041972e-12
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1011329543",
+      "name": "rs7538512",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:32296059"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          9.999999717180685e-10
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1011551163",
+      "name": "rs60880671",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:32296059"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          9.999999717180685e-10
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1011551165",
+      "name": "rs60880671",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:32296059"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          9.999999717180685e-10
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1011551166",
+      "name": "rs60880671",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:32296059"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          9.999999717180685e-10
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1011551171",
+      "name": "rs60880671",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:32296059"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          9.999999717180685e-10
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1011551172",
+      "name": "rs60880671",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:25918132"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          9.999999974752427e-7
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA101279300",
+      "name": "rs16995986",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:32296059"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          1.999999943436137e-9
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10216529",
+      "name": "rs228953",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:20860503"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          9.99999993922529e-9
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1025522711",
+      "name": "rs2284033",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:31361310"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          1.999999943436137e-9
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1025878472",
+      "name": "rs12165508",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:34103634"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          7.000000135093387e-9
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1025895337",
+      "name": "rs34290865",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:34103634"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          7.000000135093387e-9
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1025895340",
+      "name": "rs34290865",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:34103634"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          7.000000135093387e-9
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1025895349",
+      "name": "rs34290865",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:34103634"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          5.000000058430487e-8
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1034226128",
+      "name": "rs397870318",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:34103634"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          5.000000058430487e-8
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1034226131",
+      "name": "rs397870318",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:34103634"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          5.000000058430487e-8
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1034226143",
+      "name": "rs397870318",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:31669095"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          1.0000002153053333e-39
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1034372609",
+      "name": "rs59185885",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:32296059"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          3.999999975690116e-8
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1040259982",
+      "name": "rs2595389",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:32514122"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          2.999999892949745e-8
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1041432997",
+      "name": "rs3835894",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:32514122"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          2.999999892949745e-8
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1041433003",
+      "name": "rs3835894",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:30552067"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          3.000000026176508e-9
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA104755513",
+      "name": "rs560026225",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:34103634"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          2.99999994735501e-14
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA104763983",
+      "name": "rs770379212",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:32296059"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          1.0000000031710769e-28
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA104787122",
+      "name": "rs4145717",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:36344522"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          3.999999886872274e-9
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA104789944",
+      "name": "rs2069772",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:34594039"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          1.99999996490334e-14
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA104799719",
+      "name": "rs1904522",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:30929738"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          5.000000097707407e-25
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA104808866",
+      "name": "rs17454584",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:30929738"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          2.00000009162741e-18
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA104813746",
+      "name": "rs62322662",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:30929738"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          7.000000135093387e-9
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1052919122",
+      "name": "rs1806656",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:25918132"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          9.999999974752427e-7
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA105343238",
+      "name": "rs111361850",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:31619474",
+          "PMID:31669095"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          2.999999970665357e-10
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1061332548",
+      "name": "rs114559131",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:29273806"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          0.000004999999873689376
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10626926",
+      "name": "rs2073617",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:31959851"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          2.000000026702864e-10
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10634690",
+      "name": "rs41283642",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:32296059"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          9.999999717180685e-10
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10655811",
+      "name": "rs734999",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:32296059"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          3.999999984016789e-11
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10655813",
+      "name": "rs2016366",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:31619474"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          9.999999960041972e-13
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10686959",
+      "name": "rs3828058",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:30929738"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          4.000000053405728e-10
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10696787",
+      "name": "rs17668708",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:30929738"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          1.999999943436137e-9
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10714245",
+      "name": "rs11121240",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:31361310"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          4.000000067449534e-16
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10719605",
+      "name": "rs4648883",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:37985818"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          2.999999970665357e-10
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10729256",
+      "name": "rs10789340",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:34103634"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          3.0000001167615996e-17
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1073459486",
+      "name": "rs55711856",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:34103634"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          3.0000001167615996e-17
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1073459495",
+      "name": "rs55711856",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:31619474"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          1.999999987845058e-8
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10739246",
+      "name": "rs4845774",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:29273806"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          0.0000019999999949504854
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10748503",
+      "name": "rs1122396",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:31361310",
+          "PMID:35104449"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          7.000000135093387e-9
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10762612",
+      "name": "rs159960",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:29785011"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          6.000000052353016e-9
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10762615",
+      "name": "rs301805",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:27182965"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          2.999999892949745e-8
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10762860",
+      "name": "rs662064",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:36777996"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          7.99999985961336e-13
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10762882",
+      "name": "rs6687430",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:34594039"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          2.999999892949745e-8
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10783202",
+      "name": "rs34276574",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:30929738"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          4.999999841327613e-21
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10783203",
+      "name": "rs2056625",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:29785011",
+          "PMID:31959851",
+          "PMID:31361310"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          8.000000156331851e-25
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10783207",
+      "name": "rs1214598",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:32296059",
+          "PMID:36777996"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          1.999999936531045e-21
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10783212",
+      "name": "rs1723016",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:30929738"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          1.999999936531045e-19
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10783214",
+      "name": "rs1617333",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:31959851",
+          "PMID:34103634"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          1.000000013351432e-10
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10787004",
+      "name": "rs2296618",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:27611488"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          6.999999868639861e-8
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10792343",
+      "name": "rs2147959",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:31619474"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          4.000000053405728e-10
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1080108229",
+      "name": "rs10478040",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:36777996"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          1.000000013351432e-10
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10802449",
+      "name": "rs16830141",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:32296059"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          2.9999999880125916e-12
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10802454",
+      "name": "rs1293202",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:31669095"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          2.9999998795923744e-13
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10804111",
+      "name": "rs6681149",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:35126453"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          3.999999886872274e-9
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1081631876",
+      "name": "rs11950562",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:36777996"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          2.999999892949745e-8
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10818414",
+      "name": "rs865962",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:32296059"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          6.999999919513338e-16
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10822031",
+      "name": "rs7555556",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:32296059"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          9.999999960041972e-12
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10822032",
+      "name": "rs7538512",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:30929738"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          9.000000050773949e-11
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10822033",
+      "name": "rs12023876",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:27182965"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          9.99999993922529e-9
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10822036",
+      "name": "rs6683383",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:32296059"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          2.999999892949745e-8
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10823208",
+      "name": "rs906364",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:29273806"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          0.000003000000106112566
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10826907",
+      "name": "rs10924970",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:36777996"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          1.999999987845058e-8
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10831414",
+      "name": "rs12760882",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:30552067",
+          "PMID:36344522"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          9.000000189551827e-10
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10850185",
+      "name": "rs7523907",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:32296059"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          1.999999987845058e-8
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1085195697",
+      "name": "rs12196306",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:35472084"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          1.999999943436137e-9
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10864113",
+      "name": "rs9438873",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:32296059"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          4.999999969612645e-9
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10865099",
+      "name": "rs3027001",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:25918132"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          0.000004999999873689376
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA108679965",
+      "name": "rs74964132",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:32296059"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          5.999999759184749e-13
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1087073350",
+      "name": "rs36027312",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:31669095"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          3.000000026176508e-9
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10871443",
+      "name": "rs301817",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:30929738"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          5.999999802552836e-11
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10871538",
+      "name": "rs67551275",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:27182965"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          1.0000000168623835e-16
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1087460238",
+      "name": "rs2428494",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:30929738"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          5.00000011871114e-33
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1087558032",
+      "name": "rs116189786",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:31669095"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          1.0000000036274937e-15
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1087559575",
+      "name": "rs140302846",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:30929738"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          0
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1087607282",
+      "name": "rs28798705",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:25918132"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          9.999999974752427e-7
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10884234",
+      "name": "rs7551641",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:21804549"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          3.999999886872274e-9
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10885740",
+      "name": "rs1101999",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:27182965"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          4.99999991225835e-15
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10886023",
+      "name": "rs4233366",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:20032318"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          1.99999996490334e-13
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10888861",
+      "name": "rs2786098",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:25918132"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          5.999999941330714e-10
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10897562",
+      "name": "rs12568266",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:34103634"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          6.000000052353016e-9
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1089765965",
+      "name": "rs11447062",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:34103634"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          6.000000052353016e-9
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1089765974",
+      "name": "rs11447062",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:34103634"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          6.000000052353016e-9
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1089765976",
+      "name": "rs11447062",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:34103634"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          6.000000052353016e-9
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1089765980",
+      "name": "rs11447062",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:34103634"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          6.000000052353016e-9
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1089765986",
+      "name": "rs11447062",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:34103634"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          6.000000052353016e-9
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1089765989",
+      "name": "rs11447062",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:34103634"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          6.000000052353016e-9
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1089765991",
+      "name": "rs11447062",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:34103634"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          6.000000052353016e-9
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1089765992",
+      "name": "rs11447062",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:34103634"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          6.000000052353016e-9
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1089766023",
+      "name": "rs11447062",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:34103634"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          6.000000052353016e-9
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1089766028",
+      "name": "rs11447062",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:34103634"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          2.999999970665357e-10
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10898044",
+      "name": "rs4480384",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:36777996"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          4.999999858590343e-10
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10908038",
+      "name": "rs7521458",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:36777996"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          9.99999983775159e-18
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA10908568",
+      "name": "rs2070901",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  },
+  {
+    "edge": {
+      "predicate": "biolink:has_phenotype",
+      "direction": "<",
+      "properties": {
+        "publications": [
+          "PMID:30552067",
+          "PMID:32296059",
+          "PMID:34103634"
+        ],
+        "knowledge_level": "knowledge_assertion",
+        "agent_type": "manual_agent",
+        "p_value": [
+          1.0000000195414814e-25
+        ],
+        "primary_knowledge_source": "infores:gwas-catalog"
+      }
+    },
+    "adj_node": {
+      "id": "CAID:CA1091704208",
+      "name": "rs367983479",
+      "category": [
+        "biolink:SequenceVariant"
+      ]
+    }
+  }
+]

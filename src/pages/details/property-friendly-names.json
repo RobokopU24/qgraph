@@ -1,0 +1,5 @@
+{
+    "MONDO_SUPERCLASS_disease": "Disease",
+    "equivalent_identifiers": "Equivalent Identifiers",
+    "biolink:has_phenotype": "Has Phenotype"
+}
