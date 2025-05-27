@@ -19,10 +19,6 @@ const baseRoutes = {
         config,
       );
 
-      console.log({
-        object: response.data,
-      });
-
       return response.data;
       // return testData1;
     } catch (error) {

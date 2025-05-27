@@ -107,6 +107,7 @@ export default function ShowEdges({
 
   useEffect(() => {
     fetchBiolink();
+    fetchEdges();
   }, []);
 
   useEffect(() => {
