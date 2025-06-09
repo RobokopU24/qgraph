@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import { Tooltip, withStyles } from '@material-ui/core';
@@ -21,9 +21,12 @@ import GraphEditor from './graphEditor/GraphEditor';
 import TextEditor from './textEditor/TextEditor';
 import JsonEditor from './jsonEditor/JsonEditor';
 import TemplatedQueriesModal from './templatedQueries/TemplatedQueriesModal';
+import { usePasskey } from '~/hooks/usePasskey';
 
 import './queryBuilder.css';
 import SaveQuery from './saveQuery/SaveQuery';
+import RegisterPasskeyDialog from '../../components/RegisterPasskeyDialog';
+import LoadQuery from './saveQuery/LoadQuery';
 
 const SubmitButton = withStyles((theme) => ({
   root: {
@@ -45,13 +48,28 @@ export default function QueryBuilder() {
   const queryBuilder = useQueryBuilder();
   const pageStatus = usePageStatus(false);
   const { user } = useAuth();
+  const { browserSupport } = usePasskey();
   const [showJson, toggleJson] = useState(false);
   const [showSaveQuery, toggleSaveQuery] = useState(false);
+  const [showLoadQuery, toggleLoadQuery] = useState(false);
+  const [registerPasskeyOpen, setRegisterPasskeyOpen] = useState(false);
   const [ara] = useState(ARAs[0]);
   const displayAlert = useContext(AlertContext);
   const history = useHistory();
   const { isAuthenticated, getAccessTokenSilently } = useAuth0();
   const [exampleQueriesOpen, setExampleQueriesOpen] = useState(false);
+
+  const passkeyPopupDenied = localStorage.getItem('passkeyPopupDenied');
+
+  // Display modal for the user to create a passkey if they don't have one
+  useEffect(() => {
+    if (user && browserSupport) {
+      // eslint-disable-next-line no-underscore-dangle
+      if (user._count.WebAuthnCredential === 0 && passkeyPopupDenied !== 'true') {
+        setRegisterPasskeyOpen(true);
+      }
+    }
+  }, [user, browserSupport, passkeyPopupDenied]);
 
   /**
    * Submit this query directly to an ARA and then navigate to the answer page
@@ -190,6 +208,7 @@ export default function QueryBuilder() {
       {pageStatus.displayPage && (
         <div id="queryBuilderContainer">
           <div id="queryEditorContainer">
+            <RegisterPasskeyDialog open={registerPasskeyOpen} onClose={() => setRegisterPasskeyOpen(false)} />
             <QueryBuilderContext.Provider value={queryBuilder}>
               <div style={{ flex: 1 }}>
                 <TextEditor
@@ -227,6 +246,18 @@ export default function QueryBuilder() {
                       </Button>
                     </span>
                   </Tooltip>
+                  <Tooltip title={user ? '' : 'Login to load your saved query'}>
+                    <span>
+                      <Button
+                        onClick={() => toggleLoadQuery(true)}
+                        variant="contained"
+                        color="primary"
+                        disabled={!user}
+                      >
+                        Load Query
+                      </Button>
+                    </span>
+                  </Tooltip>
                   <SubmitButton
                     onClick={onQuickSubmit}
                     variant="contained"
@@ -249,6 +280,7 @@ export default function QueryBuilder() {
                 close={() => toggleJson(false)}
               />
               <SaveQuery show={showSaveQuery} close={() => toggleSaveQuery(false)} />
+              {showLoadQuery && <LoadQuery open={showLoadQuery} setOpen={toggleLoadQuery} />}
             </QueryBuilderContext.Provider>
           </div>
         </div>

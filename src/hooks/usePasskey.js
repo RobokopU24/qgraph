@@ -1,6 +1,6 @@
 import { useState } from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { startAuthentication, startRegistration } from '@simplewebauthn/browser';
+import { startAuthentication, startRegistration, browserSupportsWebAuthn } from '@simplewebauthn/browser';
 import axios from 'axios';
 import routes from '../API/authRoutes';
 
@@ -35,14 +35,6 @@ export const usePasskey = () => {
   };
 
   const deletePasskey = async (id) => {
-    // eslint-disable-next-line no-alert
-    // Remove confirm for lint compliance; handle confirmation in UI instead
-    // if (
-    //   !window.confirm('Are you sure you want to delete this passkey? This action cannot be undone.')
-    // ) {
-    //   return;
-    // }
-
     setDeleteLoading(id);
     try {
       await axios.delete(`${routes.passkeyRoutes.base}/${id}`, {
@@ -140,11 +132,14 @@ export const usePasskey = () => {
     }
   };
 
+  const browserSupport = browserSupportsWebAuthn();
+
   return {
     registerPasskey,
     loginWithPasskey,
     fetchPasskeys,
     deletePasskey,
+    browserSupport,
     passkeys,
     isLoading,
     loadingPasskeys,

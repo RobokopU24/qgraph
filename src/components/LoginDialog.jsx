@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -11,17 +11,20 @@ import { FaGoogle, FaGithub, FaFingerprint } from 'react-icons/fa';
 import { useAuth } from '~/context/AuthContext';
 import { usePasskey } from '~/hooks/usePasskey';
 import API from '~/API/authRoutes';
+import AlertContext from '~/context/alert';
 
 function LoginDialog({ open, onClose }) {
+  const displayAlert = useContext(AlertContext);
   const { login } = useAuth();
-  const { loginWithPasskey } = usePasskey();
+  const { loginWithPasskey, browserSupport } = usePasskey();
   const handlePasskeyLogin = async () => {
     try {
       const response = await loginWithPasskey();
       login(response.user, response.token);
       onClose();
-    } catch (error) {
-      // TODO: Handle error
+    } catch (err) {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      displayAlert('error', 'Unable to login with passkey or no passkey registered. Please try again later. Please continue with another login method.');
     }
   };
 
@@ -78,14 +81,16 @@ function LoginDialog({ open, onClose }) {
           >
             Login with Google
           </Button>
-          <Button
-            onClick={handlePasskeyLogin}
-            variant="outlined"
-            fullWidth
-            startIcon={<FaFingerprint />}
-          >
-            Login with Passkey
-          </Button>
+          {browserSupport && (
+            <Button
+              onClick={handlePasskeyLogin}
+              variant="outlined"
+              fullWidth
+              startIcon={<FaFingerprint />}
+            >
+              Login with Passkey
+            </Button>
+          )}
         </div>
       </DialogContent>
     </Dialog>

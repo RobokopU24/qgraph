@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import {
   Link as MuiLink,
 } from '@material-ui/core';
@@ -9,6 +9,7 @@ import IconButton from '@material-ui/core/IconButton';
 import { AccountCircle } from '@material-ui/icons';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import Avatar from '@material-ui/core/Avatar';
 
 import { useAuth } from '~/context/AuthContext';
 import LoginDialog from '../LoginDialog';
@@ -17,6 +18,8 @@ import './header.css';
 import Logo from '../Logo';
 
 export default function Header() {
+  const history = useHistory();
+
   const { user, logout } = useAuth();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [loginDialogOpen, setLoginDialogOpen] = React.useState(false);
@@ -31,6 +34,11 @@ export default function Header() {
 
   const handleLoginClick = () => {
     setLoginDialogOpen(true);
+    handleMenuClose();
+  };
+
+  const handleProfileClick = () => {
+    history.push('/profile');
     handleMenuClose();
   };
 
@@ -55,7 +63,7 @@ export default function Header() {
           <IconButton
             onClick={handleMenuOpen}
           >
-            <AccountCircle style={{ fontSize: '32px' }} />
+            {user ? <Avatar src={user.profilePicture} sizes="small" /> : <AccountCircle style={{ fontSize: '32px' }} />}
           </IconButton>
           <Menu
             style={{ marginTop: '48px' }}
@@ -74,10 +82,10 @@ export default function Header() {
             onClose={handleMenuClose}
           >
             {user ? (
-              <>
-                <MenuItem component={Link} to="/profile">Profile</MenuItem>
-                <MenuItem onClick={handleLogout}>Logout</MenuItem>
-              </>
+              [
+                <MenuItem onClick={handleProfileClick} key="profile">Profile</MenuItem>,
+                <MenuItem onClick={handleLogout} key="logout">Logout</MenuItem>,
+              ]
             ) : (
               <MenuItem onClick={handleLoginClick}>Login</MenuItem>
             )}
