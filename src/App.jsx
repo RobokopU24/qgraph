@@ -13,6 +13,7 @@ import TermsofService from '~/pages/TermsofService';
 import QueryBuilder from '~/pages/queryBuilder/QueryBuilder';
 import Explore from '~/pages/explore/Explore';
 import Answer from '~/pages/answer/Answer';
+import OAuthCallback from '~/pages/OAuthCallback';
 
 import QuestionList from '~/pages/questionList/QuestionList';
 
@@ -27,6 +28,9 @@ import AlertContext from '~/context/alert';
 import BiolinkContext from '~/context/biolink';
 
 import useBiolinkModel from '~/stores/useBiolinkModel';
+import { AuthProvider } from './context/AuthContext';
+import Profile from './pages/Profile';
+import ProtectedRoute from './components/ProtectedRoute';
 
 export default function App() {
   const [alert, setAlert] = useState({});
@@ -60,49 +64,59 @@ export default function App() {
           audience="https://qgraph.org/api"
         >
           <AlertContext.Provider value={simpleSetAlert}>
-            <BiolinkContext.Provider value={biolink}>
-              <ThemeProvider theme={theme}>
-                <StylesProvider injectFirst>
-                  <AlertWrapper
-                    alert={alert}
-                    onClose={() => simpleSetAlert(alert.severity, '')}
-                  />
-                  <Header />
-                  <div id="contentContainer">
-                    <Switch>
-                      <Route path="/about">
-                        <About />
-                      </Route>
-                      <Route path="/explore">
-                        <Explore />
-                      </Route>
-                      <Route path="/guide">
-                        <Guide />
-                      </Route>
-                      <Route path="/questions">
-                        <QuestionList />
-                      </Route>
-                      <Route path="/termsofservice">
-                        <TermsofService />
-                      </Route>
-                      <Route path="/logout">
-                        <Logout />
-                      </Route>
-                      <Route path="/answer/:answer_id?">
-                        <Answer />
-                      </Route>
-                      <Route path="/tutorial">
-                        <Tutorial />
-                      </Route>
-                      <Route path="/">
-                        <QueryBuilder />
-                      </Route>
-                    </Switch>
-                  </div>
-                  <Footer />
-                </StylesProvider>
-              </ThemeProvider>
-            </BiolinkContext.Provider>
+            <AuthProvider>
+              <BiolinkContext.Provider value={biolink}>
+                <ThemeProvider theme={theme}>
+                  <StylesProvider injectFirst>
+                    <AlertWrapper
+                      alert={alert}
+                      onClose={() => simpleSetAlert(alert.severity, '')}
+                    />
+                    <Header />
+                    <div id="contentContainer">
+                      <Switch>
+                        <Route path="/about">
+                          <About />
+                        </Route>
+                        <Route path="/explore">
+                          <Explore />
+                        </Route>
+                        <Route path="/guide">
+                          <Guide />
+                        </Route>
+                        <Route path="/questions">
+                          <QuestionList />
+                        </Route>
+                        <Route path="/termsofservice">
+                          <TermsofService />
+                        </Route>
+                        <Route path="/logout">
+                          <Logout />
+                        </Route>
+                        <Route path="/answer/:answer_id?">
+                          <Answer />
+                        </Route>
+                        <Route path="/tutorial">
+                          <Tutorial />
+                        </Route>
+                        <Route path="/oauth-callback">
+                          <OAuthCallback />
+                        </Route>
+                        <Route path="/profile">
+                          <ProtectedRoute>
+                            <Profile />
+                          </ProtectedRoute>
+                        </Route>
+                        <Route path="/">
+                          <QueryBuilder />
+                        </Route>
+                      </Switch>
+                    </div>
+                    <Footer />
+                  </StylesProvider>
+                </ThemeProvider>
+              </BiolinkContext.Provider>
+            </AuthProvider>
           </AlertContext.Provider>
         </Auth0Provider>
       </BrowserRouter>

@@ -1,10 +1,13 @@
 import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
-import { withStyles } from '@material-ui/core';
+import { Tooltip, withStyles } from '@material-ui/core';
 import { blue } from '@material-ui/core/colors';
+
 import { set as idbSet } from 'idb-keyval';
 import { useAuth0 } from '@auth0/auth0-react';
+// eslint-disable-next-line import/named
+import { useAuth } from '../../context/AuthContext';
 
 import API from '~/API';
 import ARAs from '~/API/services';
@@ -20,6 +23,7 @@ import JsonEditor from './jsonEditor/JsonEditor';
 import TemplatedQueriesModal from './templatedQueries/TemplatedQueriesModal';
 
 import './queryBuilder.css';
+import SaveQuery from './saveQuery/SaveQuery';
 
 const SubmitButton = withStyles((theme) => ({
   root: {
@@ -40,7 +44,9 @@ const SubmitButton = withStyles((theme) => ({
 export default function QueryBuilder() {
   const queryBuilder = useQueryBuilder();
   const pageStatus = usePageStatus(false);
+  const { user } = useAuth();
   const [showJson, toggleJson] = useState(false);
+  const [showSaveQuery, toggleSaveQuery] = useState(false);
   const [ara] = useState(ARAs[0]);
   const displayAlert = useContext(AlertContext);
   const history = useHistory();
@@ -203,13 +209,24 @@ export default function QueryBuilder() {
                     open={exampleQueriesOpen}
                     setOpen={setExampleQueriesOpen}
                   />
-
                   <Button
                     onClick={() => toggleJson(true)}
                     variant="outlined"
                   >
                     Edit JSON
                   </Button>
+                  <Tooltip title={user ? '' : 'Login to save your query'}>
+                    <span>
+                      <Button
+                        onClick={() => toggleSaveQuery(true)}
+                        variant="contained"
+                        color="primary"
+                        disabled={!user}
+                      >
+                        Save Query
+                      </Button>
+                    </span>
+                  </Tooltip>
                   <SubmitButton
                     onClick={onQuickSubmit}
                     variant="contained"
@@ -231,6 +248,7 @@ export default function QueryBuilder() {
                 show={showJson}
                 close={() => toggleJson(false)}
               />
+              <SaveQuery show={showSaveQuery} close={() => toggleSaveQuery(false)} />
             </QueryBuilderContext.Provider>
           </div>
         </div>
