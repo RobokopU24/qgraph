@@ -2,15 +2,18 @@ import {
   Dialog, DialogTitle, IconButton, DialogActions, DialogContent, Button, TextField,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import routes from '../../../API/authRoutes';
 import queryGraphUtils from '~/utils/queryGraph';
+import AlertContext from '~/context/alert';
 
 import './saveQuery.css';
 import useQueryBuilder from '../useQueryBuilder';
 import { authApi } from '../../../API/baseUrlProxy';
 
 function SaveQuery({ show, close }) {
+  const displayAlert = useContext(AlertContext);
+
   const queryBuilder = useQueryBuilder();
   const prunedQueryGraph = queryGraphUtils.prune(queryBuilder.query_graph);
 
@@ -30,6 +33,7 @@ function SaveQuery({ show, close }) {
       query: queryData,
     })
       .then(() => {
+        displayAlert('success', 'Query saved successfully');
         close();
       })
       .catch((error) => {

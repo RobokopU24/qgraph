@@ -175,6 +175,7 @@ function Profile() {
     try {
       await authApi.delete(`${API.queryRoutes.base}/${queryToDelete.id}`);
       setSavedQueries(savedQueries.filter((q) => q.id !== queryToDelete.id));
+      setSelectedQuery(null);
       displayAlert('success', 'Query deleted successfully');
     } catch (err) {
       displayAlert('error', 'Failed to delete query');
