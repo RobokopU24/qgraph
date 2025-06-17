@@ -26,7 +26,8 @@ export default function QueryGraph({
   height, width,
   clickState, updateClickState,
 }) {
-  const { colorMap } = useContext(BiolinkContext);
+  const { colorMap, predicates } = useContext(BiolinkContext);
+  const symmetricPredicates = predicates.filter((predicate) => predicate.symmetric).map((predicate) => predicate.predicate);
   const queryBuilder = useContext(QueryBuilderContext);
   const { query_graph } = queryBuilder;
   const { nodes, edges } = useMemo(() => queryGraphUtils.getNodeAndEdgeListsForDisplay(query_graph), [queryBuilder.state]);
@@ -253,6 +254,10 @@ export default function QueryGraph({
     // edge ends need the x and y of their attached nodes
     // must come after simulation
     const edgesWithCurves = edgeUtils.addEdgeCurveProperties(newEdges);
+    // add symmetricPredicates to each edgesWithCurves
+    edgesWithCurves.forEach((e) => {
+      e.symmetric = symmetricPredicates;
+    });
 
     edge.current = edge.current.data(edgesWithCurves, (d) => d.id)
       .join(

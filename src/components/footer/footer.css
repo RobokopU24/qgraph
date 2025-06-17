@@ -1,7 +1,9 @@
 footer {
+    z-index: 1;
     color: #5e5e5e;
     background-color: #f5f7fa;
 }
+
 footer p {
     font-size: 1.25em;
     margin-top: 5px;

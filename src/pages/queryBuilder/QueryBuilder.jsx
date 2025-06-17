@@ -1,10 +1,12 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
-import { withStyles } from '@material-ui/core';
+import { Tooltip, withStyles } from '@material-ui/core';
 import { blue } from '@material-ui/core/colors';
+
 import { set as idbSet } from 'idb-keyval';
 import { useAuth0 } from '@auth0/auth0-react';
+// eslint-disable-next-line import/named
 
 import API from '~/API';
 import ARAs from '~/API/services';
@@ -13,14 +15,19 @@ import AlertContext from '~/context/alert';
 import queryGraphUtils from '~/utils/queryGraph';
 import { defaultQuestion } from '~/utils/cache';
 import usePageStatus from '~/stores/usePageStatus';
+import DownloadDialog from '~/components/DownloadDialog';
+import { usePasskey } from '~/hooks/usePasskey';
 import useQueryBuilder from './useQueryBuilder';
 import GraphEditor from './graphEditor/GraphEditor';
 import TextEditor from './textEditor/TextEditor';
 import JsonEditor from './jsonEditor/JsonEditor';
 import TemplatedQueriesModal from './templatedQueries/TemplatedQueriesModal';
-import DownloadDialog from '~/components/DownloadDialog';
+import { useAuth } from '../../context/AuthContext';
 
 import './queryBuilder.css';
+import SaveQuery from './saveQuery/SaveQuery';
+import RegisterPasskeyDialog from '../../components/RegisterPasskeyDialog';
+import LoadQuery from './saveQuery/LoadQuery';
 
 const SubmitButton = withStyles((theme) => ({
   root: {
@@ -41,13 +48,30 @@ const SubmitButton = withStyles((theme) => ({
 export default function QueryBuilder() {
   const queryBuilder = useQueryBuilder();
   const pageStatus = usePageStatus(false);
+  const { user } = useAuth();
+  const { browserSupport } = usePasskey();
   const [showJson, toggleJson] = useState(false);
+  const [showSaveQuery, toggleSaveQuery] = useState(false);
+  const [showLoadQuery, toggleLoadQuery] = useState(false);
+  const [registerPasskeyOpen, setRegisterPasskeyOpen] = useState(false);
   const [downloadOpen, setDownloadOpen] = useState(false);
   const [ara] = useState(ARAs[0]);
   const displayAlert = useContext(AlertContext);
   const history = useHistory();
   const { isAuthenticated, getAccessTokenSilently } = useAuth0();
   const [exampleQueriesOpen, setExampleQueriesOpen] = useState(false);
+
+  const passkeyPopupDenied = localStorage.getItem('passkeyPopupDenied');
+
+  // Display modal for the user to create a passkey if they don't have one
+  useEffect(() => {
+    if (user && browserSupport) {
+      // eslint-disable-next-line no-underscore-dangle
+      if (user._count.WebAuthnCredential === 0 && passkeyPopupDenied !== 'true') {
+        setRegisterPasskeyOpen(true);
+      }
+    }
+  }, [user, browserSupport, passkeyPopupDenied]);
 
   /**
    * Submit this query directly to an ARA and then navigate to the answer page
@@ -186,6 +210,7 @@ export default function QueryBuilder() {
       {pageStatus.displayPage && (
         <div id="queryBuilderContainer">
           <div id="queryEditorContainer">
+            <RegisterPasskeyDialog open={registerPasskeyOpen} onClose={() => setRegisterPasskeyOpen(false)} />
             <QueryBuilderContext.Provider value={queryBuilder}>
               <div style={{ flex: 1 }}>
                 <TextEditor
@@ -211,6 +236,30 @@ export default function QueryBuilder() {
                   >
                     Edit JSON
                   </Button>
+                  <Tooltip title={user ? '' : 'Login to save your query'}>
+                    <span>
+                      <Button
+                        onClick={() => toggleSaveQuery(true)}
+                        variant="contained"
+                        color="primary"
+                        disabled={!user}
+                      >
+                        Save Query
+                      </Button>
+                    </span>
+                  </Tooltip>
+                  <Tooltip title={user ? '' : 'Login to load your saved query'}>
+                    <span>
+                      <Button
+                        onClick={() => toggleLoadQuery(true)}
+                        variant="contained"
+                        color="primary"
+                        disabled={!user}
+                      >
+                        Load Query
+                      </Button>
+                    </span>
+                  </Tooltip>
                   <Button
                     onClick={() => setDownloadOpen(true)}
                     variant="outlined"
@@ -218,14 +267,14 @@ export default function QueryBuilder() {
                     Download Query
                   </Button>
                   <SubmitButton
-                    onClick={onQuickSubmit}
+                    onClick={() => onQuickSubmit}
                     variant="contained"
                   >
                     Submit
                   </SubmitButton>
                   {isAuthenticated && (
                     <Button
-                      onClick={onSubmit}
+                      onClick={() => onSubmit}
                       variant="contained"
                       color="primary"
                     >
@@ -238,6 +287,8 @@ export default function QueryBuilder() {
                 show={showJson}
                 close={() => toggleJson(false)}
               />
+              <SaveQuery show={showSaveQuery} close={() => toggleSaveQuery(false)} />
+              {showLoadQuery && <LoadQuery open={showLoadQuery} setOpen={toggleLoadQuery} />}
               <DownloadDialog
                 open={downloadOpen}
                 setOpen={setDownloadOpen}

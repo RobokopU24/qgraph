@@ -11,9 +11,12 @@ module.exports = merge(common, {
     historyApiFallback: true,
     disableHostCheck: true,
     host: '0.0.0.0',
-    port: process.env.QGRAPH_PORT,
+    port: 8080,
     hot: hotReload,
     inline: hotReload,
+    proxy: {
+      '/api': 'http://localhost:7080',
+    },
   },
   devtool: 'cheap-module-eval-source-map',
   mode: 'development',
@@ -21,7 +24,7 @@ module.exports = merge(common, {
     rules: [
       {
         test: /\.[jt]sx?$/,
-        exclude: /node_modules/,
+        exclude: /node_modules\/(?!@simplewebauthn\/browser)/,
         use: [
           {
             loader: require.resolve('babel-loader'),

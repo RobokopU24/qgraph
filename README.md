@@ -44,6 +44,8 @@ You may also directly invoke docker-compose with the following command:
 docker-compose -f docker-compose.base.yml -f docker-compose.dev.yml up --build
 ```
 
+> **Note:** For hot reloading during development, make sure to use `http://localhost:8080` to access the application. Accessing the app via `http://localhost:7080` will serve the non-reloading version.
+
 ## Deployment
 
 Deploy using the following command (recommended):
