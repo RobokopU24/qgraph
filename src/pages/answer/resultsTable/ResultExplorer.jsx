@@ -32,7 +32,7 @@ export default function ResultExplorer({ answerStore }) {
   const node = useRef({});
   const edge = useRef({});
   const simulation = useRef();
-  const { colorMap } = useContext(BiolinkContext);
+  const { colorMap, predicates } = useContext(BiolinkContext);
   const [numTrimmedNodes, setNumTrimmedNodes] = useState(answerStore.numQgNodes);
   const debouncedTrimmedNodes = useDebounce(numTrimmedNodes, 500);
   const [popoverPosition, setPopoverPosition] = useState({ x: 0, y: 0 });
@@ -40,6 +40,7 @@ export default function ResultExplorer({ answerStore }) {
   // const [currentEdgeAttributes, setCurrentEdgeAttributes] = useState({});
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [popoverData, setPopoverData] = useState({});
+  const symmetricPredicates = predicates.filter((predicate) => predicate.symmetric).map((predicate) => predicate.predicate);
 
   /**
    * Initialize svg object
@@ -247,7 +248,7 @@ export default function ResultExplorer({ answerStore }) {
               .attr('fill', 'none')
               .attr('stroke-width', (d) => d.strokeWidth)
               .attr('class', 'result_edge')
-              .attr('marker-end', (d) => (graphUtils.shouldShowArrow(d) ? 'url(#arrow)' : '')))
+              .attr('marker-end', (d) => (graphUtils.shouldShowArrow(d, symmetricPredicates) ? 'url(#arrow)' : '')))
             .attr('fill', 'black')
             .attr('stroke', '#999')
             .style('transition', 'stroke 100ms ease-in-out, fill 100ms ease-in-out')
