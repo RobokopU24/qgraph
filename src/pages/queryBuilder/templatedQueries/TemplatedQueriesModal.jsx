@@ -7,6 +7,7 @@ import { Close } from '@material-ui/icons';
 import QueryBuilderContext from '~/context/queryBuilder';
 import examples from './templates.json';
 import NodeSelector from '../textEditor/textEditorRow/NodeSelector';
+import { useLocalStorage } from '~/hooks';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -89,9 +90,10 @@ export default function TemplatedQueriesModal({
 }) {
   const classes = useStyles();
   const queryBuilder = useContext(QueryBuilderContext);
-
   const [selectedExample, setSelectedExample] = useState(null);
-
+  const raw = window.localStorage.getItem('query_history');
+  const bookmarked_queries = raw ? JSON.parse(raw) : null;
+  console.log(bookmarked_queries);
   const handleClose = () => {
     setOpen(false);
     setSelectedExample(null);
@@ -105,6 +107,24 @@ export default function TemplatedQueriesModal({
 
   const editNode = (id, node) => {
     queryBuilder.dispatch({ type: 'editNode', payload: { id, node } });
+  };
+
+  const handleSelectBookmarkedQuery = (query_graph) => {
+    const example = {
+      template: [
+        {
+          text: JSON.stringify(query_graph.query_graph, null, 2),
+          type: 'json_text',
+        },
+      ],
+    };
+    console.log('In handeSelectBookmarkedQuery');
+    console.log(query_graph);
+    setSelectedExample(example);
+    const payload = {
+      message: query_graph,
+    };
+    queryBuilder.dispatch({ type: 'saveGraph', payload });
   };
 
   return (
@@ -138,6 +158,23 @@ export default function TemplatedQueriesModal({
                   <>
                     {example.tags && (<><Chip size="small" label={example.tags} />{' '}</>) }
                     {createTemplateDisplay(example.template)}
+                  </>
+                )}
+              />
+            </ListItem>
+          ))}
+          {bookmarked_queries && Object.entries(bookmarked_queries).map(([key, value], i) => (
+            <ListItem
+              button
+              divider
+              key={`bookmark-${i}`}
+              onClick={() => handleSelectBookmarkedQuery(value)}
+            >
+              <ListItemText
+                primary={(
+                  <>
+                    <Chip size="small" label="Bookmarked" color="secondary" />{' '}
+                    {key}
                   </>
                 )}
               />
@@ -193,6 +230,9 @@ export default function TemplatedQueriesModal({
                         />
                       </div>
                     );
+                  }
+                  if (part.type === 'json_text') {
+                    return <pre id="resultJSONContainer">{part.text}</pre>;
                   }
                   return null;
                 })
