@@ -31,6 +31,7 @@ import useBiolinkModel from '~/stores/useBiolinkModel';
 import { AuthProvider } from './context/AuthContext';
 import Profile from './pages/Profile';
 import ProtectedRoute from './components/ProtectedRoute';
+import ActivateUser from './pages/ActivateUser';
 
 export default function App() {
   const [alert, setAlert] = useState({});
@@ -101,6 +102,9 @@ export default function App() {
                         </Route>
                         <Route path="/oauth-callback">
                           <OAuthCallback />
+                        </Route>
+                        <Route path="/activate-user">
+                          <ActivateUser />
                         </Route>
                         <Route path="/profile">
                           <ProtectedRoute>

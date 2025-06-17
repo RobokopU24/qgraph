@@ -5,6 +5,7 @@ import {
   DialogContent,
   Button,
   IconButton,
+  Input,
 } from '@material-ui/core';
 import { Close as CloseIcon } from '@material-ui/icons';
 import { FaGoogle, FaGithub, FaFingerprint } from 'react-icons/fa';
@@ -12,8 +13,10 @@ import { useAuth } from '~/context/AuthContext';
 import { usePasskey } from '~/hooks/usePasskey';
 import API from '~/API/authRoutes';
 import AlertContext from '~/context/alert';
+import axios from 'axios';
 
 function LoginDialog({ open, onClose }) {
+  const [email, setEmail] = React.useState('');
   const displayAlert = useContext(AlertContext);
   const { login } = useAuth();
   const { loginWithPasskey, browserSupport } = usePasskey();
@@ -34,6 +37,18 @@ function LoginDialog({ open, onClose }) {
 
   const handleGithubLogin = () => {
     window.location.href = API.authRoutes.github;
+  };
+
+  const handleMagicLinkLogin = () => {
+    axios.post(API.authRoutes.magicLink, {
+      email: email.trim(),
+    }).then((response) => {
+      displayAlert('success', response.data.message || 'Login link sent to your email. Please check your inbox.');
+      setEmail('');
+      onClose();
+    }).catch((error) => {
+      displayAlert('error', error.error || error.message || 'Failed to send magic link. Please try again.');
+    });
   };
 
   return (
@@ -65,6 +80,23 @@ function LoginDialog({ open, onClose }) {
             padding: '1rem 0',
           }}
         >
+          <Input
+            placeholder="Email"
+            type="email"
+            fullWidth
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <Button variant="contained" color="primary" onClick={handleMagicLinkLogin}>Login</Button>
+          <div style={{
+            display: 'flex', flexDirection: 'row', gap: '1rem', alignItems: 'center', margin: '1rem 0',
+          }}
+          >
+            <div style={{ height: '1px', backgroundColor: '#ccc', flex: 1 }} />
+            <p style={{ margin: 0, color: '#aaa', fontSize: '1rem' }}>or</p>
+            <div style={{ height: '1px', backgroundColor: '#ccc', flex: 1 }} />
+          </div>
           <Button
             onClick={handleGithubLogin}
             variant="outlined"

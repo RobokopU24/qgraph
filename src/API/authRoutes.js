@@ -7,6 +7,9 @@ const authRoutes = {
   google: `${authEndpoint}/google`,
   login: `${authEndpoint}/login`,
   logout: `${authEndpoint}/logout`,
+  magicLink: `${authEndpoint}/verification-link`,
+  activateUserTokenHandler: `${authEndpoint}/activate-user-token`,
+  activateNewUser: `${authEndpoint}/activate-new-user`,
 };
 
 const passkeyEndpoint = `${baseAuthURL}/passkeys`;

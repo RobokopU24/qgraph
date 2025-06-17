@@ -63,7 +63,11 @@ export default function Header() {
           <IconButton
             onClick={handleMenuOpen}
           >
-            {user ? <Avatar src={user.profilePicture} sizes="small" /> : <AccountCircle style={{ fontSize: '32px' }} />}
+            {user ? (
+              <Avatar src={user.profilePicture} sizes="small">
+                {user.name ? user.name.charAt(0).toUpperCase() : ''}
+              </Avatar>
+            ) : <AccountCircle style={{ fontSize: '32px' }} />}
           </IconButton>
           <Menu
             style={{ marginTop: '48px' }}

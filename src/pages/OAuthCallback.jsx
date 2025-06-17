@@ -2,9 +2,9 @@ import React, { useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import axios from 'axios';
 // import { Loader2 } from 'lucide-react';
+import { useAuth } from '~/context/AuthContext';
 
 import routes from '../API/authRoutes';
-import { useAuth } from '~/context/AuthContext';
 
 function OAuthCallback() {
   const history = useHistory();
