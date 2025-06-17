@@ -16,7 +16,7 @@ const config = {
     rules: [
       {
         test: /\.js(x?)$/,
-        exclude: /node_modules/,
+        exclude: /node_modules\/(?!@simplewebauthn\/browser)/,
         use: {
           loader: 'babel-loader',
         },
