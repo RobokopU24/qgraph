@@ -2,12 +2,13 @@ import {
   Button,
   Chip, Divider, IconButton, List, ListItem, ListItemText, ListSubheader, Modal, makeStyles,
 } from '@material-ui/core';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Close } from '@material-ui/icons';
 import QueryBuilderContext from '~/context/queryBuilder';
-import examples from './templates.json';
+import API from '~/API/authRoutes';
 import NodeSelector from '../textEditor/textEditorRow/NodeSelector';
-import { useLocalStorage } from '~/hooks';
+import { authApi } from '../../../API/baseUrlProxy';
+import examples from './templates.json';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -91,6 +92,7 @@ export default function TemplatedQueriesModal({
   const classes = useStyles();
   const queryBuilder = useContext(QueryBuilderContext);
   const [selectedExample, setSelectedExample] = useState(null);
+  const [queries, setQueries] = useState([]);
   const raw = window.localStorage.getItem('query_history');
   const bookmarked_queries = raw ? JSON.parse(raw) : null;
   console.log(bookmarked_queries);
@@ -113,7 +115,7 @@ export default function TemplatedQueriesModal({
     const example = {
       template: [
         {
-          text: JSON.stringify(query_graph.query_graph, null, 2),
+          text: JSON.stringify(query_graph.query.message.query_graph, null, 2),
           type: 'json_text',
         },
       ],
@@ -121,11 +123,16 @@ export default function TemplatedQueriesModal({
     console.log('In handeSelectBookmarkedQuery');
     console.log(query_graph);
     setSelectedExample(example);
-    const payload = {
-      message: query_graph,
-    };
-    queryBuilder.dispatch({ type: 'saveGraph', payload });
+    queryBuilder.dispatch({ type: 'saveGraph', payload: query_graph.query });
   };
+
+  useEffect(() => {
+    authApi.get(API.queryRoutes.base).then((response) => {
+      setQueries(response.data);
+    }).catch(() => {
+      // TODO: Handle error appropriately
+    });
+  }, [open]);
 
   return (
     <Modal open={open} onClose={handleClose} className={classes.modal}>
@@ -163,18 +170,20 @@ export default function TemplatedQueriesModal({
               />
             </ListItem>
           ))}
-          {bookmarked_queries && Object.entries(bookmarked_queries).map(([key, value], i) => (
+          {queries.map((query, i) => (
             <ListItem
               button
               divider
-              key={`bookmark-${i}`}
-              onClick={() => handleSelectBookmarkedQuery(value)}
+              key={i}
+              onClick={() => {
+                handleSelectBookmarkedQuery(query);
+              }}
             >
               <ListItemText
                 primary={(
                   <>
                     <Chip size="small" label="Bookmarked" color="secondary" />{' '}
-                    {key}
+                    {query.name}
                   </>
                 )}
               />

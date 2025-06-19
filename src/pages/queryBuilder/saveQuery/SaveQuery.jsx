@@ -3,11 +3,11 @@ import {
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import React, { useState, useEffect, useContext } from 'react';
-import routes from '../../../API/authRoutes';
 import queryGraphUtils from '~/utils/queryGraph';
 import AlertContext from '~/context/alert';
 
 import './saveQuery.css';
+import routes from '../../../API/authRoutes';
 import useQueryBuilder from '../useQueryBuilder';
 import { authApi } from '../../../API/baseUrlProxy';
 
@@ -33,7 +33,7 @@ function SaveQuery({ show, close }) {
       query: queryData,
     })
       .then(() => {
-        displayAlert('success', 'Query saved successfully');
+        displayAlert('success', 'Query bookmarked successfully');
         close();
       })
       .catch((error) => {
@@ -46,7 +46,7 @@ function SaveQuery({ show, close }) {
     <Dialog open={show} onClose={close} fullWidth maxWidth="sm">
       <DialogTitle>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <p style={{ margin: 0 }}>Save Query</p>
+          <p style={{ margin: 0 }}>Bookmark Query</p>
           <IconButton
             style={{
               fontSize: '18px',

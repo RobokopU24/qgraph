@@ -1,4 +1,4 @@
-const baseAuthURL = 'https://localhost:4000/api';
+const baseAuthURL = 'http://localhost:4000/api';
 
 const authEndpoint = `${baseAuthURL}/auth`;
 const authRoutes = {

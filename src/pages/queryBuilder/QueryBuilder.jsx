@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
-import { Tooltip, withStyles } from '@material-ui/core';
+import { withStyles } from '@material-ui/core';
 import { blue } from '@material-ui/core/colors';
 
 import { set as idbSet } from 'idb-keyval';
@@ -25,9 +25,7 @@ import TemplatedQueriesModal from './templatedQueries/TemplatedQueriesModal';
 import { useAuth } from '../../context/AuthContext';
 
 import './queryBuilder.css';
-import SaveQuery from './saveQuery/SaveQuery';
 import RegisterPasskeyDialog from '../../components/RegisterPasskeyDialog';
-import LoadQuery from './saveQuery/LoadQuery';
 
 const SubmitButton = withStyles((theme) => ({
   root: {
@@ -51,8 +49,6 @@ export default function QueryBuilder() {
   const { user } = useAuth();
   const { browserSupport } = usePasskey();
   const [showJson, toggleJson] = useState(false);
-  const [showSaveQuery, toggleSaveQuery] = useState(false);
-  const [showLoadQuery, toggleLoadQuery] = useState(false);
   const [registerPasskeyOpen, setRegisterPasskeyOpen] = useState(false);
   const [downloadOpen, setDownloadOpen] = useState(false);
   const [ara] = useState(ARAs[0]);
@@ -236,30 +232,6 @@ export default function QueryBuilder() {
                   >
                     Edit JSON
                   </Button>
-                  <Tooltip title={user ? '' : 'Login to save your query'}>
-                    <span>
-                      <Button
-                        onClick={() => toggleSaveQuery(true)}
-                        variant="contained"
-                        color="primary"
-                        disabled={!user}
-                      >
-                        Save Query
-                      </Button>
-                    </span>
-                  </Tooltip>
-                  <Tooltip title={user ? '' : 'Login to load your saved query'}>
-                    <span>
-                      <Button
-                        onClick={() => toggleLoadQuery(true)}
-                        variant="contained"
-                        color="primary"
-                        disabled={!user}
-                      >
-                        Load Query
-                      </Button>
-                    </span>
-                  </Tooltip>
                   <Button
                     onClick={() => setDownloadOpen(true)}
                     variant="outlined"
@@ -287,8 +259,6 @@ export default function QueryBuilder() {
                 show={showJson}
                 close={() => toggleJson(false)}
               />
-              <SaveQuery show={showSaveQuery} close={() => toggleSaveQuery(false)} />
-              {showLoadQuery && <LoadQuery open={showLoadQuery} setOpen={toggleLoadQuery} />}
               <DownloadDialog
                 open={downloadOpen}
                 setOpen={setDownloadOpen}

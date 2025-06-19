@@ -4,16 +4,19 @@ import React, {
 import Popover from '@material-ui/core/Popover';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import QueryBuilderContext from '~/context/queryBuilder';
 import nodeUtils from '~/utils/d3/nodes';
+import DownloadDialog from '~/components/DownloadDialog';
 
 import QueryGraph from './QueryGraph';
 import NodeSelector from '../textEditor/textEditorRow/NodeSelector';
 import PredicateSelector from '../textEditor/textEditorRow/PredicateSelector';
-import DownloadDialog from '~/components/DownloadDialog';
 
 import './graphEditor.css';
+import SaveQuery from '../saveQuery/SaveQuery';
+import { useAuth } from '../../../context/AuthContext';
 
 const width = 600;
 const height = 400;
@@ -68,8 +71,11 @@ function clickReducer(state, action) {
  */
 export default function GraphEditor() {
   const queryBuilder = useContext(QueryBuilderContext);
+  const { user } = useAuth();
+
   const { query_graph } = queryBuilder;
   const [downloadOpen, setDownloadOpen] = useState(false);
+  const [showSaveQuery, toggleSaveQuery] = useState(false);
 
   const [clickState, clickDispatch] = useReducer(clickReducer, {
     creatingConnection: false,
@@ -146,17 +152,16 @@ export default function GraphEditor() {
           >
             Connect Terms
           </Button>
-          <Button
-            onClick={() => {
-              setDownloadOpen(true);
-              // auto close after 5 seconds
-              setTimeout(() => {
-                clickDispatch({ type: 'closeEditor' });
-              }, 5000);
-            }}
-          >
-            Bookmark Graph
-          </Button>
+          <Tooltip title={user ? '' : 'Login to save your query'}>
+            <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Button
+                onClick={() => toggleSaveQuery(true)}
+                disabled={!user}
+              >
+                Bookmark Graph
+              </Button>
+            </span>
+          </Tooltip>
         </div>
         <Popover
           open={Boolean(clickState.popoverAnchor)}
@@ -175,7 +180,7 @@ export default function GraphEditor() {
             <NodeSelector
               properties={query_graph.nodes[clickState.popoverId]}
               id={clickState.popoverId}
-              update={editNode}
+              update={() => editNode}
               isReference={false}
               options={{
                 includeExistingNodes: false,
@@ -199,6 +204,7 @@ export default function GraphEditor() {
           message={queryBuilder.query_graph}
           download_type="query"
         />
+        <SaveQuery show={showSaveQuery} close={() => toggleSaveQuery(false)} />
       </div>
     </div>
   );
