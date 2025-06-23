@@ -2,7 +2,7 @@ const webpack = require('webpack');
 const { merge } = require('webpack-merge');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
-const common = require('./webpack.common.js');
+const common = require('./webpack.common');
 
 const hotReload = !!process.env.HOT_RELOAD;
 

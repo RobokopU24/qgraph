@@ -5,9 +5,9 @@ import React, {
   useEffect,
 } from 'react';
 import { useHistory } from 'react-router-dom';
+import AlertContext from '~/context/alert';
 import axios from 'axios';
 import routes from '../API/authRoutes';
-import AlertContext from '~/context/alert';
 
 const AuthContext = createContext(null);
 

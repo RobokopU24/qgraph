@@ -10,10 +10,10 @@ import trapiUtils from '~/utils/trapi';
 import usePageStatus from '~/stores/usePageStatus';
 import AlertContext from '~/context/alert';
 import queryGraphUtils from '~/utils/queryGraph';
+import { defaultAnswer } from '~/utils/cache';
 
 import useAnswerStore from './useAnswerStore';
 import useDisplayState from './useDisplayState';
-import { defaultAnswer } from '~/utils/cache';
 
 import LeftDrawer from './leftDrawer/LeftDrawer';
 import KgFull from './fullKg/KgFull';

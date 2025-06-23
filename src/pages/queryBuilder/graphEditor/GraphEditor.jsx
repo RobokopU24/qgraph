@@ -180,7 +180,7 @@ export default function GraphEditor() {
             <NodeSelector
               properties={query_graph.nodes[clickState.popoverId]}
               id={clickState.popoverId}
-              update={() => editNode}
+              update={() => editNode()}
               isReference={false}
               options={{
                 includeExistingNodes: false,

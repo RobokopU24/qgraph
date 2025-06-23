@@ -239,14 +239,14 @@ export default function QueryBuilder() {
                     Download Query
                   </Button>
                   <SubmitButton
-                    onClick={() => onQuickSubmit}
+                    onClick={() => onQuickSubmit()}
                     variant="contained"
                   >
                     Submit
                   </SubmitButton>
                   {isAuthenticated && (
                     <Button
-                      onClick={() => onSubmit}
+                      onClick={() => onSubmit()}
                       variant="contained"
                       color="primary"
                     >
