@@ -78,6 +78,7 @@ export default function EnrichedQueries() {
   const [inputNodeTaxa, setInputNodeTaxa] = useState('');
   const [relationship, setRelationship] = useState('related_to');
   const [outputType, setOutputType] = useState('NamedThing');
+  const [curieMode, setCurieMode] = useState(false);
 
   const abortControllerRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -170,8 +171,32 @@ export default function EnrichedQueries() {
                 </div>
               </div>
 
+              <label
+                style={{
+                  fontSize: '14px',
+                  color: '#626262',
+                  textTransform: 'uppercase',
+                  fontWeight: 'bold',
+                  paddingLeft: '8px',
+                  display: 'flex',
+                  alignItems: 'start',
+                  gap: '8px',
+                  marginTop: '1rem',
+                }}
+                htmlFor="curie-input-mode"
+              >
+                CURIE input mode
+                <input
+                  type="checkbox"
+                  id="curie-input-mode"
+                  value={curieMode}
+                  onChange={(e) => setCurieMode(e.target.checked)}
+                />
+              </label>
+
               <QueryCacheProvider>
                 <NodeInputBox
+                  curieMode={curieMode}
                   onCurieListChange={setCuries}
                   inputNodeType={inputNodeType}
                   inputNodeTaxa={inputNodeTaxa}
