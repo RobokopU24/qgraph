@@ -23,19 +23,26 @@ import {
 import { useQuery } from '../../hooks/use-query';
 import nameLookup from './name-resolver';
 
-export default function NodeInputBox({ onCurieListChange, inputNodeTaxa, inputNodeType }) {
+export default function NodeInputBox({
+  onCurieListChange, inputNodeTaxa, inputNodeType, curieMode,
+}) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('');
   const [activeIndex, setActiveIndex] = useState(null);
   const [validNames, setValidNames] = useState(new Map());
 
   useEffect(() => {
-    const curies = value
-      .split('\n')
-      .map((line) => validNames.get(line))
-      .filter((line) => line !== undefined);
+    let curies = [];
+    if (curieMode) {
+      curies = value.split('\n').map((line) => line.trim()).filter((line) => line.length > 0);
+    } else {
+      curies = value
+        .split('\n')
+        .map((line) => validNames.get(line))
+        .filter((line) => line !== undefined);
+    }
     onCurieListChange(curies);
-  }, [value, validNames, onCurieListChange]);
+  }, [value, validNames, onCurieListChange, curieMode]);
 
   const [selection, setSelection] = useState({
     top: 0, left: 0, selectionStart: 0, selectionEnd: 0,
@@ -69,6 +76,7 @@ export default function NodeInputBox({ onCurieListChange, inputNodeTaxa, inputNo
     openOnArrowKeyDown: false,
     virtual: true,
     loop: true,
+    enabled: open && !curieMode,
   });
 
   const { getReferenceProps, getFloatingProps, getItemProps } = useInteractions(
@@ -105,6 +113,7 @@ export default function NodeInputBox({ onCurieListChange, inputNodeTaxa, inputNo
     isLoading,
   } = useQuery({
     queryFn: async (signal) => {
+      if (curieMode) return [];
       if (currentLineText.length === 0) return [];
       return nameLookup({
         signal,
@@ -152,7 +161,7 @@ export default function NodeInputBox({ onCurieListChange, inputNodeTaxa, inputNo
           paddingLeft: '8px',
         }}
       >
-        Input nodes
+        Input nodes (1 per line)
       </span>
       <RichTextarea
         style={{
@@ -192,23 +201,27 @@ export default function NodeInputBox({ onCurieListChange, inputNodeTaxa, inputNo
           },
         })}
       >
-        {(content) => content.split('\n').map((line, i) => (
-          <React.Fragment key={i}>
-            <span
-              style={
-                validNames.has(line)
-                  ? { backgroundColor: '#95FA7F' }
-                  : { backgroundColor: '#F09C97' }
-              }
-            >
-              {`${line}\n`}
-            </span>
-          </React.Fragment>
-        ))}
+        {(content) => content.split('\n').map((line, i) => {
+          let style;
+          if (!curieMode) {
+            if (validNames.has(line)) {
+              style = { backgroundColor: '#95FA7F' };
+            } else {
+              style = { backgroundColor: '#F09C97' };
+            }
+          }
+          return (
+            <React.Fragment key={i}>
+              <span style={style}>
+                {`${line}\n`}
+              </span>
+            </React.Fragment>
+          );
+        })}
       </RichTextarea>
 
       {/* FLOATING */}
-      {open && (
+      {open && !curieMode && (
         <FloatingPortal>
           <FloatingFocusManager
             context={context}
