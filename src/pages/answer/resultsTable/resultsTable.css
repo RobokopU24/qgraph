@@ -48,7 +48,7 @@
 }
 
 #resultJSONContainer {
-    max-height: 300px;
+    max-height: 50pc;
     overflow-y: auto;
 }
 

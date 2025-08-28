@@ -11,6 +11,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import csv from 'csv-stringify';
+import { useLocalStorage } from '~/hooks';
 
 const jsonToCsvString = (json) => new Promise((res, rej) => {
   csv.stringify(json, (err, output) => {
@@ -104,31 +105,65 @@ const constructCsvObj = (message) => {
 };
 
 export default function DownloadDialog({
-  open, setOpen, message,
+  open, setOpen, message, download_type = 'answer',
 }) {
   const [type, setType] = React.useState('json');
   const [fileName, setFileName] = React.useState('ROBOKOP_message');
+  const [queryHistory, setQueryHistory] = useLocalStorage('query_history', {});
 
   const handleClose = () => {
     setOpen(false);
   };
 
   const handleClickDownload = async () => {
-    let blob;
-    if (type === 'json') {
-      blob = new Blob([JSON.stringify({ message }, null, 2)], { type: 'application/json' });
-    }
-    if (type === 'csv') {
-      const csvString = await jsonToCsvString(constructCsvObj(message));
-      blob = new Blob([csvString], { type: 'text/csv' });
-    }
+    switch (download_type) {
+      case 'answer': {
+        let blob;
+        if (type === 'json') {
+          blob = new Blob([JSON.stringify({ message }, null, 2)], { type: 'application/json' });
+        }
+        if (type === 'csv') {
+          const csvString = await jsonToCsvString(constructCsvObj(message));
+          blob = new Blob([csvString], { type: 'text/csv' });
+        }
 
-    const a = document.createElement('a');
-    a.download = `${fileName}.${type}`;
-    a.href = window.URL.createObjectURL(blob);
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+        const a = document.createElement('a');
+        a.download = `${fileName}.${type}`;
+        a.href = window.URL.createObjectURL(blob);
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        break;
+      }
+      case 'all_queries': {
+        const raw = window.localStorage.getItem('query_history');
+        const parsed = raw ? JSON.parse(raw) : {};
+        const blob = new Blob([JSON.stringify({ bookmarked_queries: parsed }, null, 2)], { type: 'application/json' });
+        // const blob = new Blob([JSON.stringify({ queryHistory }, null, 2)], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.download = `${fileName}.${type}`;
+        a.href = window.URL.createObjectURL(blob);
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        break;
+      }
+      case 'query': {
+        // Bookmark the query with the filename that's given.
+        if (!(fileName in queryHistory)) {
+          setQueryHistory((prev) => ({
+            ...prev,
+            [fileName]: {
+              query_graph: message,
+            },
+          }));
+        }
+        break;
+      }
+      default: {
+        handleClose();
+      }
+    }
 
     handleClose();
   };
@@ -142,7 +177,7 @@ export default function DownloadDialog({
       <DialogTitle id="alert-dialog-title">Download Answer</DialogTitle>
       <DialogContent style={{ width: 600 }}>
         <TextField
-          label="File name"
+          label={['answer', 'all_queries'].includes(download_type) ? 'File name' : 'Query Graph Name'}
           fullWidth
           variant="outlined"
           style={{ marginBottom: '2rem' }}
@@ -150,12 +185,16 @@ export default function DownloadDialog({
           onChange={(e) => { setFileName(e.target.value); }}
         />
 
-        <FormControl component="fieldset">
-          <RadioGroup aria-label="gender" name="gender1" value={type} onChange={(e) => { setType(e.target.value); }}>
-            <FormControlLabel value="json" control={<Radio />} label="JSON" />
-            <FormControlLabel value="csv" control={<Radio />} label="CSV" />
-          </RadioGroup>
-        </FormControl>
+        { // Show the radio group only when the download type is answers.
+          download_type === 'answer' && (
+            <FormControl component="fieldset">
+              <RadioGroup aria-label="gender" name="gender1" value={type} onChange={(e) => { setType(e.target.value); }}>
+                <FormControlLabel value="json" control={<Radio />} label="JSON" />
+                <FormControlLabel value="csv" control={<Radio />} label="CSV" />
+              </RadioGroup>
+            </FormControl>
+          )
+        }
 
         {
           type === 'csv' && (
@@ -170,7 +209,7 @@ export default function DownloadDialog({
           Cancel
         </Button>
         <Button onClick={handleClickDownload} color="primary" variant="contained">
-          Download
+          {['answer', 'all_queries'].includes(download_type) ? 'Download' : 'Bookmark'}
         </Button>
       </DialogActions>
     </Dialog>

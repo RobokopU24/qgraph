@@ -1,5 +1,5 @@
 import React, {
-  useContext, useReducer, useEffect,
+  useContext, useReducer, useEffect, useState,
 } from 'react';
 import Popover from '@material-ui/core/Popover';
 import Button from '@material-ui/core/Button';
@@ -11,6 +11,7 @@ import nodeUtils from '~/utils/d3/nodes';
 import QueryGraph from './QueryGraph';
 import NodeSelector from '../textEditor/textEditorRow/NodeSelector';
 import PredicateSelector from '../textEditor/textEditorRow/PredicateSelector';
+import DownloadDialog from '~/components/DownloadDialog';
 
 import './graphEditor.css';
 
@@ -68,6 +69,7 @@ function clickReducer(state, action) {
 export default function GraphEditor() {
   const queryBuilder = useContext(QueryBuilderContext);
   const { query_graph } = queryBuilder;
+  const [downloadOpen, setDownloadOpen] = useState(false);
 
   const [clickState, clickDispatch] = useReducer(clickReducer, {
     creatingConnection: false,
@@ -144,6 +146,17 @@ export default function GraphEditor() {
           >
             Connect Terms
           </Button>
+          <Button
+            onClick={() => {
+              setDownloadOpen(true);
+              // auto close after 5 seconds
+              setTimeout(() => {
+                clickDispatch({ type: 'closeEditor' });
+              }, 5000);
+            }}
+          >
+            Bookmark Graph
+          </Button>
         </div>
         <Popover
           open={Boolean(clickState.popoverAnchor)}
@@ -180,6 +193,12 @@ export default function GraphEditor() {
             </Paper>
           )}
         </Popover>
+        <DownloadDialog
+          open={downloadOpen}
+          setOpen={setDownloadOpen}
+          message={queryBuilder.query_graph}
+          download_type="query"
+        />
       </div>
     </div>
   );

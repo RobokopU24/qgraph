@@ -79,6 +79,24 @@ export default function LeftDrawer({
               <GetAppIcon />
             </IconButton>
           </ListItemIcon>
+          <ListItemText primary="Download Query" />
+        </ListItem>
+        <ListItem
+          component="label"
+          button
+          disabled={!Object.keys(message).length}
+          onClick={() => { setDownloadOpen(true); }}
+        >
+          <ListItemIcon>
+            <IconButton
+              component="span"
+              style={{ fontSize: '18px' }}
+              title="Download"
+              disableRipple
+            >
+              <GetAppIcon />
+            </IconButton>
+          </ListItemIcon>
           <ListItemText primary="Download Answer" />
         </ListItem>
         <ListItem
